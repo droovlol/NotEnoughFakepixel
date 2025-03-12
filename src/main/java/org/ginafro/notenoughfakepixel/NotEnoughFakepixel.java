@@ -19,6 +19,7 @@ import org.ginafro.notenoughfakepixel.config.gui.commands.Commands;  // Added im
 import org.ginafro.notenoughfakepixel.config.gui.config.ConfigEditor;  // Added import
 import org.ginafro.notenoughfakepixel.config.gui.core.GuiScreenElementWrapper;  // Added import
 import org.ginafro.notenoughfakepixel.features.duels.KDCounter;
+import org.ginafro.notenoughfakepixel.features.mlf.Map;
 import org.ginafro.notenoughfakepixel.features.skyblock.chocolate.ChocolateFactory;
 import org.ginafro.notenoughfakepixel.features.skyblock.crimson.AshfangHelper;
 import org.ginafro.notenoughfakepixel.features.skyblock.crimson.BossNotifier;
@@ -105,6 +106,8 @@ public class NotEnoughFakepixel {
                     feature.fishing.loadStaticFields();
                     feature.experimentation.loadStaticFields();
                     feature.chocolateFactory.loadStaticFields();
+                    feature.mlf.loadStaticFields();
+                    feature.duels.loadStaticFields();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -196,7 +199,6 @@ public class NotEnoughFakepixel {
         MinecraftForge.EVENT_BUS.register(new SoundRemover());
         MinecraftForge.EVENT_BUS.register(new ScrollableTooltips());
         MinecraftForge.EVENT_BUS.register(new FairySouls());
-        MinecraftForge.EVENT_BUS.register(new StorageOverlay.StorageEvent());
         MinecraftForge.EVENT_BUS.register(new AutoOpenMaddox());
         MinecraftForge.EVENT_BUS.register(new MidasStaff());
         MinecraftForge.EVENT_BUS.register(new WardrobeShortcut());
@@ -208,6 +210,7 @@ public class NotEnoughFakepixel {
 
         MinecraftForge.EVENT_BUS.register(new Fullbright());
         MinecraftForge.EVENT_BUS.register(new KDCounter());
+        MinecraftForge.EVENT_BUS.register(new Map());
         // Diana
         MinecraftForge.EVENT_BUS.register(new Diana());
         // Crimson
@@ -276,6 +279,8 @@ public class NotEnoughFakepixel {
                 feature.fishing.saveStaticFields();
                 feature.experimentation.saveStaticFields();
                 feature.chocolateFactory.saveStaticFields();
+                feature.mlf.saveStaticFields();
+                feature.duels.saveStaticFields();
             }
             try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(configFile), StandardCharsets.UTF_8))) {
                 String json = gson.toJson(feature);

@@ -11,7 +11,7 @@ public class AshfangOverlay {
     private final Position position;
 
     public AshfangOverlay() {
-        this.position = org.ginafro.notenoughfakepixel.config.features.Crimson.ashfangOverlayPos; // Reference the configurable position
+        this.position = org.ginafro.notenoughfakepixel.config.features.Crimson.ashfangOverlayPos;
     }
 
     /** Renders the overlay at the configured position */

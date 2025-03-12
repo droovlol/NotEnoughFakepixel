@@ -2,6 +2,7 @@ package org.ginafro.notenoughfakepixel.features.skyblock.dungeons.score;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -30,7 +31,12 @@ public class ScoreOverlay {
         if (event.type != RenderGameOverlayEvent.ElementType.ALL) return;
         if (!shouldShow()) return;
 
-        draw(Dungeons.scoreOverlayOffsetX, Dungeons.scoreOverlayOffsetY, Dungeons.scoreOverlayScale, false);
+        ScaledResolution sr = new ScaledResolution(mc);
+        int overlayWidth = getWidth(1.0f); // Base width, scaled later
+        int overlayHeight = getHeight(1.0f); // Base height, scaled later
+        float x = Dungeons.scoreOverlayPos.getAbsX(sr, overlayWidth);
+        float y = Dungeons.scoreOverlayPos.getAbsY(sr, overlayHeight);
+        draw(x, y, Dungeons.scoreOverlayScale, false);
     }
 
     private boolean shouldShow() {
@@ -48,37 +54,48 @@ public class ScoreOverlay {
 
         // Parse background color
         String[] colorParts = Dungeons.scoreOverlayBackgroundColor.split(":");
-        int alpha = Integer.parseInt(colorParts[0]);
-        int red = Integer.parseInt(colorParts[1]);
-        int green = Integer.parseInt(colorParts[2]);
-        int blue = Integer.parseInt(colorParts[3]);
+        int alpha = Integer.parseInt(colorParts[1]);
+        int red = Integer.parseInt(colorParts[2]);
+        int green = Integer.parseInt(colorParts[3]);
+        int blue = Integer.parseInt(colorParts[4]);
         int bgColor = (alpha << 24) | (red << 16) | (green << 8) | blue;
 
-        // Draw background (assuming 10 lines, ~11 pixels each at scale 1.0)
-        int width = getWidth(scale);
-        int height = getHeight(scale);
-        Gui.drawRect(0, 0, width, height, bgColor);
+        // Calculate text dimensions (unscaled)
+        int textWidth = 0;
+        for (String line : lines) {
+            int lineWidth = mc.fontRendererObj.getStringWidth(line);
+            if (lineWidth > textWidth) textWidth = lineWidth;
+        }
+        textWidth += 4; // 2px padding on each side
+        int textHeight = lines.size() * 11; // 11px per line (8px font + 3px spacing)
+
+        // Draw background matching text dimensions
+        Gui.drawRect(0, 0, textWidth, textHeight, bgColor);
 
         // Draw text
         for (int i = 0; i < lines.size(); i++) {
-            mc.fontRendererObj.drawString(lines.get(i), 2, i * 11, -1);
+            mc.fontRendererObj.drawString(lines.get(i), 2, i * 11, -1); // 2px left padding
         }
 
         GlStateManager.popMatrix();
     }
 
     public void renderDummy() {
-        draw(Dungeons.scoreOverlayOffsetX, Dungeons.scoreOverlayOffsetY, Dungeons.scoreOverlayScale, true);
+        ScaledResolution sr = new ScaledResolution(mc);
+        int overlayWidth = getWidth(1.0f);
+        int overlayHeight = getHeight(1.0f);
+        float x = Dungeons.scoreOverlayPos.getAbsX(sr, overlayWidth);
+        float y = Dungeons.scoreOverlayPos.getAbsY(sr, overlayHeight);
+        draw(x, y, Dungeons.scoreOverlayScale, true);
     }
 
     public int getWidth(float scale) {
-        // Estimate width based on longest line (e.g., "Total score: 300 (S+)")
-        return (int) (100 * scale); // Adjust if text is wider
+        int baseWidth = mc.fontRendererObj.getStringWidth("Total score: 300 (S+)") + 4; // Base estimate
+        return (int) (baseWidth * scale);
     }
 
     public int getHeight(float scale) {
-        // 10 lines (including blanks) at ~11 pixels each
-        return (int) (110 * scale);
+        return (int) (110 * scale); // 10 lines × 11px
     }
 
     private void getLines(List<String> lines, boolean example) {
@@ -190,7 +207,6 @@ public class ScoreOverlay {
         return returnString.toString();
     }
 
-    // POJAV FAKE OVERLAY ON CHAT
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent e) {
         if (!Configuration.isPojav()) return;

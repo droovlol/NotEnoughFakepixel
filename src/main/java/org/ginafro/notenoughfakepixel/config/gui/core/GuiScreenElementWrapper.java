@@ -6,25 +6,19 @@ import java.io.IOException;
 import net.minecraft.client.gui.GuiScreen;
 import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.ginafro.notenoughfakepixel.config.gui.config.ConfigEditor;
 import org.lwjgl.input.Mouse;
 
 public class GuiScreenElementWrapper extends GuiScreen {
 
     public final GuiElement element;
     private final Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
-    private String lastConfigState; // Last serialized state of config
-    private long lastChangeTime; // For debouncing
-    private static final long SAVE_DELAY = 1000; // 1 second debounce
-    private Configuration config; // Reference to the Configuration
+    private String lastConfigState;
+    private long lastChangeTime;
+    private static final long SAVE_DELAY = 1000;
+    private Configuration config;
 
     public GuiScreenElementWrapper(GuiElement element) {
         this.element = element;
-        // Get Configuration from ConfigEditor
-        if (element instanceof ConfigEditor) {
-            this.config = ((ConfigEditor) element).getConfiguration();
-            this.lastConfigState = gson.toJson(config);
-        }
     }
 
     @Override

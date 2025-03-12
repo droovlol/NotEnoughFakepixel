@@ -7,6 +7,7 @@ public class GuiTextures {
     private GuiTextures() {}
 
     public static final ResourceLocation DISCORD = new ResourceLocation("notenoughfakepixel:discord.png");
+    public static final ResourceLocation GITHUB = new ResourceLocation("notenoughfakepixel:github.png");
 
     public static final ResourceLocation button_tex = new ResourceLocation("notenoughfakepixel:button.png");
 

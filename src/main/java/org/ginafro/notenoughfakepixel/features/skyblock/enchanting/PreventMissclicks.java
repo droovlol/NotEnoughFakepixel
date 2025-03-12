@@ -1,6 +1,5 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.enchanting;
 
-import com.sun.rmi.rmid.ExecPermission;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.init.Items;

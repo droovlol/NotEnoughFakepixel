@@ -79,13 +79,23 @@ public class DungeonsMap {
     public void drawMap(MapData data) {
         GlStateManager.pushMatrix();
         ScaledResolution sr = new ScaledResolution(mc);
-        float x = Dungeons.dungeonsMapOffsetX;
-        float y = Dungeons.dungeonsMapOffsetY;
+        int mapWidth = (int) (128 * Dungeons.dungeonsMapScale);
+        int mapHeight = (int) (128 * Dungeons.dungeonsMapScale);
+        float x = Dungeons.dungeonsMapPos.getAbsX(sr, mapWidth);
+        float y = Dungeons.dungeonsMapPos.getAbsY(sr, mapHeight);
 
-        float x1 = x * Dungeons.dungeonsMapScale;
-        float y1 = y * Dungeons.dungeonsMapScale;
-        float x2 = x1 + (128 * Dungeons.dungeonsMapScale);
-        float y2 = y1 + (128 * Dungeons.dungeonsMapScale);
+        // Adjust for centering if centerX or centerY is true
+        if (Dungeons.dungeonsMapPos.isCenterX()) {
+            x -= mapWidth / 2;
+        }
+        if (Dungeons.dungeonsMapPos.isCenterY()) {
+            y -= mapHeight / 2;
+        }
+
+        float x1 = x;
+        float y1 = y;
+        float x2 = x1 + mapWidth;
+        float y2 = y1 + mapHeight;
 
         int scaleFactor = sr.getScaleFactor();
         int scissorX = (int) (x1 * scaleFactor);
@@ -100,7 +110,6 @@ public class DungeonsMap {
         GlStateManager.scale(Dungeons.dungeonsMapScale, Dungeons.dungeonsMapScale, Dungeons.dungeonsMapScale);
 
         if (data == null) {
-            // Draw a gray placeholder for position editor
             GlStateManager.color(0.5f, 0.5f, 0.5f, 1.0f);
             worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
             worldrenderer.pos(0, 0, 0).endVertex();
@@ -129,22 +138,32 @@ public class DungeonsMap {
     private void drawBorderMap() {
         GlStateManager.pushMatrix();
         ScaledResolution sr = new ScaledResolution(mc);
-        float x = Dungeons.dungeonsMapOffsetX;
-        float y = Dungeons.dungeonsMapOffsetY;
+        int mapWidth = (int) (128 * Dungeons.dungeonsMapScale);
+        int mapHeight = (int) (128 * Dungeons.dungeonsMapScale);
+        float x = Dungeons.dungeonsMapPos.getAbsX(sr, mapWidth);
+        float y = Dungeons.dungeonsMapPos.getAbsY(sr, mapHeight);
+
+        // Adjust for centering
+        if (Dungeons.dungeonsMapPos.isCenterX()) {
+            x -= mapWidth / 2;
+        }
+        if (Dungeons.dungeonsMapPos.isCenterY()) {
+            y -= mapHeight / 2;
+        }
 
         GlStateManager.disableTexture2D();
         String[] colorParts = Dungeons.dungeonsMapBorderColor.split(":");
-        float alpha = Float.parseFloat(colorParts[0]) / 255f;
-        float red = Float.parseFloat(colorParts[1]) / 255f;
-        float green = Float.parseFloat(colorParts[2]) / 255f;
-        float blue = Float.parseFloat(colorParts[3]) / 255f;
+        float alpha = Float.parseFloat(colorParts[1]) / 255f;
+        float red = Float.parseFloat(colorParts[2]) / 255f;
+        float green = Float.parseFloat(colorParts[3]) / 255f;
+        float blue = Float.parseFloat(colorParts[4]) / 255f;
         GlStateManager.color(red, green, blue, alpha);
-        GL11.glLineWidth(2.0f); // Hardcoded for simplicity, or add to config if desired
+        GL11.glLineWidth(2.0f);
 
         float x1 = x;
         float y1 = y;
-        float x2 = x1 + (128 * Dungeons.dungeonsMapScale);
-        float y2 = y1 + (128 * Dungeons.dungeonsMapScale);
+        float x2 = x1 + mapWidth;
+        float y2 = y1 + mapHeight;
 
         worldrenderer.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION);
         worldrenderer.pos(x1, y1, 0.0D).endVertex();
@@ -161,13 +180,23 @@ public class DungeonsMap {
     private void drawMarkers(Map<String, Vec4b> mapDecorations) {
         ScaledResolution sr = new ScaledResolution(mc);
         int scaleFactor = sr.getScaleFactor();
-        float x = Dungeons.dungeonsMapOffsetX;
-        float y = Dungeons.dungeonsMapOffsetY;
+        int mapWidth = (int) (128 * Dungeons.dungeonsMapScale);
+        int mapHeight = (int) (128 * Dungeons.dungeonsMapScale);
+        float x = Dungeons.dungeonsMapPos.getAbsX(sr, mapWidth);
+        float y = Dungeons.dungeonsMapPos.getAbsY(sr, mapHeight);
 
-        float x1 = x * Dungeons.dungeonsMapScale;
-        float y1 = y * Dungeons.dungeonsMapScale;
-        float x2 = x1 + (128 * Dungeons.dungeonsMapScale);
-        float y2 = y1 + (128 * Dungeons.dungeonsMapScale);
+        // Adjust for centering
+        if (Dungeons.dungeonsMapPos.isCenterX()) {
+            x -= mapWidth / 2;
+        }
+        if (Dungeons.dungeonsMapPos.isCenterY()) {
+            y -= mapHeight / 2;
+        }
+
+        float x1 = x;
+        float y1 = y;
+        float x2 = x1 + mapWidth;
+        float y2 = y1 + mapHeight;
 
         int scissorX = (int) (x1 * scaleFactor);
         int scissorY = (int) (y1 * scaleFactor);
@@ -193,11 +222,11 @@ public class DungeonsMap {
             }
 
             if (!Dungeons.dungeonsRotateMap || finalScreen) {
-                GlStateManager.translate((x + markerX) * Dungeons.dungeonsMapScale,
-                        (y + markerY) * Dungeons.dungeonsMapScale, 0.0);
+                GlStateManager.translate((x + markerX * Dungeons.dungeonsMapScale),
+                        (y + markerY * Dungeons.dungeonsMapScale), 0.0);
             } else if (iconType == 1) {
-                GlStateManager.translate((x + 64.0F) * Dungeons.dungeonsMapScale,
-                        (y + 64.0F) * Dungeons.dungeonsMapScale, 0.0);
+                GlStateManager.translate((x + 64.0F * Dungeons.dungeonsMapScale),
+                        (y + 64.0F * Dungeons.dungeonsMapScale), 0.0);
             } else if (iconType == 0) {
                 float relativeX = (float) (markerX - 64);
                 float relativeY = (float) (markerY - 64);
@@ -207,8 +236,8 @@ public class DungeonsMap {
                 float rotatedX = (float) (relativeX * Math.cos(angleRad) - relativeY * Math.sin(angleRad));
                 float rotatedY = (float) (relativeX * Math.sin(angleRad) + relativeY * Math.cos(angleRad));
 
-                GlStateManager.translate((x + 64.0F - rotatedX) * Dungeons.dungeonsMapScale,
-                        (y + 64.0F - rotatedY) * Dungeons.dungeonsMapScale, 0.0);
+                GlStateManager.translate((x + (64.0F - rotatedX) * Dungeons.dungeonsMapScale),
+                        (y + (64.0F - rotatedY) * Dungeons.dungeonsMapScale), 0.0);
             }
 
             float angle = 180F;

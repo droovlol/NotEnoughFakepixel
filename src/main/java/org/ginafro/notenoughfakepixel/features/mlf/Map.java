@@ -10,6 +10,7 @@ import org.ginafro.notenoughfakepixel.features.mlf.Info;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.variables.Gamemode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Map {
@@ -27,25 +28,42 @@ public class Map {
         int x = (int) Info.mlfInfoOffsetX;
         int y = (int) Info.mlfInfoOffsetY;
 
-        // Parse background color (A:R:G:B format)
+        // Parse background color (assuming A:R:G:B format)
         String[] colorParts = Info.mlfInfoBackgroundColor.split(":");
-        int alpha = Integer.parseInt(colorParts[0]);
+        int alpha = Integer.parseInt(colorParts[0]); // Adjusted to match typical A:R:G:B
         int red = Integer.parseInt(colorParts[1]);
         int green = Integer.parseInt(colorParts[2]);
         int blue = Integer.parseInt(colorParts[3]);
         int bgColor = (alpha << 24) | (red << 16) | (green << 8) | blue;
 
-        // Draw background
-        Gui.drawRect(x, y, x + 35, y + 60, bgColor);
-
-        // Update and draw text
+        // Update text lines from scoreboard
         List<String> sideBarLines = ScoreboardUtils.getSidebarLines();
         updateLines(sideBarLines);
-        mc.fontRendererObj.drawString("Income: " + inc, x + 2, y + 8, -1);
-        mc.fontRendererObj.drawString("Balance: " + bal, x + 2, y + 17, -1);
-        mc.fontRendererObj.drawString("Events: ", x + 2, y + 25, -1);
-        mc.fontRendererObj.drawString("- " + e1, x + 2, y + 33, -1);
-        mc.fontRendererObj.drawString("- " + e2, x + 2, y + 41, -1);
+
+        // Prepare text lines
+        List<String> lines = new ArrayList<>();
+        lines.add("Income: " + inc);
+        lines.add("Balance: " + bal);
+        lines.add("Events: ");
+        if (!e1.isEmpty()) lines.add("- " + e1);
+        if (!e2.isEmpty()) lines.add("- " + e2);
+
+        // Calculate text dimensions
+        int textWidth = 0;
+        for (String line : lines) {
+            int lineWidth = mc.fontRendererObj.getStringWidth(line);
+            if (lineWidth > textWidth) textWidth = lineWidth;
+        }
+        textWidth += 4; // 2px padding on each side
+        int textHeight = lines.size() * 9; // 8px font height + 1px spacing per line
+
+        // Draw background matching text dimensions
+        Gui.drawRect(x, y, x + textWidth, y + textHeight, bgColor);
+
+        // Draw text
+        for (int i = 0; i < lines.size(); i++) {
+            mc.fontRendererObj.drawString(lines.get(i), x + 2, y + (i * 9), -1); // 2px left padding, 9px line spacing
+        }
     }
 
     /** Updates the lines from the scoreboard */
@@ -77,17 +95,35 @@ public class Map {
         int y = (int) Info.mlfInfoOffsetY;
 
         String[] colorParts = Info.mlfInfoBackgroundColor.split(":");
-        int alpha = Integer.parseInt(colorParts[0]);
-        int red = Integer.parseInt(colorParts[1]);
-        int green = Integer.parseInt(colorParts[2]);
-        int blue = Integer.parseInt(colorParts[3]);
+        int alpha = Integer.parseInt(colorParts[1]); // Adjusted to match typical A:R:G:B
+        int red = Integer.parseInt(colorParts[2]);
+        int green = Integer.parseInt(colorParts[3]);
+        int blue = Integer.parseInt(colorParts[4]);
         int bgColor = (alpha << 24) | (red << 16) | (green << 8) | blue;
 
-        Gui.drawRect(x, y, x + 35, y + 60, bgColor);
-        mc.fontRendererObj.drawString("Income: 100", x + 2, y + 8, -1);
-        mc.fontRendererObj.drawString("Balance: 500", x + 2, y + 17, -1);
-        mc.fontRendererObj.drawString("Events: ", x + 2, y + 25, -1);
-        mc.fontRendererObj.drawString("- Event 1", x + 2, y + 33, -1);
-        mc.fontRendererObj.drawString("- Event 2", x + 2, y + 41, -1);
+        // Dummy text lines
+        List<String> lines = new ArrayList<>();
+        lines.add("Income: 100");
+        lines.add("Balance: 500");
+        lines.add("Events: ");
+        lines.add("- Event 1");
+        lines.add("- Event 2");
+
+        // Calculate text dimensions
+        int textWidth = 0;
+        for (String line : lines) {
+            int lineWidth = mc.fontRendererObj.getStringWidth(line);
+            if (lineWidth > textWidth) textWidth = lineWidth;
+        }
+        textWidth += 4; // 2px padding on each side
+        int textHeight = lines.size() * 9; // 8px font height + 1px spacing per line
+
+        // Draw background matching text dimensions
+        Gui.drawRect(x, y, x + textWidth, y + textHeight, bgColor);
+
+        // Draw text
+        for (int i = 0; i < lines.size(); i++) {
+            mc.fontRendererObj.drawString(lines.get(i), x + 2, y + (i * 9), -1); // 2px left padding, 9px line spacing
+        }
     }
 }

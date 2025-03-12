@@ -120,19 +120,12 @@ public class Dungeons {
     public static float dungeonsMapScale = 1.0f;
 
     @Expose
-    @ConfigOption(name = "Dungeons Map Offset X", desc = "Horizontal offset of the dungeons map.", subcategoryId = 1)
-    @ConfigEditorSlider(minValue = 0.0f, maxValue = 1800.0f, minStep = 1.0f)
-    public static float dungeonsMapOffsetX = 0.0f;
-
-    @Expose
-    @ConfigOption(name = "Dungeons Map Offset Y", desc = "Vertical offset of the dungeons map.", subcategoryId = 1)
-    @ConfigEditorSlider(minValue = 0.0f, maxValue = 1250.0f, minStep = 1.0f)
-    public static float dungeonsMapOffsetY = 0.0f;
-
-    @Expose
     @ConfigOption(name = "Dungeons Map Rotation", desc = "Enable rotation of the dungeons map.", subcategoryId = 1)
     @ConfigEditorBoolean
     public static boolean dungeonsRotateMap = true;
+
+    @Expose
+    public static Position dungeonsMapPos = new Position(10, 10, false, true);
 
     @Expose
     @ConfigOption(name = "Edit Map Position", desc = "Adjust the dungeons map position visually.", subcategoryId = 1)
@@ -276,17 +269,7 @@ public class Dungeons {
     @Expose
     @ConfigOption(name = "Score Overlay", desc = "Enable the dungeon score overlay.", subcategoryId = 2)
     @ConfigEditorBoolean
-    public static boolean dungeonsScoreOverlay = true; // Already exists, keeping it
-
-    @Expose
-    @ConfigOption(name = "Score Overlay Offset X", desc = "Horizontal offset of the score overlay.", subcategoryId = 2)
-    @ConfigEditorSlider(minValue = 0.0f, maxValue = 1800.0f, minStep = 1.0f)
-    public static float scoreOverlayOffsetX = 0.0f;
-
-    @Expose
-    @ConfigOption(name = "Score Overlay Offset Y", desc = "Vertical offset of the score overlay.", subcategoryId = 2)
-    @ConfigEditorSlider(minValue = 0.0f, maxValue = 1250.0f, minStep = 1.0f)
-    public static float scoreOverlayOffsetY = 128.0f;
+    public static boolean dungeonsScoreOverlay = true;
 
     @Expose
     @ConfigOption(name = "Score Overlay Scale", desc = "Scale of the score overlay text.", subcategoryId = 2)
