@@ -7,12 +7,6 @@ import net.minecraft.util.ResourceLocation;
 public class TextureObject {
 
     public String displayName;
-    public ResourceLocation bars = resource("bars.png");
-    public ResourceLocation mines = resource("mines.png");
-    public ResourceLocation playerStats = resource("playerstats.png");
-    public ResourceLocation stats = resource("stats.png");
-    public ResourceLocation dungeon = resource("dungeon.png");
-    public ResourceLocation dialogue = resource("dialogue.png");
 
     public TextureObject(String displayName) {
         this.displayName = displayName;
@@ -32,6 +26,6 @@ public class TextureObject {
     }
 
     private static ResourceLocation resource(String path) {
-        return new ResourceLocation("skyhanni", path);
+        return new ResourceLocation("notenoughfakepixel", path);
     }
 }

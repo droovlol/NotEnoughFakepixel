@@ -93,7 +93,7 @@ public class NotEnoughFakepixel {
         if (configFile.exists()) {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8))) {
                 feature = gson.fromJson(reader, Configuration.class);
-                System.out.println("Loaded config: " + gson.toJson(feature));
+
                 // Sync static fields after loading
                 if (feature != null) {
                     feature.dungeons.loadStaticFields();
@@ -279,7 +279,6 @@ public class NotEnoughFakepixel {
             }
             try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(configFile), StandardCharsets.UTF_8))) {
                 String json = gson.toJson(feature);
-                System.out.println("Saving config: " + json);
                 writer.write(json);
             }
         } catch (IOException e) {

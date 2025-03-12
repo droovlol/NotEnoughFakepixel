@@ -4,6 +4,7 @@ import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.config.gui.GuiTextures;
 import org.ginafro.notenoughfakepixel.config.gui.core.GlScissorStack;
 import org.ginafro.notenoughfakepixel.config.gui.core.GuiElement;
+import org.ginafro.notenoughfakepixel.config.gui.core.GuiElementTextField;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.gui.GuiOptionEditor;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.gui.GuiOptionEditorAccordion;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.struct.ConfigProcessor;
@@ -23,6 +24,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
@@ -43,6 +45,12 @@ public class ConfigEditor extends GuiElement {
     private final HashMap<ConfigProcessor.ProcessedOption, ConfigProcessor.ProcessedCategory> categoryForOption = new HashMap<>();
     private final Configuration config;
 
+    // Search bar fields
+    private final GuiElementTextField searchField;
+    private boolean searchActive = false;
+    private String lastSearchText = "";
+    private List<ConfigProcessor.ProcessedOption> optionsToRender = new ArrayList<>(); // Persistent list to prevent flickering
+
     public ConfigEditor(Configuration config) {
         this(config, null);
     }
@@ -52,9 +60,22 @@ public class ConfigEditor extends GuiElement {
         this.config = config;
         this.processedConfig = ConfigProcessor.create(config);
 
+        // Initialize search field
+        this.searchField = new GuiElementTextField("", GuiElementTextField.SCISSOR_TEXT);
+        this.searchField.setMaxStringLength(50);
+
+        // Populate searchOptionMap
         for (ConfigProcessor.ProcessedCategory category : processedConfig.values()) {
             for (ConfigProcessor.ProcessedOption option : category.options.values()) {
                 categoryForOption.put(option, category);
+                String optionName = option.name.toLowerCase();
+                searchOptionMap.computeIfAbsent(optionName, k -> new HashSet<>()).add(option);
+                String[] descWords = option.desc.toLowerCase().split("\\s+");
+                for (String word : descWords) {
+                    if (word.length() > 2) {
+                        searchOptionMap.computeIfAbsent(word, k -> new HashSet<>()).add(option);
+                    }
+                }
             }
         }
 
@@ -82,6 +103,9 @@ public class ConfigEditor extends GuiElement {
                 }
             }
         }
+
+        // Initialize optionsToRender with the selected category
+        updateOptionsToRender();
     }
 
     private LinkedHashMap<String, ConfigProcessor.ProcessedCategory> getCurrentConfigEditing() {
@@ -103,10 +127,27 @@ public class ConfigEditor extends GuiElement {
     private void setSelectedCategory(String category) {
         selectedCategory = category;
         optionsScroll.setValue(0);
+        updateOptionsToRender();
     }
 
     public Configuration getConfiguration() {
         return config;
+    }
+
+    private void updateOptionsToRender() {
+        optionsToRender.clear();
+        if (searchActive) {
+            String searchText = searchField.getText().toLowerCase();
+            for (Map.Entry<String, Set<ConfigProcessor.ProcessedOption>> entry : searchOptionMap.entrySet()) {
+                if (entry.getKey().contains(searchText)) {
+                    optionsToRender.addAll(entry.getValue());
+                }
+            }
+            lastSearchText = searchText;
+        } else if (getSelectedCategory() != null && getCurrentConfigEditing().containsKey(getSelectedCategory())) {
+            ConfigProcessor.ProcessedCategory cat = getCurrentConfigEditing().get(getSelectedCategory());
+            optionsToRender.addAll(getOptionsInCategory(cat).values());
+        }
     }
 
     public void render() {
@@ -159,11 +200,11 @@ public class ConfigEditor extends GuiElement {
         int innerRight = x + 144 - innerPadding;
         int innerTop = y + 49 + innerPadding;
         int innerBottom = y + ySize - 5 - innerPadding;
-        Gui.drawRect(innerLeft, innerTop, innerLeft + 1, innerBottom, 0xff08080E); //Left
-        Gui.drawRect(innerLeft + 1, innerTop, innerRight, innerTop + 1, 0xff08080E); //Top
-        Gui.drawRect(innerRight - 1, innerTop + 1, innerRight, innerBottom, 0xff28282E); //Right
-        Gui.drawRect(innerLeft + 1, innerBottom - 1, innerRight - 1, innerBottom, 0xff28282E); //Bottom
-        Gui.drawRect(innerLeft + 1, innerTop + 1, innerRight - 1, innerBottom - 1, 0x6008080E); //Middle
+        Gui.drawRect(innerLeft, innerTop, innerLeft + 1, innerBottom, 0xff08080E); // Left
+        Gui.drawRect(innerLeft + 1, innerTop, innerRight, innerTop + 1, 0xff08080E); // Top
+        Gui.drawRect(innerRight - 1, innerTop + 1, innerRight, innerBottom, 0xff28282E); // Right
+        Gui.drawRect(innerLeft + 1, innerBottom - 1, innerRight - 1, innerBottom, 0xff28282E); // Bottom
+        Gui.drawRect(innerLeft + 1, innerTop + 1, innerRight - 1, innerBottom - 1, 0x6008080E); // Middle
 
         GlScissorStack.push(0, innerTop + 1, scaledResolution.getScaledWidth(), innerBottom - 1, scaledResolution);
 
@@ -216,108 +257,128 @@ public class ConfigEditor extends GuiElement {
         innerBottom = y + ySize - 5 - innerPadding;
 
         GlStateManager.color(1, 1, 1, 1);
-        int rightStuffLen = 20;
 
-        if (getSelectedCategory() != null && currentConfigEditing.containsKey(getSelectedCategory())) {
+        // Render category description and search bar side by side
+        int descMaxWidth = innerRight - innerLeft - 30; // Default width for description
+        int searchBarWidth = descMaxWidth / 2; // Half size of the available space
+        int descWidth = descMaxWidth - searchBarWidth - 10; // Leave space for search bar and padding
+        int searchBarX = innerLeft + descWidth + 15; // Position search bar to the right of description
+
+        if (!searchActive && getSelectedCategory() != null && currentConfigEditing.containsKey(getSelectedCategory())) {
             ConfigProcessor.ProcessedCategory cat = currentConfigEditing.get(getSelectedCategory());
-
-            TextRenderUtils.drawStringScaledMaxWidth(cat.desc, fr, innerLeft + 5, y + 40, true, innerRight - innerLeft - rightStuffLen - 10, 0xb0b0b0);
+            TextRenderUtils.drawStringScaledMaxWidth(cat.desc, fr, innerLeft + 5, y + 55, true, descWidth, 0xb0b0b0);
         }
 
-        Gui.drawRect(innerLeft, innerTop, innerLeft + 1, innerBottom, 0xff08080E); //Left
-        Gui.drawRect(innerLeft + 1, innerTop, innerRight, innerTop + 1, 0xff08080E); //Top
-        Gui.drawRect(innerRight - 1, innerTop + 1, innerRight, innerBottom, 0xff303036); //Right
-        Gui.drawRect(innerLeft + 1, innerBottom - 1, innerRight - 1, innerBottom, 0xff303036); //Bottom
-        Gui.drawRect(innerLeft + 1, innerTop + 1, innerRight - 1, innerBottom - 1, 0x6008080E); //Middle
+        // Render search bar to the right of the description
+        searchField.setSize(searchBarWidth, 20);
+        searchField.render(searchBarX, y + 50); // Aligned vertically with description (slightly adjusted for centering)
+
+        // Update search state
+        String currentSearchText = searchField.getText();
+        if (!currentSearchText.isEmpty() && !searchActive) {
+            searchActive = true;
+            optionsScroll.setValue(0);
+            updateOptionsToRender();
+        } else if (currentSearchText.isEmpty() && searchActive) {
+            searchActive = false;
+            optionsScroll.setValue(0);
+            updateOptionsToRender();
+        } else if (searchActive && !currentSearchText.equals(lastSearchText)) {
+            updateOptionsToRender();
+        }
+
+        // Adjust innerTop for options panel
+        innerTop = y + 75; // Space for description/search bar and padding
+
+        Gui.drawRect(innerLeft, innerTop, innerLeft + 1, innerBottom, 0xff08080E); // Left
+        Gui.drawRect(innerLeft + 1, innerTop, innerRight, innerTop + 1, 0xff08080E); // Top
+        Gui.drawRect(innerRight - 1, innerTop + 1, innerRight, innerBottom, 0xff303036); // Right
+        Gui.drawRect(innerLeft + 1, innerBottom - 1, innerRight - 1, innerBottom, 0xff303036); // Bottom
+        Gui.drawRect(innerLeft + 1, innerTop + 1, innerRight - 1, innerBottom - 1, 0x6008080E); // Middle
 
         GlScissorStack.push(innerLeft + 1, innerTop + 1, innerRight - 1, innerBottom - 1, scaledResolution);
         float barSize = 1;
         int optionY = -optionsScroll.getValue();
-        if (getSelectedCategory() != null && currentConfigEditing.containsKey(getSelectedCategory())) {
-            ConfigProcessor.ProcessedCategory cat = currentConfigEditing.get(getSelectedCategory());
-            int optionWidthDefault = innerRight - innerLeft - 20;
-            GlStateManager.enableDepth();
-            HashMap<Integer, Integer> activeAccordions = new HashMap<>();
-            for (ConfigProcessor.ProcessedOption option : getOptionsInCategory(cat).values()) {
-                int optionWidth = optionWidthDefault;
-                if (option.accordionId >= 0) {
-                    if (!activeAccordions.containsKey(option.accordionId)) {
-                        continue;
-                    }
-                    int accordionDepth = activeAccordions.get(option.accordionId);
-                    optionWidth = optionWidthDefault - (2 * innerPadding) * (accordionDepth + 1);
-                }
+        int optionWidthDefault = innerRight - innerLeft - 20;
 
-                GuiOptionEditor editor = option.editor;
-                if (editor == null) {
+        GlStateManager.enableDepth();
+        HashMap<Integer, Integer> activeAccordions = new HashMap<>();
+
+        for (ConfigProcessor.ProcessedOption option : optionsToRender) {
+            int optionWidth = optionWidthDefault;
+            if (option.accordionId >= 0) {
+                if (!activeAccordions.containsKey(option.accordionId)) {
                     continue;
                 }
-                if (editor instanceof GuiOptionEditorAccordion) {
-                    GuiOptionEditorAccordion accordion = (GuiOptionEditorAccordion) editor;
-                    if (accordion.getToggled()) {
-                        int accordionDepth = 0;
-                        if (option.accordionId >= 0) {
-                            accordionDepth = activeAccordions.get(option.accordionId) + 1;
-                        }
-                        activeAccordions.put(accordion.getAccordionId(), accordionDepth);
+                int accordionDepth = activeAccordions.get(option.accordionId);
+                optionWidth = optionWidthDefault - (2 * innerPadding) * (accordionDepth + 1);
+            }
+
+            GuiOptionEditor editor = option.editor;
+            if (editor == null) {
+                continue;
+            }
+            if (editor instanceof GuiOptionEditorAccordion) {
+                GuiOptionEditorAccordion accordion = (GuiOptionEditorAccordion) editor;
+                if (accordion.getToggled()) {
+                    int accordionDepth = 0;
+                    if (option.accordionId >= 0) {
+                        accordionDepth = activeAccordions.get(option.accordionId) + 1;
                     }
+                    activeAccordions.put(accordion.getAccordionId(), accordionDepth);
                 }
-                int optionHeight = editor.getHeight();
-                if (innerTop + 5 + optionY + optionHeight > innerTop + 1 && innerTop + 5 + optionY < innerBottom - 1) {
-                    editor.render((innerLeft + innerRight - optionWidth) / 2 - 5, innerTop + 5 + optionY, optionWidth);
-                }
-                optionY += optionHeight + 5;
             }
-            GlStateManager.disableDepth();
-            if (optionY > 0) {
-                barSize = LerpUtils.clampZeroOne((float) (innerBottom - innerTop - 2) / (optionY + 5 + optionsScroll.getValue()));
+            int optionHeight = editor.getHeight();
+            if (innerTop + 5 + optionY + optionHeight > innerTop + 1 && innerTop + 5 + optionY < innerBottom - 1) {
+                editor.render((innerLeft + innerRight - optionWidth) / 2 - 5, innerTop + 5 + optionY, optionWidth);
             }
+            optionY += optionHeight + 5;
+        }
+        GlStateManager.disableDepth();
+        if (optionY > 0) {
+            barSize = LerpUtils.clampZeroOne((float) (innerBottom - innerTop - 2) / (optionY + 5 + optionsScroll.getValue()));
         }
 
         GlScissorStack.pop(scaledResolution);
 
+        // Overlay render pass (separate to avoid duplication)
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
-        if (getSelectedCategory() != null && currentConfigEditing.containsKey(getSelectedCategory())) {
-            int optionYOverlay = -optionsScroll.getValue();
-            ConfigProcessor.ProcessedCategory cat = currentConfigEditing.get(getSelectedCategory());
-            int optionWidthDefault = innerRight - innerLeft - 20;
-
-            GlStateManager.translate(0, 0, 10);
-            GlStateManager.enableDepth();
-            HashMap<Integer, Integer> activeAccordions = new HashMap<>();
-            for (ConfigProcessor.ProcessedOption option : getOptionsInCategory(cat).values()) {
-                int optionWidth = optionWidthDefault;
-                if (option.accordionId >= 0) {
-                    if (!activeAccordions.containsKey(option.accordionId)) {
-                        continue;
-                    }
-                    int accordionDepth = activeAccordions.get(option.accordionId);
-                    optionWidth = optionWidthDefault - (2 * innerPadding) * (accordionDepth + 1);
-                }
-
-                GuiOptionEditor editor = option.editor;
-                if (editor == null) {
+        int optionYOverlay = -optionsScroll.getValue();
+        GlStateManager.translate(0, 0, 10);
+        GlStateManager.enableDepth();
+        activeAccordions.clear();
+        for (ConfigProcessor.ProcessedOption option : optionsToRender) {
+            int optionWidth = optionWidthDefault;
+            if (option.accordionId >= 0) {
+                if (!activeAccordions.containsKey(option.accordionId)) {
                     continue;
                 }
-                if (editor instanceof GuiOptionEditorAccordion) {
-                    GuiOptionEditorAccordion accordion = (GuiOptionEditorAccordion) editor;
-                    if (accordion.getToggled()) {
-                        int accordionDepth = 0;
-                        if (option.accordionId >= 0) {
-                            accordionDepth = activeAccordions.get(option.accordionId) + 1;
-                        }
-                        activeAccordions.put(accordion.getAccordionId(), accordionDepth);
-                    }
-                }
-                int optionHeight = editor.getHeight();
-                if (innerTop + 5 + optionYOverlay + optionHeight > innerTop + 1 && innerTop + 5 + optionYOverlay < innerBottom - 1) {
-                    editor.renderOverlay((innerLeft + innerRight - optionWidth) / 2 - 5, innerTop + 5 + optionYOverlay, optionWidth);
-                }
-                optionYOverlay += optionHeight + 5;
+                int accordionDepth = activeAccordions.get(option.accordionId);
+                optionWidth = optionWidthDefault - (2 * innerPadding) * (accordionDepth + 1);
             }
-            GlStateManager.disableDepth();
-            GlStateManager.translate(0, 0, -10);
+
+            GuiOptionEditor editor = option.editor;
+            if (editor == null) {
+                continue;
+            }
+            if (editor instanceof GuiOptionEditorAccordion) {
+                GuiOptionEditorAccordion accordion = (GuiOptionEditorAccordion) editor;
+                if (accordion.getToggled()) {
+                    int accordionDepth = 0;
+                    if (option.accordionId >= 0) {
+                        accordionDepth = activeAccordions.get(option.accordionId) + 1;
+                    }
+                    activeAccordions.put(accordion.getAccordionId(), accordionDepth);
+                }
+            }
+            int optionHeight = editor.getHeight();
+            if (innerTop + 5 + optionYOverlay + optionHeight > innerTop + 1 && innerTop + 5 + optionYOverlay < innerBottom - 1) {
+                editor.renderOverlay((innerLeft + innerRight - optionWidth) / 2 - 5, innerTop + 5 + optionYOverlay, optionWidth);
+            }
+            optionYOverlay += optionHeight + 5;
         }
+        GlStateManager.disableDepth();
+        GlStateManager.translate(0, 0, -10);
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
 
         float barStart = optionsScroll.getValue() / (float) (optionY + optionsScroll.getValue());
@@ -375,6 +436,25 @@ public class ConfigEditor extends GuiElement {
         int innerLeft = x + 149 + innerPadding;
         int innerRight = x + xSize - 5 - innerPadding;
 
+        // Handle search field mouse input
+        int descMaxWidth = innerRight - innerLeft - 30;
+        int searchBarWidth = descMaxWidth / 2;
+        int descWidth = descMaxWidth - searchBarWidth - 10;
+        int searchBarX = innerLeft + descWidth + 15;
+        int searchBarY = y + 50;
+        int searchBarHeight = searchField.getHeight();
+        if (Mouse.getEventButtonState() && Mouse.getEventButton() >= 0) {
+            if (mouseX >= searchBarX && mouseX <= searchBarX + searchBarWidth && mouseY >= searchBarY && mouseY <= searchBarY + searchBarHeight) {
+                searchField.mouseClicked(mouseX, mouseY, Mouse.getEventButton());
+                return true;
+            } else {
+                searchField.unfocus();
+            }
+        }
+        if (searchField.getFocus() && Mouse.isButtonDown(0)) {
+            searchField.mouseClickMove(mouseX, mouseY, 0, 0);
+        }
+
         int dWheel = Mouse.getEventDWheel();
         if (mouseY > innerTop && mouseY < innerBottom && dWheel != 0) {
             if (dWheel < 0) {
@@ -416,35 +496,32 @@ public class ConfigEditor extends GuiElement {
 
                 float barSize = 1;
                 int optionY = -newTarget;
-                if (getSelectedCategory() != null && getCurrentConfigEditing() != null && getCurrentConfigEditing().containsKey(getSelectedCategory())) {
-                    ConfigProcessor.ProcessedCategory cat = getCurrentConfigEditing().get(getSelectedCategory());
-                    HashMap<Integer, Integer> activeAccordions = new HashMap<>();
-                    for (ConfigProcessor.ProcessedOption option : getOptionsInCategory(cat).values()) {
-                        if (option.accordionId >= 0) {
-                            if (!activeAccordions.containsKey(option.accordionId)) {
-                                continue;
-                            }
-                        }
-
-                        GuiOptionEditor editor = option.editor;
-                        if (editor == null) {
+                HashMap<Integer, Integer> activeAccordions = new HashMap<>();
+                for (ConfigProcessor.ProcessedOption option : optionsToRender) {
+                    if (option.accordionId >= 0) {
+                        if (!activeAccordions.containsKey(option.accordionId)) {
                             continue;
                         }
-                        if (editor instanceof GuiOptionEditorAccordion) {
-                            GuiOptionEditorAccordion accordion = (GuiOptionEditorAccordion) editor;
-                            if (accordion.getToggled()) {
-                                int accordionDepth = 0;
-                                if (option.accordionId >= 0) {
-                                    accordionDepth = activeAccordions.get(option.accordionId) + 1;
-                                }
-                                activeAccordions.put(accordion.getAccordionId(), accordionDepth);
-                            }
-                        }
-                        optionY += editor.getHeight() + 5;
+                    }
 
-                        if (optionY > 0) {
-                            barSize = LerpUtils.clampZeroOne((float) (innerBottom - innerTop - 2) / (optionY + 5 + newTarget));
+                    GuiOptionEditor editor = option.editor;
+                    if (editor == null) {
+                        continue;
+                    }
+                    if (editor instanceof GuiOptionEditorAccordion) {
+                        GuiOptionEditorAccordion accordion = (GuiOptionEditorAccordion) editor;
+                        if (accordion.getToggled()) {
+                            int accordionDepth = 0;
+                            if (option.accordionId >= 0) {
+                                accordionDepth = activeAccordions.get(option.accordionId) + 1;
+                            }
+                            activeAccordions.put(accordion.getAccordionId(), accordionDepth);
                         }
+                    }
+                    optionY += editor.getHeight() + 5;
+
+                    if (optionY > 0) {
+                        barSize = LerpUtils.clampZeroOne((float) (innerBottom - innerTop - 2) / (optionY + 5 + newTarget));
                     }
                 }
 
@@ -484,77 +561,41 @@ public class ConfigEditor extends GuiElement {
         }
 
         int optionY = -optionsScroll.getValue();
-        if (getSelectedCategory() != null && getCurrentConfigEditing() != null && getCurrentConfigEditing().containsKey(getSelectedCategory())) {
-            int optionWidthDefault = innerRight - innerLeft - 20;
-            ConfigProcessor.ProcessedCategory cat = getCurrentConfigEditing().get(getSelectedCategory());
-            HashMap<Integer, Integer> activeAccordions = new HashMap<>();
-            for (ConfigProcessor.ProcessedOption option : getOptionsInCategory(cat).values()) {
-                int optionWidth = optionWidthDefault;
-                if (option.accordionId >= 0) {
-                    if (!activeAccordions.containsKey(option.accordionId)) {
-                        continue;
-                    }
-                    int accordionDepth = activeAccordions.get(option.accordionId);
-                    optionWidth = optionWidthDefault - (2 * innerPadding) * (accordionDepth + 1);
-                }
-
-                GuiOptionEditor editor = option.editor;
-                if (editor == null) {
+        int optionWidthDefault = innerRight - innerLeft - 20;
+        HashMap<Integer, Integer> activeAccordions = new HashMap<>();
+        for (ConfigProcessor.ProcessedOption option : optionsToRender) {
+            int optionWidth = optionWidthDefault;
+            if (option.accordionId >= 0) {
+                if (!activeAccordions.containsKey(option.accordionId)) {
                     continue;
                 }
-                if (editor instanceof GuiOptionEditorAccordion) {
-                    GuiOptionEditorAccordion accordion = (GuiOptionEditorAccordion) editor;
-                    if (accordion.getToggled()) {
-                        int accordionDepth = 0;
-                        if (option.accordionId >= 0) {
-                            accordionDepth = activeAccordions.get(option.accordionId) + 1;
-                        }
-                        activeAccordions.put(accordion.getAccordionId(), accordionDepth);
+                int accordionDepth = activeAccordions.get(option.accordionId);
+                optionWidth = optionWidthDefault - (2 * innerPadding) * (accordionDepth + 1);
+            }
+
+            GuiOptionEditor editor = option.editor;
+            if (editor == null) {
+                continue;
+            }
+            if (editor instanceof GuiOptionEditorAccordion) {
+                GuiOptionEditorAccordion accordion = (GuiOptionEditorAccordion) editor;
+                if (accordion.getToggled()) {
+                    int accordionDepth = 0;
+                    if (option.accordionId >= 0) {
+                        accordionDepth = activeAccordions.get(option.accordionId) + 1;
                     }
+                    activeAccordions.put(accordion.getAccordionId(), accordionDepth);
                 }
-                if (editor.mouseInputOverlay((innerLeft + innerRight - optionWidth) / 2 - 5, innerTop + 5 + optionY, optionWidth, mouseX, mouseY)) {
+            }
+            if (editor.mouseInputOverlay((innerLeft + innerRight - optionWidth) / 2 - 5, innerTop + 5 + optionY, optionWidth, mouseX, mouseY)) {
+                return true;
+            }
+            if (mouseX > innerLeft && mouseX < innerRight && mouseY > innerTop && mouseY < innerBottom) {
+                if (editor.mouseInput((innerLeft + innerRight - optionWidth) / 2 - 5, innerTop + 5 + optionY, optionWidth, mouseX, mouseY)) {
                     return true;
                 }
-                optionY += editor.getHeight() + 5;
             }
-        }
-
-        if (mouseX > innerLeft && mouseX < innerRight && mouseY > innerTop && mouseY < innerBottom) {
-            optionY = -optionsScroll.getValue();
-            if (getSelectedCategory() != null && getCurrentConfigEditing() != null && getCurrentConfigEditing().containsKey(getSelectedCategory())) {
-                int optionWidthDefault = innerRight - innerLeft - 20;
-                ConfigProcessor.ProcessedCategory cat = getCurrentConfigEditing().get(getSelectedCategory());
-                HashMap<Integer, Integer> activeAccordions = new HashMap<>();
-                for (ConfigProcessor.ProcessedOption option : getOptionsInCategory(cat).values()) {
-                    int optionWidth = optionWidthDefault;
-                    if (option.accordionId >= 0) {
-                        if (!activeAccordions.containsKey(option.accordionId)) {
-                            continue;
-                        }
-                        int accordionDepth = activeAccordions.get(option.accordionId);
-                        optionWidth = optionWidthDefault - (2 * innerPadding) * (accordionDepth + 1);
-                    }
-
-                    GuiOptionEditor editor = option.editor;
-                    if (editor == null) {
-                        continue;
-                    }
-                    if (editor instanceof GuiOptionEditorAccordion) {
-                        GuiOptionEditorAccordion accordion = (GuiOptionEditorAccordion) editor;
-                        if (accordion.getToggled()) {
-                            int accordionDepth = 0;
-                            if (option.accordionId >= 0) {
-                                accordionDepth = activeAccordions.get(option.accordionId) + 1;
-                            }
-                            activeAccordions.put(accordion.getAccordionId(), accordionDepth);
-                        }
-                    }
-                    if (editor.mouseInput((innerLeft + innerRight - optionWidth) / 2 - 5, innerTop + 5 + optionY, optionWidth, mouseX, mouseY)) {
-                        return true;
-                    }
-                    optionY += editor.getHeight() + 5;
-                }
-            }
+            optionY += editor.getHeight() + 5;
         }
 
         return true;
@@ -569,9 +610,20 @@ public class ConfigEditor extends GuiElement {
         int adjScaleFactor = Math.max(2, scaledResolution.getScaleFactor());
 
         int innerPadding = 20 / adjScaleFactor;
-        int innerWidth = xSize - 154 - innerPadding * 2;
 
-        if (getSelectedCategory() != null && getCurrentConfigEditing() != null && getCurrentConfigEditing().containsKey(getSelectedCategory())) {
+        // Handle search field keyboard input
+        if (searchField.getFocus()) {
+            char typedChar = Keyboard.getEventCharacter();
+            int keyCode = Keyboard.getEventKey();
+            if (Keyboard.getEventKeyState()) {
+                searchField.keyTyped(typedChar, keyCode);
+                updateOptionsToRender(); // Update options immediately on key press
+                return true;
+            }
+        }
+
+        // Handle option editor keyboard input (only when not searching)
+        if (!searchActive && getSelectedCategory() != null && getCurrentConfigEditing().containsKey(getSelectedCategory())) {
             ConfigProcessor.ProcessedCategory cat = getCurrentConfigEditing().get(getSelectedCategory());
             HashMap<Integer, Integer> activeAccordions = new HashMap<>();
             for (ConfigProcessor.ProcessedOption option : getOptionsInCategory(cat).values()) {
@@ -604,3 +656,4 @@ public class ConfigEditor extends GuiElement {
         return true;
     }
 }
+//duplicating elements on search

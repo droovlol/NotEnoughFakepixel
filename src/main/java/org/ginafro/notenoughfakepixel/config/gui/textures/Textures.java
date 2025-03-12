@@ -36,7 +36,7 @@ public class Textures implements IResourceManagerReloadListener {
         styles.add(DEFAULT_TEXTURE);
         DEFAULT_TEXTURE.displayName = "Default";
         try {
-            ResourceLocation stylesData = new ResourceLocation("skyhanni:data/styles.json");
+            ResourceLocation stylesData = new ResourceLocation("notenoughfakepixel:data/styles.json");
 
             for (IResource resource : resourceManager.getAllResources(stylesData)) {
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
