@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.config.features.QualityOfLife;
 import org.ginafro.notenoughfakepixel.utils.ChatUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 
@@ -24,13 +25,13 @@ public class ChatCleaner {
         if (Minecraft.getMinecraft().thePlayer == null) return;
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
         if (ChatUtils.middleBar.matcher(event.message.getFormattedText()).matches()) return;
-        cancelMessage(Configuration.qolDisableSellingRanks, event, sellingRankPattern);
-        cancelMessage(Configuration.qolDisableWatchdogInfo, event, watchdogPattern, true);
-        cancelMessage(Configuration.qolDisableWatchdogInfo, event, infoPattern, true);
-        cancelMessage(Configuration.qolDisableFriendJoin, event, friendJoinPattern, true);
-        cancelMessage(Configuration.qolDisableZombieRareDrops, event, potatoDropPattern, true);
-        cancelMessage(Configuration.qolDisableZombieRareDrops, event, poisonousPotatoDropPattern, true);
-        cancelMessage(Configuration.qolDisableZombieRareDrops, event, carrotDropPattern, true);
+        cancelMessage(QualityOfLife.qolDisableSellingRanks, event, sellingRankPattern);
+        cancelMessage(QualityOfLife.qolDisableWatchdogInfo, event, watchdogPattern, true);
+        cancelMessage(QualityOfLife.qolDisableWatchdogInfo, event, infoPattern, true);
+        cancelMessage(QualityOfLife.qolDisableFriendJoin, event, friendJoinPattern, true);
+        cancelMessage(QualityOfLife.qolDisableZombieRareDrops, event, potatoDropPattern, true);
+        cancelMessage(QualityOfLife.qolDisableZombieRareDrops, event, poisonousPotatoDropPattern, true);
+        cancelMessage(QualityOfLife.qolDisableZombieRareDrops, event, carrotDropPattern, true);
     }
 
     private void cancelMessage(boolean option, ClientChatReceivedEvent e, Pattern pattern, boolean formatted){

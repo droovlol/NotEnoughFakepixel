@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.utils.ChatUtils;
+import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.SoundUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,16 +41,16 @@ public class BossNotifier {
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent e){
         if (Crimson.checkEssentials()) return;
-        if (Configuration.crimsonBladesoulNotifier) {
+        if (org.ginafro.notenoughfakepixel.config.features.Crimson.crimsonBladesoulNotifier) {
             playCountdown("Bladesoul", bladesoulReady, bladesoulLastKill,bladesoulScheduled);
         }
-        if (Configuration.crimsonMageOutlawNotifier) {
+        if (org.ginafro.notenoughfakepixel.config.features.Crimson.crimsonMageOutlawNotifier) {
             playCountdown("Mage Outlaw", mageOutlawReady, mageOutlawLastKill,mageOutlawScheduled);
         }
-        if (Configuration.crimsonAshfangNotifier) {
+        if (org.ginafro.notenoughfakepixel.config.features.Crimson.crimsonAshfangNotifier) {
             playCountdown("Ashfang", ashfangReady, ashfangLastKill,ashfangScheduled);
         }
-        if (Configuration.crimsonBarbarianDukeXNotifier) {
+        if (org.ginafro.notenoughfakepixel.config.features.Crimson.crimsonBarbarianDukeXNotifier) {
             playCountdown("Barbarian Duke X", barbarianDukeXReady, barbarianDukeXLastKill,barbarianDukeXScheduled);
         }
     }
@@ -58,7 +59,7 @@ public class BossNotifier {
     public void onChat(@NotNull ClientChatReceivedEvent e){
         if (Crimson.checkEssentials()) return;
 
-        if (Configuration.crimsonBladesoulNotifier) {
+        if (org.ginafro.notenoughfakepixel.config.features.Crimson.crimsonBladesoulNotifier) {
             Matcher matcher = Pattern.compile("BLADESOUL DOWN!").matcher(e.message.getUnformattedText());
             if (matcher.find()) {
                 bladesoulLastKill = System.currentTimeMillis();
@@ -68,7 +69,7 @@ public class BossNotifier {
             }
         }
 
-        if (Configuration.crimsonMageOutlawNotifier) {
+        if (org.ginafro.notenoughfakepixel.config.features.Crimson.crimsonMageOutlawNotifier) {
             Matcher matcher = Pattern.compile("MAGE OUTLAW DOWN!").matcher(e.message.getUnformattedText());
             if (matcher.find()) {
                 mageOutlawLastKill = System.currentTimeMillis();
@@ -78,7 +79,7 @@ public class BossNotifier {
             }
         }
 
-        if (Configuration.crimsonAshfangNotifier) {
+        if (org.ginafro.notenoughfakepixel.config.features.Crimson.crimsonAshfangNotifier) {
             Matcher matcher = Pattern.compile("ASHFANG DOWN!").matcher(e.message.getUnformattedText());
             if (matcher.find()) {
                 ashfangLastKill = System.currentTimeMillis();
@@ -88,7 +89,7 @@ public class BossNotifier {
             }
         }
 
-        if (Configuration.crimsonBarbarianDukeXNotifier) {
+        if (org.ginafro.notenoughfakepixel.config.features.Crimson.crimsonBarbarianDukeXNotifier) {
             Matcher matcher = Pattern.compile("BARBARIAN DUKE X DOWN!").matcher(e.message.getUnformattedText());
             if (matcher.find()) {
                 barbarianDukeXLastKill = System.currentTimeMillis();
@@ -102,22 +103,22 @@ public class BossNotifier {
     @SubscribeEvent()
     public void onWorldUnload(WorldEvent.Unload event) {
         if (Crimson.checkEssentials()) return;
-        if (Configuration.crimsonBladesoulNotifier) {
+        if (org.ginafro.notenoughfakepixel.config.features.Crimson.crimsonBladesoulNotifier) {
             Arrays.fill(bladesoulScheduled, false);
             bladesoulReady = -1;
             bladesoulLastKill = -1;
         }
-        if (Configuration.crimsonMageOutlawNotifier) {
+        if (org.ginafro.notenoughfakepixel.config.features.Crimson.crimsonMageOutlawNotifier) {
             Arrays.fill(mageOutlawScheduled, false);
             mageOutlawReady = -1;
             mageOutlawLastKill = -1;
         }
-        if (Configuration.crimsonAshfangNotifier) {
+        if (org.ginafro.notenoughfakepixel.config.features.Crimson.crimsonAshfangNotifier) {
             Arrays.fill(ashfangScheduled, false);
             ashfangReady = -1;
             ashfangLastKill = -1;
         }
-        if (Configuration.crimsonBarbarianDukeXNotifier) {
+        if (org.ginafro.notenoughfakepixel.config.features.Crimson.crimsonBarbarianDukeXNotifier) {
             Arrays.fill(barbarianDukeXScheduled, false);
             barbarianDukeXReady = -1;
             barbarianDukeXLastKill = -1;

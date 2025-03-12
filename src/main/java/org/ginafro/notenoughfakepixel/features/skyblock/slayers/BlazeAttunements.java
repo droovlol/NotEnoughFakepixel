@@ -11,6 +11,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.config.features.Slayer;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 
@@ -26,7 +27,7 @@ public class BlazeAttunements {
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.theWorld == null || mc.thePlayer == null) return;
 
-        if (!Configuration.slayerBlazeAttunements) return;
+        if (!Slayer.slayerBlazeAttunements) return;
         if (!ScoreboardUtils.currentGamemode.isSkyblock() || !ScoreboardUtils.currentLocation.isCrimson()) return;
 
         for (Entity entity : mc.theWorld.loadedEntityList) {

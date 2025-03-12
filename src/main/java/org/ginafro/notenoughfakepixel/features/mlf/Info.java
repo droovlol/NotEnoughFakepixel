@@ -1,56 +1,32 @@
 package org.ginafro.notenoughfakepixel.features.mlf;
 
-import cc.polyfrost.oneconfig.config.core.OneColor;
-import cc.polyfrost.oneconfig.events.event.HudRenderEvent;
-import cc.polyfrost.oneconfig.libs.eventbus.Subscribe;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.util.StringUtils;
-import org.ginafro.notenoughfakepixel.Configuration;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
-import org.ginafro.notenoughfakepixel.variables.Gamemode;
-
-import java.util.List;
+import com.google.gson.annotations.Expose;
+import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.*;
 
 public class Info {
+    // MLF Info HUD (subcategoryId = 1 for organization)
+    @Expose
+    @ConfigOption(name = "MLF Info HUD", desc = "Enable the MLF info HUD.", subcategoryId = 1)
+    @ConfigEditorBoolean
+    public static boolean mlfInfoHud = true;
 
-    String inc, bal , e1 = "", e2 = "";
-    @Subscribe
-    public void onRender(HudRenderEvent e){
-        if(ScoreboardUtils.currentGamemode == Gamemode.MLF){
-            Gui.drawRect(5 , Minecraft.getMinecraft().displayHeight / 2 - 30, 40 , Minecraft.getMinecraft().displayHeight / 2 + 30 , new OneColor(0,0,0,102).getRGB());
-            List<String> sideBarLines = ScoreboardUtils.getSidebarLines();
-            a(sideBarLines);
-            Minecraft.getMinecraft().fontRendererObj.drawString("Income: " + inc , 7 , Minecraft.getMinecraft().displayHeight / 2 - 22 , -1);
-            Minecraft.getMinecraft().fontRendererObj.drawString("Balance: " + bal , 7 , Minecraft.getMinecraft().displayHeight / 2 - 13 , -1);
-            Minecraft.getMinecraft().fontRendererObj.drawString("Events: ", 7 , Minecraft.getMinecraft().displayHeight / 2 - 5 , -1);
-            Minecraft.getMinecraft().fontRendererObj.drawString("- " + e1, 7 , Minecraft.getMinecraft().displayHeight / 2 + 3 , -1);
-            Minecraft.getMinecraft().fontRendererObj.drawString("- " + e1, 7 , Minecraft.getMinecraft().displayHeight / 2 + 11 , -1);
+    @Expose
+    @ConfigOption(name = "MLF Info Offset X", desc = "Horizontal offset of the MLF info HUD.", subcategoryId = 1)
+    @ConfigEditorSlider(minValue = 0.0f, maxValue = 1800.0f, minStep = 1.0f)
+    public static float mlfInfoOffsetX = 5.0f;
 
-        }
-    }
+    @Expose
+    @ConfigOption(name = "MLF Info Offset Y", desc = "Vertical offset of the MLF info HUD.", subcategoryId = 1)
+    @ConfigEditorSlider(minValue = 0.0f, maxValue = 1250.0f, minStep = 1.0f)
+    public static float mlfInfoOffsetY = 0.0f;
 
-    public void a(List<String> sideBarLines) {
-        if (sideBarLines != null) {
-            for (String s : sideBarLines) {
-                if (s.contains("- ")) {
-                    if (e1.isEmpty()) {
-                        e1 = StringUtils.stripControlCodes(s.replace("- ", ""));
-                    } else {
-                        e2 = StringUtils.stripControlCodes(s.replace("- ", ""));
-                    }
-                }
-                if (s.contains("Balance")) {
-                    bal = StringUtils.stripControlCodes(s.replace("Balance: ", ""));
-                }
-                if (s.contains("Income")) {
-                    inc = StringUtils.stripControlCodes(s.replace("Income: ", ""));
-                }
-            }
+    @Expose
+    @ConfigOption(name = "MLF Info Background Color", desc = "Background color of the MLF info HUD.", subcategoryId = 1)
+    @ConfigEditorColour
+    public static String mlfInfoBackgroundColor = "102:0:0:0"; // Default: semi-transparent black
 
-        }
-
-    }
+    @Expose
+    @ConfigOption(name = "Edit MLF Info Position", desc = "Adjust the MLF info HUD position visually", subcategoryId = 1)
+    @ConfigEditorButton(runnableId = "editMlfInfoPosition", buttonText = "Edit Position")
+    public static String editMlfInfoPositionButton = "";
 }

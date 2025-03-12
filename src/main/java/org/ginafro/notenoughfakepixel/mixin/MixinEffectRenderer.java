@@ -5,6 +5,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.block.state.IBlockState;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.config.features.QualityOfLife;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -18,7 +19,7 @@ public abstract class MixinEffectRenderer {
      */
     @Inject(method = "addBlockDestroyEffects", at = @At("HEAD"), cancellable = true)
     public void onAddBlockDestroyEffects(BlockPos pos, IBlockState state, CallbackInfo ci) {
-        if (Configuration.qolHideBlockBreakingParticles) {
+        if (QualityOfLife.qolHideBlockBreakingParticles) {
             ci.cancel();
         }
     }
@@ -28,7 +29,7 @@ public abstract class MixinEffectRenderer {
      */
     @Inject(method = "addBlockHitEffects", at = @At("HEAD"), cancellable = true)
     public void onAddBlockHitEffects(BlockPos pos, EnumFacing side, CallbackInfo ci) {
-        if (Configuration.qolHideBlockBreakingParticles) {
+        if (QualityOfLife.qolHideBlockBreakingParticles) {
             ci.cancel();
         }
     }

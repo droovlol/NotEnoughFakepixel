@@ -50,7 +50,7 @@ public class ChocolateFactory {
     @SubscribeEvent
     public void onRenderLast(RenderWorldLastEvent event) {
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
-        if (!Configuration.chocolateChocolateEggWaypoints) return;
+        if (!org.ginafro.notenoughfakepixel.config.features.ChocolateFactory.chocolateChocolateEggWaypoints) return;
         checkForEggs();
         drawWaypoints(event.partialTicks);
         drawTags(event.partialTicks);
@@ -58,7 +58,7 @@ public class ChocolateFactory {
 
     @SubscribeEvent()
     public void onGuiOpen(GuiScreenEvent.BackgroundDrawnEvent event) {
-        if (!Configuration.chocolateChocolateShowBestUpgrade || !(event.gui instanceof GuiChest)) return;
+        if (!org.ginafro.notenoughfakepixel.config.features.ChocolateFactory.chocolateChocolateShowBestUpgrade || !(event.gui instanceof GuiChest)) return;
 
         TreeMap<Float, Slot> upgradeCosts = new TreeMap<>();
         GuiChest chest = (GuiChest) event.gui;
@@ -91,7 +91,7 @@ public class ChocolateFactory {
 
     @SubscribeEvent
     public void onChat(@NotNull ClientChatReceivedEvent e){
-        if (!Configuration.chocolateChocolateEggWaypoints) return;
+        if (!org.ginafro.notenoughfakepixel.config.features.ChocolateFactory.chocolateChocolateEggWaypoints) return;
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
         if (ChatUtils.middleBar.matcher(e.message.getFormattedText()).matches()) return;
         Matcher matcher = Pattern.compile("HOPPITY'S HUNT You found").matcher(e.message.getUnformattedText());
@@ -118,7 +118,7 @@ public class ChocolateFactory {
 
     @SubscribeEvent()
     public void onWorldUnload(WorldEvent.Unload event) {
-        if (Configuration.chocolateChocolateEggWaypoints) waypoints.clear();
+        if (org.ginafro.notenoughfakepixel.config.features.ChocolateFactory.chocolateChocolateEggWaypoints) waypoints.clear();
     }
 
     private void checkForEggs() {
@@ -153,7 +153,7 @@ public class ChocolateFactory {
         double viewerZ = viewer.lastTickPosZ + (viewer.posZ - viewer.lastTickPosZ) * partialTicks;
         for (Waypoint waypoint : waypoints) {
             if (waypoint == null || waypoint.isHidden()) continue;
-            Color colorDrawWaypoint = Configuration.chocolateChocolateEggWaypointsColor.toJavaColor();
+            Color colorDrawWaypoint = ColorUtils.getColor(org.ginafro.notenoughfakepixel.config.features.ChocolateFactory.chocolateChocolateEggWaypointsColor);
             colorDrawWaypoint = new Color(colorDrawWaypoint.getRed(), colorDrawWaypoint.getGreen(), colorDrawWaypoint.getBlue(), 150);
             AxisAlignedBB bb = new AxisAlignedBB(
                     waypoint.getCoordinates()[0] - viewerX,

@@ -13,8 +13,10 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.events.PacketWriteEvent;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
+import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 
@@ -53,7 +55,7 @@ public class ThirdDeviceSolver {
     // Cancel click when sea lantern behind
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPacket(PacketWriteEvent event) {
-        if (!Configuration.dungeonsThirdDeviceSolver) return;
+        if (!Dungeons.dungeonsThirdDeviceSolver) return;
         if (!DungeonManager.checkEssentialsF7()) return;
 
         if (event.packet instanceof C02PacketUseEntity) {
@@ -85,7 +87,7 @@ public class ThirdDeviceSolver {
 
     @SubscribeEvent
     public void onRenderLast(RenderWorldLastEvent event) {
-        if (!Configuration.dungeonsThirdDeviceSolver) return;
+        if (!Dungeons.dungeonsThirdDeviceSolver) return;
         if (!DungeonManager.checkEssentialsF7()) return;
 
         mc.theWorld.loadedEntityList.forEach(entity -> {
@@ -98,8 +100,8 @@ public class ThirdDeviceSolver {
 
                 // Determine block color
                 Color color = mc.theWorld.getBlockState(pos).getBlock() instanceof BlockSeaLantern
-                        ? new Color(Configuration.dungeonsCorrectColor.getRed(), Configuration.dungeonsCorrectColor.getGreen(), Configuration.dungeonsCorrectColor.getBlue(), 150)
-                        : new Color(Configuration.dungeonsAlternativeColor.getRed(), Configuration.dungeonsAlternativeColor.getGreen(), Configuration.dungeonsAlternativeColor.getBlue(), 150);
+                        ? ColorUtils.getColor(Dungeons.dungeonsCorrectColor)
+                        : ColorUtils.getColor(Dungeons.dungeonsAlternativeColor);
 
                 // Highlight the block
                 RenderUtils.highlightBlock(pos, color, false, event.partialTicks);
@@ -117,9 +119,9 @@ public class ThirdDeviceSolver {
 
                     // Display clicks needed
                     if (clicksNeeded == 0) {
-                        RenderUtils.drawTag(String.valueOf(clicksNeeded), renderPos, new Color(Configuration.dungeonsCorrectColor.getRed(), Configuration.dungeonsCorrectColor.getGreen(), Configuration.dungeonsCorrectColor.getBlue(), 200), event.partialTicks);
+                        RenderUtils.drawTag(String.valueOf(clicksNeeded), renderPos, ColorUtils.getColor(Dungeons.dungeonsCorrectColor), event.partialTicks);
                     } else {
-                        RenderUtils.drawTag(String.valueOf(clicksNeeded), renderPos, new Color(Configuration.dungeonsAlternativeColor.getRed(), Configuration.dungeonsAlternativeColor.getGreen(), Configuration.dungeonsAlternativeColor.getBlue(), 200), event.partialTicks);
+                        RenderUtils.drawTag(String.valueOf(clicksNeeded), renderPos, ColorUtils.getColor(Dungeons.dungeonsAlternativeColor), event.partialTicks);
                     }
                 }
             }

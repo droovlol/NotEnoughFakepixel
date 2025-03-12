@@ -1,12 +1,12 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.qol;
 
-import cc.polyfrost.oneconfig.config.core.OneColor;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import com.mojang.util.QueueLogAppender;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockSkull;
 import net.minecraft.client.Minecraft;
@@ -27,11 +27,15 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.features.QualityOfLife;
+import org.ginafro.notenoughfakepixel.config.gui.core.ChromaColour;
+import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.FileUtils;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.variables.Gamemode;
 import org.ginafro.notenoughfakepixel.variables.Location;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.*;
@@ -44,7 +48,7 @@ public class FairySouls {
     @SubscribeEvent
     public void onRender(RenderWorldLastEvent e){
         if (ScoreboardUtils.currentGamemode != Gamemode.SKYBLOCK) return;
-        if (!Configuration.fairySoulWaypoints) return;
+        if (!QualityOfLife.fairySoulWaypoints) return;
         Location currentIsland = ScoreboardUtils.currentLocation;
         List<String> souls = new ArrayList<>();
             if (currentIsland == Location.HUB) {
@@ -102,11 +106,10 @@ public class FairySouls {
                     y - viewerY + 256,
                     z  + 0.8 - viewerZ
             ).expand(0.01f, 0.01f, 0.01f);
-            OneColor c = Configuration.fairySoulWaypointsColor;
-            c.setAlpha(102);
-            RenderUtils.highlightBlock(new BlockPos(x, y, z), c.toJavaColor(), true, e.partialTicks);
+            Color c = ColorUtils.getColor(QualityOfLife.fairySoulWaypointsColor);
+            RenderUtils.highlightBlock(new BlockPos(x, y, z), c, true, e.partialTicks);
             GlStateManager.disableCull();
-            Color fairySoulC = c.toJavaColor();
+            Color fairySoulC = ColorUtils.getColor(QualityOfLife.fairySoulWaypointsColor);
             Color fairySoulColor = new Color(fairySoulC.getRed(), fairySoulC.getGreen(), fairySoulC.getBlue(), 102);
             GlStateManager.disableDepth();
             RenderUtils.renderBeaconBeam(new BlockPos(x, y, z),fairySoulColor.getRGB(),1.0f,e.partialTicks);

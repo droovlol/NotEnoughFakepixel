@@ -12,6 +12,7 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.utils.TablistParser;
 import org.ginafro.notenoughfakepixel.variables.Location;
@@ -29,7 +30,7 @@ public class AutoReadyDungeon {
     @SubscribeEvent()
     public void onGuiOpen(GuiScreenEvent.BackgroundDrawnEvent event) {
         if (clicked) return;
-        if (!Configuration.dungeonsAutoReady) return;
+        if (!Dungeons.dungeonsAutoReady) return;
         if (!ScoreboardUtils.currentLocation.isDungeon()) return;
         if (event.gui == null) return;
         if (!(event.gui instanceof GuiChest)) return;
@@ -58,7 +59,7 @@ public class AutoReadyDungeon {
                     String itemName = item.getDisplayName();
                     // Checking if the skull is the player's name / nicked name
                     if (itemName.contains(Minecraft.getMinecraft().thePlayer.getName()) ||
-                            itemName.contains(Configuration.dungeonsAutoReadyName)) {
+                            itemName.contains(Dungeons.dungeonsAutoReadyName)) {
 
                         // Checking if the glass pane below the skull exists
                         ItemStack itemReady = containerChest.getSlot(slot.getSlotIndex() + 9).getStack();
@@ -98,11 +99,11 @@ public class AutoReadyDungeon {
 
         Matcher matcher = nickedNamePattern.matcher(e.message.getFormattedText());
         if (matcher.matches()) {
-            Configuration.dungeonsAutoReadyName = matcher.group("name");
+            Dungeons.dungeonsAutoReadyName = matcher.group("name");
         }
 
         if (e.message.getFormattedText().startsWith("§r§aYou have successfully reset your nickname!")){
-            Configuration.dungeonsAutoReadyName = "example name";
+            Dungeons.dungeonsAutoReadyName = "example name";
         }
     }
 

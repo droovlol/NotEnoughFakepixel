@@ -14,20 +14,17 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.config.features.Slayer;
+import org.ginafro.notenoughfakepixel.config.gui.core.ChromaColour;
 import org.ginafro.notenoughfakepixel.events.Handlers.ScoreboardHandler;
 import org.ginafro.notenoughfakepixel.events.PacketReadEvent;
-import org.ginafro.notenoughfakepixel.utils.RenderUtils;
-import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
-import org.ginafro.notenoughfakepixel.utils.SoundUtils;
-import org.ginafro.notenoughfakepixel.utils.Waypoint;
+import org.ginafro.notenoughfakepixel.utils.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import static org.ginafro.notenoughfakepixel.Configuration.slayerBeaconColor;
 
 public class VoidgloomSeraph {
     ArrayList<EntityFallingBlock> fallingBlocks = new ArrayList<>();
@@ -88,7 +85,7 @@ public class VoidgloomSeraph {
     @SubscribeEvent
     public void onRenderLast(RenderWorldLastEvent event) {
         if (checkEssentials()) return;
-        if (!Configuration.slayerShowBeaconPath) return;
+        if (!Slayer.slayerShowBeaconPath) return;
         if (isBoss) {
         drawWaypoints(event.partialTicks);
         }
@@ -97,7 +94,7 @@ public class VoidgloomSeraph {
     @SubscribeEvent
     public void onSoundPacketReceive(PacketReadEvent event) {
         if (checkEssentials()) return;
-        if (!Configuration.slayerShowBeaconPath) return;
+        if (!Slayer.slayerShowBeaconPath) return;
         Packet packet = event.packet;
         if (packet instanceof S29PacketSoundEffect) {
             S29PacketSoundEffect soundEffect = (S29PacketSoundEffect) packet;
@@ -123,7 +120,7 @@ public class VoidgloomSeraph {
 
     @SubscribeEvent()
     public void onWorldUnload(WorldEvent.Unload event) {
-        if (Configuration.slayerShowBeaconPath) {
+        if (Slayer.slayerShowBeaconPath) {
             fallingBlocks.clear();
             waypoints.clear();
         }
@@ -136,7 +133,7 @@ public class VoidgloomSeraph {
         double viewerZ = viewer.lastTickPosZ + (viewer.posZ - viewer.lastTickPosZ) * partialTicks;
         for (Waypoint waypoint : waypoints) {
             if (waypoint == null || waypoint.isHidden()) continue;
-            Color colorDrawWaypoint = slayerBeaconColor.toJavaColor();
+            Color colorDrawWaypoint = ColorUtils.getColor(Slayer.slayerBeaconColor);
             colorDrawWaypoint = new Color(colorDrawWaypoint.getRed(), colorDrawWaypoint.getGreen(), colorDrawWaypoint.getBlue(), 150);
             AxisAlignedBB bb = new AxisAlignedBB(
                     waypoint.getCoordinates()[0] - viewerX,
@@ -159,10 +156,9 @@ public class VoidgloomSeraph {
                 (!ScoreboardUtils.currentLocation.isEnd());
     }
 
-
     @SubscribeEvent
     public void onChat(ClientChatReceivedEvent event) {
-        if (Configuration.slayerShowBeaconPath && ScoreboardUtils.currentGamemode.isSkyblock() && ScoreboardUtils.currentLocation.isEnd()) {
+        if (Slayer.slayerShowBeaconPath && ScoreboardUtils.currentGamemode.isSkyblock() && ScoreboardUtils.currentLocation.isEnd()) {
             String message = StringUtils.stripControlCodes(event.message.getUnformattedText());
 
             if (message.contains("SLAYER QUEST COMPLETE!")) {

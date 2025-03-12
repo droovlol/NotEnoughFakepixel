@@ -6,6 +6,7 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
 
 public class DungeonClearedNotifier {
@@ -23,7 +24,7 @@ public class DungeonClearedNotifier {
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent e) {
-        if (!Configuration.dungeonsClearedNotifier ||
+        if (!Dungeons.dungeonsClearedNotifier ||
                 !DungeonManager.checkEssentials() ||
                 e.phase == TickEvent.Phase.END ||
                 Minecraft.getMinecraft().thePlayer == null ||

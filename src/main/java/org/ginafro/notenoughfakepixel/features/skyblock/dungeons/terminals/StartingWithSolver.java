@@ -16,7 +16,9 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
+import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.lwjgl.input.Mouse;
 
@@ -49,7 +51,7 @@ public class StartingWithSolver {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onDrawScreenPre(GuiScreenEvent.DrawScreenEvent.Pre event) {
-        if (!Configuration.dungeonsTerminalStartsWithSolver) return;
+        if (!Dungeons.dungeonsTerminalStartsWithSolver) return;
         if (!(event.gui instanceof GuiChest)) return;
         if (!DungeonManager.checkEssentialsF7()) return;
 
@@ -64,14 +66,14 @@ public class StartingWithSolver {
                 .getUnformattedText()
                 .trim();
 
-        if (Configuration.dungeonsCustomGuiStartsWith && displayName.contains("What starts with")) {
+        if (Dungeons.dungeonsCustomGuiStartsWith && displayName.contains("What starts with")) {
             event.setCanceled(true);
         }
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onDrawScreenPost(GuiScreenEvent.DrawScreenEvent.Post event) {
-        if (!Configuration.dungeonsTerminalStartsWithSolver) return;
+        if (!Dungeons.dungeonsTerminalStartsWithSolver) return;
         if (!DungeonManager.checkEssentialsF7()) return;
         if (!(event.gui instanceof GuiChest)) return;
 
@@ -92,7 +94,7 @@ public class StartingWithSolver {
         int screenWidth = sr.getScaledWidth();
         int screenHeight = sr.getScaledHeight();
 
-        if (Configuration.dungeonsCustomGuiStartsWith) {
+        if (Dungeons.dungeonsCustomGuiStartsWith) {
             final int INNER_COLUMNS = 7;
             final int INNER_ROWS = 4;
 
@@ -120,7 +122,7 @@ public class StartingWithSolver {
             }
 
             GlStateManager.pushMatrix();
-            float scale = Configuration.dungeonsTerminalsScale;
+            float scale = Dungeons.dungeonsTerminalsScale;
             int guiWidth = (int) (INNER_COLUMNS * SLOT_SIZE * scale);
             int guiHeight = (int) (INNER_ROWS * SLOT_SIZE * scale);
 
@@ -157,7 +159,7 @@ public class StartingWithSolver {
                 drawRect(x + 1, y + 1,
                         x + SLOT_SIZE - 1,
                         y + SLOT_SIZE - 1,
-                        Configuration.dungeonsCorrectColor.getRGB()
+                        ColorUtils.getColor(Dungeons.dungeonsCorrectColor).getRGB()
                 );
             }
             GlStateManager.popMatrix();
@@ -166,7 +168,7 @@ public class StartingWithSolver {
 
     @SubscribeEvent
     public void onGuiRender(GuiScreenEvent.BackgroundDrawnEvent e) {
-        if (!Configuration.dungeonsTerminalStartsWithSolver) return;
+        if (!Dungeons.dungeonsTerminalStartsWithSolver) return;
         if (!DungeonManager.checkEssentialsF7()) return;
         if (!(e.gui instanceof GuiChest)) return;
 
@@ -190,23 +192,23 @@ public class StartingWithSolver {
                 if (item == null) continue;
 
                 if (containerChest.inventorySlots.indexOf(slot) == 49) {
-                    if (!Configuration.dungeonsTerminalHideIncorrect) continue;
+                    if (!Dungeons.dungeonsTerminalHideIncorrect) continue;
                     item.setItem(containerChest.inventorySlots.get(0).getStack().getItem());
                     item.getItem().setDamage(item, 15);
                     continue;
                 }
 
                 if (item.isItemEnchanted()) {
-                    if (!Configuration.dungeonsTerminalHideIncorrect) continue;
+                    if (!Dungeons.dungeonsTerminalHideIncorrect) continue;
                     slot.getStack().setItem(containerChest.inventorySlots.get(0).getStack().getItem());
                     slot.getStack().getItem().setDamage(slot.getStack(), 15);
                     continue;
                 }
 
                 if (StringUtils.stripControlCodes(item.getDisplayName()).charAt(0) == letter) {
-                    RenderUtils.drawOnSlot(chest.inventorySlots.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, Configuration.dungeonsCorrectColor.getRGB());
+                    RenderUtils.drawOnSlot(chest.inventorySlots.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, ColorUtils.getColor(Dungeons.dungeonsCorrectColor).getRGB());
                 } else {
-                    if (!Configuration.dungeonsTerminalHideIncorrect) continue;
+                    if (!Dungeons.dungeonsTerminalHideIncorrect) continue;
                     if (Block.getBlockFromItem(slot.getStack().getItem()) instanceof BlockStainedGlassPane) {
                         if (slot.getStack().getMetadata() != 15) {
                             slot.getStack().getItem().setDamage(slot.getStack(), 15);
@@ -223,8 +225,8 @@ public class StartingWithSolver {
     @SubscribeEvent
     public void onMouseClick(GuiScreenEvent.MouseInputEvent.Pre event) {
         if (!DungeonManager.checkEssentialsF7()) return;
-        if (!Configuration.dungeonsPreventMissclicks) return;
-        if (!Configuration.dungeonsTerminalStartsWithSolver) return;
+        if (!Dungeons.dungeonsPreventMissclicks) return;
+        if (!Dungeons.dungeonsTerminalStartsWithSolver) return;
         if (!Mouse.getEventButtonState()) return;
 
         Minecraft mc = Minecraft.getMinecraft();
@@ -239,9 +241,9 @@ public class StartingWithSolver {
         String title = containerChest.getLowerChestInventory().getDisplayName().getUnformattedText();
         if (!title.contains("What starts with")) return;
 
-        if (Configuration.dungeonsCustomGuiStartsWith) {
+        if (Dungeons.dungeonsCustomGuiStartsWith) {
             ScaledResolution sr = new ScaledResolution(mc);
-            float scale = Configuration.dungeonsTerminalsScale;
+            float scale = Dungeons.dungeonsTerminalsScale;
             int button = Mouse.getEventButton();
             if (button != 0) return; // Only handle left clicks
 

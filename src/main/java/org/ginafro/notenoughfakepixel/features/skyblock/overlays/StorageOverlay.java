@@ -192,9 +192,9 @@ public class StorageOverlay extends GuiScreen {
             if(gc instanceof GuiInventory) return;
             if (gc.inventorySlots.getSlot(4).getStack() != null) {
                 if (gc.inventorySlots.getSlot(4).getStack().getDisplayName().contains("Ender")) {
-                    if (Configuration.storageOverlay) {
+                   // if (Configuration.storageOverlay) {
                         Minecraft.getMinecraft().displayGuiScreen(new StorageOverlay(e.gui));
-                    }
+                  //  }
                 }
             }
             }

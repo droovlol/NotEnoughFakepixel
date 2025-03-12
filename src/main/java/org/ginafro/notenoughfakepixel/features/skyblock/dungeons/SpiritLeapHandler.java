@@ -25,6 +25,7 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -116,7 +117,7 @@ public class SpiritLeapHandler {
                         .getUnformattedText()
                         .trim();
 
-                if (Configuration.dungeonsSpiritLeapGUI && ScoreboardUtils.currentLocation.isDungeon() && "Spirit Leap".equals(displayName)) {
+                if (Dungeons.dungeonsSpiritLeapGUI && ScoreboardUtils.currentLocation.isDungeon() && "Spirit Leap".equals(displayName)) {
                     playerDataList.clear();
                 }
             }
@@ -133,7 +134,7 @@ public class SpiritLeapHandler {
                         .getUnformattedText()
                         .trim();
 
-                if (Configuration.dungeonsSpiritLeapGUI && ScoreboardUtils.currentLocation.isDungeon() && "Spirit Leap".equals(displayName)) {
+                if (Dungeons.dungeonsSpiritLeapGUI && ScoreboardUtils.currentLocation.isDungeon() && "Spirit Leap".equals(displayName)) {
                     event.setCanceled(true);
 
                     if (playerDataList.isEmpty()) {
@@ -275,7 +276,7 @@ public class SpiritLeapHandler {
                         .getUnformattedText()
                         .trim();
 
-                if (Configuration.dungeonsSpiritLeapGUI && ScoreboardUtils.currentLocation.isDungeon() && "Spirit Leap".equals(displayName)) {
+                if (Dungeons.dungeonsSpiritLeapGUI && ScoreboardUtils.currentLocation.isDungeon() && "Spirit Leap".equals(displayName)) {
                     int button = Mouse.getEventButton();
                     boolean pressed = Mouse.getEventButtonState();
 
@@ -294,7 +295,7 @@ public class SpiritLeapHandler {
                                         0,
                                         0,
                                         mc.thePlayer);
-                                if (Configuration.dungeonsLeapAnnounce) {
+                                if (Dungeons.dungeonsLeapAnnounce) {
                                     String command = String.format("/pc Leaped to %s!", pd.playerName);
                                     mc.thePlayer.sendChatMessage(command);
                                 }

@@ -1,19 +1,12 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.dungeons;
 
-
-import cc.polyfrost.oneconfig.events.event.HudRenderEvent;
-import cc.polyfrost.oneconfig.libs.eventbus.Subscribe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemMap;
-import net.minecraft.item.ItemSkull;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
@@ -22,164 +15,159 @@ import net.minecraft.world.storage.MapData;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.Configuration;
-import org.ginafro.notenoughfakepixel.utils.InventoryUtils;
-import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
-import net.minecraft.client.gui.MapItemRenderer;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.*;
-import java.util.List;
+import java.awt.Color;
+import java.util.Map;
 
 public class DungeonsMap {
 
-    Tessellator tessellator;
-    WorldRenderer worldrenderer;
     private static float playerMarkerScale = 1.4F;
     private static float othersMarkerScale = 1.25F;
-    double playerPositionX, playerPositionY = 0;
-    ArrayList<String> teammates = new ArrayList<>();
-    //boolean firstTime = true;
+    private double playerPositionX, playerPositionY = 0;
     private static final Color[] colors = {Color.YELLOW, Color.BLUE, Color.RED, Color.ORANGE};
-    private ResourceLocation mapIconsTexture = new ResourceLocation("textures/map/map_icons.png");
-    Minecraft mc = Minecraft.getMinecraft();
+    private static final ResourceLocation mapIconsTexture = new ResourceLocation("textures/map/map_icons.png");
+    private final Minecraft mc = Minecraft.getMinecraft();
     private boolean finalScreen = false;
+    private final Tessellator tessellator = Tessellator.getInstance();
+    private final WorldRenderer worldrenderer = tessellator.getWorldRenderer();
 
-    float mapBorderWidth = 2.0F;
-    public DungeonsMap() {
-        //marker = new DungeonsMapMarker(mc.thePlayer);
-        tessellator = Tessellator.getInstance();
-        worldrenderer = tessellator.getWorldRenderer();
-    }
+    public DungeonsMap() {}
 
-    @Subscribe
-    public void onRender(HudRenderEvent e){
-        if(!Configuration.dungeonsMap) return;
-        if(!DungeonManager.checkEssentials()) return;
+    @SubscribeEvent
+    public void onRender(RenderGameOverlayEvent.Post event) {
+        if (event.type != RenderGameOverlayEvent.ElementType.ALL) return;
+        if (!Dungeons.dungeonsMap) return;
+        if (!DungeonManager.checkEssentials()) return;
+
         ItemStack map = mc.thePlayer.inventory.getStackInSlot(8);
-        if(map == null && map.getItem() == null) return;
-        if(map.getItem() instanceof ItemMap){
-            ItemMap map1 = (ItemMap) map.getItem();
-            MapData data = map1.getMapData(map , mc.theWorld);
-            if (data != null) {
-                //if (firstTime) {
-                    //firstTime = false;
-                    //teammates = getTeammates();
-                //}
-                drawMap(data);
-                drawBorderMap();
-                drawMarkers(data.mapDecorations);
-            }
+        if (map == null || !(map.getItem() instanceof ItemMap)) return;
+
+        MapData data = ((ItemMap) map.getItem()).getMapData(map, mc.theWorld);
+        if (data != null) {
+            drawMap(data);
+            drawBorderMap();
+            drawMarkers(data.mapDecorations);
         }
     }
 
     @SubscribeEvent
     public void onChatReceived(ClientChatReceivedEvent event) {
         if (!DungeonManager.checkEssentials()) return;
-        if (event.message.getUnformattedText().contains("> EXTRA STATS <")) {
+        String message = event.message.getUnformattedText();
+        if (message.contains("> EXTRA STATS <")) {
             finalScreen = true;
-        } else if (event.message.getUnformattedText().equals("[NPC] Mort: Good luck.")) {
+        } else if (message.equals("[NPC] Mort: Good luck.")) {
             finalScreen = false;
         }
     }
 
-    @SubscribeEvent()
+    @SubscribeEvent
     public void onWorldLoad(WorldEvent.Load event) {
         if (!DungeonManager.checkEssentials()) return;
         finalScreen = false;
     }
 
-    @SubscribeEvent()
+    @SubscribeEvent
     public void onWorldUnload(WorldEvent.Unload event) {
         if (!DungeonManager.checkEssentials()) return;
         finalScreen = false;
     }
 
-    private void drawMap(MapData data) {
+    public void drawMap(MapData data) {
         GlStateManager.pushMatrix();
-        GlStateManager.scale(Configuration.dungeonsMapScale, Configuration.dungeonsMapScale, Configuration.dungeonsMapScale);
+        ScaledResolution sr = new ScaledResolution(mc);
+        float x = Dungeons.dungeonsMapOffsetX;
+        float y = Dungeons.dungeonsMapOffsetY;
 
-        // Define the scissor area based on known map position
-        float x1 = (Configuration.dungeonsMapOffsetX) * Configuration.dungeonsMapScale;
-        float y1 = (Configuration.dungeonsMapOffsetY) * Configuration.dungeonsMapScale;
-        float x2 = x1 + (128 * Configuration.dungeonsMapScale);
-        float y2 = y1 + (128 * Configuration.dungeonsMapScale);
+        float x1 = x * Dungeons.dungeonsMapScale;
+        float y1 = y * Dungeons.dungeonsMapScale;
+        float x2 = x1 + (128 * Dungeons.dungeonsMapScale);
+        float y2 = y1 + (128 * Dungeons.dungeonsMapScale);
 
-        // Convert coordinates for OpenGL's bottom-left origin
-        ScaledResolution scaledResolution = new ScaledResolution(mc);
-        int scaleFactor = scaledResolution.getScaleFactor();
-
+        int scaleFactor = sr.getScaleFactor();
         int scissorX = (int) (x1 * scaleFactor);
         int scissorY = (int) (y1 * scaleFactor);
         int scissorWidth = (int) ((x2 - x1) * scaleFactor);
         int scissorHeight = (int) ((y2 - y1) * scaleFactor);
 
-        // Enable scissor test (this will clip everything *outside* the 128x128 area)
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
         GL11.glScissor(scissorX, mc.displayHeight - (scissorY + scissorHeight), scissorWidth, scissorHeight);
 
-        // Move map to the correct screen position
-        GlStateManager.translate(Configuration.dungeonsMapOffsetX, Configuration.dungeonsMapOffsetY, 0);
-        if (Configuration.dungeonsRotateMap && !finalScreen) {
-            float angle = -MathHelper.wrapAngleTo180_float(mc.thePlayer.rotationYaw);
-            GlStateManager.translate(64, 64, 0);
-            GlStateManager.rotate(angle + 180, 0, 0, 1);
-            GlStateManager.translate(-64, -64, 0);
-            float translateX = 64.0F - (float) playerPositionX;
-            float translateY = 64.0F - (float) playerPositionY;
-            GlStateManager.translate(translateX, translateY, 0);
+        GlStateManager.translate(x, y, 0);
+        GlStateManager.scale(Dungeons.dungeonsMapScale, Dungeons.dungeonsMapScale, Dungeons.dungeonsMapScale);
+
+        if (data == null) {
+            // Draw a gray placeholder for position editor
+            GlStateManager.color(0.5f, 0.5f, 0.5f, 1.0f);
+            worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+            worldrenderer.pos(0, 0, 0).endVertex();
+            worldrenderer.pos(128, 0, 0).endVertex();
+            worldrenderer.pos(128, 128, 0).endVertex();
+            worldrenderer.pos(0, 128, 0).endVertex();
+            tessellator.draw();
+            GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+        } else {
+            if (Dungeons.dungeonsRotateMap && !finalScreen) {
+                float angle = -MathHelper.wrapAngleTo180_float(mc.thePlayer.rotationYaw);
+                GlStateManager.translate(64, 64, 0);
+                GlStateManager.rotate(angle + 180, 0, 0, 1);
+                GlStateManager.translate(-64, -64, 0);
+                float translateX = 64.0F - (float) playerPositionX;
+                float translateY = 64.0F - (float) playerPositionY;
+                GlStateManager.translate(translateX, translateY, 0);
+            }
+            mc.entityRenderer.getMapItemRenderer().renderMap(data, false);
         }
 
-        // Render the map (clipped to scissor area)
-        mc.entityRenderer.getMapItemRenderer().renderMap(data, false);
-
-        // Disable scissor test after rendering
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
         GlStateManager.popMatrix();
     }
 
     private void drawBorderMap() {
         GlStateManager.pushMatrix();
-        GlStateManager.disableTexture2D(); // Disable texture to draw plain colors
-        GlStateManager.color(Configuration.dungeonsMapBorderColor.getRed()/255f, Configuration.dungeonsMapBorderColor.getGreen()/255f, Configuration.dungeonsMapBorderColor.getBlue()/255f, 1.0F); // Set border color (white)
-        GL11.glLineWidth(mapBorderWidth); // Border thickness
+        ScaledResolution sr = new ScaledResolution(mc);
+        float x = Dungeons.dungeonsMapOffsetX;
+        float y = Dungeons.dungeonsMapOffsetY;
 
-        Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        GlStateManager.disableTexture2D();
+        String[] colorParts = Dungeons.dungeonsMapBorderColor.split(":");
+        float alpha = Float.parseFloat(colorParts[0]) / 255f;
+        float red = Float.parseFloat(colorParts[1]) / 255f;
+        float green = Float.parseFloat(colorParts[2]) / 255f;
+        float blue = Float.parseFloat(colorParts[3]) / 255f;
+        GlStateManager.color(red, green, blue, alpha);
+        GL11.glLineWidth(2.0f); // Hardcoded for simplicity, or add to config if desired
+
+        float x1 = x;
+        float y1 = y;
+        float x2 = x1 + (128 * Dungeons.dungeonsMapScale);
+        float y2 = y1 + (128 * Dungeons.dungeonsMapScale);
 
         worldrenderer.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION);
-
-        float x1 = (Configuration.dungeonsMapOffsetX) * Configuration.dungeonsMapScale;
-        float y1 = (Configuration.dungeonsMapOffsetY) * Configuration.dungeonsMapScale;
-        float x2 = x1 + (128 * Configuration.dungeonsMapScale);
-        float y2 = y1 + (128 * Configuration.dungeonsMapScale);
-
-        worldrenderer.pos(x1, y1, 0.0D).endVertex(); // Top-left
-        worldrenderer.pos(x2, y1, 0.0D).endVertex(); // Top-right
-        worldrenderer.pos(x2, y2, 0.0D).endVertex(); // Bottom-right
-        worldrenderer.pos(x1, y2, 0.0D).endVertex(); // Bottom-left
-
+        worldrenderer.pos(x1, y1, 0.0D).endVertex();
+        worldrenderer.pos(x2, y1, 0.0D).endVertex();
+        worldrenderer.pos(x2, y2, 0.0D).endVertex();
+        worldrenderer.pos(x1, y2, 0.0D).endVertex();
         tessellator.draw();
 
-        GlStateManager.color(1.0F,1.0F,1.0F, 1.0F); // Set border color (white)
-        GlStateManager.enableTexture2D(); // Re-enable textures
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.enableTexture2D();
         GlStateManager.popMatrix();
     }
 
-
-
     private void drawMarkers(Map<String, Vec4b> mapDecorations) {
-        ScaledResolution scaledResolution = new ScaledResolution(mc);
-        int scaleFactor = scaledResolution.getScaleFactor();
+        ScaledResolution sr = new ScaledResolution(mc);
+        int scaleFactor = sr.getScaleFactor();
+        float x = Dungeons.dungeonsMapOffsetX;
+        float y = Dungeons.dungeonsMapOffsetY;
 
-        // Define scissor region based on configurations
-        float x1 = (Configuration.dungeonsMapOffsetX) * Configuration.dungeonsMapScale;
-        float y1 = (Configuration.dungeonsMapOffsetY) * Configuration.dungeonsMapScale;
-        float x2 = x1 + (128 * Configuration.dungeonsMapScale);
-        float y2 = y1 + (128 * Configuration.dungeonsMapScale);
+        float x1 = x * Dungeons.dungeonsMapScale;
+        float y1 = y * Dungeons.dungeonsMapScale;
+        float x2 = x1 + (128 * Dungeons.dungeonsMapScale);
+        float y2 = y1 + (128 * Dungeons.dungeonsMapScale);
 
         int scissorX = (int) (x1 * scaleFactor);
         int scissorY = (int) (y1 * scaleFactor);
@@ -193,7 +181,7 @@ public class DungeonsMap {
         for (Map.Entry<String, Vec4b> entry : mapDecorations.entrySet()) {
             GlStateManager.pushMatrix();
             byte iconType = entry.getValue().func_176110_a();
-            if (iconType == 3) iconType = 0; // Convertir en marcador blanco para aplicar color
+            if (iconType == 3) iconType = 0;
 
             double markerX = entry.getValue().func_176112_b() / 2.0F + 64.0F;
             double markerY = entry.getValue().func_176113_c() / 2.0F + 64.0F;
@@ -204,40 +192,35 @@ public class DungeonsMap {
                 playerPositionY = markerY;
             }
 
-            if (!Configuration.dungeonsRotateMap || finalScreen) {
-                GlStateManager.translate((Configuration.dungeonsMapOffsetX + markerX) * Configuration.dungeonsMapScale,
-                        (Configuration.dungeonsMapOffsetY + markerY) * Configuration.dungeonsMapScale,
-                        0.0);
+            if (!Dungeons.dungeonsRotateMap || finalScreen) {
+                GlStateManager.translate((x + markerX) * Dungeons.dungeonsMapScale,
+                        (y + markerY) * Dungeons.dungeonsMapScale, 0.0);
             } else if (iconType == 1) {
-                GlStateManager.translate((Configuration.dungeonsMapOffsetX + 64.0F) * Configuration.dungeonsMapScale,
-                        (Configuration.dungeonsMapOffsetY + 64.0F) * Configuration.dungeonsMapScale,
-                        0.0);
+                GlStateManager.translate((x + 64.0F) * Dungeons.dungeonsMapScale,
+                        (y + 64.0F) * Dungeons.dungeonsMapScale, 0.0);
             } else if (iconType == 0) {
                 float relativeX = (float) (markerX - 64);
                 float relativeY = (float) (markerY - 64);
                 relativeX += 64.0F - (float) playerPositionX;
                 relativeY += 64.0F - (float) playerPositionY;
-                float angleRad = (float) Math.toRadians(-MathHelper.wrapAngleTo180_float(mc.thePlayer.rotationYaw));
+                float angleRad = (float) Math.toRadians(-playerAngle);
                 float rotatedX = (float) (relativeX * Math.cos(angleRad) - relativeY * Math.sin(angleRad));
                 float rotatedY = (float) (relativeX * Math.sin(angleRad) + relativeY * Math.cos(angleRad));
 
-                GlStateManager.translate((Configuration.dungeonsMapOffsetX + 64.0F - rotatedX) * Configuration.dungeonsMapScale,
-                        (Configuration.dungeonsMapOffsetY + 64.0F - rotatedY) * Configuration.dungeonsMapScale,
-                        0.0);
+                GlStateManager.translate((x + 64.0F - rotatedX) * Dungeons.dungeonsMapScale,
+                        (y + 64.0F - rotatedY) * Dungeons.dungeonsMapScale, 0.0);
             }
 
             float angle = 180F;
-            if ((!Configuration.dungeonsRotateMap || finalScreen) && iconType == 1) angle = playerAngle;
+            if ((!Dungeons.dungeonsRotateMap || finalScreen) && iconType == 1) angle = playerAngle;
             if (iconType == 0) angle = (float) (entry.getValue().func_176111_d() * 360) / 16.0F;
-            if ((Configuration.dungeonsRotateMap && !finalScreen) && iconType == 0) angle = angle + 180 - playerAngle;
+            if (Dungeons.dungeonsRotateMap && !finalScreen && iconType == 0) angle = angle + 180 - playerAngle;
 
             GlStateManager.rotate(angle, 0.0F, 0.0F, 1.0F);
-            if (iconType == 1) GlStateManager.scale(Configuration.dungeonsMapScale * 4 * playerMarkerScale,
-                    Configuration.dungeonsMapScale * 4 * playerMarkerScale,
-                    3.0F * playerMarkerScale);
-            if (iconType == 0) GlStateManager.scale(Configuration.dungeonsMapScale * 4 * othersMarkerScale,
-                    Configuration.dungeonsMapScale * 4 * othersMarkerScale,
-                    3.0F * othersMarkerScale);
+            if (iconType == 1) GlStateManager.scale(Dungeons.dungeonsMapScale * 4 * playerMarkerScale,
+                    Dungeons.dungeonsMapScale * 4 * playerMarkerScale, 3.0F * playerMarkerScale);
+            if (iconType == 0) GlStateManager.scale(Dungeons.dungeonsMapScale * 4 * othersMarkerScale,
+                    Dungeons.dungeonsMapScale * 4 * othersMarkerScale, 3.0F * othersMarkerScale);
 
             float g = (float) (iconType % 4) / 4.0F;
             float h = (float) (iconType / 4) / 4.0F;
@@ -249,15 +232,14 @@ public class DungeonsMap {
 
             if (iconType == 0) {
                 switch (colorIndex) {
-                    case 0: GlStateManager.color(0.0F, 0.0F, 1.0F, 1.0F); break; // Azul
-                    case 1: GlStateManager.color(1.0F, 1.0F, 0.0F, 1.0F); break; // Amarillo
-                    case 2: GlStateManager.color(1.0F, 0.5F, 0.0F, 1.0F); break; // Naranja
-                    case 3: GlStateManager.color(1.0F, 0.0F, 0.0F, 1.0F); break; // Rojo
+                    case 0: GlStateManager.color(0.0F, 0.0F, 1.0F, 1.0F); break; // Blue
+                    case 1: GlStateManager.color(1.0F, 1.0F, 0.0F, 1.0F); break; // Yellow
+                    case 2: GlStateManager.color(1.0F, 0.5F, 0.0F, 1.0F); break; // Orange
+                    case 3: GlStateManager.color(1.0F, 0.0F, 0.0F, 1.0F); break; // Red
                 }
                 if (mapDecorations.size() > 1)
                     colorIndex = (colorIndex + 1) % (mapDecorations.size() - 1);
                 else colorIndex = 0;
-
             }
 
             worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
@@ -273,18 +255,4 @@ public class DungeonsMap {
         }
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
     }
-
-
-    /*private ArrayList<String> getTeammates() {
-        ArrayList<String> teammates = new ArrayList<>();
-        // Grab all the world player entities and try to correlate them to the map
-        for (EntityPlayer player : mc.theWorld.playerEntities) {
-            if (!Objects.equals(player.getName(), mc.thePlayer.getName()) &&
-                    !Objects.equals(player.getName(), "§e§lCLICK") &&
-                    !Objects.equals(player.getName(), "?")) teammates.add(player.getName());
-        }
-        Collections.sort(teammates);
-        //System.out.println(teammates);
-        return teammates;
-    }*/
 }

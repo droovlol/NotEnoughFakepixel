@@ -12,6 +12,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.utils.ChatUtils;
 import org.ginafro.notenoughfakepixel.utils.ItemUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
@@ -35,7 +36,7 @@ public class SalvageItemsSaver {
     @SubscribeEvent
     public void onGuiRender(GuiScreenEvent.BackgroundDrawnEvent event) {
         if (ScoreboardUtils.currentLocation != Location.DUNGEON_HUB) return;
-        if (!Configuration.dungeonsSalvageItemsPrevention) return;
+        if (!Dungeons.dungeonsSalvageItemsPrevention) return;
         if(event.gui instanceof GuiChest) {
             GuiChest chest = (GuiChest) event.gui;
             Container container = chest.inventorySlots;
@@ -55,7 +56,7 @@ public class SalvageItemsSaver {
     @SubscribeEvent
     public void onMouseClick(GuiScreenEvent.MouseInputEvent.Pre event) {
         if (ScoreboardUtils.currentLocation != Location.DUNGEON_HUB) return;
-        if (!Configuration.dungeonsSalvageItemsPrevention) return;
+        if (!Dungeons.dungeonsSalvageItemsPrevention) return;
         if (!Mouse.getEventButtonState()) return;
         if (!(Minecraft.getMinecraft().currentScreen instanceof GuiChest)) return; // Check if the current screen is a chest GUI
         GuiChest chestGui = (GuiChest) Minecraft.getMinecraft().currentScreen;

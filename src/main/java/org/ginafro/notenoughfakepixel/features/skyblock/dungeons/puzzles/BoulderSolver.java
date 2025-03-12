@@ -25,7 +25,7 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class BoulderSolver {
+public class BoulderSolver {/*
 
     private static final Minecraft mc = Minecraft.getMinecraft();
     public static BlockPos boulderChest = null;
@@ -324,5 +324,5 @@ public class BoulderSolver {
         GlStateManager.enableDepth();
         GlStateManager.disableBlend();
     }
-
+*/
 }

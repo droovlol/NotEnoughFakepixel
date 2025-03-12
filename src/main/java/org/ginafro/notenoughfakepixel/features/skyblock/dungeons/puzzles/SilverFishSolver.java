@@ -27,7 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-public class SilverFishSolver {
+public class SilverFishSolver {/*
 
     private static final Minecraft mc = Minecraft.getMinecraft();
     private static final List<Point> steps = new ArrayList<>();
@@ -190,12 +190,6 @@ public class SilverFishSolver {
         return null;
     }
 
-    /**
-     * This code was modified into returning an ArrayList and was taken under CC BY-SA 4.0
-     *
-     * @link https://stackoverflow.com/a/55271133
-     * @author ofekp
-     */
     private ArrayList<Point> solve(int[][] iceCave, int startX, int startY, int endX, int endY) {
         Point startPoint = new Point(startX, startY);
 
@@ -234,12 +228,7 @@ public class SilverFishSolver {
         return Lists.newArrayList();
     }
 
-    /**
-     * This code was modified to fit Minecraft and was taken under CC BY-SA 4.0
-     *
-     * @link https://stackoverflow.com/a/55271133
-     * @author ofekp
-     */
+
     private Point move(int[][] iceCave, Point[][] iceCaveColors, Point currPos, EnumFacing dir) {
         int x = (int) currPos.getX();
         int y = (int) currPos.getY();
@@ -265,5 +254,6 @@ public class SilverFishSolver {
 
         return new Point(x + i * diffX, y + i * diffY);
     }
+    */
 }
 

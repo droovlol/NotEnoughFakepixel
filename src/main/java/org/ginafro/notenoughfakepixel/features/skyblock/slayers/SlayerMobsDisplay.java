@@ -1,177 +1,104 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.slayers;
 
-import cc.polyfrost.oneconfig.config.core.OneColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
-import net.minecraft.entity.item.EntityFallingBlock;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.config.gui.core.ChromaColour;
+import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.variables.Constants;
 import org.ginafro.notenoughfakepixel.variables.MobDisplayTypes;
+import org.ginafro.notenoughfakepixel.config.features.Slayer;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.Arrays;
-import java.util.Base64;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class SlayerMobsDisplay {
-
-    private Pattern pattern = Pattern.compile("Id:\"([^\"]+)\"");
-
 
     @SubscribeEvent
     public void onRenderLast(RenderWorldLastEvent event) {
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.thePlayer == null || mc.theWorld == null) return;
 
-        if (Configuration.slayerBosses) onRender(event, true);
-        if (Configuration.slayerMinibosses) onRender(event, false);
+        if (Slayer.slayerBosses) onRender(event, true);
+        if (Slayer.slayerMinibosses) onRender(event, false);
     }
 
     private void onRender(RenderWorldLastEvent event, boolean isBoss) {
         switch (ScoreboardUtils.currentLocation) {
             case HUB:
             case PRIVATE_HUB:
-                showHitboxHub(event);
+                showHitboxHub(event.partialTicks);
                 break;
             case PARK:
-                showHitboxSven(event, isBoss);
+                showHitbox(MobDisplayTypes.WOLF, event.partialTicks, Constants.SVEN_SLAYER_MINIBOSSES, isBoss);
                 break;
             case SPIDERS_DEN:
-                showHitboxTarantula(event, isBoss);
+                showHitbox(MobDisplayTypes.SPIDER, event.partialTicks, Constants.TARANTULA_SLAYER_MINIBOSSES, isBoss);
                 break;
             case THE_END:
-                showHitboxVoidgloom(event, isBoss);
+                showHitbox(MobDisplayTypes.ENDERMAN, event.partialTicks, Constants.VOIDGLOOM_SLAYER_MINIBOSSES, isBoss);
                 break;
             case CRIMSON_ISLE:
-                showHitboxBlaze(event, isBoss);
+                showHitbox(MobDisplayTypes.NONE, event.partialTicks, Constants.BLAZE_SLAYER_MINIBOSSES, isBoss);
                 break;
         }
     }
 
-    private void showHitboxHub(@NotNull RenderWorldLastEvent event) {
-        showHitboxFromHub(MobDisplayTypes.NONE, Configuration.slayerColor, event.partialTicks);
+    private void showHitboxHub(float partialTicks) {
+        Color bossColor = ColorUtils.getColor(Slayer.slayerBossColor);
+        Color minibossColor = ColorUtils.getColor(Slayer.slayerColor);
+
+        WorldClient world = Minecraft.getMinecraft().theWorld;
+        world.loadedEntityList.forEach(entity -> {
+            if (entity == null || entity.getName() == null) return;
+            if (!(entity instanceof EntityArmorStand)) return;
+
+            // Check for bosses
+            for (String name : Constants.SLAYER_BOSSES) {
+                if (entity.getName().contains(name)) {
+                    MobDisplayTypes type = entity.getName().contains("Sven Packmaster") ? MobDisplayTypes.WOLF : MobDisplayTypes.NONE;
+                    RenderUtils.renderEntityHitbox(entity, partialTicks, bossColor, type);
+                    return;
+                }
+            }
+
+            // Check for Sven minibosses
+            for (String name : Constants.SVEN_SLAYER_MINIBOSSES) {
+                if (entity.getName().contains(name)) {
+                    RenderUtils.renderEntityHitbox(entity, partialTicks, minibossColor, MobDisplayTypes.WOLF);
+                    return;
+                }
+            }
+
+            // Check for Revenant minibosses
+            for (String name : Constants.REVENANT_SLAYER_MINIBOSSES) {
+                if (entity.getName().contains(name)) {
+                    RenderUtils.renderEntityHitbox(entity, partialTicks, minibossColor, MobDisplayTypes.NONE);
+                    return;
+                }
+            }
+        });
     }
 
-    private void showHitboxSven(@NotNull RenderWorldLastEvent event, boolean isBoss) {
-        MobDisplayTypes type = isBoss ? MobDisplayTypes.WOLF_BOSS : MobDisplayTypes.WOLF;
-        showHitbox(type, Configuration.slayerColor, event.partialTicks, Constants.SVEN_SLAYER_MINIBOSSES, isBoss);
-    }
-
-    private void showHitboxTarantula(@NotNull RenderWorldLastEvent event, boolean isBoss) {
-        MobDisplayTypes type = isBoss ? MobDisplayTypes.SPIDER_BOSS : MobDisplayTypes.SPIDER;
-        showHitbox(type, Configuration.slayerColor, event.partialTicks, Constants.TARANTULA_SLAYER_MINIBOSSES, isBoss);
-    }
-
-    private void showHitboxVoidgloom(@NotNull RenderWorldLastEvent event, boolean isBoss) {
-        MobDisplayTypes type = isBoss ? MobDisplayTypes.ENDERMAN_BOSS : MobDisplayTypes.ENDERMAN;
-        showHitbox(type, Configuration.slayerColor, event.partialTicks, Constants.VOIDGLOOM_SLAYER_MINIBOSSES, isBoss);
-    }
-
-    private void showHitboxBlaze(@NotNull RenderWorldLastEvent event, boolean isBoss) {
-        showHitbox(MobDisplayTypes.NONE, Configuration.slayerColor, event.partialTicks, Constants.BLAZE_SLAYER_MINIBOSSES, isBoss);
-    }
-
-    private void showHitbox(MobDisplayTypes type, OneColor configColor, float partialTicks, String[] namesList, boolean isBoss) {
+    private void showHitbox(MobDisplayTypes type, float partialTicks, String[] namesList, boolean isBoss) {
+        Color color = ColorUtils.getColor(Slayer.slayerBossColor);
         WorldClient world = Minecraft.getMinecraft().theWorld;
         world.loadedEntityList.forEach(entity -> {
             if (entity == null || entity.getName() == null) return;
             if (!(entity instanceof EntityArmorStand)) return;
 
             String[] names = isBoss ? Constants.SLAYER_BOSSES : namesList;
-            Color color = getColor(configColor, isBoss);
-
             for (String name : names) {
                 if (entity.getName().contains(name)) {
-                    RenderUtils.renderEntityHitbox(
-                            entity,
-                            partialTicks,
-                            color,
-                            type
-                    );
+                    RenderUtils.renderEntityHitbox(entity, partialTicks, color, type);
                 }
             }
         });
-
     }
-
-    private static @NotNull Color getColor(OneColor configColor, boolean isBoss) {
-        return isBoss ? new Color(
-                Configuration.slayerBossColor.getRed(),
-                Configuration.slayerBossColor.getGreen(),
-                Configuration.slayerBossColor.getBlue(),
-                Configuration.slayerBossColor.getAlpha()
-        ) : new Color(
-                configColor.getRed(),
-                configColor.getGreen(),
-                configColor.getBlue(),
-                configColor.getAlpha()
-        );
-    }
-
-    private void showHitboxFromHub(MobDisplayTypes type, OneColor configColor, float partialTicks) {
-
-        WorldClient world = Minecraft.getMinecraft().theWorld;
-        world.loadedEntityList.forEach(entity -> {
-            if (entity == null) return;
-            if (entity.getName() == null) return;
-
-
-            for (String name : Constants.SLAYER_BOSSES){
-                if (entity.getName().contains(name)) {
-                    MobDisplayTypes entityType = type;
-                    if (entity.getName().contains("Sven Packmaster")){
-                        entityType = MobDisplayTypes.WOLF;
-                    }
-
-                    RenderUtils.renderEntityHitbox(
-                            entity,
-                            partialTicks,
-                            new Color(
-                                    Configuration.slayerBossColor.getRed(),
-                                    Configuration.slayerBossColor.getGreen(),
-                                    Configuration.slayerBossColor.getBlue(),
-                                    Configuration.slayerBossColor.getAlpha()
-                            ),
-                            entityType
-                    );
-                    return;
-                }
-            }
-
-            Color color = new Color(
-                    Configuration.slayerColor.getRed(),
-                    Configuration.slayerColor.getGreen(),
-                    Configuration.slayerColor.getBlue(),
-                    Configuration.slayerColor.getAlpha()
-            );
-
-            Arrays.stream(Constants.SVEN_SLAYER_MINIBOSSES)
-                .filter(name -> entity.getName().contains(name))
-                .findFirst()
-                .ifPresent(name -> {
-                    RenderUtils.renderEntityHitbox(entity, partialTicks, color, MobDisplayTypes.WOLF);
-                });
-
-
-            Arrays.stream(Constants.REVENANT_SLAYER_MINIBOSSES)
-                    .filter(name -> entity.getName().contains(name))
-                    .findFirst()
-                    .ifPresent(name -> {
-                        RenderUtils.renderEntityHitbox(entity, partialTicks, color, MobDisplayTypes.NONE);
-                    });
-        });
-    }
-
 }

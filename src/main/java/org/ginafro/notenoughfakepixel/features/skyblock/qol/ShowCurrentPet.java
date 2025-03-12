@@ -1,6 +1,5 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.qol;
 
-import cc.polyfrost.oneconfig.config.core.OneColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.inventory.Container;
@@ -10,17 +9,22 @@ import net.minecraft.item.ItemSkull;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.config.features.QualityOfLife;
+import org.ginafro.notenoughfakepixel.config.gui.core.ChromaColour;
+import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.ItemUtils;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.variables.Gamemode;
+import org.jetbrains.annotations.NotNull;
+
+import java.awt.*;
 
 public class ShowCurrentPet {
 
     @SubscribeEvent
     public void onOpen(GuiScreenEvent.BackgroundDrawnEvent e){
-        if (!Configuration.qolShowPetEquipped) return;
+        if (!QualityOfLife.qolShowPetEquipped) return;
         if (ScoreboardUtils.currentGamemode != Gamemode.SKYBLOCK) return;
         if (!(e.gui instanceof GuiChest)) return;
 
@@ -51,8 +55,7 @@ public class ShowCurrentPet {
     }
 
     public static void highlightSlot(Slot slot, GuiChest chest){
-        OneColor color = Configuration.qolPetEquippedColor;
+        Color color = ColorUtils.getColor(QualityOfLife.qolPetEquippedColor);
         RenderUtils.drawOnSlot(chest.inventorySlots.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, color.getRGB());
     }
-
 }

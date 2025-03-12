@@ -21,7 +21,7 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 import java.util.HashSet;
 
-public class TeleportMazeSolver {
+public class TeleportMazeSolver {/*
 
     private static final Minecraft mc = Minecraft.getMinecraft();
 
@@ -152,5 +152,5 @@ public class TeleportMazeSolver {
         tessellator.draw();
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
-    }
+    }*/
 }

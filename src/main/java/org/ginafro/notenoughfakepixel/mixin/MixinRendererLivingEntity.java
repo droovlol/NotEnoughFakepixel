@@ -5,8 +5,10 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.util.IChatComponent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.mobs.StarredMobDisplay;
 import org.ginafro.notenoughfakepixel.features.skyblock.qol.DamageCommas;
+import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -83,10 +85,7 @@ public abstract class MixinRendererLivingEntity<T extends EntityLivingBase> {
             glTexEnvi(8960, OpenGlHelper.GL_OPERAND0_ALPHA, 770);
             this.brightnessBuffer.position(0);
             Color color = new Color(
-                    Configuration.dungeonsStarredBoxColor.getRed(),
-                    Configuration.dungeonsStarredBoxColor.getGreen(),
-                    Configuration.dungeonsStarredBoxColor.getBlue(),
-                    Configuration.dungeonsStarredBoxColor.getAlpha()
+                    ColorUtils.getColor(Dungeons.dungeonsStarredBoxColor).getRed()
             );
             brightnessBuffer.put(color.getRed() / 255f);
             brightnessBuffer.put(color.getGreen() / 255f);

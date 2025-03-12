@@ -7,6 +7,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.config.features.Dungeons;
+import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.ItemUtils;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
@@ -19,7 +21,7 @@ public class FelMobDisplay {
 
     @SubscribeEvent
     public void onRenderLast(RenderWorldLastEvent event) {
-        if (!Configuration.dungeonsFelMob) return;
+        if (!Dungeons.dungeonsFelMob) return;
         if (Minecraft.getMinecraft().thePlayer == null) return;
         if (Minecraft.getMinecraft().theWorld == null) return;
         if (!ScoreboardUtils.currentLocation.isDungeon()) return;
@@ -38,10 +40,7 @@ public class FelMobDisplay {
                 ItemStack head = armorStand.getEquipmentInSlot(4);
                 if(ItemUtils.hasSkinValue(Skins.ENDERMAN_HEAD.getSkin(), head)){
                     Color color = new Color(
-                            Configuration.dungeonsFelColor.getRed(),
-                            Configuration.dungeonsFelColor.getGreen(),
-                            Configuration.dungeonsFelColor.getBlue(),
-                            Configuration.dungeonsFelColor.getAlpha()
+                            ColorUtils.getColor(Dungeons.dungeonsFelColor).getRGB()
                     );
 
                     RenderUtils.renderEntityHitbox(

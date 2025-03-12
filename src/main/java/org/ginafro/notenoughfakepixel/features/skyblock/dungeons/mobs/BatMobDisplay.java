@@ -6,6 +6,8 @@ import net.minecraft.entity.passive.EntityBat;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.config.features.Dungeons;
+import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.variables.MobDisplayTypes;
@@ -16,7 +18,7 @@ public class BatMobDisplay {
 
     @SubscribeEvent
     public void onRenderLast(RenderWorldLastEvent event) {
-        if (!Configuration.dungeonsBatMobs) return;
+        if (!Dungeons.dungeonsBatMobs) return;
         if (Minecraft.getMinecraft().thePlayer == null) return;
         if (Minecraft.getMinecraft().theWorld == null) return;
         if (!ScoreboardUtils.currentLocation.isDungeon()) return;
@@ -28,10 +30,7 @@ public class BatMobDisplay {
             if (entity.getName() == null) return;
             if (entity instanceof EntityBat){
                 Color color = new Color(
-                        Configuration.dungeonsBatColor.getRed(),
-                        Configuration.dungeonsBatColor.getGreen(),
-                        Configuration.dungeonsBatColor.getBlue(),
-                        Configuration.dungeonsBatColor.getAlpha()
+                        ColorUtils.getColor(Dungeons.dungeonsBatColor).getRGB()
                 );
 
                 RenderUtils.renderEntityHitbox(

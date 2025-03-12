@@ -6,6 +6,8 @@ import net.minecraft.inventory.ContainerChest;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.config.features.Dungeons;
+import org.ginafro.notenoughfakepixel.config.features.QualityOfLife;
 import org.lwjgl.input.Mouse;
 
 import java.util.Arrays;
@@ -24,7 +26,7 @@ public class MiddleClickEvent {
 
     @SubscribeEvent
     public void onMouseClick(GuiScreenEvent.MouseInputEvent.Pre event) {
-        if (!Configuration.qolMiddleClickChests) return;
+        if (!QualityOfLife.qolMiddleClickChests) return;
         if (Mouse.getEventButton() != 0 || !Mouse.getEventButtonState()) return;
 
         if (!(mc.currentScreen instanceof GuiChest)) return;
@@ -34,7 +36,7 @@ public class MiddleClickEvent {
 
         String currentChestName = container.getLowerChestInventory().getDisplayName().getUnformattedText();
 
-        if (!Configuration.dungeonsCustomGuiStartsWith) {
+        if (!Dungeons.dungeonsCustomGuiStartsWith) {
                 if (currentChestName.startsWith("What starts with '")) {
                     event.setCanceled(true);
 
@@ -52,7 +54,7 @@ public class MiddleClickEvent {
                 }
 
         }
-        if (!Configuration.dungeonsCustomGuiClickIn) {
+        if (!Dungeons.dungeonsCustomGuiClickIn) {
                 if (currentChestName.startsWith("Click in order!")) {
                     event.setCanceled(true);
 
@@ -69,7 +71,7 @@ public class MiddleClickEvent {
                     }
                 }
         }
-        if (!Configuration.dungeonsCustomGuiColors) {
+        if (!Dungeons.dungeonsCustomGuiColors) {
                 if (currentChestName.startsWith("Select all the ")) {
                     event.setCanceled(true);
 
@@ -86,7 +88,7 @@ public class MiddleClickEvent {
                     }
                 }
         }
-        if (!Configuration.dungeonsCustomGuiPanes) {
+        if (!Dungeons.dungeonsCustomGuiPanes) {
                 if (currentChestName.startsWith("Correct all the panes!")) {
                     event.setCanceled(true);
 

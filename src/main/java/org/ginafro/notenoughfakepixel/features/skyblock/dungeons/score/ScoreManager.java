@@ -5,6 +5,7 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.utils.TablistParser;
@@ -81,7 +82,7 @@ public class ScoreManager {
 
     public static int getBonusScore() {
         int crypts = TablistParser.crypts;
-        return (Configuration.dungeonsIsPaul ? 10 : 0) + Math.min(5, crypts);
+        return (Dungeons.dungeonsIsPaul ? 10 : 0) + Math.min(5, crypts);
     }
 
     public static int getSecretPercentage() {

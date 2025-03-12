@@ -32,8 +32,12 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.config.features.QualityOfLife;
+import org.ginafro.notenoughfakepixel.config.gui.core.ChromaColour;
 import org.ginafro.notenoughfakepixel.events.PacketReadEvent;
+import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -69,15 +73,15 @@ public class MiscFeatures {
             Block block = mc.theWorld.getBlockState(event.pos).getBlock();
 
             if (flowerPlaceable.contains(block)) {
-                if (Configuration.qolBlockPlacingItems && item.getDisplayName().contains("Flower of Truth")) {
+                if (QualityOfLife.qolBlockPlacingItems && item.getDisplayName().contains("Flower of Truth")) {
                     event.setCanceled(true);
                 }
-                if (Configuration.qolBlockPlacingItems && item.getDisplayName().contains("Spirit Sceptre")) {
+                if (QualityOfLife.qolBlockPlacingItems && item.getDisplayName().contains("Spirit Sceptre")) {
                     event.setCanceled(true);
                 }
             }
 
-            if (Configuration.qolBlockPlacingItems && item.getItem() == Item.getItemFromBlock(Blocks.hopper) && item.getDisplayName().contains("Weird Tuba")) {
+            if (QualityOfLife.qolBlockPlacingItems && item.getItem() == Item.getItemFromBlock(Blocks.hopper) && item.getDisplayName().contains("Weird Tuba")) {
                 event.setCanceled(true);
             }
         }
@@ -199,7 +203,7 @@ public class MiscFeatures {
     }
 
     private String getConfiguredSound() {
-        switch (Configuration.qolEtherwarpSound) {
+        switch (QualityOfLife.qolEtherwarpSound) {
             case 1: return "mob.blaze.hit";
             case 2: return "note.pling";
             case 3: return "random.orb";
@@ -212,7 +216,7 @@ public class MiscFeatures {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onRenderLivingSpecialsPre(RenderLivingEvent.Specials.Pre<EntityLivingBase> event) {
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
-        if (Configuration.qolHideDyingMobs) {
+        if (QualityOfLife.qolHideDyingMobs) {
             EntityLivingBase entity = event.entity;
             String name = entity.getDisplayName().getUnformattedText();
 
@@ -229,7 +233,7 @@ public class MiscFeatures {
     public void onRenderLivingPre(RenderLivingEvent.Pre<EntityLivingBase> event) {
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
 
-        if (Configuration.qolHideDyingMobs) {
+        if (QualityOfLife.qolHideDyingMobs) {
             EntityLivingBase entity = event.entity;
 
             if (entity.getHealth() <= 0 || entity.isDead) {
@@ -267,7 +271,7 @@ public class MiscFeatures {
     public void onRenderLivingSpecials(RenderLivingEvent.Specials.Pre<EntityLivingBase> event) {
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
 
-        if (Configuration.qolHideDyingMobs) {
+        if (QualityOfLife.qolHideDyingMobs) {
             EntityLivingBase entity = event.entity;
 
             if (entity.getHealth() <= 0 || entity.isDead) {
@@ -358,8 +362,8 @@ public class MiscFeatures {
         boolean isAirAbove2 = mc.theWorld.isAirBlock(target.up(2));
 
         if (isAirAbove1 && isAirAbove2) {
-            if (Configuration.qolEtherwarpOverlay) {
-                renderFilledBoundingBox(target, new Color(Configuration.qolEtherwarpOverlayColor.getRGB(), true));
+            if (QualityOfLife.qolEtherwarpOverlay) {
+                renderFilledBoundingBox(target, ColorUtils.getColor(QualityOfLife.qolEtherwarpOverlayColor));
             }
         }
     }
@@ -478,7 +482,7 @@ public class MiscFeatures {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onChatReceived(ClientChatReceivedEvent e) {
         if (e.type == 2) return; // Ignore actionbar messages
-        if (Configuration.qolCopyChatMsg) {
+        if (QualityOfLife.qolCopyChatMsg) {
 
         String unformattedText = StringUtils.stripControlCodes(e.message.getUnformattedText());
 
@@ -497,7 +501,7 @@ public class MiscFeatures {
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
-        if (Configuration.qolAlwaysSprint) {
+        if (QualityOfLife.qolAlwaysSprint) {
         KeyBinding.setKeyBindState(mc.gameSettings.keyBindSprint.getKeyCode(), true);
         }
     }

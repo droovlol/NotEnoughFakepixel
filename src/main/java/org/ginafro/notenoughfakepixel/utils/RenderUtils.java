@@ -1,11 +1,11 @@
 package org.ginafro.notenoughfakepixel.utils;
 
-import cc.polyfrost.oneconfig.libs.universal.UResolution;
 import net.minecraft.block.BlockLever;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.*;
-import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.variables.MobDisplayTypes;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
@@ -26,13 +26,16 @@ public class RenderUtils {
 
     private static final Minecraft mc = Minecraft.getMinecraft();
 
+    
+
     public static void drawOnSlot(int size, int xSlotPos, int ySlotPos, int colour) {
         drawOnSlot(size, xSlotPos, ySlotPos, colour, -1);
     }
 
     public static void drawOnSlot(int size, int xSlotPos, int ySlotPos, int colour, int number) {
-        int guiLeft = (UResolution.getScaledWidth() - 176) / 2;
-        int guiTop = (UResolution.getScaledHeight() - 222) / 2;
+        ScaledResolution scaledResolution = new ScaledResolution(mc);
+        int guiLeft = (scaledResolution.getScaledWidth() - 176) / 2;
+        int guiTop = (scaledResolution.getScaledHeight() - 222) / 2;
         int x = guiLeft + xSlotPos;
         int y = guiTop + ySlotPos;
 
@@ -43,7 +46,7 @@ public class RenderUtils {
         Gui.drawRect(x, y, x + 16, y + 16, colour);
         GL11.glTranslated(0, 0, -1);
 
-        if (number != -1){
+        if (number != -1) {
             String text = String.valueOf(number);
             int textWidth = mc.fontRendererObj.getStringWidth(text);
 
@@ -61,7 +64,6 @@ public class RenderUtils {
             GlStateManager.disableBlend();
             GlStateManager.popMatrix();
         }
-
     }
 
     private static final ResourceLocation beaconBeam = new ResourceLocation("textures/entity/beacon_beam.png");
@@ -261,7 +263,7 @@ public class RenderUtils {
         AxisAlignedBB bb = entity.getEntityBoundingBox();
         if (bb == null) return;
 
-        double scale = Configuration.dungeonsScaleItemDrop;
+        double scale = Dungeons.dungeonsScaleItemDrop;
 
         Entity player = mc.getRenderViewEntity();
         double playerX = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks;
@@ -289,7 +291,7 @@ public class RenderUtils {
         z1 = centerZ + (z1 - centerZ) * scale;
         z2 = centerZ + (z2 - centerZ) * scale;
 
-        double yOffset = (Configuration.dungeonsScaleItemDrop - 1f) * (entity.height/2f);
+        double yOffset = (Dungeons.dungeonsScaleItemDrop - 1f) * (entity.height/2f);
         y1 += yOffset;
         y2 += yOffset;
 
