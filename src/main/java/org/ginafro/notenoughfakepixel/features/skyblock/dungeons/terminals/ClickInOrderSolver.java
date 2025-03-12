@@ -314,10 +314,12 @@ public class ClickInOrderSolver {
         if (slot.getStack().getItemDamage() == 5) {
             // Successfully clicked, remove from queue and increment processed rounds
             clickQueue.removeFirst();
+            float pitch = 0.8f + (float) (Math.random() * 0.4); // Random pitch between 0.8 and 1.2
+            mc.theWorld.playSound(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, "random.orb", 1.0f, pitch, false);
             processedRounds++;
         } else {
             // Pane is still red or not updated, send a click
-            mc.playerController.windowClick(cc.windowId, slotNumber, 2, 0, mc.thePlayer);
+            mc.playerController.windowClick(cc.windowId, slotNumber, 0, 0, mc.thePlayer);
         }
     }
 
