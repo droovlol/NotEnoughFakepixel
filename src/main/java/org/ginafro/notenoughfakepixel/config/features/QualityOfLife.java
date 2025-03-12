@@ -66,6 +66,11 @@ public class QualityOfLife {
     public static boolean qolItemRarity = true;
 
     @Expose
+    @ConfigOption(name = "Item Rarity opacity", desc = "Adjust how visible item rarity background is.", subcategoryId = 0)
+    @ConfigEditorSlider(minValue = 0f, maxValue = 1.0f, minStep = 0.05f)
+    public static float qolItemRarityOpacity = 0.6f;
+
+    @Expose
     @ConfigOption(name = "Disable Enderman Teleport", desc = "Disable enderman teleportation.", subcategoryId = 0)
     @ConfigEditorBoolean
     public static boolean qolDisableEnderManTeleport = true;

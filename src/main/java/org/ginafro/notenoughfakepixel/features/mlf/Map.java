@@ -30,10 +30,10 @@ public class Map {
 
         // Parse background color (assuming A:R:G:B format)
         String[] colorParts = Info.mlfInfoBackgroundColor.split(":");
-        int alpha = Integer.parseInt(colorParts[0]); // Adjusted to match typical A:R:G:B
-        int red = Integer.parseInt(colorParts[1]);
-        int green = Integer.parseInt(colorParts[2]);
-        int blue = Integer.parseInt(colorParts[3]);
+        int alpha = Integer.parseInt(colorParts[1]); // Adjusted to match typical A:R:G:B
+        int red = Integer.parseInt(colorParts[2]);
+        int green = Integer.parseInt(colorParts[3]);
+        int blue = Integer.parseInt(colorParts[4]);
         int bgColor = (alpha << 24) | (red << 16) | (green << 8) | blue;
 
         // Update text lines from scoreboard

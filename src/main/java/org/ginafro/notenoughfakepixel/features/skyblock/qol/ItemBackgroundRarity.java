@@ -8,6 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
+import org.ginafro.notenoughfakepixel.config.features.QualityOfLife;
 import org.lwjgl.opengl.GL11;
 
 
@@ -18,7 +19,6 @@ public class ItemBackgroundRarity {
     private static final ResourceLocation RARITY_TEXTURE = new ResourceLocation("notenoughfakepixel:skyblock/textures/gui/rarity.png");
     private static final Pattern RARITY_PATTERN = Pattern.compile("(§[0-9a-f]§l§ka§r )?([§0-9a-fk-or]+)(?<rarity>[A-Z]+)");
     private static final Pattern PET_PATTERN = Pattern.compile("§7\\[Lvl \\d+\\] (?<color>§[0-9a-fk-or]).+");
-    private static float opacity = 0.8f;
 
     public enum ItemRarity {
         COMMON("COMMON", EnumChatFormatting.WHITE),
@@ -27,6 +27,7 @@ public class ItemBackgroundRarity {
         EPIC("EPIC", EnumChatFormatting.DARK_PURPLE),
         LEGENDARY("LEGENDARY", EnumChatFormatting.GOLD),
         MYTHIC("MYTHIC", EnumChatFormatting.LIGHT_PURPLE),
+        DIVINE("DIVINE", EnumChatFormatting.AQUA),
         SUPREME("SUPREME", EnumChatFormatting.DARK_RED),
         SPECIAL("SPECIAL", EnumChatFormatting.RED),
         VERY_SPECIAL("VERY SPECIAL", EnumChatFormatting.RED);
@@ -88,7 +89,7 @@ public class ItemBackgroundRarity {
         float g = ((rgb >> 8) & 0xFF) / 255f;
         float b = (rgb & 0xFF) / 255f;
 
-        GlStateManager.color(r, g, b, opacity);
+        GlStateManager.color(r, g, b, QualityOfLife.qolItemRarityOpacity);
     }
 
     private static int getColorValue(EnumChatFormatting format) {
@@ -99,6 +100,7 @@ public class ItemBackgroundRarity {
             case DARK_PURPLE: return 0xAA00AA;
             case GOLD: return 0xFFAA00;
             case LIGHT_PURPLE: return 0xFF55FF;
+            case AQUA: return 0x55FFFF;
             case DARK_RED: return 0xAA0000;
             case RED: return 0xFF5555;
             default: return 0xFFFFFF;
@@ -151,9 +153,5 @@ public class ItemBackgroundRarity {
             }
         }
         return item.getDisplayName();
-    }
-
-    public static void setOpacity(float opacity) {
-        ItemBackgroundRarity.opacity = Math.max(0f, Math.min(1f, opacity));
     }
 }
