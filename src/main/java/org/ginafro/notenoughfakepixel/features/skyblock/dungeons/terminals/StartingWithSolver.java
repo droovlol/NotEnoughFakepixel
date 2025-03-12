@@ -274,14 +274,14 @@ public class StartingWithSolver {
 
                 if (relX >= x && relX <= x + SLOT_SIZE &&
                         relY >= y && relY <= y + SLOT_SIZE) {
-                    // Send two left clicks
                     mc.playerController.windowClick(
                             containerChest.windowId,
                             slot.slotNumber,
-                            0, // 0 for left-click action
+                            2,
                             button,
                             mc.thePlayer
                     );
+                    playCompletionSound(); // Play sound on click
                     validClick = true;
                     break;
                 }
@@ -298,9 +298,26 @@ public class StartingWithSolver {
 
                 if (isBadItem || isWrongLetter) {
                     event.setCanceled(true);
+                } else {
+                    // Valid click in default GUI
+                    playCompletionSound(); // Play sound on click
                 }
             }
         }
+    }
+
+    private void playCompletionSound() {
+        Minecraft mc = Minecraft.getMinecraft();
+        float pitch = 0.8f + (float) (Math.random() * 0.4); // Random pitch between 0.8 and 1.2
+        mc.theWorld.playSound(
+                mc.thePlayer.posX,
+                mc.thePlayer.posY,
+                mc.thePlayer.posZ,
+                "random.orb",
+                1.0f,
+                pitch,
+                false
+        );
     }
 
     private static void drawRect(int left, int top, int right, int bottom, int color) {

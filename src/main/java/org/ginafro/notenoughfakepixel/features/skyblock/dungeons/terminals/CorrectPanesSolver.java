@@ -253,15 +253,30 @@ public class CorrectPanesSolver {
                 mc.playerController.windowClick(
                         containerChest.windowId,
                         slot.slotNumber,
-                        0,
+                        2,
                         0,
                         mc.thePlayer
                 );
+                playCompletionSound(); // Play sound on click
                 event.setCanceled(true);
             } else {
                 event.setCanceled(true);
             }
         }
+    }
+
+    private void playCompletionSound() {
+        Minecraft mc = Minecraft.getMinecraft();
+        float pitch = 0.8f + (float) (Math.random() * 0.4); // Random pitch between 0.8 and 1.2
+        mc.theWorld.playSound(
+                mc.thePlayer.posX,
+                mc.thePlayer.posY,
+                mc.thePlayer.posZ,
+                "random.orb",
+                1.0f,
+                pitch,
+                false
+        );
     }
 
     private static void drawRect(int left, int top, int right, int bottom, int color) {
