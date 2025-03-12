@@ -81,7 +81,7 @@ public class Dungeons {
     @Expose
     @ConfigOption(name = "Custom Maze Terminal GUI", desc = "Use custom GUI for Maze terminal.", subcategoryId = 0)
     @ConfigEditorBoolean
-    public static boolean dungeonsCustomGuiMaze = true;
+    public static boolean dungeonsCustomGuiMaze = false;
 
     @Expose
     @ConfigOption(name = "Custom Starts With Terminal GUI", desc = "Use custom GUI for Starts With terminal.", subcategoryId = 0)
@@ -96,7 +96,7 @@ public class Dungeons {
     @Expose
     @ConfigOption(name = "Custom Terminal Scale", desc = "Scale of custom terminal GUIs.", subcategoryId = 0)
     @ConfigEditorSlider(minValue = 1.0f, maxValue = 5.0f, minStep = 0.1f)
-    public static float dungeonsTerminalsScale = 2.0f;
+    public static float dungeonsTerminalsScale = 3.0f;
 
     @Expose
     @ConfigOption(name = "Announce Blood Room Done", desc = "Announce when blood room is done spawning.", subcategoryId = 0)
@@ -112,7 +112,7 @@ public class Dungeons {
     @Expose
     @ConfigOption(name = "Dungeons Map Border Color", desc = "Color of the dungeons map border.", subcategoryId = 1)
     @ConfigEditorColour
-    public static String dungeonsMapBorderColor = "0:100:0:0:255"; // Black with full opacity
+    public static String dungeonsMapBorderColor = "0:255:0:0:0"; // Black with full opacity
 
     @Expose
     @ConfigOption(name = "Dungeons Map Scale", desc = "Scale of the dungeons map.", subcategoryId = 1)
@@ -162,7 +162,7 @@ public class Dungeons {
     @Expose
     @ConfigOption(name = "Bat Mob Color", desc = "Color of Bat mobs.", subcategoryId = 3)
     @ConfigEditorColour
-    public static String dungeonsBatColor = "0:92:154:255:255";
+    public static String dungeonsBatColor = "0:92:0:255:0";
 
     @Expose
     @ConfigOption(name = "Starred Mobs Display", desc = "Display style for starred mobs.", subcategoryId = 3)
@@ -253,12 +253,12 @@ public class Dungeons {
     @Expose
     @ConfigOption(name = "Correct Color", desc = "Color for correct choices.", subcategoryId = 4)
     @ConfigEditorColour
-    public static String dungeonsCorrectColor = "0:255:255:0:255";
+    public static String dungeonsCorrectColor = "0:255:0:255:0";
 
     @Expose
     @ConfigOption(name = "Alternative Color", desc = "Alternative color for choices.", subcategoryId = 4)
     @ConfigEditorColour
-    public static String dungeonsAlternativeColor = "0:255:255:0:255";
+    public static String dungeonsAlternativeColor = "0:255:0:255:255";
 
     @Expose
     @ConfigOption(name = "Terminal Waypoints", desc = "Show waypoints for terminals.", subcategoryId = 4)

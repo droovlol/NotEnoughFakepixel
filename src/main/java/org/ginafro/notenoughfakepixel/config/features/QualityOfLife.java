@@ -45,10 +45,10 @@ public class QualityOfLife {
     @ConfigEditorBoolean
     public static boolean qolDisablePotionEffects = true;
 
-    @Expose
-    @ConfigOption(name = "Show Enchant Level", desc = "Show enchant level on book icons.", subcategoryId = 0)
-    @ConfigEditorBoolean
-    public static boolean qolShowEnchantLevel = true;
+    //@Expose
+    //@ConfigOption(name = "Show Enchant Level", desc = "Show enchant level on book icons.", subcategoryId = 0)
+    //@ConfigEditorBoolean
+    //public static boolean qolShowEnchantLevel = true;
 
     @Expose
     @ConfigOption(name = "Middle Click on Terminals and Enchanting", desc = "Enable middle click on terminals and enchanting GUI.", subcategoryId = 0)
@@ -94,12 +94,12 @@ public class QualityOfLife {
     @Expose
     @ConfigOption(name = "Fairy Soul Waypoints", desc = "Enable fairy soul waypoints.", subcategoryId = 1)
     @ConfigEditorBoolean
-    public static boolean fairySoulWaypoints = true;
+    public static boolean fairySoulWaypoints = false;
 
     @Expose
     @ConfigOption(name = "Fairy Soul Waypoints Color", desc = "Color of fairy soul waypoints.", subcategoryId = 1)
     @ConfigEditorColour
-    public static String fairySoulWaypointsColor = "0:100:0:0:255";
+    public static String fairySoulWaypointsColor = "0:100:255:255:255";
 
     // Etherwarp (subcategoryId = 2)
     @Expose
@@ -110,7 +110,7 @@ public class QualityOfLife {
     @Expose
     @ConfigOption(name = "Etherwarp Overlay Color", desc = "Color of the etherwarp overlay.", subcategoryId = 2)
     @ConfigEditorColour
-    public static String qolEtherwarpOverlayColor = "0:100:255:0:100";
+    public static String qolEtherwarpOverlayColor = "0:100:0:255:0";
 
     @Expose
     @ConfigOption(name = "Etherwarp Sound", desc = "Sound played on etherwarp.", subcategoryId = 2)
@@ -121,7 +121,7 @@ public class QualityOfLife {
     @Expose
     @ConfigOption(name = "Wardrobe Shortcut", desc = "Enable wardrobe shortcut.", subcategoryId = 3)
     @ConfigEditorBoolean
-    public static boolean qolShortcutWardrobe = true;
+    public static boolean qolShortcutWardrobe = false;
 
     @Expose
     @ConfigOption(name = "Wardrobe Shortcut Key", desc = "Keybind for wardrobe shortcut.", subcategoryId = 3)
@@ -131,7 +131,7 @@ public class QualityOfLife {
     @Expose
     @ConfigOption(name = "Pets Shortcut", desc = "Enable pets shortcut.", subcategoryId = 3)
     @ConfigEditorBoolean
-    public static boolean qolShortcutPets = true;
+    public static boolean qolShortcutPets = false;
 
     @Expose
     @ConfigOption(name = "Pets Shortcut Key", desc = "Keybind for pets shortcut.", subcategoryId = 3)
@@ -141,7 +141,7 @@ public class QualityOfLife {
     @Expose
     @ConfigOption(name = "Warps Shortcuts", desc = "Enable warps shortcuts.", subcategoryId = 3)
     @ConfigEditorBoolean
-    public static boolean qolShortcutWarps = true;
+    public static boolean qolShortcutWarps = false;
 
     @Expose
     @ConfigOption(name = "Warp Island Shortcut Key", desc = "Keybind for warp island.", subcategoryId = 3)
@@ -167,7 +167,7 @@ public class QualityOfLife {
     @Expose
     @ConfigOption(name = "Pet Equipped Color", desc = "Color of equipped pet indicator.", subcategoryId = 4)
     @ConfigEditorColour
-    public static String qolPetEquippedColor = "0:190:255:190:255";
+    public static String qolPetEquippedColor = "0:190:0:255:0";
 
     // Chat (subcategoryId = 5)
     @Expose
