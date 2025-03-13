@@ -11,6 +11,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
 import org.ginafro.notenoughfakepixel.utils.ChatUtils;
@@ -34,14 +35,14 @@ public class ScoreOverlay {
         ScaledResolution sr = new ScaledResolution(mc);
         int overlayWidth = getWidth(1.0f); // Base width, scaled later
         int overlayHeight = getHeight(1.0f); // Base height, scaled later
-        float x = Dungeons.scoreOverlayPos.getAbsX(sr, overlayWidth);
-        float y = Dungeons.scoreOverlayPos.getAbsY(sr, overlayHeight);
-        draw(x, y, Dungeons.scoreOverlayScale, false);
+        float x = NotEnoughFakepixel.feature.dungeons.scoreOverlayPos.getAbsX(sr, overlayWidth);
+        float y = NotEnoughFakepixel.feature.dungeons.scoreOverlayPos.getAbsY(sr, overlayHeight);
+        draw(x, y, NotEnoughFakepixel.feature.dungeons.scoreOverlayScale, false);
     }
 
     private boolean shouldShow() {
         if (!DungeonManager.checkEssentials()) return false;
-        return Dungeons.dungeonsScoreOverlay;
+        return NotEnoughFakepixel.feature.dungeons.dungeonsScoreOverlay;
     }
 
     private void draw(float x, float y, float scale, boolean example) {
@@ -53,7 +54,7 @@ public class ScoreOverlay {
         getLines(lines, example);
 
         // Parse background color
-        String[] colorParts = Dungeons.scoreOverlayBackgroundColor.split(":");
+        String[] colorParts = NotEnoughFakepixel.feature.dungeons.scoreOverlayBackgroundColor.split(":");
         int alpha = Integer.parseInt(colorParts[1]);
         int red = Integer.parseInt(colorParts[2]);
         int green = Integer.parseInt(colorParts[3]);
@@ -84,9 +85,9 @@ public class ScoreOverlay {
         ScaledResolution sr = new ScaledResolution(mc);
         int overlayWidth = getWidth(1.0f);
         int overlayHeight = getHeight(1.0f);
-        float x = Dungeons.scoreOverlayPos.getAbsX(sr, overlayWidth);
-        float y = Dungeons.scoreOverlayPos.getAbsY(sr, overlayHeight);
-        draw(x, y, Dungeons.scoreOverlayScale, true);
+        float x = NotEnoughFakepixel.feature.dungeons.scoreOverlayPos.getAbsX(sr, overlayWidth);
+        float y = NotEnoughFakepixel.feature.dungeons.scoreOverlayPos.getAbsY(sr, overlayHeight);
+        draw(x, y, NotEnoughFakepixel.feature.dungeons.scoreOverlayScale, true);
     }
 
     public int getWidth(float scale) {
@@ -178,7 +179,7 @@ public class ScoreOverlay {
     }
 
     private String getBonusDisplay() {
-        int threshold = Dungeons.dungeonsIsPaul ? 15 : 5;
+        int threshold = NotEnoughFakepixel.feature.dungeons.dungeonsIsPaul ? 15 : 5;
         EnumChatFormatting enumChatFormatting;
         int bonusScore = ScoreManager.getBonusScore();
         if (bonusScore >= threshold) enumChatFormatting = EnumChatFormatting.GREEN;

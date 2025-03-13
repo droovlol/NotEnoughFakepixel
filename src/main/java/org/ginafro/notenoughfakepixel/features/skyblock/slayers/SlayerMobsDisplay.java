@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.config.gui.core.ChromaColour;
 import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
@@ -25,8 +26,8 @@ public class SlayerMobsDisplay {
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.thePlayer == null || mc.theWorld == null) return;
 
-        if (Slayer.slayerBosses) onRender(event, true);
-        if (Slayer.slayerMinibosses) onRender(event, false);
+        if (NotEnoughFakepixel.feature.slayer.slayerBosses) onRender(event, true);
+        if (NotEnoughFakepixel.feature.slayer.slayerMinibosses) onRender(event, false);
     }
 
     private void onRender(RenderWorldLastEvent event, boolean isBoss) {
@@ -51,8 +52,8 @@ public class SlayerMobsDisplay {
     }
 
     private void showHitboxHub(float partialTicks) {
-        Color bossColor = ColorUtils.getColor(Slayer.slayerBossColor);
-        Color minibossColor = ColorUtils.getColor(Slayer.slayerColor);
+        Color bossColor = ColorUtils.getColor(NotEnoughFakepixel.feature.slayer.slayerBossColor);
+        Color minibossColor = ColorUtils.getColor(NotEnoughFakepixel.feature.slayer.slayerColor);
 
         WorldClient world = Minecraft.getMinecraft().theWorld;
         world.loadedEntityList.forEach(entity -> {
@@ -87,7 +88,7 @@ public class SlayerMobsDisplay {
     }
 
     private void showHitbox(MobDisplayTypes type, float partialTicks, String[] namesList, boolean isBoss) {
-        Color color = ColorUtils.getColor(Slayer.slayerBossColor);
+        Color color = ColorUtils.getColor(NotEnoughFakepixel.feature.slayer.slayerBossColor);
         WorldClient world = Minecraft.getMinecraft().theWorld;
         world.loadedEntityList.forEach(entity -> {
             if (entity == null || entity.getName() == null) return;

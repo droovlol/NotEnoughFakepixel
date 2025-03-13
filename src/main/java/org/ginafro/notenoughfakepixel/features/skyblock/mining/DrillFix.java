@@ -8,6 +8,7 @@ import net.minecraft.network.play.server.S2FPacketSetSlot;
 import net.minecraft.network.play.server.S30PacketWindowItems;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.config.features.Mining;
 import org.ginafro.notenoughfakepixel.events.PacketReadEvent;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
@@ -22,7 +23,7 @@ public class DrillFix {
 
     @SubscribeEvent
     public void onPacketRead(PacketReadEvent event) {
-        if (!Mining.miningDrillFix) return;
+        if (!NotEnoughFakepixel.feature.mining.miningDrillFix) return;
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
         if (ScoreboardUtils.currentLocation != Location.DWARVEN) return;
 

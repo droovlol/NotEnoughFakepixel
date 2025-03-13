@@ -5,6 +5,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.config.features.Mining;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.utils.TablistParser;
@@ -24,13 +25,13 @@ public class MiningOverlay {
         if (event.type != RenderGameOverlayEvent.ElementType.ALL) return;
         if (!shouldShow()) return;
 
-        draw(Mining.miningOverlayOffsetX, Mining.miningOverlayOffsetY, Mining.miningOverlayScale, false);
+        draw(NotEnoughFakepixel.feature.mining.miningOverlayOffsetX, NotEnoughFakepixel.feature.mining.miningOverlayOffsetY, NotEnoughFakepixel.feature.mining.miningOverlayScale, false);
     }
 
     private boolean shouldShow() {
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return false;
         if (!ScoreboardUtils.currentLocation.equals(Location.DWARVEN)) return false;
-        return Mining.miningOverlay;
+        return NotEnoughFakepixel.feature.mining.miningOverlay;
     }
 
     private void draw(float x, float y, float scale, boolean example) {
@@ -42,7 +43,7 @@ public class MiningOverlay {
         getLines(lines, example);
 
         // Parse background color
-        String[] colorParts = Mining.miningOverlayBackgroundColor.split(":");
+        String[] colorParts = NotEnoughFakepixel.feature.mining.miningOverlayBackgroundColor.split(":");
         int alpha = Integer.parseInt(colorParts[0]);
         int red = Integer.parseInt(colorParts[1]);
         int green = Integer.parseInt(colorParts[2]);
@@ -63,23 +64,23 @@ public class MiningOverlay {
     }
 
     public void renderDummy() {
-        draw(Mining.miningOverlayOffsetX, Mining.miningOverlayOffsetY, Mining.miningOverlayScale, true);
+        draw(NotEnoughFakepixel.feature.mining.miningOverlayOffsetX, NotEnoughFakepixel.feature.mining.miningOverlayOffsetY, NotEnoughFakepixel.feature.mining.miningOverlayScale, true);
     }
 
     private void getLines(List<String> lines, boolean example) {
         if (example) {
-            if (Mining.miningAbilityCooldown) lines.add("\u00a77Ability Cooldown: \u00a7r5s");
-            if (Mining.miningMithrilPowder) lines.add("\u00a77Mithril Powder: \u00a721000");
-            if (Mining.miningDrillFuel) lines.add("\u00a77Drill Fuel: \u00a7a50%");
+            if (NotEnoughFakepixel.feature.mining.miningAbilityCooldown) lines.add("\u00a77Ability Cooldown: \u00a7r5s");
+            if (NotEnoughFakepixel.feature.mining.miningMithrilPowder) lines.add("\u00a77Mithril Powder: \u00a721000");
+            if (NotEnoughFakepixel.feature.mining.miningDrillFuel) lines.add("\u00a77Drill Fuel: \u00a7a50%");
             lines.add("\u00a77Titanium: \u00a7a80%");
             lines.add("\u00a77Mithril: \u00a7e50%");
         } else {
             if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
             if (!ScoreboardUtils.currentLocation.equals(Location.DWARVEN)) return;
 
-            if (Mining.miningAbilityCooldown) lines.add("\u00a77Ability Cooldown: \u00a7r" + AbilityNotifier.cdSecondsRemaining());
-            if (Mining.miningMithrilPowder) lines.add(formatMithrilPowder(TablistParser.mithrilPowder));
-            if (Mining.miningDrillFuel) lines.add(DrillFuelParsing.getString());
+            if (NotEnoughFakepixel.feature.mining.miningAbilityCooldown) lines.add("\u00a77Ability Cooldown: \u00a7r" + AbilityNotifier.cdSecondsRemaining());
+            if (NotEnoughFakepixel.feature.mining.miningMithrilPowder) lines.add(formatMithrilPowder(TablistParser.mithrilPowder));
+            if (NotEnoughFakepixel.feature.mining.miningDrillFuel) lines.add(DrillFuelParsing.getString());
             for (String commission : TablistParser.commissions) {
                 lines.add(formatCommission(commission));
             }
@@ -92,9 +93,9 @@ public class MiningOverlay {
     }
 
     public float getHeight(float scale, boolean example) {
-        int variable = Mining.miningDrillFuel ? LINE_HEIGHT : 0;
-        variable = Mining.miningMithrilPowder ? variable + LINE_HEIGHT : variable;
-        variable = Mining.miningAbilityCooldown ? variable + LINE_HEIGHT : variable;
+        int variable = NotEnoughFakepixel.feature.mining.miningDrillFuel ? LINE_HEIGHT : 0;
+        variable = NotEnoughFakepixel.feature.mining.miningMithrilPowder ? variable + LINE_HEIGHT : variable;
+        variable = NotEnoughFakepixel.feature.mining.miningAbilityCooldown ? variable + LINE_HEIGHT : variable;
         int commissionCount = example ? 2 : TablistParser.commissions.size(); // 2 for dummy
         return (variable + (commissionCount * LINE_HEIGHT)) * scale;
     }

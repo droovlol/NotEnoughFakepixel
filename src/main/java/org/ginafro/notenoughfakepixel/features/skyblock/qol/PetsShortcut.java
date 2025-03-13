@@ -8,6 +8,7 @@ import net.minecraft.inventory.ContainerChest;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.config.features.QualityOfLife;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.input.Keyboard;
@@ -20,12 +21,12 @@ public class PetsShortcut {
 
     @SubscribeEvent
     public void onKeyPress(InputEvent.KeyInputEvent event) {
-        if (!QualityOfLife.qolShortcutPets) return;
+        if (!NotEnoughFakepixel.feature.qol.qolShortcutPets) return;
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
         EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
 
         // Get the single key bind
-        int keyBind = QualityOfLife.qolPetsKey;
+        int keyBind = NotEnoughFakepixel.feature.qol.qolPetsKey;
 
         // Check if the key is currently pressed
         boolean keyPressed = Keyboard.isKeyDown(keyBind);
@@ -47,7 +48,7 @@ public class PetsShortcut {
 
     @SubscribeEvent
     public void onKeyPressOnGui(GuiScreenEvent.KeyboardInputEvent event) {
-        if (!QualityOfLife.qolShortcutPets) return; // Assuming this should check pets, not wardrobe
+        if (!NotEnoughFakepixel.feature.qol.qolShortcutPets) return; // Assuming this should check pets, not wardrobe
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
         if (!(event.gui instanceof GuiChest)) return;
         GuiChest chest = (GuiChest) event.gui;
@@ -60,7 +61,7 @@ public class PetsShortcut {
         EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
 
         // Get the single key bind
-        int keyBind = QualityOfLife.qolPetsKey;
+        int keyBind = NotEnoughFakepixel.feature.qol.qolPetsKey;
 
         // Check if the key is currently pressed
         boolean keyPressed = Keyboard.isKeyDown(keyBind);

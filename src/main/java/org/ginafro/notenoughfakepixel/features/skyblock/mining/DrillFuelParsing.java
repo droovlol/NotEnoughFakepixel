@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.config.features.Mining;
 import org.ginafro.notenoughfakepixel.utils.ItemUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
@@ -26,7 +27,7 @@ public class DrillFuelParsing {
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent e){
-        if(!Mining.miningDrillFuel) return;
+        if(!NotEnoughFakepixel.feature.mining.miningDrillFuel) return;
         if(lastRead < 20) {
             lastRead++;
             return;

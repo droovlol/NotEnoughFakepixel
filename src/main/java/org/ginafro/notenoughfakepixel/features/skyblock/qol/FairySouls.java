@@ -48,7 +48,7 @@ public class FairySouls {
     @SubscribeEvent
     public void onRender(RenderWorldLastEvent e){
         if (ScoreboardUtils.currentGamemode != Gamemode.SKYBLOCK) return;
-        if (!QualityOfLife.fairySoulWaypoints) return;
+        if (!NotEnoughFakepixel.feature.qol.fairySoulWaypoints) return;
         Location currentIsland = ScoreboardUtils.currentLocation;
         List<String> souls = new ArrayList<>();
             if (currentIsland == Location.HUB) {
@@ -106,10 +106,10 @@ public class FairySouls {
                     y - viewerY + 256,
                     z  + 0.8 - viewerZ
             ).expand(0.01f, 0.01f, 0.01f);
-            Color c = ColorUtils.getColor(QualityOfLife.fairySoulWaypointsColor);
+            Color c = ColorUtils.getColor(NotEnoughFakepixel.feature.qol.fairySoulWaypointsColor);
             RenderUtils.highlightBlock(new BlockPos(x, y, z), c, true, e.partialTicks);
             GlStateManager.disableCull();
-            Color fairySoulC = ColorUtils.getColor(QualityOfLife.fairySoulWaypointsColor);
+            Color fairySoulC = ColorUtils.getColor(NotEnoughFakepixel.feature.qol.fairySoulWaypointsColor);
             Color fairySoulColor = new Color(fairySoulC.getRed(), fairySoulC.getGreen(), fairySoulC.getBlue(), 102);
             GlStateManager.disableDepth();
             RenderUtils.renderBeaconBeam(new BlockPos(x, y, z),fairySoulColor.getRGB(),1.0f,e.partialTicks);

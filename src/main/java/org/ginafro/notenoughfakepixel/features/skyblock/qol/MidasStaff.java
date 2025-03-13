@@ -10,6 +10,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.config.features.QualityOfLife;
 import org.ginafro.notenoughfakepixel.events.PacketReadEvent;
 import org.ginafro.notenoughfakepixel.utils.InventoryUtils;
@@ -22,7 +23,7 @@ public class MidasStaff {
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
-        if (!QualityOfLife.qolDisableMidaStaffAnimation) return;
+        if (!NotEnoughFakepixel.feature.qol.qolDisableMidaStaffAnimation) return;
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
         if (InventoryUtils.getSlot("Midas Staff") == -1) return;
         AxisAlignedBB bb = Minecraft.getMinecraft().thePlayer.getEntityBoundingBox().expand(20, 20, 20);
@@ -36,7 +37,7 @@ public class MidasStaff {
 
     @SubscribeEvent
     public void onParticlePacketReceive(PacketReadEvent event) {
-        if (!QualityOfLife.qolDisableMidaStaffAnimation) return;
+        if (!NotEnoughFakepixel.feature.qol.qolDisableMidaStaffAnimation) return;
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
         if (InventoryUtils.getSlot("Midas Staff") == -1) return;
         Packet packet = event.packet;
@@ -51,7 +52,7 @@ public class MidasStaff {
 
     @SubscribeEvent
     public void onSoundPacketReceive(PacketReadEvent event) {
-        if (!QualityOfLife.qolDisableMidaStaffAnimation) return;
+        if (!NotEnoughFakepixel.feature.qol.qolDisableMidaStaffAnimation) return;
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
         if (InventoryUtils.getSlot("Midas Staff") == -1) return;
         Packet packet = event.packet;
@@ -69,7 +70,7 @@ public class MidasStaff {
 
     @SubscribeEvent
     public void handleClick(PlayerInteractEvent event) {
-        if (!QualityOfLife.qolDisableMidaStaffAnimation) return;
+        if (!NotEnoughFakepixel.feature.qol.qolDisableMidaStaffAnimation) return;
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
         if (InventoryUtils.getSlot("Midas Staff") != -1) {
             if (!(event.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)) return; // Check if right click on air

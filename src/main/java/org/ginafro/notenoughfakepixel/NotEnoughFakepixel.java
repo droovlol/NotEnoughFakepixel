@@ -73,9 +73,6 @@ public class NotEnoughFakepixel {
 
     public static NotEnoughFakepixel instance;
 
-    private long lastSaveTime = 0;
-    private static final long SAVE_INTERVAL = 60000; // 1 minute in ms
-
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         instance = this;
@@ -89,40 +86,25 @@ public class NotEnoughFakepixel {
         if (!configDirectory.exists()) {
             configDirectory.mkdirs();
         }
+
         configFile = new File(configDirectory, "config.json");
-
-        if (configFile.exists()) {
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8))) {
-                feature = gson.fromJson(reader, Configuration.class);
-
-                // Sync static fields after loading
-                if (feature != null) {
-                    feature.dungeons.loadStaticFields();
-                    feature.qol.loadStaticFields();
-                    feature.diana.loadStaticFields();
-                    feature.crimson.loadStaticFields();
-                    feature.slayer.loadStaticFields();
-                    feature.mining.loadStaticFields();
-                    feature.fishing.loadStaticFields();
-                    feature.experimentation.loadStaticFields();
-                    feature.chocolateFactory.loadStaticFields();
-                    feature.mlf.loadStaticFields();
-                    feature.duels.loadStaticFields();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                feature = new Configuration();
-            }
-        } else {
-            feature = new Configuration();
-            saveConfig();
-        }
 
         ClientCommandHandler.instance.registerCommand(new CopyCommand());
         ClientRegistry.registerKeyBinding(openGuiKey);
         Commands.init();
-        Runtime.getRuntime().addShutdownHook(new Thread(this::saveConfig));
         registerModEvents();
+        if (configFile.exists()) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8))) {
+                feature = gson.fromJson(reader, Configuration.class);
+            } catch (Exception ignored) {
+            }
+        }
+
+        if (feature == null) {
+            feature = new Configuration();
+            saveConfig();
+        }
+        Runtime.getRuntime().addShutdownHook(new Thread(this::saveConfig));
     }
 
     private void registerModEvents() {
@@ -253,32 +235,13 @@ public class NotEnoughFakepixel {
 
     public void saveConfig() {
         try {
-            if (configFile == null) {
-                throw new IllegalStateException("configFile is null; initialization order issue");
-            }
-            if (!configFile.exists()) {
-                configFile.createNewFile();
-            }
-            // Sync static fields to the map before saving
-            if (feature != null) {
-                feature.dungeons.saveStaticFields();
-                feature.qol.saveStaticFields();
-                feature.diana.saveStaticFields();
-                feature.crimson.saveStaticFields();
-                feature.slayer.saveStaticFields();
-                feature.mining.saveStaticFields();
-                feature.fishing.saveStaticFields();
-                feature.experimentation.saveStaticFields();
-                feature.chocolateFactory.saveStaticFields();
-                feature.mlf.saveStaticFields();
-                feature.duels.saveStaticFields();
-            }
+            //noinspection ResultOfMethodCallIgnored
+            configFile.createNewFile();
+
             try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(configFile), StandardCharsets.UTF_8))) {
-                String json = gson.toJson(feature);
-                writer.write(json);
+                writer.write(gson.toJson(feature));
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignored) {
         }
     }
 

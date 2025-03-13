@@ -17,6 +17,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.opengl.GL11;
@@ -66,7 +67,7 @@ public class LividDisplay {
             World world = mc.theWorld;
             if (world == null) return;
 
-            if (!Dungeons.dungeonsLividFinder) return;
+            if (!NotEnoughFakepixel.feature.dungeons.dungeonsLividFinder) return;
 
             if (world.getBlockState(pos).getBlock() == Blocks.wool) {
                 int woolColor = world.getBlockState(pos).getBlock().getDamageValue(world, pos);
@@ -100,7 +101,7 @@ public class LividDisplay {
 
     @SubscribeEvent
     public void onRenderEntity(RenderLivingEvent.Pre<EntityLivingBase> event) {
-        if (!Dungeons.dungeonsLividFinder || livid == null) return;
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsLividFinder || livid == null) return;
 
         Entity entity = event.entity;
         if (entity instanceof EntityArmorStand && entity.hasCustomName()) {
@@ -113,7 +114,7 @@ public class LividDisplay {
 
     @SubscribeEvent
     public void onWorldRender(RenderWorldLastEvent event) {
-        if (Dungeons.dungeonsLividFinder && livid != null) {
+        if (NotEnoughFakepixel.feature.dungeons.dungeonsLividFinder && livid != null) {
             AxisAlignedBB aabb = new AxisAlignedBB(livid.posX - 0.5, livid.posY - 2, livid.posZ - 0.5, livid.posX + 0.5, livid.posY, livid.posZ + 0.5);
             System.out.println("Rendering Livid highlight at: " + livid.getPosition());
             draw3DBox(aabb, LIVID_COLOUR, event.partialTicks);

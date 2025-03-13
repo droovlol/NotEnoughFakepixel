@@ -8,6 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.config.features.QualityOfLife;
 import org.lwjgl.opengl.GL11;
 
@@ -89,7 +90,7 @@ public class ItemBackgroundRarity {
         float g = ((rgb >> 8) & 0xFF) / 255f;
         float b = (rgb & 0xFF) / 255f;
 
-        GlStateManager.color(r, g, b, QualityOfLife.qolItemRarityOpacity);
+        GlStateManager.color(r, g, b, NotEnoughFakepixel.feature.qol.qolItemRarityOpacity);
     }
 
     private static int getColorValue(EnumChatFormatting format) {

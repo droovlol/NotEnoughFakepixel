@@ -5,6 +5,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.config.features.Fishing;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,7 +15,7 @@ public class GreatCatchNotifier {
 
     @SubscribeEvent
     public void onChat(@NotNull ClientChatReceivedEvent e){
-        if(!Fishing.fishingLegendaryCreatures) return;
+        if(!NotEnoughFakepixel.feature.fishing.fishingLegendaryCreatures) return;
 
         String message = e.message.getUnformattedText();
         String title = null;

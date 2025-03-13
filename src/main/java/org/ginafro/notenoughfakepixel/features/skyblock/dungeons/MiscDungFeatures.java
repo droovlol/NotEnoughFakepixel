@@ -10,6 +10,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 
@@ -27,7 +28,7 @@ public class MiscDungFeatures {
         if (!ScoreboardUtils.currentLocation.isDungeon()) return;
 
         if (message.contains("[BOSS] The Watcher: That will be enough for now.")) {
-            if (Dungeons.dungeonsBloodReady) {
+            if (NotEnoughFakepixel.feature.dungeons.dungeonsBloodReady) {
                 showCustomOverlay(EnumChatFormatting.RED + "BLOOD READY!", 2000);
                 if (mc.theWorld != null) {
                     mc.theWorld.playSound(

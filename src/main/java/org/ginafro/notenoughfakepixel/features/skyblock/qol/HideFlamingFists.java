@@ -10,6 +10,7 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.config.features.QualityOfLife;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 
@@ -25,7 +26,7 @@ public class HideFlamingFists {
 
     @SubscribeEvent
     public void onEntitySpawn(EntityJoinWorldEvent event) {
-        if (!QualityOfLife.qolHideFlamingFists || !ScoreboardUtils.currentGamemode.isSkyblock()) return;
+        if (!NotEnoughFakepixel.feature.qol.qolHideFlamingFists || !ScoreboardUtils.currentGamemode.isSkyblock()) return;
 
         if (event.entity instanceof EntityArmorStand) {
             trackedStands.add((EntityArmorStand) event.entity);
@@ -34,7 +35,7 @@ public class HideFlamingFists {
 
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
-        if (!QualityOfLife.qolHideFlamingFists || event.phase != TickEvent.Phase.END) return;
+        if (!NotEnoughFakepixel.feature.qol.qolHideFlamingFists || event.phase != TickEvent.Phase.END) return;
 
         if (++checkTimer >= 5) {
             checkTimer = 0;
@@ -79,7 +80,7 @@ public class HideFlamingFists {
 
     @SubscribeEvent
     public void onRenderArmorStand(RenderLivingEvent.Pre<?> event) {
-        if (!QualityOfLife.qolHideFlamingFists || !(event.entity instanceof EntityArmorStand)) return;
+        if (!NotEnoughFakepixel.feature.qol.qolHideFlamingFists || !(event.entity instanceof EntityArmorStand)) return;
 
         EntityArmorStand stand = (EntityArmorStand) event.entity;
         if (isTargetSkull(stand.getEquipmentInSlot(4))) {

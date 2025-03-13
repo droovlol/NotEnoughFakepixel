@@ -31,10 +31,10 @@ public class Configuration {
             }
         }
         if ("editAshfangPosition".equals(runnableId)) {
-            editOverlay(activeConfigCategory, 100, 20, Crimson.ashfangOverlayPos);
+            editOverlay(activeConfigCategory, 100, 20, NotEnoughFakepixel.feature.crimson.ashfangOverlayPos);
         }
         if ("editDungeonsMapPosition".equals(runnableId)) {
-            editOverlay(activeConfigCategory, 128, 128, Dungeons.dungeonsMapPos);
+            editOverlay(activeConfigCategory, 128, 128, NotEnoughFakepixel.feature.dungeons.dungeonsMapPos);
         }
         if ("editMlfInfoPosition".equals(runnableId)) {
             Position tempPosition = new Position((int) Info.mlfInfoOffsetX, (int) Info.mlfInfoOffsetY);
@@ -70,7 +70,7 @@ public class Configuration {
             );
         }
         if ("editScoreOverlayPosition".equals(runnableId)) {
-            editOverlay(activeConfigCategory, 150, 115, Dungeons.scoreOverlayPos);
+            editOverlay(activeConfigCategory, 150, 115, NotEnoughFakepixel.feature.dungeons.scoreOverlayPos);
         }
     }
 

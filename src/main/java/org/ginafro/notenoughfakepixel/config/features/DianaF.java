@@ -5,7 +5,6 @@ import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.ConfigE
 import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.ConfigEditorColour;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.ConfigOption;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,120 +12,78 @@ public class DianaF {
     @Expose
     private Map<String, Object> staticFieldValues = new HashMap<>();
 
-    // Waypoints (subcategoryId = 0)
     @Expose
     @ConfigOption(name = "Show Waypoints on Burrows", desc = "Show waypoints on burrows.", subcategoryId = 0)
     @ConfigEditorBoolean
-    public static boolean dianaShowWaypointsBurrows = true;
+    public boolean dianaShowWaypointsBurrows = true;
 
     @Expose
     @ConfigOption(name = "Empty Burrow Color", desc = "Color of empty burrows.", subcategoryId = 0)
     @ConfigEditorColour
-    public static String dianaEmptyBurrowColor = "0:100:0:255:255";
+    public String dianaEmptyBurrowColor = "0:100:0:255:255";
 
     @Expose
     @ConfigOption(name = "Show Labels on Waypoints", desc = "Show labels on burrow waypoints.", subcategoryId = 0)
     @ConfigEditorBoolean
-    public static boolean dianaShowLabelsWaypoints = true;
+    public boolean dianaShowLabelsWaypoints = true;
 
     @Expose
     @ConfigOption(name = "Mob Burrow Color", desc = "Color of mob burrows.", subcategoryId = 0)
     @ConfigEditorColour
-    public static String dianaMobBurrowColor = "0:255:255:255:255";
+    public String dianaMobBurrowColor = "0:255:255:255:255";
 
     @Expose
     @ConfigOption(name = "Show Tracers on Waypoints", desc = "Show tracers on burrow waypoints.", subcategoryId = 0)
     @ConfigEditorBoolean
-    public static boolean dianaShowTracersWaypoints = true;
+    public boolean dianaShowTracersWaypoints = true;
 
     @Expose
     @ConfigOption(name = "Treasure Burrow Color", desc = "Color of treasure burrows.", subcategoryId = 0)
     @ConfigEditorColour
-    public static String dianaTreasureBurrowColor = "0:255:0:0:255";
+    public String dianaTreasureBurrowColor = "0:255:0:0:255";
 
-    // Mobs (subcategoryId = 1)
     @Expose
     @ConfigOption(name = "Track Gaia Hits", desc = "Track when Gaia Construct can be damaged.", subcategoryId = 1)
     @ConfigEditorBoolean
-    public static boolean dianaGaiaConstruct = true;
+    public boolean dianaGaiaConstruct = true;
 
     @Expose
     @ConfigOption(name = "Gaia Hittable Color", desc = "Color when Gaia is hittable.", subcategoryId = 1)
     @ConfigEditorColour
-    public static String dianaGaiaHittableColor = "0:250:255:0:255";
+    public String dianaGaiaHittableColor = "0:250:255:0:255";
 
     @Expose
     @ConfigOption(name = "Show Hittable Siamese", desc = "Show when Siamese can be damaged.", subcategoryId = 1)
     @ConfigEditorBoolean
-    public static boolean dianaSiamese = true;
+    public boolean dianaSiamese = true;
 
     @Expose
     @ConfigOption(name = "Gaia Un-hittable Color", desc = "Color when Gaia is not hittable.", subcategoryId = 1)
     @ConfigEditorColour
-    public static String dianaGaiaUnhittableColor = "0:255:0:0:255";
+    public String dianaGaiaUnhittableColor = "0:255:0:0:255";
 
     @Expose
     @ConfigOption(name = "Minos Inquisitor Alert", desc = "Alert when Minos Inquisitor is dug.", subcategoryId = 1)
     @ConfigEditorBoolean
-    public static boolean dianaMinosInquisitorAlert = true;
+    public boolean dianaMinosInquisitorAlert = true;
 
     @Expose
     @ConfigOption(name = "Siamese Hittable Color", desc = "Color when Siamese is hittable.", subcategoryId = 1)
     @ConfigEditorColour
-    public static String dianaSiameseHittableColor = "0:250:255:0:255";
+    public String dianaSiameseHittableColor = "0:250:255:0:255";
 
-    // Sounds (subcategoryId = 2)
     @Expose
     @ConfigOption(name = "Waypoint Sounds", desc = "Enable sounds for waypoint creation.", subcategoryId = 2)
     @ConfigEditorBoolean
-    public static boolean dianaWaypointSounds = true;
+    public boolean dianaWaypointSounds = true;
 
     @Expose
     @ConfigOption(name = "Disable Explosion Sounds", desc = "Disable burrow digging explosion sounds.", subcategoryId = 2)
     @ConfigEditorBoolean
-    public static boolean dianaDisableDianaExplosionSounds = false;
+    public boolean dianaDisableDianaExplosionSounds = false;
 
-    // Misc (subcategoryId = 3)
     @Expose
     @ConfigOption(name = "Disable Ancestral Spade Cooldown Message", desc = "Mute Ancestral Spade cooldown message.", subcategoryId = 3)
     @ConfigEditorBoolean
-    public static boolean dianaCancelCooldownSpadeMessage = true;
-
-    // Sync static fields to the map before saving
-    public void saveStaticFields() {
-        try {
-            staticFieldValues.clear();
-            for (Field field : DianaF.class.getDeclaredFields()) {
-                if (field.isAnnotationPresent(Expose.class) && field.isAnnotationPresent(ConfigOption.class)) {
-                    field.setAccessible(true);
-                    staticFieldValues.put(field.getName(), field.get(null)); // null because static
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    // Load static fields from the map after deserialization
-    public void loadStaticFields() {
-        try {
-            for (Field field : DianaF.class.getDeclaredFields()) {
-                if (field.isAnnotationPresent(Expose.class) && field.isAnnotationPresent(ConfigOption.class)) {
-                    field.setAccessible(true);
-                    Object value = staticFieldValues.get(field.getName());
-                    if (value != null) {
-                        if (field.getType() == int.class && value instanceof Number) {
-                            field.setInt(null, ((Number) value).intValue());
-                        } else if (field.getType() == boolean.class && value instanceof Boolean) {
-                            field.setBoolean(null, (Boolean) value);
-                        } else {
-                            field.set(null, value);
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    public boolean dianaCancelCooldownSpadeMessage = true;
 }

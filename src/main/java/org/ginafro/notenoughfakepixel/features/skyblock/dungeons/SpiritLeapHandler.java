@@ -25,6 +25,7 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.input.Mouse;
@@ -117,7 +118,7 @@ public class SpiritLeapHandler {
                         .getUnformattedText()
                         .trim();
 
-                if (Dungeons.dungeonsSpiritLeapGUI && ScoreboardUtils.currentLocation.isDungeon() && "Spirit Leap".equals(displayName)) {
+                if (NotEnoughFakepixel.feature.dungeons.dungeonsSpiritLeapGUI && ScoreboardUtils.currentLocation.isDungeon() && "Spirit Leap".equals(displayName)) {
                     playerDataList.clear();
                 }
             }
@@ -134,7 +135,7 @@ public class SpiritLeapHandler {
                         .getUnformattedText()
                         .trim();
 
-                if (Dungeons.dungeonsSpiritLeapGUI && ScoreboardUtils.currentLocation.isDungeon() && "Spirit Leap".equals(displayName)) {
+                if (NotEnoughFakepixel.feature.dungeons.dungeonsSpiritLeapGUI && ScoreboardUtils.currentLocation.isDungeon() && "Spirit Leap".equals(displayName)) {
                     event.setCanceled(true);
 
                     if (playerDataList.isEmpty()) {
@@ -276,7 +277,7 @@ public class SpiritLeapHandler {
                         .getUnformattedText()
                         .trim();
 
-                if (Dungeons.dungeonsSpiritLeapGUI && ScoreboardUtils.currentLocation.isDungeon() && "Spirit Leap".equals(displayName)) {
+                if (NotEnoughFakepixel.feature.dungeons.dungeonsSpiritLeapGUI && ScoreboardUtils.currentLocation.isDungeon() && "Spirit Leap".equals(displayName)) {
                     int button = Mouse.getEventButton();
                     boolean pressed = Mouse.getEventButtonState();
 
@@ -295,7 +296,7 @@ public class SpiritLeapHandler {
                                         0,
                                         0,
                                         mc.thePlayer);
-                                if (Dungeons.dungeonsLeapAnnounce) {
+                                if (NotEnoughFakepixel.feature.dungeons.dungeonsLeapAnnounce) {
                                     String command = String.format("/pc Leaped to %s!", pd.playerName);
                                     mc.thePlayer.sendChatMessage(command);
                                 }

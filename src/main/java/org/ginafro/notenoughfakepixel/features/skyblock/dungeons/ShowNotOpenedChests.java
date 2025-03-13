@@ -9,6 +9,7 @@ import net.minecraft.item.ItemSkull;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.utils.ItemUtils;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
@@ -21,7 +22,7 @@ public class ShowNotOpenedChests {
 
     @SubscribeEvent
     public void onOpen(GuiScreenEvent.BackgroundDrawnEvent e){
-        if (!Dungeons.dungeonsShowOpenedChests) return;
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsShowOpenedChests) return;
         if (ScoreboardUtils.currentGamemode != Gamemode.SKYBLOCK) return;
         if (!(e.gui instanceof GuiChest)) return;
 
