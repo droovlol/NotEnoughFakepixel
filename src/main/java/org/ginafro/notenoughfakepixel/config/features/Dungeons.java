@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Dungeons {
-    @Expose
-    private Map<String, Object> staticFieldValues = new HashMap<>();
 
     @Expose
     @ConfigOption(name = "Is Paul Active", desc = "Check if Paul is active as mayor with EZPZ perk.", subcategoryId = 0)

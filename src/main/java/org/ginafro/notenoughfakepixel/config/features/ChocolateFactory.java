@@ -9,8 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ChocolateFactory {
-    @Expose
-    private Map<String, Object> staticFieldValues = new HashMap<>();
 
     @Expose
     @ConfigOption(name = "Show Waypoints on Chocolate Eggs", desc = "Show waypoints on chocolate eggs.")

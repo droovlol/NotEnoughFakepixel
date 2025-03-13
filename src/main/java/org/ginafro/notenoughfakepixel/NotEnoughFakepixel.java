@@ -89,21 +89,26 @@ public class NotEnoughFakepixel {
 
         configFile = new File(configDirectory, "config.json");
 
-        ClientCommandHandler.instance.registerCommand(new CopyCommand());
-        ClientRegistry.registerKeyBinding(openGuiKey);
-        Commands.init();
-        registerModEvents();
+        // Load or create config
         if (configFile.exists()) {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8))) {
                 feature = gson.fromJson(reader, Configuration.class);
             } catch (Exception ignored) {
+                // If loading fails, we'll create a new config below
             }
         }
 
+        // If config doesn't exist or failed to load, create a new one
         if (feature == null) {
             feature = new Configuration();
             saveConfig();
         }
+
+        ClientCommandHandler.instance.registerCommand(new CopyCommand());
+        ClientRegistry.registerKeyBinding(openGuiKey);
+        Commands.init();
+        registerModEvents();
+
         Runtime.getRuntime().addShutdownHook(new Thread(this::saveConfig));
     }
 

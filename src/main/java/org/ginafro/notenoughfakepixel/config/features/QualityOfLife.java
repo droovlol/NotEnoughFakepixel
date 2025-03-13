@@ -10,9 +10,6 @@ import java.util.Map;
 public class QualityOfLife {
 
     @Expose
-    private Map<String, Object> staticFieldValues = new HashMap<>();
-
-    @Expose
     @ConfigOption(name = "Fullbright", desc = "Enable fullbright.", subcategoryId = 0)
     @ConfigEditorBoolean
     public boolean qolFullbright = true;

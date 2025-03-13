@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Crimson {
-    @Expose
-    private Map<String, Object> staticFieldValues = new HashMap<>();
 
     @Expose
     @ConfigOption(name = "Bladesoul Notifier", desc = "Notify when Bladesoul boss spawns.", subcategoryId = 0)

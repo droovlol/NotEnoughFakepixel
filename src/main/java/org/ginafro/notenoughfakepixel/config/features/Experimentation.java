@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Experimentation {
-    @Expose
-    private Map<String, Object> staticFieldValues = new HashMap<>();
 
     @Expose
     @ConfigOption(name = "Chronomatron Solver", desc = "Enable Chronomatron solver.")

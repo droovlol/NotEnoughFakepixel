@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Mining {
-    @Expose
-    private Map<String, Object> staticFieldValues = new HashMap<>();
 
     @Expose
     @ConfigOption(name = "Enable Mining Ability Notifier", desc = "Notify when mining ability is ready.")

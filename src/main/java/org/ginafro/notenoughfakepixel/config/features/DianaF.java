@@ -9,8 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DianaF {
-    @Expose
-    private Map<String, Object> staticFieldValues = new HashMap<>();
 
     @Expose
     @ConfigOption(name = "Show Waypoints on Burrows", desc = "Show waypoints on burrows.", subcategoryId = 0)

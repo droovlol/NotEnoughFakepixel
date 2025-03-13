@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Fishing {
-    @Expose
-    private Map<String, Object> staticFieldValues = new HashMap<>();
 
     @Expose
     @ConfigOption(name = "Notify Legendary Creatures", desc = "Notify when a legendary creature is caught.")

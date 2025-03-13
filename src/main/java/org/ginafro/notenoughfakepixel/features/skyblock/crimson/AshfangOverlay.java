@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AshfangOverlay {
+
     private final Position position;
 
     public AshfangOverlay() {
