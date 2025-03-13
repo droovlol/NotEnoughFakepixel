@@ -8,6 +8,7 @@ import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -16,7 +17,7 @@ import java.util.UUID;
 
 public class ScaleDungeonSecrets {
     public static void scaleItemDrop(EntityItem entity, double x, double y, double z, float entityYaw, float partialTicks, CallbackInfo ci) {
-        if (!Dungeons.dungeonsItemSecretsBig) return;
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsItemSecretsBig) return;
         if (!ScoreboardUtils.currentLocation.isDungeon()) return;
 
         ItemStack stack = entity.getEntityItem();
@@ -53,9 +54,9 @@ public class ScaleDungeonSecrets {
         }
 
         if (shouldScale) {
-            float scale = Dungeons.dungeonsScaleItemDrop;
+            float scale = NotEnoughFakepixel.feature.dungeons.dungeonsScaleItemDrop;
             GlStateManager.scale(scale, scale, scale);
-            GlStateManager.translate(0,(Dungeons.dungeonsScaleItemDrop - 1f) * (entity.height/2f - 1.125f/16f),0);
+            GlStateManager.translate(0,(NotEnoughFakepixel.feature.dungeons.dungeonsScaleItemDrop - 1f) * (entity.height/2f - 1.125f/16f),0);
         }
     }
 }

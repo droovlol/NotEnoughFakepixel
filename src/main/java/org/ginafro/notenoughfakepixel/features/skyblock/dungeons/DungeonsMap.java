@@ -80,16 +80,16 @@ public class DungeonsMap {
     public void drawMap(MapData data) {
         GlStateManager.pushMatrix();
         ScaledResolution sr = new ScaledResolution(mc);
-        int mapWidth = (int) (128 * Dungeons.dungeonsMapScale);
-        int mapHeight = (int) (128 * Dungeons.dungeonsMapScale);
-        float x = Dungeons.dungeonsMapPos.getAbsX(sr, mapWidth);
-        float y = Dungeons.dungeonsMapPos.getAbsY(sr, mapHeight);
+        int mapWidth = (int) (128 * NotEnoughFakepixel.feature.dungeons.dungeonsMapScale);
+        int mapHeight = (int) (128 * NotEnoughFakepixel.feature.dungeons.dungeonsMapScale);
+        float x = NotEnoughFakepixel.feature.dungeons.dungeonsMapPos.getAbsX(sr, mapWidth);
+        float y = NotEnoughFakepixel.feature.dungeons.dungeonsMapPos.getAbsY(sr, mapHeight);
 
         // Adjust for centering if centerX or centerY is true
-        if (Dungeons.dungeonsMapPos.isCenterX()) {
+        if (NotEnoughFakepixel.feature.dungeons.dungeonsMapPos.isCenterX()) {
             x -= mapWidth / 2;
         }
-        if (Dungeons.dungeonsMapPos.isCenterY()) {
+        if (NotEnoughFakepixel.feature.dungeons.dungeonsMapPos.isCenterY()) {
             y -= mapHeight / 2;
         }
 
@@ -108,7 +108,7 @@ public class DungeonsMap {
         GL11.glScissor(scissorX, mc.displayHeight - (scissorY + scissorHeight), scissorWidth, scissorHeight);
 
         GlStateManager.translate(x, y, 0);
-        GlStateManager.scale(Dungeons.dungeonsMapScale, Dungeons.dungeonsMapScale, Dungeons.dungeonsMapScale);
+        GlStateManager.scale(NotEnoughFakepixel.feature.dungeons.dungeonsMapScale, NotEnoughFakepixel.feature.dungeons.dungeonsMapScale, NotEnoughFakepixel.feature.dungeons.dungeonsMapScale);
 
         if (data == null) {
             GlStateManager.color(0.5f, 0.5f, 0.5f, 1.0f);
@@ -120,7 +120,7 @@ public class DungeonsMap {
             tessellator.draw();
             GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
         } else {
-            if (Dungeons.dungeonsRotateMap && !finalScreen) {
+            if (NotEnoughFakepixel.feature.dungeons.dungeonsRotateMap && !finalScreen) {
                 float angle = -MathHelper.wrapAngleTo180_float(mc.thePlayer.rotationYaw);
                 GlStateManager.translate(64, 64, 0);
                 GlStateManager.rotate(angle + 180, 0, 0, 1);
@@ -139,21 +139,21 @@ public class DungeonsMap {
     private void drawBorderMap() {
         GlStateManager.pushMatrix();
         ScaledResolution sr = new ScaledResolution(mc);
-        int mapWidth = (int) (128 * Dungeons.dungeonsMapScale);
-        int mapHeight = (int) (128 * Dungeons.dungeonsMapScale);
-        float x = Dungeons.dungeonsMapPos.getAbsX(sr, mapWidth);
-        float y = Dungeons.dungeonsMapPos.getAbsY(sr, mapHeight);
+        int mapWidth = (int) (128 * NotEnoughFakepixel.feature.dungeons.dungeonsMapScale);
+        int mapHeight = (int) (128 * NotEnoughFakepixel.feature.dungeons.dungeonsMapScale);
+        float x = NotEnoughFakepixel.feature.dungeons.dungeonsMapPos.getAbsX(sr, mapWidth);
+        float y = NotEnoughFakepixel.feature.dungeons.dungeonsMapPos.getAbsY(sr, mapHeight);
 
         // Adjust for centering
-        if (Dungeons.dungeonsMapPos.isCenterX()) {
+        if (NotEnoughFakepixel.feature.dungeons.dungeonsMapPos.isCenterX()) {
             x -= mapWidth / 2;
         }
-        if (Dungeons.dungeonsMapPos.isCenterY()) {
+        if (NotEnoughFakepixel.feature.dungeons.dungeonsMapPos.isCenterY()) {
             y -= mapHeight / 2;
         }
 
         GlStateManager.disableTexture2D();
-        String[] colorParts = Dungeons.dungeonsMapBorderColor.split(":");
+        String[] colorParts = NotEnoughFakepixel.feature.dungeons.dungeonsMapBorderColor.split(":");
         float alpha = Float.parseFloat(colorParts[1]) / 255f;
         float red = Float.parseFloat(colorParts[2]) / 255f;
         float green = Float.parseFloat(colorParts[3]) / 255f;
@@ -181,16 +181,16 @@ public class DungeonsMap {
     private void drawMarkers(Map<String, Vec4b> mapDecorations) {
         ScaledResolution sr = new ScaledResolution(mc);
         int scaleFactor = sr.getScaleFactor();
-        int mapWidth = (int) (128 * Dungeons.dungeonsMapScale);
-        int mapHeight = (int) (128 * Dungeons.dungeonsMapScale);
-        float x = Dungeons.dungeonsMapPos.getAbsX(sr, mapWidth);
-        float y = Dungeons.dungeonsMapPos.getAbsY(sr, mapHeight);
+        int mapWidth = (int) (128 * NotEnoughFakepixel.feature.dungeons.dungeonsMapScale);
+        int mapHeight = (int) (128 * NotEnoughFakepixel.feature.dungeons.dungeonsMapScale);
+        float x = NotEnoughFakepixel.feature.dungeons.dungeonsMapPos.getAbsX(sr, mapWidth);
+        float y = NotEnoughFakepixel.feature.dungeons.dungeonsMapPos.getAbsY(sr, mapHeight);
 
         // Adjust for centering
-        if (Dungeons.dungeonsMapPos.isCenterX()) {
+        if (NotEnoughFakepixel.feature.dungeons.dungeonsMapPos.isCenterX()) {
             x -= mapWidth / 2;
         }
-        if (Dungeons.dungeonsMapPos.isCenterY()) {
+        if (NotEnoughFakepixel.feature.dungeons.dungeonsMapPos.isCenterY()) {
             y -= mapHeight / 2;
         }
 
@@ -222,12 +222,12 @@ public class DungeonsMap {
                 playerPositionY = markerY;
             }
 
-            if (!Dungeons.dungeonsRotateMap || finalScreen) {
-                GlStateManager.translate((x + markerX * Dungeons.dungeonsMapScale),
-                        (y + markerY * Dungeons.dungeonsMapScale), 0.0);
+            if (!NotEnoughFakepixel.feature.dungeons.dungeonsRotateMap || finalScreen) {
+                GlStateManager.translate((x + markerX * NotEnoughFakepixel.feature.dungeons.dungeonsMapScale),
+                        (y + markerY * NotEnoughFakepixel.feature.dungeons.dungeonsMapScale), 0.0);
             } else if (iconType == 1) {
-                GlStateManager.translate((x + 64.0F * Dungeons.dungeonsMapScale),
-                        (y + 64.0F * Dungeons.dungeonsMapScale), 0.0);
+                GlStateManager.translate((x + 64.0F * NotEnoughFakepixel.feature.dungeons.dungeonsMapScale),
+                        (y + 64.0F * NotEnoughFakepixel.feature.dungeons.dungeonsMapScale), 0.0);
             } else if (iconType == 0) {
                 float relativeX = (float) (markerX - 64);
                 float relativeY = (float) (markerY - 64);
@@ -237,20 +237,20 @@ public class DungeonsMap {
                 float rotatedX = (float) (relativeX * Math.cos(angleRad) - relativeY * Math.sin(angleRad));
                 float rotatedY = (float) (relativeX * Math.sin(angleRad) + relativeY * Math.cos(angleRad));
 
-                GlStateManager.translate((x + (64.0F - rotatedX) * Dungeons.dungeonsMapScale),
-                        (y + (64.0F - rotatedY) * Dungeons.dungeonsMapScale), 0.0);
+                GlStateManager.translate((x + (64.0F - rotatedX) * NotEnoughFakepixel.feature.dungeons.dungeonsMapScale),
+                        (y + (64.0F - rotatedY) * NotEnoughFakepixel.feature.dungeons.dungeonsMapScale), 0.0);
             }
 
             float angle = 180F;
-            if ((!Dungeons.dungeonsRotateMap || finalScreen) && iconType == 1) angle = playerAngle;
+            if ((!NotEnoughFakepixel.feature.dungeons.dungeonsRotateMap || finalScreen) && iconType == 1) angle = playerAngle;
             if (iconType == 0) angle = (float) (entry.getValue().func_176111_d() * 360) / 16.0F;
-            if (Dungeons.dungeonsRotateMap && !finalScreen && iconType == 0) angle = angle + 180 - playerAngle;
+            if (NotEnoughFakepixel.feature.dungeons.dungeonsRotateMap && !finalScreen && iconType == 0) angle = angle + 180 - playerAngle;
 
             GlStateManager.rotate(angle, 0.0F, 0.0F, 1.0F);
-            if (iconType == 1) GlStateManager.scale(Dungeons.dungeonsMapScale * 4 * playerMarkerScale,
-                    Dungeons.dungeonsMapScale * 4 * playerMarkerScale, 3.0F * playerMarkerScale);
-            if (iconType == 0) GlStateManager.scale(Dungeons.dungeonsMapScale * 4 * othersMarkerScale,
-                    Dungeons.dungeonsMapScale * 4 * othersMarkerScale, 3.0F * othersMarkerScale);
+            if (iconType == 1) GlStateManager.scale(NotEnoughFakepixel.feature.dungeons.dungeonsMapScale * 4 * playerMarkerScale,
+                    NotEnoughFakepixel.feature.dungeons.dungeonsMapScale * 4 * playerMarkerScale, 3.0F * playerMarkerScale);
+            if (iconType == 0) GlStateManager.scale(NotEnoughFakepixel.feature.dungeons.dungeonsMapScale * 4 * othersMarkerScale,
+                    NotEnoughFakepixel.feature.dungeons.dungeonsMapScale * 4 * othersMarkerScale, 3.0F * othersMarkerScale);
 
             float g = (float) (iconType % 4) / 4.0F;
             float h = (float) (iconType / 4) / 4.0F;

@@ -6,6 +6,7 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
 
@@ -30,14 +31,14 @@ public class SPlusNotifier {
 
     public static void reminderSPlus() {
         if (remindedSPlus) return;
-        if (!Dungeons.dungeonsSPlusNotifier && !Dungeons.dungeonsSPlusMessage) return;
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsSPlusNotifier && !NotEnoughFakepixel.feature.dungeons.dungeonsSPlusMessage) return;
 
         if (ScoreManager.getSecretPercentage() >= ScoreManager.getRequiredSecretNeeded() && ScoreManager.getRequiredSecretNeeded() != -1) {
-            if (Dungeons.dungeonsSPlusNotifier) {
+            if (NotEnoughFakepixel.feature.dungeons.dungeonsSPlusNotifier) {
                 Minecraft.getMinecraft().ingameGUI.displayTitle(EnumChatFormatting.GOLD + "S+", "", 2, 100, 2);
             }
-            if (Dungeons.dungeonsSPlusMessage) {
-                String customMessage = Dungeons.dungeonsSPlusCustom.trim();
+            if (NotEnoughFakepixel.feature.dungeons.dungeonsSPlusMessage) {
+                String customMessage = NotEnoughFakepixel.feature.dungeons.dungeonsSPlusCustom.trim();
                 if (!customMessage.isEmpty()) {
                     Minecraft.getMinecraft().thePlayer.sendChatMessage("/pc " + customMessage);
                 } else {
@@ -50,10 +51,10 @@ public class SPlusNotifier {
 
     public void reminderUnreachable() {
         if (remindedUnreachable) return;
-        if (!Dungeons.dungeonsSPlusNotifier && !Dungeons.dungeonsSPlusMessage) return;
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsSPlusNotifier && !NotEnoughFakepixel.feature.dungeons.dungeonsSPlusMessage) return;
 
         if (ScoreManager.getRequiredSecretNeeded() == -1) {
-            if (Dungeons.dungeonsSPlusMessage) {
+            if (NotEnoughFakepixel.feature.dungeons.dungeonsSPlusMessage) {
                 Minecraft.getMinecraft().thePlayer.sendChatMessage("/pc [NEF] S+ may not be reached by secrets only, do crypts or restart");
             }
             remindedUnreachable = true;

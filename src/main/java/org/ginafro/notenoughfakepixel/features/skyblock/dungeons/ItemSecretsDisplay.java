@@ -16,6 +16,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.client.config.ConfigGuiType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
@@ -32,18 +33,18 @@ public class ItemSecretsDisplay {
 
     @SubscribeEvent
     public void onRenderLast(RenderWorldLastEvent event) {
-        if (!Dungeons.dungeonsItemSecretsDisplay) return;
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsItemSecretsDisplay) return;
         if (Minecraft.getMinecraft().thePlayer == null) return;
         if (Minecraft.getMinecraft().theWorld == null) return;
         if (!ScoreboardUtils.currentLocation.isDungeon()) return;
 
         WorldClient world = Minecraft.getMinecraft().theWorld;
 
-        Color color = ColorUtils.getColor(Dungeons.dungeonsItemSecretsColor);
+        Color color = ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsItemSecretsColor);
 
 
         MobDisplayTypes hitboxType;
-        if (Dungeons.dungeonsItemSecretsBig) hitboxType = MobDisplayTypes.ITEMBIG;
+        if (NotEnoughFakepixel.feature.dungeons.dungeonsItemSecretsBig) hitboxType = MobDisplayTypes.ITEMBIG;
         else {
             hitboxType = MobDisplayTypes.ITEM;
         }

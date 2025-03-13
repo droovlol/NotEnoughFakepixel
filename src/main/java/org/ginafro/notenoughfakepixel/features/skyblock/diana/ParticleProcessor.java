@@ -7,6 +7,7 @@ import net.minecraft.network.play.server.S2APacketParticles;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.config.features.DianaF;
 import org.ginafro.notenoughfakepixel.utils.SoundUtils;
 import org.ginafro.notenoughfakepixel.utils.Waypoint;
@@ -81,7 +82,7 @@ public class ParticleProcessor {
             if (Minecraft.getMinecraft().theWorld.isAirBlock(block)) return; // prevent particles in the air getting detected
             waypoints.add(result);
             //System.out.println("Detected new result: " + result);
-            if (DianaF.dianaWaypointSounds) {
+            if (NotEnoughFakepixel.feature.diana.dianaWaypointSounds) {
                 if (result.getType().equals("EMPTY") || result.getType().equals("MOB")) {
                     SoundUtils.playSound(result.getCoordinates(), waypointSound, volumeWaypointSound, 2.0f);
                 } else if (result.getType().equals("TREASURE")) {

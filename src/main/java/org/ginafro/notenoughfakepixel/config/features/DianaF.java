@@ -68,6 +68,11 @@ public class DianaF {
     public boolean dianaMinosInquisitorAlert = true;
 
     @Expose
+    @ConfigOption(name = "Minos Inquisitor Outline", desc = "Outline Minos Inquisitors.", subcategoryId = 1)
+    @ConfigEditorBoolean
+    public boolean dianaMinosInquisitorOutline = true;
+
+    @Expose
     @ConfigOption(name = "Siamese Hittable Color", desc = "Color when Siamese is hittable.", subcategoryId = 1)
     @ConfigEditorColour
     public String dianaSiameseHittableColor = "0:250:255:0:255";

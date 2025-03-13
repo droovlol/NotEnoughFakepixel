@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.*;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.variables.MobDisplayTypes;
 import org.lwjgl.opengl.GL11;
@@ -263,7 +264,7 @@ public class RenderUtils {
         AxisAlignedBB bb = entity.getEntityBoundingBox();
         if (bb == null) return;
 
-        double scale = Dungeons.dungeonsScaleItemDrop;
+        double scale = NotEnoughFakepixel.feature.dungeons.dungeonsScaleItemDrop;
 
         Entity player = mc.getRenderViewEntity();
         double playerX = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks;
@@ -291,7 +292,7 @@ public class RenderUtils {
         z1 = centerZ + (z1 - centerZ) * scale;
         z2 = centerZ + (z2 - centerZ) * scale;
 
-        double yOffset = (Dungeons.dungeonsScaleItemDrop - 1f) * (entity.height/2f);
+        double yOffset = (NotEnoughFakepixel.feature.dungeons.dungeonsScaleItemDrop - 1f) * (entity.height/2f);
         y1 += yOffset;
         y2 += yOffset;
 

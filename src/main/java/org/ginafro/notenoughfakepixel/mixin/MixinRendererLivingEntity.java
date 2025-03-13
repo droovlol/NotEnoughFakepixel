@@ -5,7 +5,9 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.util.IChatComponent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.config.features.Dungeons;
+import org.ginafro.notenoughfakepixel.features.skyblock.diana.Diana;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.mobs.StarredMobDisplay;
 import org.ginafro.notenoughfakepixel.features.skyblock.qol.DamageCommas;
 import org.ginafro.notenoughfakepixel.utils.ColorUtils;
@@ -44,7 +46,9 @@ public abstract class MixinRendererLivingEntity<T extends EntityLivingBase> {
     private static DynamicTexture textureBrightness;
 
     StarredMobDisplay starredMobDisplay = new StarredMobDisplay();
+    Diana diana = new Diana();
     Set<EntityLivingBase> entities = starredMobDisplay.getCurrentEntities();
+    Set<EntityLivingBase> inq = diana.getCurrentEntities();
 
     @Redirect(method = "renderName*", at = @At(value = "INVOKE", target =
             "Lnet/minecraft/entity/EntityLivingBase;getDisplayName()Lnet/minecraft/util/IChatComponent;"))
@@ -58,7 +62,7 @@ public abstract class MixinRendererLivingEntity<T extends EntityLivingBase> {
 
     @Inject(method = "setBrightness", at = @At(value = "HEAD"), cancellable = true)
     private <T extends EntityLivingBase> void setBrightness(T entity, float partialTicks, boolean combineTextures, CallbackInfoReturnable<Boolean> cir) {
-        if (entities.contains(entity)) {
+        if (entities.contains(entity) || inq.contains(entity)) {
             GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
             GlStateManager.enableTexture2D();
             glTexEnvi(8960, 8704, OpenGlHelper.GL_COMBINE);
@@ -85,7 +89,7 @@ public abstract class MixinRendererLivingEntity<T extends EntityLivingBase> {
             glTexEnvi(8960, OpenGlHelper.GL_OPERAND0_ALPHA, 770);
             this.brightnessBuffer.position(0);
             Color color = new Color(
-                    ColorUtils.getColor(Dungeons.dungeonsStarredBoxColor).getRed()
+                    ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsStarredBoxColor).getRed()
             );
             brightnessBuffer.put(color.getRed() / 255f);
             brightnessBuffer.put(color.getGreen() / 255f);

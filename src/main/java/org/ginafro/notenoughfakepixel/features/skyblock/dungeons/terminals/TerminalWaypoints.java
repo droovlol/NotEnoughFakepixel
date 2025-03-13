@@ -7,6 +7,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
 import org.lwjgl.opengl.GL11;
@@ -17,7 +18,7 @@ public class TerminalWaypoints {
 
     @SubscribeEvent
     public void onRenderWorldLast(RenderWorldLastEvent event) {
-        if (Dungeons.dungeonsTerminalWaypoints && DungeonManager.checkEssentialsF7()) {
+        if (NotEnoughFakepixel.feature.dungeons.dungeonsTerminalWaypoints && DungeonManager.checkEssentialsF7()) {
             Minecraft mc = Minecraft.getMinecraft();
             if (mc.thePlayer == null) return;
 

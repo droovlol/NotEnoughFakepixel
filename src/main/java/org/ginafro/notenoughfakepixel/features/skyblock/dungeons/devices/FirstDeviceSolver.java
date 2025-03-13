@@ -16,6 +16,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.events.PacketWriteEvent;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
@@ -38,7 +39,7 @@ public class FirstDeviceSolver {
 
     @SubscribeEvent
     public void onRenderLast(RenderWorldLastEvent event) {
-        if (!Dungeons.dungeonsFirstDeviceSolver) return;
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsFirstDeviceSolver) return;
         //if (!DungeonManager.checkEssentialsF7()) return;
         // Check for sea lanterns
         if (startMemorising) {
@@ -59,11 +60,11 @@ public class FirstDeviceSolver {
                     reset();
                     return;
                 }
-                Color baseColor = ColorUtils.getColor(Dungeons.dungeonsAlternativeColor);
+                Color baseColor = ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsAlternativeColor);
                 if (i == positionInRound) {
-                    RenderUtils.highlightBlock(positionsToSolve[positionsIndexSolved[i]], ColorUtils.getColor(Dungeons.dungeonsCorrectColor), false, true, event.partialTicks);
+                    RenderUtils.highlightBlock(positionsToSolve[positionsIndexSolved[i]], ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsCorrectColor), false, true, event.partialTicks);
                 } else if (i == positionInRound+1) {
-                    RenderUtils.highlightBlock(positionsToSolve[positionsIndexSolved[i]], ColorUtils.getColor(Dungeons.dungeonsAlternativeColor), false, true, event.partialTicks);
+                    RenderUtils.highlightBlock(positionsToSolve[positionsIndexSolved[i]], ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsAlternativeColor), false, true, event.partialTicks);
                 } else if (i == positionInRound+2) {
                     RenderUtils.highlightBlock(positionsToSolve[positionsIndexSolved[i]], new Color(
                             baseColor.getRed(),
@@ -79,7 +80,7 @@ public class FirstDeviceSolver {
     // Check for initial button interact
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onInteract(PlayerInteractEvent event) {
-        if (!Dungeons.dungeonsFirstDeviceSolver) return;
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsFirstDeviceSolver) return;
         if (!DungeonManager.checkEssentialsF7()) return;
         if (Minecraft.getMinecraft().thePlayer != event.entityPlayer) return;
         if (event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
@@ -119,7 +120,7 @@ public class FirstDeviceSolver {
 
     @SubscribeEvent
     public void onDiggingPacket(PacketWriteEvent event) {
-        if (!Dungeons.dungeonsFirstDeviceSolver) return;
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsFirstDeviceSolver) return;
         if (!DungeonManager.checkEssentialsF7()) return;
         Packet packet = event.packet;
         if (packet instanceof C07PacketPlayerDigging) {
@@ -163,7 +164,7 @@ public class FirstDeviceSolver {
 
     @SubscribeEvent()
     public void onWorldUnload(WorldEvent.Unload event) {
-        if (Dungeons.dungeonsFirstDeviceSolver) reset();
+        if (NotEnoughFakepixel.feature.dungeons.dungeonsFirstDeviceSolver) reset();
     }
 
     private static BlockPos getBlockUnderButton(BlockPos pos, EnumFacing facing) {
