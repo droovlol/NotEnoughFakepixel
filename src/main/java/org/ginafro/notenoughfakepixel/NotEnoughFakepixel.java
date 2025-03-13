@@ -115,11 +115,7 @@ public class NotEnoughFakepixel {
             }
         } else {
             feature = new Configuration();
-            saveConfig(); // Save defaults if no file exists
-        }
-
-        if (feature == null) {
-            feature = new Configuration();
+            saveConfig();
         }
 
         ClientCommandHandler.instance.registerCommand(new CopyCommand());
@@ -232,13 +228,8 @@ public class NotEnoughFakepixel {
 
     public static GuiScreen openGui;
     public static long lastOpenedGui;
-    public int theme = 0;
     public static String th = "default";
     public static ResourceLocation bg = new ResourceLocation("notenoughfakepixel:backgrounds/" + th + "/background.png");
-
-    public String getTheme() {
-        return th;
-    }
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent e) {
@@ -299,12 +290,6 @@ public class NotEnoughFakepixel {
         if (event.phase != TickEvent.Phase.END) return;
         if (Minecraft.getMinecraft().thePlayer == null) return;
 
-        long now = System.currentTimeMillis();
-        if (now - lastSaveTime >= SAVE_INTERVAL) {
-            saveConfig();
-            lastSaveTime = now;
-        }
-
         if (screenToOpen != null) {
             screenTicks++;
             if (screenTicks == 5) {
@@ -316,7 +301,6 @@ public class NotEnoughFakepixel {
 
         if (openGuiKey.isPressed() && Minecraft.getMinecraft().currentScreen == null) {
             screenToOpen = new GuiScreenElementWrapper(new ConfigEditor(feature));
-            saveConfig();
         }
     }
 
