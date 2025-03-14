@@ -1,6 +1,11 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.diana;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
@@ -24,6 +29,7 @@ import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.events.PacketReadEvent;
 import net.minecraft.client.Minecraft;
 import org.ginafro.notenoughfakepixel.variables.MobDisplayTypes;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.time.Instant;
@@ -123,7 +129,6 @@ public class Diana {
         String entityName = event.entity.getDisplayName().getUnformattedText();
         if (entityName.contains("Minos Inquisitor")) {
             Instant now = Instant.now();
-            isInq.add(event.entity);
             if (now.isAfter(lastCaptureTime.plusSeconds(63))) {
                 Minecraft.getMinecraft().ingameGUI.displayTitle("Inquisitor detected!", null, 10, 40, 20);
                 double x = Math.floor(event.entity.posX);
@@ -140,7 +145,33 @@ public class Diana {
                 }
                 lastCaptureTime = now;
             }
+            clearCache();
+            WorldClient world = Minecraft.getMinecraft().theWorld;
+            for (Entity entity : world.loadedEntityList) {
+                EntityArmorStand armorStand = (EntityArmorStand) entity;
+                if (armorStand.getName().contains("Minos Inquisitor")) {
+                    EntityLivingBase inq = findAssociatedMob(armorStand);
+                    if (inq != null) {
+                    isInq.add(inq);
+                    }
+                }
+            }
         }
+    }
+
+    public void clearCache() {
+        isInq.clear();
+    }
+
+    private EntityLivingBase findAssociatedMob(EntityArmorStand armorStand) {
+        return armorStand.worldObj.getEntitiesWithinAABB(EntityLivingBase.class,
+                        armorStand.getEntityBoundingBox().expand(1.5, 3.0, 1.5),
+                        e -> e != null &&
+                                !(e instanceof EntityArmorStand) &&
+                                e != Minecraft.getMinecraft().thePlayer
+                ).stream()
+                .findFirst()
+                .orElse(null);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -286,10 +317,9 @@ public class Diana {
                 if (result.getType().equals("EMPTY")) newColor = ColorUtils.getColor(NotEnoughFakepixel.feature.diana.dianaEmptyBurrowColor);
                 if (result.getType().equals("MOB")) newColor = ColorUtils.getColor(NotEnoughFakepixel.feature.diana.dianaMobBurrowColor);
                 if (result.getType().equals("TREASURE")) newColor = ColorUtils.getColor(NotEnoughFakepixel.feature.diana.dianaTreasureBurrowColor);
-                if (result.getType().equals("MINOS")) newColor = new Color(243, 225, 107);
+                if (result.getType().equals("Inquisitor")) newColor = new Color(243, 225, 107);
                 EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-                RenderUtils.drawTag(result.getType(), Arrays.stream(result.getCoordinates()).asDoubleStream().toArray(), new Color(255, 255, 255), partialTicks);
-                RenderUtils.drawTag("("+Math.round(ParticleProcessor.getDistance(result.getCoordinates(), new int[] {player.getPosition().getX(), player.getPosition().getY(),player.getPosition().getZ()})*10)/10+"m)", new double[]{result.getCoordinates()[0],result.getCoordinates()[1]-0.5,result.getCoordinates()[2]}, new Color(255, 255, 255), partialTicks);
+                RenderUtils.drawTag(result.getType() + "("+Math.round(ParticleProcessor.getDistance(result.getCoordinates(), new int[] {player.getPosition().getX(), player.getPosition().getY(),player.getPosition().getZ()})*10)/10+"m)", Arrays.stream(result.getCoordinates()).asDoubleStream().toArray(), new Color(255, 255, 255), partialTicks);
             }
         } catch (Exception ignored) {}
     }
@@ -598,5 +628,48 @@ public class Diana {
         if (NotEnoughFakepixel.feature.diana.dianaShowWaypointsBurrows) processor.clearWaypoints();
         if (NotEnoughFakepixel.feature.diana.dianaGaiaConstruct) listGaiaAlive.clear();
         if (NotEnoughFakepixel.feature.diana.dianaSiamese) listSiameseAlive.clear();
+    }
+
+    /**
+     * Taken from NotEnoughUpdates under Creative Commons Attribution-NonCommercial 3.0
+     * https://github.com/Moulberry/NotEnoughUpdates/blob/master/LICENSE
+     * @author Moulberry
+     */
+    public static void drawNametag(String str) {
+        FontRenderer fontrenderer = Minecraft.getMinecraft().fontRendererObj;
+        float f = 1.6F;
+        float f1 = 0.016666668F * f;
+        GlStateManager.pushMatrix();
+        GL11.glNormal3f(0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(-Minecraft.getMinecraft().getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(Minecraft.getMinecraft().getRenderManager().playerViewX, 1.0F, 0.0F, 0.0F);
+        GlStateManager.scale(-f1, -f1, f1);
+        GlStateManager.disableLighting();
+        GlStateManager.depthMask(false);
+        GlStateManager.disableDepth();
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        int i = 0;
+
+        int j = fontrenderer.getStringWidth(str) / 2;
+        GlStateManager.disableTexture2D();
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+        worldrenderer.pos(-j - 1, -1 + i, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+        worldrenderer.pos(-j - 1, 8 + i, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+        worldrenderer.pos(j + 1, 8 + i, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+        worldrenderer.pos(j + 1, -1 + i, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+        tessellator.draw();
+        GlStateManager.enableTexture2D();
+        fontrenderer.drawString(str, -fontrenderer.getStringWidth(str) / 2, i, 553648127);
+        GlStateManager.depthMask(true);
+
+        fontrenderer.drawString(str, -fontrenderer.getStringWidth(str) / 2, i, -1);
+
+        GlStateManager.enableDepth();
+        GlStateManager.enableBlend();
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.popMatrix();
     }
 }

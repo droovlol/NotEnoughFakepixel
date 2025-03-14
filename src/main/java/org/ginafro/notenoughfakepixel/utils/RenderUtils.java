@@ -362,7 +362,8 @@ public class RenderUtils {
         double z = ((pos[2] - viewerZ) + 0.5);
 
         RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
-        float scale = 3F;
+        double distance = player.getDistance(pos[0], pos[1], pos[2]);
+        float scale = Math.max(2.0F, (float) (distance / 5.0)); // Dynamic scaling
         float f1 = 0.016666668F * scale;
 
         GlStateManager.pushMatrix();
