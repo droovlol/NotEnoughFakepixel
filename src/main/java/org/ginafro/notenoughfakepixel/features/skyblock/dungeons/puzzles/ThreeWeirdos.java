@@ -66,6 +66,15 @@ public class ThreeWeirdos {
                     e.setCanceled(true);
                     foundResponse = true;
                     correctName = name;
+                    mc.theWorld.playSound(
+                            mc.thePlayer.posX,
+                            mc.thePlayer.posY,
+                            mc.thePlayer.posZ,
+                            "note.pling",
+                            2.0F,
+                            1.0F,
+                            false
+                    );
                     findRiddleChest(name);
                     return;
                 }
@@ -112,19 +121,10 @@ public class ThreeWeirdos {
         if (mc.theWorld == null) return;
         if (!foundResponse) return;
         if (correctName.isEmpty()) return;
-        highlightNpc(correctName, event.partialTicks);
         if (riddleChest != null) {
             drawFilled3DBox(new AxisAlignedBB(riddleChest.getX() - 0.05, riddleChest.getY(), riddleChest.getZ() - 0.05,
                             riddleChest.getX() + 1.05, riddleChest.getY() + 1, riddleChest.getZ() + 1.05),
                     0x00FF00, true, true, event.partialTicks);
-        }
-    }
-
-    public void highlightNpc(String correctName, float partialTicks) {
-        for (Entity entity : mc.theWorld.loadedEntityList) {
-            if (entity.getDisplayName().getUnformattedText().contains(correctName)) {
-                RenderUtils.renderEntityHitbox(entity, partialTicks, new Color(90, 255, 90, 198), MobDisplayTypes.NONE);
-            }
         }
     }
 

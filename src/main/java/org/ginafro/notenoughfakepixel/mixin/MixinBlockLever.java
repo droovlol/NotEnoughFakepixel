@@ -25,11 +25,4 @@ public abstract class MixinBlockLever {
             ci.cancel();
         }
     }
-
-    @Inject(method = "getCollisionBoundingBox", at = @At("HEAD"), cancellable = true)
-    private void modifyCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state, CallbackInfoReturnable<AxisAlignedBB> cir) {
-        if (NotEnoughFakepixel.feature.qol.qolFullBlockLever) {
-            cir.setReturnValue(new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1));
-        }
-    }
 }

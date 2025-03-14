@@ -2,14 +2,17 @@ package org.ginafro.notenoughfakepixel.features.skyblock.slayers;
 
 import net.minecraft.block.BlockBeacon;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S29PacketSoundEffect;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StringUtils;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -28,6 +31,9 @@ import java.util.Collection;
 import java.util.List;
 
 public class VoidgloomSeraph {
+    public static String displayText = "";
+    private static long endTime = 0;
+    public static Minecraft mc = Minecraft.getMinecraft();
     ArrayList<EntityFallingBlock> fallingBlocks = new ArrayList<>();
     ArrayList<Waypoint> waypoints = new ArrayList<>();
     public static boolean isBoss = false;
@@ -74,6 +80,7 @@ public class VoidgloomSeraph {
             int[] coords = new int[]{(int)Math.floor(fallingBlocks.get(i).posX), (int)Math.floor(fallingBlocks.get(i).posY), (int)Math.floor(fallingBlocks.get(i).posZ)};
             waypoints.add(new Waypoint("BEACON",coords));
             SoundUtils.playSound(coords,"random.pop", 3.0f, 0.5f);
+            showCustomOverlay(EnumChatFormatting.RED + "BEACON!", 2000);
             indexToRemove.add(i);
         }
         for (Integer i : indexToRemove) {
@@ -167,5 +174,29 @@ public class VoidgloomSeraph {
                 waypoints.clear();
             }
         }
+    }
+
+    private void showCustomOverlay(String text, int durationMillis) {
+        displayText = text;
+        endTime = System.currentTimeMillis() + durationMillis;
+    }
+
+    @SubscribeEvent
+    public void onRenderOverlay(RenderGameOverlayEvent.Post event) {
+        if (event.type != RenderGameOverlayEvent.ElementType.TEXT) return;
+        if (System.currentTimeMillis() > endTime) return;
+
+        FontRenderer fr = mc.fontRendererObj;
+
+        int screenWidth = event.resolution.getScaledWidth();
+        int screenHeight = event.resolution.getScaledHeight();
+
+        GlStateManager.pushMatrix();
+        GlStateManager.scale(4.0F, 4.0F, 4.0F);
+        int textWidth = fr.getStringWidth(displayText);
+        int x = (screenWidth / 8) - (textWidth / 2);
+        int y = (screenHeight / 8) - 10;
+        fr.drawStringWithShadow(displayText, x, y, 0xFF5555);
+        GlStateManager.popMatrix();
     }
 }

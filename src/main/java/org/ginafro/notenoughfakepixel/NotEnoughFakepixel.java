@@ -59,9 +59,9 @@ public class NotEnoughFakepixel {
     public static final File nefFolder = new File(Minecraft.getMinecraft().mcDataDir, "NotEnoughFakepixel");
 
     public static final KeyBinding openGuiKey = new KeyBinding(
-            "key.notenoughfakepixel.open_gui",
+            "Open GUI",
             Keyboard.KEY_P,
-            "key.categories.notenoughfakepixel"
+            "NotEnoughFakepixel"
     );
 
     private final Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
