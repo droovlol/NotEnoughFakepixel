@@ -74,12 +74,6 @@ public class NotEnoughFakepixel {
 
     public static NotEnoughFakepixel instance;
 
-    private static QualityOfLife config = new QualityOfLife();
-
-    public static QualityOfLife getConfig() {
-        return config;
-    }
-
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         instance = this;
@@ -96,12 +90,10 @@ public class NotEnoughFakepixel {
 
         configFile = new File(configDirectory, "config.json");
 
-        // Load or create config
         if (configFile.exists()) {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8))) {
                 feature = gson.fromJson(reader, Configuration.class);
             } catch (Exception ignored) {
-                // If loading fails, we'll create a new config below
             }
         }
 
