@@ -44,10 +44,10 @@ public class MiningOverlay {
 
         // Parse background color
         String[] colorParts = NotEnoughFakepixel.feature.mining.miningOverlayBackgroundColor.split(":");
-        int alpha = Integer.parseInt(colorParts[0]);
-        int red = Integer.parseInt(colorParts[1]);
-        int green = Integer.parseInt(colorParts[2]);
-        int blue = Integer.parseInt(colorParts[3]);
+        int alpha = Integer.parseInt(colorParts[1]);
+        int red = Integer.parseInt(colorParts[2]);
+        int green = Integer.parseInt(colorParts[3]);
+        int blue = Integer.parseInt(colorParts[4]);
         int bgColor = (alpha << 24) | (red << 16) | (green << 8) | blue;
 
         // Draw background

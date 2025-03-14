@@ -27,7 +27,7 @@ public class Dungeons {
     @Expose
     @ConfigOption(name = "Auto Ready Name (if nicked)", desc = "Name to search for when nicked.", subcategoryId = 0)
     @ConfigEditorText
-    public String dungeonsAutoReadyName = "your nicked name";
+    public String dungeonsAutoReadyName = "";
 
     @Expose
     @ConfigOption(name = "Wither & Blood Keys Tracers", desc = "Show tracers on wither and blood keys.", subcategoryId = 0)
@@ -131,6 +131,11 @@ public class Dungeons {
     @ConfigOption(name = "Three Weirdos Solver", desc = "Enable Three Weirdos puzzle solver.", subcategoryId = 2)
     @ConfigEditorBoolean
     public boolean dungeonsThreeWeirdos = true;
+
+    @Expose
+    @ConfigOption(name = "Boulder Solver", desc = "Enable Boulder puzzle solver.", subcategoryId = 2)
+    @ConfigEditorBoolean
+    public boolean dungeonsBoulderSolver = true;
 
     @Expose
     @ConfigOption(name = "Water Solver", desc = "Enable Water puzzle solver.", subcategoryId = 2)

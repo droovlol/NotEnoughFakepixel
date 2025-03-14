@@ -87,6 +87,10 @@ public class FairySouls {
                 souls = FileUtils.getAllSouls().locations.get("winter");
                 island = "winter";
             }
+            if (currentIsland == Location.DWARVEN) {
+                souls = FileUtils.getAllSouls().locations.get("dwarven");
+                island = "dwarven";
+            }
         List<String> renderedSouls = checkSouls(souls);
         for (String s : renderedSouls) {
             String[] coords = s.split(",");
