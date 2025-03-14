@@ -172,10 +172,10 @@ public class BoulderSolver {
                 if (quartzBlocksFound == 8 && barriersFound >= 10) {
                     if (boulderChest == null || boulderFacing == null) {
                         // Detect rotation of room
-                        BlockPos northChest = minusMinusQuartz.add(11, -2, -2);
-                        BlockPos eastChest = plusPlusQuartz.add(2, -2, -11);
-                        BlockPos southChest = plusPlusQuartz.add(-11, -2, 2);
-                        BlockPos westChest = minusMinusQuartz.add(-2, -2, 11);
+                        BlockPos northChest = minusMinusQuartz.add(11, +1, 0);
+                        BlockPos eastChest = plusPlusQuartz.add(0, +1, -11);
+                        BlockPos southChest = plusPlusQuartz.add(-11, +1, 0);
+                        BlockPos westChest = minusMinusQuartz.add(0, +1, 11);
 
                         if (world.getBlockState(northChest).getBlock() == Blocks.log) {
                             boulderFacing = EnumFacing.NORTH;

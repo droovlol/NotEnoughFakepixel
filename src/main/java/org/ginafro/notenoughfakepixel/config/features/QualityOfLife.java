@@ -4,9 +4,6 @@ import com.google.gson.annotations.Expose;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.*;
 import org.lwjgl.input.Keyboard;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class QualityOfLife {
 
     @Expose
@@ -228,4 +225,83 @@ public class QualityOfLife {
     @ConfigOption(name = "Damage Formatter", desc = "Format damage numbers (e.g., 167k instead of 167000).", subcategoryId = 8)
     @ConfigEditorBoolean
     public boolean qolDmgFormatter = true;
+
+    @Expose
+    @ConfigOption(name = "Item Animation Toggle", desc = "Change the look of your held item.", subcategoryId = 9)
+    @ConfigEditorBoolean
+    public boolean customAnimations = false;
+
+    @Expose
+    @ConfigOption(name = "Item Animation Size", desc = "Scales the size of your currently held item. Default: 0", subcategoryId = 9)
+    @ConfigEditorSlider(minValue = -1.5f, maxValue = 1.5f, minStep = 0.05f)
+    public float customSize = 0f;
+
+    @Expose
+    @ConfigOption(name = "Item Animation Scale Swing", desc = "Also scale the size of the swing animation.", subcategoryId = 9)
+    @ConfigEditorBoolean
+    public boolean doesScaleSwing = true;
+
+    @Expose
+    @ConfigOption(name = "Item Animation X", desc = "Moves the held item. Default: 0", subcategoryId = 9)
+    @ConfigEditorSlider(minValue = -1.5f, maxValue = 1.5f, minStep = 0.05f)
+    public float customX = 0f;
+
+    @Expose
+    @ConfigOption(name = "Item Animation Y", desc = "Moves the held item. Default: 0", subcategoryId = 9)
+    @ConfigEditorSlider(minValue = -1.5f, maxValue = 1.5f, minStep = 0.05f)
+    public float customY = 0f;
+
+    @Expose
+    @ConfigOption(name = "Item Animation Z", desc = "Moves the held item. Default: 0", subcategoryId = 9)
+    @ConfigEditorSlider(minValue = -1.5f, maxValue = 1.5f, minStep = 0.05f)
+    public float customZ = 0f;
+
+    @Expose
+    @ConfigOption(name = "Item Animation Yaw", desc = "Rotates your held item. Default: 0", subcategoryId = 9)
+    @ConfigEditorSlider(minValue = -180f, maxValue = 180f, minStep = 1f)
+    public float customYaw = 0f;
+
+    @Expose
+    @ConfigOption(name = "Item Animation Pitch", desc = "Rotates your held item. Default: 0", subcategoryId = 9)
+    @ConfigEditorSlider(minValue = -180f, maxValue = 180f, minStep = 1f)
+    public float customPitch = 0f;
+
+    @Expose
+    @ConfigOption(name = "Item Animation Roll", desc = "Rotates your held item. Default: 0", subcategoryId = 9)
+    @ConfigEditorSlider(minValue = -180f, maxValue = 180f, minStep = 1f)
+    public float customRoll = 0f;
+
+    @Expose
+    @ConfigOption(name = "Item Animation Speed", desc = "Speed of the swing animation.", subcategoryId = 9)
+    @ConfigEditorSlider(minValue = -2f, maxValue = 1f, minStep = 0.05f)
+    public float customSpeed = 0f;
+
+    @Expose
+    @ConfigOption(name = "Item Animation Ignore Haste", desc = "Makes the chosen speed override haste modifiers.", subcategoryId = 9)
+    @ConfigEditorBoolean
+    public boolean ignoreHaste = true;
+
+    @Expose
+    @ConfigOption(name = "Item Animation Drinking Fix", desc = "Pick how to handle drinking animations.", subcategoryId = 9)
+    @ConfigEditorDropdown(values = {"No fix", "Rotationless", "Fixed"})
+    public int drinkingSelector = 2;
+
+    @Expose
+    @ConfigOption(name = "Item Animation Reset Item Values", desc = "Vanilla Look! Closes Settings GUI.", subcategoryId = 9)
+    @ConfigEditorButton(runnableId = "resetItemValues", buttonText = "Reset!")
+    public String resetItemValuesButton = "";
+
+    // Method to handle the reset button functionality
+    public void resetItemValues() {
+        customSize = 0f;
+        customX = 0f;
+        customY = 0f;
+        customZ = 0f;
+        customRoll = 0f;
+        customPitch = 0f;
+        customYaw = 0f;
+        doesScaleSwing = true;
+        ignoreHaste = true;
+        customSpeed = 0f;
+    }
 }

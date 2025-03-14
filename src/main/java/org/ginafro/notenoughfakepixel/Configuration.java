@@ -72,6 +72,9 @@ public class Configuration {
         if ("editScoreOverlayPosition".equals(runnableId)) {
             editOverlay(activeConfigCategory, 150, 115, NotEnoughFakepixel.feature.dungeons.scoreOverlayPos);
         }
+        if ("resetItemValues".equals(runnableId)) {
+            NotEnoughFakepixel.feature.qol.resetItemValues();
+        }
     }
 
     @Expose
