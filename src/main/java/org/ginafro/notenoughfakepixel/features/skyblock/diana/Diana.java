@@ -145,14 +145,16 @@ public class Diana {
                 }
                 lastCaptureTime = now;
             }
-            clearCache();
-            WorldClient world = Minecraft.getMinecraft().theWorld;
-            for (Entity entity : world.loadedEntityList) {
+        }
+        clearCache();
+        WorldClient world = Minecraft.getMinecraft().theWorld;
+        for (Entity entity : world.loadedEntityList) {
+            if (entity instanceof EntityArmorStand) { // Check type before casting
                 EntityArmorStand armorStand = (EntityArmorStand) entity;
                 if (armorStand.getName().contains("Minos Inquisitor")) {
                     EntityLivingBase inq = findAssociatedMob(armorStand);
                     if (inq != null) {
-                    isInq.add(inq);
+                        isInq.add(inq);
                     }
                 }
             }
@@ -241,38 +243,30 @@ public class Diana {
         }
         try {
             if (safeResults.isEmpty()) return;
-            Entity viewer = Minecraft.getMinecraft().getRenderViewEntity();
-            double viewerX = viewer.lastTickPosX + (viewer.posX - viewer.lastTickPosX) * partialTicks;
-            double viewerY = viewer.lastTickPosY + (viewer.posY - viewer.lastTickPosY) * partialTicks;
-            double viewerZ = viewer.lastTickPosZ + (viewer.posZ - viewer.lastTickPosZ) * partialTicks;
+
             for (Waypoint result : safeResults) {
                 if (result.isHidden()) continue;
-                Color newColor = white;
-                if (result.getType().equals("EMPTY")) newColor = ColorUtils.getColor(NotEnoughFakepixel.feature.diana.dianaEmptyBurrowColor);
-                if (result.getType().equals("MOB")) newColor = ColorUtils.getColor(NotEnoughFakepixel.feature.diana.dianaMobBurrowColor);
-                if (result.getType().equals("TREASURE")) newColor = ColorUtils.getColor(NotEnoughFakepixel.feature.diana.dianaTreasureBurrowColor);
-                if (result.getType().equals("MINOS")) newColor = new Color(243, 225, 107);
-                newColor = new Color(newColor.getRed(), newColor.getGreen(), newColor.getBlue(), 100);
-                AxisAlignedBB bb = new AxisAlignedBB(
-                        result.getCoordinates()[0] - viewerX,
-                        result.getCoordinates()[1] - viewerY,
-                        result.getCoordinates()[2] - viewerZ,
-                        result.getCoordinates()[0] + 1 - viewerX,
-                        result.getCoordinates()[1] + 1 - viewerY + 250,
-                        result.getCoordinates()[2] + 1 - viewerZ
-                ).expand(0.01f, 0.01f, 0.01f);
-                if (result.getType().equals("MINOS")) {
-                    bb = new AxisAlignedBB(
-                            result.getCoordinates()[0] - viewerX,
-                            result.getCoordinates()[1] - viewerY,
-                            result.getCoordinates()[2] - viewerZ,
-                            result.getCoordinates()[0] + 1 - viewerX,
-                            result.getCoordinates()[1] + 1 - viewerY + 500,
-                            result.getCoordinates()[2] + 1 - viewerZ
-                    ).expand(0.01f, 0.01f, 0.01f);
-                }
 
-                RenderUtils.drawFilledBoundingBox(bb, 1f, newColor);
+                Color newColor = white;
+                if (result.getType().equals("EMPTY"))
+                    newColor = ColorUtils.getColor(NotEnoughFakepixel.feature.diana.dianaEmptyBurrowColor);
+                if (result.getType().equals("MOB"))
+                    newColor = ColorUtils.getColor(NotEnoughFakepixel.feature.diana.dianaMobBurrowColor);
+                if (result.getType().equals("TREASURE"))
+                    newColor = ColorUtils.getColor(NotEnoughFakepixel.feature.diana.dianaTreasureBurrowColor);
+                if (result.getType().equals("MINOS"))
+                    newColor = new Color(243, 225, 107);
+                newColor = new Color(newColor.getRed(), newColor.getGreen(), newColor.getBlue(), 100);
+
+                int x = result.getCoordinates()[0];
+                int y = result.getCoordinates()[1];
+                int z = result.getCoordinates()[2];
+
+                BlockPos posAbsolute = new BlockPos(x, y - 1, z);
+
+                RenderUtils.highlightBlock(posAbsolute, newColor, true, partialTicks);
+                RenderUtils.renderBeaconBeam(posAbsolute, newColor.getRGB(), 1.0f, partialTicks);
+                GlStateManager.enableTexture2D();
             }
         } catch (Exception ignored) {}
     }
@@ -317,9 +311,20 @@ public class Diana {
                 if (result.getType().equals("EMPTY")) newColor = ColorUtils.getColor(NotEnoughFakepixel.feature.diana.dianaEmptyBurrowColor);
                 if (result.getType().equals("MOB")) newColor = ColorUtils.getColor(NotEnoughFakepixel.feature.diana.dianaMobBurrowColor);
                 if (result.getType().equals("TREASURE")) newColor = ColorUtils.getColor(NotEnoughFakepixel.feature.diana.dianaTreasureBurrowColor);
-                if (result.getType().equals("Inquisitor")) newColor = new Color(243, 225, 107);
+                if (result.getType().equals("MINOS")) newColor = new Color(243, 225, 107);
                 EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-                RenderUtils.drawTag(result.getType() + "("+Math.round(ParticleProcessor.getDistance(result.getCoordinates(), new int[] {player.getPosition().getX(), player.getPosition().getY(),player.getPosition().getZ()})*10)/10+"m)", Arrays.stream(result.getCoordinates()).asDoubleStream().toArray(), new Color(255, 255, 255), partialTicks);
+
+                int[] coords = result.getCoordinates();
+                double[] adjustedCoords = new double[] {
+                        coords[0],
+                        coords[1] - 2,
+                        coords[2]
+                };
+
+                RenderUtils.drawTag(result.getType() + "("+Math.round(ParticleProcessor.getDistance(result.getCoordinates(), new int[] {player.getPosition().getX(), player.getPosition().getY(),player.getPosition().getZ()})*10)/10+"m)",
+                        adjustedCoords,
+                        new Color(255, 255, 255),
+                        partialTicks);
             }
         } catch (Exception ignored) {}
     }
@@ -630,46 +635,4 @@ public class Diana {
         if (NotEnoughFakepixel.feature.diana.dianaSiamese) listSiameseAlive.clear();
     }
 
-    /**
-     * Taken from NotEnoughUpdates under Creative Commons Attribution-NonCommercial 3.0
-     * https://github.com/Moulberry/NotEnoughUpdates/blob/master/LICENSE
-     * @author Moulberry
-     */
-    public static void drawNametag(String str) {
-        FontRenderer fontrenderer = Minecraft.getMinecraft().fontRendererObj;
-        float f = 1.6F;
-        float f1 = 0.016666668F * f;
-        GlStateManager.pushMatrix();
-        GL11.glNormal3f(0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate(-Minecraft.getMinecraft().getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate(Minecraft.getMinecraft().getRenderManager().playerViewX, 1.0F, 0.0F, 0.0F);
-        GlStateManager.scale(-f1, -f1, f1);
-        GlStateManager.disableLighting();
-        GlStateManager.depthMask(false);
-        GlStateManager.disableDepth();
-        GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-        Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        int i = 0;
-
-        int j = fontrenderer.getStringWidth(str) / 2;
-        GlStateManager.disableTexture2D();
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        worldrenderer.pos(-j - 1, -1 + i, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-        worldrenderer.pos(-j - 1, 8 + i, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-        worldrenderer.pos(j + 1, 8 + i, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-        worldrenderer.pos(j + 1, -1 + i, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-        tessellator.draw();
-        GlStateManager.enableTexture2D();
-        fontrenderer.drawString(str, -fontrenderer.getStringWidth(str) / 2, i, 553648127);
-        GlStateManager.depthMask(true);
-
-        fontrenderer.drawString(str, -fontrenderer.getStringWidth(str) / 2, i, -1);
-
-        GlStateManager.enableDepth();
-        GlStateManager.enableBlend();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        GlStateManager.popMatrix();
-    }
 }

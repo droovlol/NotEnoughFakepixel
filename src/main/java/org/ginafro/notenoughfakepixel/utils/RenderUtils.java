@@ -366,7 +366,10 @@ public class RenderUtils {
         float scale = Math.max(2.0F, (float) (distance / 5.0)); // Dynamic scaling
         float f1 = 0.016666668F * scale;
 
+        // Save the current OpenGL state
         GlStateManager.pushMatrix();
+        GlStateManager.pushAttrib();
+
         GlStateManager.translate((float) x, (float) y + 2.5, (float) z);
         GL11.glNormal3f(0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(-renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
@@ -402,6 +405,9 @@ public class RenderUtils {
         GlStateManager.enableLighting();
         GlStateManager.disableBlend();
         GlStateManager.resetColor(); // Reset color state to prevent rendering issues
+
+        // Restore the OpenGL state
+        GlStateManager.popAttrib();
         GlStateManager.popMatrix();
     }
 
@@ -650,85 +656,81 @@ public class RenderUtils {
         GlStateManager.enableCull();
     }
 
-    public static void drawFilledBoundingBox(AxisAlignedBB p_181561_0_, float alpha, Color color) {
+    public static void drawFilledBoundingBox(AxisAlignedBB box, float alpha, Color color) {
         GlStateManager.pushMatrix(); // Save the current state
+        GlStateManager.pushAttrib(); // Save OpenGL attributes
+
         GlStateManager.disableCull();
         GlStateManager.enableBlend();
+        GlStateManager.disableLighting();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
         GlStateManager.disableTexture2D();
+        GlStateManager.depthMask(false); // Disable depth mask for transparency
 
-        // Ensure consistent color and alpha
-        GlStateManager.color(
-                color.getRed() / 255f,
-                color.getGreen() / 255f,
-                color.getBlue() / 255f,
-                color.getAlpha() / 255f * alpha
-        );
+        float r = color.getRed() / 255f;
+        float g = color.getGreen() / 255f;
+        float b = color.getBlue() / 255f;
+        float a = MathHelper.clamp_float(color.getAlpha() / 255f * alpha, 0.0f, 1.0f);
 
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
 
-        //vertical
+        // Bottom Face
+        GlStateManager.color(r, g, b, a);
         worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-        worldrenderer.pos(p_181561_0_.minX, p_181561_0_.minY, p_181561_0_.minZ).endVertex();
-        worldrenderer.pos(p_181561_0_.maxX, p_181561_0_.minY, p_181561_0_.minZ).endVertex();
-        worldrenderer.pos(p_181561_0_.maxX, p_181561_0_.minY, p_181561_0_.maxZ).endVertex();
-        worldrenderer.pos(p_181561_0_.minX, p_181561_0_.minY, p_181561_0_.maxZ).endVertex();
-        tessellator.draw();
-        worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-        worldrenderer.pos(p_181561_0_.minX, p_181561_0_.maxY, p_181561_0_.maxZ).endVertex();
-        worldrenderer.pos(p_181561_0_.maxX, p_181561_0_.maxY, p_181561_0_.maxZ).endVertex();
-        worldrenderer.pos(p_181561_0_.maxX, p_181561_0_.maxY, p_181561_0_.minZ).endVertex();
-        worldrenderer.pos(p_181561_0_.minX, p_181561_0_.maxY, p_181561_0_.minZ).endVertex();
+        worldrenderer.pos(box.minX, box.minY, box.minZ).endVertex();
+        worldrenderer.pos(box.maxX, box.minY, box.minZ).endVertex();
+        worldrenderer.pos(box.maxX, box.minY, box.maxZ).endVertex();
+        worldrenderer.pos(box.minX, box.minY, box.maxZ).endVertex();
         tessellator.draw();
 
-        GlStateManager.color(
-                color.getRed() / 255f * 0.8f,
-                color.getGreen() / 255f * 0.8f,
-                color.getBlue() / 255f * 0.8f,
-                color.getAlpha() / 255f * alpha
-        );
-
-        //x
+        // Top Face
         worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-        worldrenderer.pos(p_181561_0_.minX, p_181561_0_.minY, p_181561_0_.maxZ).endVertex();
-        worldrenderer.pos(p_181561_0_.minX, p_181561_0_.maxY, p_181561_0_.maxZ).endVertex();
-        worldrenderer.pos(p_181561_0_.minX, p_181561_0_.maxY, p_181561_0_.minZ).endVertex();
-        worldrenderer.pos(p_181561_0_.minX, p_181561_0_.minY, p_181561_0_.minZ).endVertex();
-        tessellator.draw();
-        worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-        worldrenderer.pos(p_181561_0_.maxX, p_181561_0_.minY, p_181561_0_.minZ).endVertex();
-        worldrenderer.pos(p_181561_0_.maxX, p_181561_0_.maxY, p_181561_0_.minZ).endVertex();
-        worldrenderer.pos(p_181561_0_.maxX, p_181561_0_.maxY, p_181561_0_.maxZ).endVertex();
-        worldrenderer.pos(p_181561_0_.maxX, p_181561_0_.minY, p_181561_0_.maxZ).endVertex();
+        worldrenderer.pos(box.minX, box.maxY, box.maxZ).endVertex();
+        worldrenderer.pos(box.maxX, box.maxY, box.maxZ).endVertex();
+        worldrenderer.pos(box.maxX, box.maxY, box.minZ).endVertex();
+        worldrenderer.pos(box.minX, box.maxY, box.minZ).endVertex();
         tessellator.draw();
 
-        GlStateManager.color(
-                color.getRed() / 255f * 0.9f,
-                color.getGreen() / 255f * 0.9f,
-                color.getBlue() / 255f * 0.9f,
-                color.getAlpha() / 255f * alpha
-        );
-        //z
+        // Side Faces
+        GlStateManager.color(r * 0.8f, g * 0.8f, b * 0.8f, a);
         worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-        worldrenderer.pos(p_181561_0_.minX, p_181561_0_.maxY, p_181561_0_.minZ).endVertex();
-        worldrenderer.pos(p_181561_0_.maxX, p_181561_0_.maxY, p_181561_0_.minZ).endVertex();
-        worldrenderer.pos(p_181561_0_.maxX, p_181561_0_.minY, p_181561_0_.minZ).endVertex();
-        worldrenderer.pos(p_181561_0_.minX, p_181561_0_.minY, p_181561_0_.minZ).endVertex();
-        tessellator.draw();
-        worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-        worldrenderer.pos(p_181561_0_.minX, p_181561_0_.minY, p_181561_0_.maxZ).endVertex();
-        worldrenderer.pos(p_181561_0_.maxX, p_181561_0_.minY, p_181561_0_.maxZ).endVertex();
-        worldrenderer.pos(p_181561_0_.maxX, p_181561_0_.maxY, p_181561_0_.maxZ).endVertex();
-        worldrenderer.pos(p_181561_0_.minX, p_181561_0_.maxY, p_181561_0_.maxZ).endVertex();
+        worldrenderer.pos(box.minX, box.minY, box.maxZ).endVertex();
+        worldrenderer.pos(box.minX, box.maxY, box.maxZ).endVertex();
+        worldrenderer.pos(box.minX, box.maxY, box.minZ).endVertex();
+        worldrenderer.pos(box.minX, box.minY, box.minZ).endVertex();
         tessellator.draw();
 
-        // Reset OpenGL state to ensure no side effects
+        worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+        worldrenderer.pos(box.maxX, box.minY, box.minZ).endVertex();
+        worldrenderer.pos(box.maxX, box.maxY, box.minZ).endVertex();
+        worldrenderer.pos(box.maxX, box.maxY, box.maxZ).endVertex();
+        worldrenderer.pos(box.maxX, box.minY, box.maxZ).endVertex();
+        tessellator.draw();
+
+        GlStateManager.color(r * 0.9f, g * 0.9f, b * 0.9f, a);
+        worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+        worldrenderer.pos(box.minX, box.maxY, box.minZ).endVertex();
+        worldrenderer.pos(box.maxX, box.maxY, box.minZ).endVertex();
+        worldrenderer.pos(box.maxX, box.minY, box.minZ).endVertex();
+        worldrenderer.pos(box.minX, box.minY, box.minZ).endVertex();
+        tessellator.draw();
+
+        worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+        worldrenderer.pos(box.minX, box.minY, box.maxZ).endVertex();
+        worldrenderer.pos(box.maxX, box.minY, box.maxZ).endVertex();
+        worldrenderer.pos(box.maxX, box.maxY, box.maxZ).endVertex();
+        worldrenderer.pos(box.minX, box.maxY, box.maxZ).endVertex();
+        tessellator.draw();
+
+        // Reset OpenGL state
+        GlStateManager.depthMask(true); // Re-enable depth mask
         GlStateManager.enableTexture2D();
+        GlStateManager.enableLighting();
         GlStateManager.disableBlend();
         GlStateManager.enableCull();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        GlStateManager.popMatrix();
+        GlStateManager.popAttrib(); // Restore attributes
+        GlStateManager.popMatrix(); // Restore previous state
     }
 
     public static int colorToInt(Color color) {
