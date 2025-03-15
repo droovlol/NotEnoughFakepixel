@@ -15,13 +15,14 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.HashSet;
 
-public class TeleportMazeSolver {/*
+public class TeleportMazeSolver {
 
     private static final Minecraft mc = Minecraft.getMinecraft();
 
@@ -31,7 +32,7 @@ public class TeleportMazeSolver {/*
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.START) return;
-        if (!Configuration.dungeonsTeleportMaze || !ScoreboardUtils.currentLocation.isDungeon()) return;
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsTeleportMaze || !ScoreboardUtils.currentLocation.isDungeon()) return;
         if (mc.thePlayer == null || mc.theWorld == null) return;
         BlockPos groundBlock = new BlockPos(mc.thePlayer.posX, 69, mc.thePlayer.posZ);
         IBlockState state = mc.theWorld.getBlockState(groundBlock);
@@ -71,7 +72,7 @@ public class TeleportMazeSolver {/*
 
     @SubscribeEvent
     public void onWorldRender(RenderWorldLastEvent event) {
-        if (!Configuration.dungeonsTeleportMaze) return;
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsTeleportMaze) return;
         Entity viewer = Minecraft.getMinecraft().getRenderViewEntity();
         double viewerX = viewer.lastTickPosX + (viewer.posX - viewer.lastTickPosX) * event.partialTicks;
         double viewerY = viewer.lastTickPosY + (viewer.posY - viewer.lastTickPosY) * event.partialTicks;
@@ -152,5 +153,5 @@ public class TeleportMazeSolver {/*
         tessellator.draw();
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
-    }*/
+    }
 }

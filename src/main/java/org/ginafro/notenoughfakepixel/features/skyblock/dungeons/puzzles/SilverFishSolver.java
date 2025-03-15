@@ -1,6 +1,7 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.dungeons.puzzles;
 
 import com.google.common.collect.Lists;
+import net.minecraft.block.BlockHopper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -8,8 +9,12 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntitySilverfish;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
@@ -18,8 +23,10 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.opengl.GL11;
+import scala.tools.nsc.transform.patmat.Logic;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -27,7 +34,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-public class SilverFishSolver {/*
+public class SilverFishSolver {
 
     private static final Minecraft mc = Minecraft.getMinecraft();
     private static final List<Point> steps = new ArrayList<>();
@@ -37,35 +44,58 @@ public class SilverFishSolver {/*
     private static EntitySilverfish silverfish = null;
     private static Point silverfishPos = null;
     private int ticks = 0;
+    private boolean prevInSilverfishRoom = false;
+    private boolean inSilverfishRoom = false;
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.START || !ScoreboardUtils.currentLocation.isDungeon() || mc.thePlayer == null || mc.theWorld == null)
             return;
 
-        if (!Configuration.dungeonsSilverfishSolver) return;
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsSilverfishSolver) return;
 
-        List<EntitySilverfish> silverfish = mc.theWorld.getEntities(EntitySilverfish.class, s -> mc.thePlayer.getDistanceToEntity(s) < 20);
-        if (silverfish.size() > 0) {
-            SilverFishSolver.silverfish = silverfish.get(0);
+        List<EntitySilverfish> silverfishes = mc.theWorld.getEntities(EntitySilverfish.class, s -> mc.thePlayer.getDistanceToEntity(s) < 20);
+        if (silverfishes.size() > 0) {
+            SilverFishSolver.silverfish = silverfishes.get(0);
             if (silverfishChestPos == null || roomFacing == null) {
                 if (ticks % 20 == 0) {
                     new Thread(() -> {
-                        findChest:
-                        for (BlockPos pos : getBlocksWithinRangeAtSameY(mc.thePlayer.getPosition(), 25, 67)) {
-                            IBlockState block = mc.theWorld.getBlockState(pos);
-                            if (block.getBlock() == Blocks.chest && mc.theWorld.getBlockState(pos.down()).getBlock() == Blocks.packed_ice && mc.theWorld.getBlockState(pos.up(2)).getBlock() == Blocks.hopper) {
-                                for (EnumFacing direction : EnumFacing.HORIZONTALS) {
-                                    if (mc.theWorld.getBlockState(pos.offset(direction)).getBlock() == Blocks.stonebrick) {
-                                        silverfishChestPos = pos;
-                                        roomFacing = direction;
-                                        System.out.println(String.format("Silverfish chest is at %s and is facing %s", silverfishChestPos, roomFacing));
-                                        break findChest;
+                        // New room detection logic
+                        boolean foundRoom = false;
+                        prevInSilverfishRoom = inSilverfishRoom;
+                        double x = mc.thePlayer.posX;
+                        double z = mc.thePlayer.posZ;
+                        AxisAlignedBB entityScan = new AxisAlignedBB(x - 25, 67, z - 25, x + 25, 68, z + 25); // 50x1x50
+                        List<EntitySilverfish> silverfishList = mc.theWorld.getEntitiesWithinAABB(EntitySilverfish.class, entityScan);
+                        List<EntityItem> items = mc.theWorld.getEntitiesWithinAABB(EntityItem.class, entityScan);
+                        if (silverfishList.size() > 0 && items.size() > 0) {
+                            double silverfishX = silverfishList.get(0).posX;
+                            double silverfishZ = silverfishList.get(0).posZ;
+                            for (EntityItem item : items) {
+                                if (Item.getIdFromItem(item.getEntityItem().getItem()) == 46 &&
+                                        Math.abs(item.posX - silverfishX) < 1 &&
+                                        Math.abs(item.posZ - silverfishZ) < 1) {
+                                    Iterable<BlockPos> blocks = BlockPos.getAllInBox(
+                                            new BlockPos(mc.thePlayer.posX - 27, 67, mc.thePlayer.posZ - 27),
+                                            new BlockPos(mc.thePlayer.posX + 27, 67, mc.thePlayer.posZ + 27)
+                                    );
+                                    for (BlockPos blockPos : blocks) {
+                                        if (mc.theWorld.getBlockState(blockPos).getBlock() == Blocks.packed_ice &&
+                                                mc.theWorld.getBlockState(blockPos.add(0, 3, 0)).getBlock() == Blocks.hopper) {
+                                            inSilverfishRoom = true;
+                                            if (!prevInSilverfishRoom) {
+                                                silverfishChestPos = blockPos.add(0, 1, 0);
+                                                TileEntity hopper = mc.theWorld.getTileEntity(blockPos.add(0, 3, 0));
+                                                roomFacing = BlockHopper.getFacing(hopper.getBlockMetadata());
+                                                System.out.println(String.format("Silverfish chest is at %s and is facing %s", silverfishChestPos, roomFacing));
+                                            }
+                                            break;
+                                        }
                                     }
                                 }
                             }
                         }
-                    }, "Ice-Path-Detection").start();
+                    }, "Skytils-Ice-Path-Detection").start();
                     ticks = 0;
                 }
             } else if (grid == null) {
@@ -94,7 +124,7 @@ public class SilverFishSolver {/*
 
     @SubscribeEvent
     public void onWorldRender(RenderWorldLastEvent event) {
-        if (!Configuration.dungeonsSilverfishSolver) return;
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsSilverfishSolver) return;
 
         if (silverfishChestPos != null && roomFacing != null && grid != null && SilverFishSolver.silverfish.isEntityAlive()) {
             for (int i = 0; i < steps.size() - 1; i++) {
@@ -254,6 +284,5 @@ public class SilverFishSolver {/*
 
         return new Point(x + i * diffX, y + i * diffY);
     }
-    */
 }
 

@@ -138,9 +138,19 @@ public class Dungeons {
     public boolean dungeonsBoulderSolver = true;
 
     @Expose
+    @ConfigOption(name = "Silverfish Solver", desc = "Enable Silverfish puzzle solver.", subcategoryId = 2)
+    @ConfigEditorBoolean
+    public boolean dungeonsSilverfishSolver = true;
+
+    @Expose
     @ConfigOption(name = "Water Solver", desc = "Enable Water puzzle solver.", subcategoryId = 2)
     @ConfigEditorBoolean
     public boolean dungeonsWaterSolver = true;
+
+    @Expose
+    @ConfigOption(name = "Teleport Maze Solver", desc = "Enable Water puzzle solver.", subcategoryId = 2)
+    @ConfigEditorBoolean
+    public boolean dungeonsTeleportMaze = true;
 
     @Expose
     @ConfigOption(name = "Fel Mobs Display", desc = "Display Fel mobs.", subcategoryId = 3)
