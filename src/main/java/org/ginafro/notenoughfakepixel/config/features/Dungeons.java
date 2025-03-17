@@ -148,7 +148,7 @@ public class Dungeons {
     public boolean dungeonsWaterSolver = true;
 
     @Expose
-    @ConfigOption(name = "Teleport Maze Solver", desc = "Enable Water puzzle solver.", subcategoryId = 2)
+    @ConfigOption(name = "Teleport Maze Solver", desc = "Enable Teleport Maze puzzle solver.", subcategoryId = 2)
     @ConfigEditorBoolean
     public boolean dungeonsTeleportMaze = true;
 
