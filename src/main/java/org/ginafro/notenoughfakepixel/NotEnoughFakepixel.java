@@ -196,6 +196,7 @@ public class NotEnoughFakepixel {
         MinecraftForge.EVENT_BUS.register(new Map());
         // Diana
         MinecraftForge.EVENT_BUS.register(new Diana());
+        MinecraftForge.EVENT_BUS.register(new GuessBurrow());
         // Crimson
         MinecraftForge.EVENT_BUS.register(new AshfangOverlay());
         MinecraftForge.EVENT_BUS.register(new BossNotifier());
