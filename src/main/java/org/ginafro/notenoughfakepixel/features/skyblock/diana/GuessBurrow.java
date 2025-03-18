@@ -245,7 +245,7 @@ public class GuessBurrow {
     @SubscribeEvent
     public void onRenderWorld(RenderWorldLastEvent event) {
         if (guessPoint != null && NotEnoughFakepixel.feature.diana.dianaBurrowGuess) {
-            BlockPos loc = new BlockPos(guessPoint.xCoord, guessPoint.yCoord, guessPoint.zCoord);
+            BlockPos loc = new BlockPos(guessPoint.xCoord, guessPoint.yCoord + 1, guessPoint.zCoord);
             AxisAlignedBB aabb = new AxisAlignedBB(
                     loc.getX(), loc.getY(), loc.getZ(),
                     loc.getX() + 1, loc.getY() + 1, loc.getZ() + 1
@@ -269,9 +269,9 @@ public class GuessBurrow {
         double viewerY = viewer.lastTickPosY + (viewer.posY - viewer.lastTickPosY) * partialTicks;
         double viewerZ = viewer.lastTickPosZ + (viewer.posZ - viewer.lastTickPosZ) * partialTicks;
 
-        double x = loc.getX() - viewerX;
-        double y = loc.getY() - viewerY - viewer.getEyeHeight();
-        double z = loc.getZ() - viewerZ;
+        double x = loc.getX() + 0.5 - viewerX;
+        double y = loc.getY() + 0.5 - viewerY - viewer.getEyeHeight();
+        double z = loc.getZ() + 0.5 - viewerZ;
 
         double distSq = x * x + y * y + z * z;
         double dist = Math.sqrt(distSq);
