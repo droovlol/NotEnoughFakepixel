@@ -17,6 +17,7 @@ import net.minecraft.util.*;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.events.PacketReadEvent;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.opengl.GL11;
@@ -243,7 +244,7 @@ public class GuessBurrow {
 
     @SubscribeEvent
     public void onRenderWorld(RenderWorldLastEvent event) {
-        if (guessPoint != null) {
+        if (guessPoint != null && NotEnoughFakepixel.feature.diana.dianaBurrowGuess) {
             BlockPos loc = new BlockPos(guessPoint.xCoord, guessPoint.yCoord, guessPoint.zCoord);
             AxisAlignedBB aabb = new AxisAlignedBB(
                     loc.getX(), loc.getY(), loc.getZ(),

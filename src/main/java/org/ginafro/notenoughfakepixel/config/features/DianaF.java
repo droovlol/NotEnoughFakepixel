@@ -11,6 +11,11 @@ import java.util.Map;
 public class DianaF {
 
     @Expose
+    @ConfigOption(name = "Show Burrow guess", desc = "Show a guess to the burrow.", subcategoryId = 0)
+    @ConfigEditorBoolean
+    public boolean dianaBurrowGuess = true;
+
+    @Expose
     @ConfigOption(name = "Show Waypoints on Burrows", desc = "Show waypoints on burrows.", subcategoryId = 0)
     @ConfigEditorBoolean
     public boolean dianaShowWaypointsBurrows = true;
