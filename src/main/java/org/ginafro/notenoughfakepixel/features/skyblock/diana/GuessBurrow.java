@@ -47,8 +47,7 @@ public class GuessBurrow {
             S29PacketSoundEffect soundPacket = (S29PacketSoundEffect) event.packet;
             if (!"note.harp".equals(soundPacket.getSoundName())) return;
 
-            // Add 10 to the pitch as intended
-            float pitch = soundPacket.getPitch() + 5;
+            float pitch = soundPacket.getPitch();
             Vec3 pos = new Vec3(soundPacket.getX(), soundPacket.getY(), soundPacket.getZ());
 
             if (!hasDinged) {
@@ -89,10 +88,15 @@ public class GuessBurrow {
             lastSoundPoint = pos;
             lastDingPitch = pitch;
 
-            // Updated distance formula: simpler inverse relationship
-            distance = slope == 0f ? 0f : (float) (2.718 / (slope * 2));
+            // Calculate initial distance
+            distance = slope == 0f ? 0f : (float) (Math.E / slope / 2.8);
 
-            if (distance < 0) { // Only reset if negative, no upper cap
+            // Gradually reduce distance when pitch > 1
+            if (pitch > 0) {
+                distance *= Math.max(0.1f, 2.0f - 1.0f * pitch);
+            }
+
+            if (distance < 0) {
                 distance = 0f;
                 guessPoint = null;
                 return;
