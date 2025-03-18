@@ -71,7 +71,7 @@ public class DianaF {
     public boolean dianaMinosInquisitorAlert = true;
 
     @Expose
-    @ConfigOption(name = "Minos Inquisitor Outline", desc = "Outline Minos Inquisitors.", subcategoryId = 1)
+    @ConfigOption(name = "Minos Inquisitor Outline", desc = "Outline Minos Inquisitors (the outline color is linked to starred mobs color).", subcategoryId = 1)
     @ConfigEditorBoolean
     public boolean dianaMinosInquisitorOutline = true;
 
