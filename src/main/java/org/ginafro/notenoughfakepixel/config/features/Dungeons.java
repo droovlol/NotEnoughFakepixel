@@ -298,6 +298,11 @@ public class Dungeons {
     public boolean dungeonsSPlusNotifier = true;
 
     @Expose
+    @ConfigOption(name = "S Notifier", desc = "Notify when S is reached (actually reached not virtual).", subcategoryId = 5)
+    @ConfigEditorBoolean
+    public boolean dungeonsSNotifier = true;
+
+    @Expose
     @ConfigOption(name = "S+ Message on Chat", desc = "Send a message when dungeon is about to be done.", subcategoryId = 5)
     @ConfigEditorBoolean
     public boolean dungeonsSPlusMessage = true;
