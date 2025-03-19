@@ -291,6 +291,56 @@ public class QualityOfLife {
     @ConfigEditorButton(runnableId = "resetItemValues", buttonText = "Reset!")
     public String resetItemValuesButton = "";
 
+    @Expose
+    @ConfigOption(name = "Player Size Toggle", desc = "Enable size adjustment for the client player", subcategoryId = 1)
+    @ConfigEditorBoolean
+    public boolean sizetoggle = false;
+
+    @Expose
+    @ConfigOption(name = "Player X Scale", desc = "Scale factor in the X direction", subcategoryId = 1)
+    @ConfigEditorSlider(minValue = 0.1f, maxValue = 2.0f, minStep = 0.1f)
+    public float x = 1.0f;
+
+    @Expose
+    @ConfigOption(name = "Player Y Scale", desc = "Scale factor in the Y direction", subcategoryId = 1)
+    @ConfigEditorSlider(minValue = -2.0f, maxValue = 2.0f, minStep = 0.1f)
+    public float y = 1.0f;
+
+    @Expose
+    @ConfigOption(name = "Player Z Scale", desc = "Scale factor in the Z direction", subcategoryId = 1)
+    @ConfigEditorSlider(minValue = 0.1f, maxValue = 2.0f, minStep = 0.1f)
+    public float z = 1.0f;
+
+    @Expose
+    @ConfigOption(name = "Player Spin Toggle", desc = "Enable spinning for the client player", subcategoryId = 2)
+    @ConfigEditorBoolean
+    public boolean spintoggle = false;
+
+    @Expose
+    @ConfigOption(name = "Player Spin Speed", desc = "Speed of the rotation (degrees per 0.01s)", subcategoryId = 2)
+    @ConfigEditorSlider(minValue = 0.1f, maxValue = 10.0f, minStep = 0.1f)
+    public float speed = 1.0f;
+
+    @Expose
+    @ConfigOption(name = "Player Rotation Axis X", desc = "X component of the rotation axis", subcategoryId = 2)
+    @ConfigEditorSlider(minValue = -1.0f, maxValue = 1.0f, minStep = 0.1f)
+    public float value1 = 0.0f;
+
+    @Expose
+    @ConfigOption(name = "Player Rotation Axis Y", desc = "Y component of the rotation axis", subcategoryId = 2)
+    @ConfigEditorSlider(minValue = -1.0f, maxValue = 1.0f, minStep = 0.1f)
+    public float value2 = 1.0f;
+
+    @Expose
+    @ConfigOption(name = "Player Rotation Axis Z", desc = "Z component of the rotation axis", subcategoryId = 2)
+    @ConfigEditorSlider(minValue = -1.0f, maxValue = 1.0f, minStep = 0.1f)
+    public float value3 = 0.0f;
+
+    @Expose
+    @ConfigOption(name = "Reset Player Size Values", desc = "Vanilla Look!", subcategoryId = 9)
+    @ConfigEditorButton(runnableId = "resetSizeValues", buttonText = "Reset!")
+    public String resetSizeValuesButton = "";
+
     // Method to handle the reset button functionality
     public void resetItemValues() {
         customSize = 0f;
@@ -303,5 +353,16 @@ public class QualityOfLife {
         doesScaleSwing = true;
         ignoreHaste = true;
         customSpeed = 0f;
+    }
+    public void resetSizeValues() {
+        sizetoggle = false;
+        x = 1.0f;
+        y = 1.0f;
+        z = 1.0f;
+        spintoggle = false;
+        speed = 1.0f;
+        value1 = 0.0f;
+        value2 = 1.0f;
+        value3 = 0.0f;
     }
 }

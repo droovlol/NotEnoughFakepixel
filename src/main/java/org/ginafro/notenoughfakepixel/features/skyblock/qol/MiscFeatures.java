@@ -19,14 +19,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import net.minecraft.network.play.server.S29PacketSoundEffect;
 import net.minecraft.util.*;
-import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -46,8 +43,7 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -505,5 +501,55 @@ public class MiscFeatures {
         if (NotEnoughFakepixel.feature.qol.qolAlwaysSprint) {
         KeyBinding.setKeyBindState(mc.gameSettings.keyBindSprint.getKeyCode(), true);
         }
+    }
+
+    private static final Map<String, float[]> userSizes = new HashMap<>();
+
+    static {
+        userSizes.put("GoatMG", new float[]{1.5f, 0.7f, 1.5f});
+    }
+
+    @SubscribeEvent
+    public void onRenderPlayerPre(RenderPlayerEvent.Pre event) {
+        EntityPlayer player = event.entityPlayer;
+        String name = player.getName();
+
+        // Push the matrix once for all transformations
+        GL11.glPushMatrix();
+
+        // Size adjustment for all players
+        if (NotEnoughFakepixel.feature.qol.sizetoggle) {
+            float x = NotEnoughFakepixel.feature.qol.x;
+            float y = NotEnoughFakepixel.feature.qol.y;
+            float z = NotEnoughFakepixel.feature.qol.z;
+
+            if (y < 0) {
+                GL11.glTranslatef(0, -y * 2, 0);
+                GL11.glRotatef(180, 1, 0, 0);
+                GL11.glRotatef(2 * player.rotationYaw + 180, 0, 1, 0);
+            }
+            GL11.glScalef(x, Math.abs(y), z);
+        }
+
+        // Scale for specific users
+        if (userSizes.containsKey(name)) {
+            float[] sizes = userSizes.get(name);
+            GL11.glScalef(sizes[0], sizes[1], sizes[2]);
+        }
+
+        // Rotation for all players
+        if (NotEnoughFakepixel.feature.qol.spintoggle) {
+            long currentTime = Minecraft.getSystemTime(); // Time in milliseconds
+            float time = currentTime / 10f; // Convert to 0.01-second units (100 fps)
+            float angle = (time * NotEnoughFakepixel.feature.qol.speed) % 360;
+            float rot = 180 - angle;
+            GL11.glRotatef(rot, NotEnoughFakepixel.feature.qol.value1, NotEnoughFakepixel.feature.qol.value2, NotEnoughFakepixel.feature.qol.value3);
+        }
+    }
+
+    @SubscribeEvent
+    public void onRenderPlayerPost(RenderPlayerEvent.Post event) {
+        // Pop the matrix after rendering
+        GL11.glPopMatrix();
     }
 }

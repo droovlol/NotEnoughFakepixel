@@ -1,10 +1,8 @@
 package org.ginafro.notenoughfakepixel.config.features;
 
 import com.google.gson.annotations.Expose;
-import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.ConfigEditorBoolean;
-import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.ConfigEditorColour;
-import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.ConfigEditorDropdown;
-import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.ConfigOption;
+import org.ginafro.notenoughfakepixel.config.gui.core.config.Position;
+import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.*;
 
 public class Slayer {
 
@@ -32,6 +30,19 @@ public class Slayer {
     @ConfigOption(name = "Slayer Bosses Display", desc = "Draw a box around slayer bosses.", subcategoryId = 0)
     @ConfigEditorBoolean
     public boolean slayerBosses = true;
+
+    @Expose
+    @ConfigOption(name = "Slayer Boss Health Display", desc = "Displays the slayer health on screen.", subcategoryId = 0)
+    @ConfigEditorBoolean
+    public boolean slayerBossHP = true;
+
+    @Expose
+    public Position slayerBossHPPos = new Position(10, 10, false, true);
+
+    @Expose
+    @ConfigOption(name = "Edit Slayer HP Overlay Position", desc = "Adjust the slayer hp overlay position visually", subcategoryId = 1)
+    @ConfigEditorButton(runnableId = "editSlayerOverlayPosition", buttonText = "Edit Position")
+    public String editSlayerOverlayPositionButton = "";
 
     @Expose
     @ConfigOption(name = "Slayer Bosses Color", desc = "Color of slayer bosses.", subcategoryId = 0)
