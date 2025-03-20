@@ -63,7 +63,6 @@ public class MiscFeatures {
 
     @SubscribeEvent
     public void onInteract(PlayerInteractEvent event) {
-        // Existing code for blocking unwanted placements…
         if (!ScoreboardUtils.currentGamemode.isSkyblock() || mc.thePlayer != event.entityPlayer) return;
         ItemStack item = event.entityPlayer.getHeldItem();
         if (item == null) return;
@@ -78,6 +77,17 @@ public class MiscFeatures {
                 if (NotEnoughFakepixel.feature.qol.qolBlockPlacingItems && item.getDisplayName().contains("Spirit Sceptre")) {
                     event.setCanceled(true);
                 }
+                if (NotEnoughFakepixel.feature.qol.qolBlockPlacingItems && item.getDisplayName().contains("Bouquet of Lies")) {
+                    event.setCanceled(true);
+                }
+            }
+
+            if (NotEnoughFakepixel.feature.qol.qolBlockPlacingItems && item.getDisplayName().contains("Superboom TNT")) {
+                event.setCanceled(true);
+            }
+
+            if (NotEnoughFakepixel.feature.qol.qolBlockPlacingItems && item.getDisplayName().contains("Infinityboom TNT")) {
+                event.setCanceled(true);
             }
 
             if (NotEnoughFakepixel.feature.qol.qolBlockPlacingItems && item.getItem() == Item.getItemFromBlock(Blocks.hopper) && item.getDisplayName().contains("Weird Tuba")) {
