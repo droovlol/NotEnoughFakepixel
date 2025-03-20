@@ -7,6 +7,11 @@ import org.lwjgl.input.Keyboard;
 public class QualityOfLife {
 
     @Expose
+    @ConfigOption(name = "NEF Alerts", desc = "Alerts.", subcategoryId = 9)
+    @ConfigEditorButton(runnableId = "nefAlerts", buttonText = "Edit")
+    public String nefAlerts = "";
+
+    @Expose
     @ConfigOption(name = "Fullbright", desc = "Enable fullbright.", subcategoryId = 0)
     @ConfigEditorBoolean
     public boolean qolFullbright = true;
@@ -210,6 +215,11 @@ public class QualityOfLife {
     @ConfigOption(name = "Hide Flaming Fists", desc = "Hide flaming fists.", subcategoryId = 7)
     @ConfigEditorBoolean
     public boolean qolHideFlamingFists = false;
+
+    @Expose
+    @ConfigOption(name = "Hide Player Armor", desc = "Hide player armor.", subcategoryId = 7)
+    @ConfigEditorBoolean
+    public boolean qolHidePlayerArmor = false;
 
     @Expose
     @ConfigOption(name = "Hide Dead Mobs", desc = "Hide dead mobs.", subcategoryId = 7)

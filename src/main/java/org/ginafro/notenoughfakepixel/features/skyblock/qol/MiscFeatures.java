@@ -57,6 +57,8 @@ public class MiscFeatures {
             Blocks.double_plant
     ));
 
+    List<ItemStack> armour = new ArrayList<>();
+
     private final Minecraft mc = Minecraft.getMinecraft();
 
     @SubscribeEvent
@@ -241,6 +243,21 @@ public class MiscFeatures {
                 entity.setPositionAndUpdate(playerX, teleportY, playerZ);
 
                 event.setCanceled(true);
+            }
+        }
+
+        if (NotEnoughFakepixel.feature.qol.qolHidePlayerArmor) {
+            if (event.entity instanceof EntityPlayer) {
+                EntityPlayer player = (EntityPlayer) event.entity;
+
+                for (int i = 0; i < player.inventory.armorInventory.length; i++) {
+                    if (player.inventory.armorInventory[i] != null) {
+                        armour.add(player.inventory.armorInventory[i].copy());
+                        player.inventory.armorInventory[i] = null;
+                    } else {
+                        armour.add(null);
+                    }
+                }
             }
         }
     }
@@ -478,10 +495,10 @@ public class MiscFeatures {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onChatReceived(ClientChatReceivedEvent e) {
-        if (e.type == 2) return; // Ignore actionbar messages
+        if (e.type == 2) return;
         if (NotEnoughFakepixel.feature.qol.qolCopyChatMsg) {
 
-        String unformattedText = StringUtils.stripControlCodes(e.message.getUnformattedText());
+        String unformattedText = e.message.getUnformattedText();
 
         if (!unformattedText.replace(" ", "").isEmpty()) {
             ChatComponentText copyText = new ChatComponentText(EnumChatFormatting.DARK_GRAY + Character.toString((char) Integer.parseInt("270D", 16)));
@@ -500,6 +517,21 @@ public class MiscFeatures {
     public void onTick(TickEvent.ClientTickEvent event) {
         if (NotEnoughFakepixel.feature.qol.qolAlwaysSprint) {
         KeyBinding.setKeyBindState(mc.gameSettings.keyBindSprint.getKeyCode(), true);
+        }
+    }
+
+    @SubscribeEvent
+    public void onRenderLivingPost(RenderLivingEvent.Post<EntityLivingBase> event) {
+        if (NotEnoughFakepixel.feature.qol.qolHidePlayerArmor && ScoreboardUtils.currentGamemode.isSkyblock()) {
+            if (event.entity instanceof EntityPlayer) {
+                EntityPlayer player = (EntityPlayer) event.entity;
+
+                for (int i = 0; i < player.inventory.armorInventory.length; i++) {
+                    player.inventory.armorInventory[i] = armour.get(i);
+                }
+
+                armour.clear();
+            }
         }
     }
 }

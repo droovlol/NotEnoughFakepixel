@@ -3,6 +3,7 @@ package org.ginafro.notenoughfakepixel;
 import com.google.gson.annotations.Expose;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
+import org.ginafro.notenoughfakepixel.Alerts.AlertManagementGui;
 import org.ginafro.notenoughfakepixel.config.features.*;
 import org.ginafro.notenoughfakepixel.config.gui.config.ConfigEditor;
 import org.ginafro.notenoughfakepixel.config.gui.core.GuiElement;
@@ -80,6 +81,9 @@ public class Configuration {
         }
         if ("editSlayerOverlayPosition".equals(runnableId)) {
             editOverlay(activeConfigCategory, 100, 20, NotEnoughFakepixel.feature.slayer.slayerBossHPPos);
+        }
+        if ("nefAlerts".equals(runnableId)) {
+            Minecraft.getMinecraft().displayGuiScreen(new AlertManagementGui());
         }
     }
 

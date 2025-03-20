@@ -14,8 +14,8 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import org.ginafro.notenoughfakepixel.Alerts.Alerts;
 import org.ginafro.notenoughfakepixel.commands.CopyCommand;
-import org.ginafro.notenoughfakepixel.config.features.QualityOfLife;
 import org.ginafro.notenoughfakepixel.config.gui.commands.Commands;
 import org.ginafro.notenoughfakepixel.config.gui.config.ConfigEditor;
 import org.ginafro.notenoughfakepixel.config.gui.core.GuiScreenElementWrapper;
@@ -106,6 +106,7 @@ public class NotEnoughFakepixel {
         ClientCommandHandler.instance.registerCommand(new CopyCommand());
         ClientRegistry.registerKeyBinding(openGuiKey);
         Commands.init();
+        Alerts.load();
         registerModEvents();
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::saveConfig));
@@ -190,6 +191,7 @@ public class NotEnoughFakepixel {
         MinecraftForge.EVENT_BUS.register(new HideFlamingFists());
         MinecraftForge.EVENT_BUS.register(new MiscFeatures());
         MinecraftForge.EVENT_BUS.register(new ItemAnimations());
+        MinecraftForge.EVENT_BUS.register(new Alerts());
 
         MinecraftForge.EVENT_BUS.register(new Fullbright());
         MinecraftForge.EVENT_BUS.register(new KDCounter());
