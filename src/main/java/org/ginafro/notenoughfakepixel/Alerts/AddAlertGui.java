@@ -12,7 +12,7 @@ public class AddAlertGui extends GuiScreen {
     private GuiTextField alertField;
     private int modeIndex = 0;
     private int locationIndex = 0;
-    private final String[] modes = {"Regex", "Starts With", "Contains", "Ends With"};
+    private final String[] modes = {"Starts With", "Contains", "Ends With"};
     private final String[] locations = {"Anywhere", "Skyblock", "Dungeons"};
     private GuiButton modeButton;
     private GuiButton locationButton;
