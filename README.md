@@ -29,6 +29,7 @@ This is a fork and remaster of official NotEnoughFakepixel mod from GinaFro.
   - Copy chat message **(NEW)**
   - Full block lever **(NEW)**
   - Block placing items **(NEW)**
+  - Show unclaimed Jacob rewards **(NEW)**
   - Fairy soul waypoints **(NEW)**
   - Etherwarp overlay **(NEW)**
   - Etherwarp sounds **(NEW)**
@@ -73,6 +74,7 @@ This is a fork and remaster of official NotEnoughFakepixel mod from GinaFro.
   - Teleport maze Solver **(NEW)**
   - Terminal waypoints **(NEW)**
   - Custom S+ message **(NEW)**
+  - Spirit bow tracer **(NEW)**
   - Dungeon Map
   - Three Weirdos Solver
   - Auto Ready FIX **(NEW)**
