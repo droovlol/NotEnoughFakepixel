@@ -104,6 +104,9 @@ public class NotEnoughFakepixel {
         }
 
         ClientCommandHandler.instance.registerCommand(new CopyCommand());
+
+        new Aliases();
+
         ClientRegistry.registerKeyBinding(openGuiKey);
         Commands.init();
         Alerts.load();
@@ -138,6 +141,7 @@ public class NotEnoughFakepixel {
         MinecraftForge.EVENT_BUS.register(new BoulderSolver());
         MinecraftForge.EVENT_BUS.register(new SilverFishSolver());
         MinecraftForge.EVENT_BUS.register(new TeleportMazeSolver());
+        MinecraftForge.EVENT_BUS.register(new CreeperSolver());
 
         MinecraftForge.EVENT_BUS.register(new WitherBloodKeysTracers());
         MinecraftForge.EVENT_BUS.register(new StarredMobDisplay());

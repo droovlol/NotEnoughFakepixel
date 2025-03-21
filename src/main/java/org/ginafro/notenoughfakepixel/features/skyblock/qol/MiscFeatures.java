@@ -508,7 +508,7 @@ public class MiscFeatures {
         if (e.type == 2) return;
         if (NotEnoughFakepixel.feature.qol.qolCopyChatMsg) {
 
-        String unformattedText = e.message.getUnformattedText();
+        String unformattedText = StringUtils.stripControlCodes(e.message.getUnformattedText());
 
         if (!unformattedText.replace(" ", "").isEmpty()) {
             ChatComponentText copyText = new ChatComponentText(EnumChatFormatting.DARK_GRAY + Character.toString((char) Integer.parseInt("270D", 16)));

@@ -133,6 +133,11 @@ public class Dungeons {
     public boolean dungeonsThreeWeirdos = true;
 
     @Expose
+    @ConfigOption(name = "Creeper Solver", desc = "Enable Creeper puzzle solver.", subcategoryId = 2)
+    @ConfigEditorBoolean
+    public boolean dungeonsCreeper = true;
+
+    @Expose
     @ConfigOption(name = "Boulder Solver", desc = "Enable Boulder puzzle solver.", subcategoryId = 2)
     @ConfigEditorBoolean
     public boolean dungeonsBoulderSolver = true;
