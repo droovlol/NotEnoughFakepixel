@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -14,7 +15,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ContainerChest;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemSkull;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import net.minecraft.network.play.server.S29PacketSoundEffect;
@@ -34,7 +39,10 @@ import org.ginafro.notenoughfakepixel.config.features.QualityOfLife;
 import org.ginafro.notenoughfakepixel.config.gui.core.ChromaColour;
 import org.ginafro.notenoughfakepixel.events.PacketReadEvent;
 import org.ginafro.notenoughfakepixel.utils.ColorUtils;
+import org.ginafro.notenoughfakepixel.utils.ItemUtils;
+import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
+import org.ginafro.notenoughfakepixel.variables.Gamemode;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -543,5 +551,43 @@ public class MiscFeatures {
                 armour.clear();
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onOpen(GuiScreenEvent.BackgroundDrawnEvent e){
+        if (!NotEnoughFakepixel.feature.qol.qolShowJacobRewards) return;
+        if (ScoreboardUtils.currentGamemode != Gamemode.SKYBLOCK) return;
+        if (!(e.gui instanceof GuiChest)) return;
+
+        GuiChest chest = (GuiChest) e.gui;
+        Container container = chest.inventorySlots;
+
+        if (!(container instanceof ContainerChest)) return;
+        String title = ((ContainerChest) container).getLowerChestInventory().getDisplayName().getUnformattedText();
+        if (!title.startsWith("Your contests")) return;
+
+        ContainerChest containerChest = (ContainerChest) container;
+        for(Slot slot : containerChest.inventorySlots) {
+            // Skip player inventory
+            if (slot.inventory == Minecraft.getMinecraft().thePlayer.inventory) continue;
+            ItemStack item = slot.getStack();
+            // Skip empty slots
+            if (item == null) continue;
+
+            if(ItemUtils.getLoreLine(item, "Click to claim reward!") != null){
+                highlightSlotGreen(slot, chest);
+            }
+            else if(ItemUtils.getLoreLine(item, "Rewards claimed!") != null){
+                highlightSlotRed(slot, chest);
+            }
+        }
+    }
+
+    public static void highlightSlotGreen(Slot slot, GuiChest chest) {
+        RenderUtils.drawOnSlot(chest.inventorySlots.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, new Color(55, 255, 55).getRGB());
+    }
+
+    public static void highlightSlotRed(Slot slot, GuiChest chest) {
+        RenderUtils.drawOnSlot(chest.inventorySlots.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, new Color(255, 55, 55).getRGB());
     }
 }

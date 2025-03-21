@@ -157,6 +157,11 @@ public class QualityOfLife {
     public String qolPetEquippedColor = "0:190:0:255:0";
 
     @Expose
+    @ConfigOption(name = "Show unclaimed Contests", desc = "Show unclaimed Jacob rewards.", subcategoryId = 4)
+    @ConfigEditorBoolean
+    public boolean qolShowJacobRewards = true;
+
+    @Expose
     @ConfigOption(name = "Disable Watchdog & Info Messages", desc = "Disable watchdog and info messages.", subcategoryId = 5)
     @ConfigEditorBoolean
     public boolean qolDisableWatchdogInfo = true;

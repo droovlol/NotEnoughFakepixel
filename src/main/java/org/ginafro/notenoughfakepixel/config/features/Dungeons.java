@@ -65,6 +65,11 @@ public class Dungeons {
     public boolean dungeonsLeapAnnounce = true;
 
     @Expose
+    @ConfigOption(name = "Spirit bow tracer", desc = "Spirit bow tracer.", subcategoryId = 0)
+    @ConfigEditorBoolean
+    public boolean dungeonsSpiritBow = true;
+
+    @Expose
     @ConfigOption(name = "Custom Click in Order Terminal GUI", desc = "Use custom GUI for Click in Order terminal.", subcategoryId = 0)
     @ConfigEditorBoolean
     public boolean dungeonsCustomGuiClickIn = true;
