@@ -12,7 +12,10 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.events.RenderEntityModelEvent;
+import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.OutlineUtils;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.variables.MobDisplayTypes;
@@ -32,8 +35,8 @@ public class StarredMobDisplay {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onRenderEntityModel(RenderEntityModelEvent event) {
-        if (Configuration.dungeonsStarredMobs == 2) return; // Disabled
-        if (Configuration.dungeonsStarredMobs  == 1) {
+        if (NotEnoughFakepixel.feature.dungeons.dungeonsStarredMobs == 2) return; // Disabled
+        if (NotEnoughFakepixel.feature.dungeons.dungeonsStarredMobs  == 1) {
         if (Minecraft.getMinecraft().thePlayer == null) return;
         if (Minecraft.getMinecraft().theWorld == null) return;
 
@@ -43,15 +46,12 @@ public class StarredMobDisplay {
         if (entity.isInvisible()) return;
 
         Color color = new Color(
-                Configuration.dungeonsStarredBoxColor.getRed(),
-                Configuration.dungeonsStarredBoxColor.getGreen(),
-                Configuration.dungeonsStarredBoxColor.getBlue(),
-                Configuration.dungeonsStarredBoxColor.getAlpha()
+                ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsStarredBoxColor).getRGB()
         );
 
         boolean canSee = Minecraft.getMinecraft().thePlayer.canEntityBeSeen(entity);
 
-        if (!Configuration.dungeonsStarredMobsEsp && !canSee) {
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsStarredMobsEsp && !canSee) {
             return;
         }
 
@@ -114,8 +114,8 @@ public class StarredMobDisplay {
 
     @SubscribeEvent
     public void onRenderLast(RenderWorldLastEvent event) {
-        if (Configuration.dungeonsStarredMobs == 2) return; // Disabled
-        if (Configuration.dungeonsStarredMobs == 0) {
+        if (NotEnoughFakepixel.feature.dungeons.dungeonsStarredMobs == 2) return; // Disabled
+        if (NotEnoughFakepixel.feature.dungeons.dungeonsStarredMobs == 0) {
         if (Minecraft.getMinecraft().thePlayer == null) return;
         if (Minecraft.getMinecraft().theWorld == null) return;
 
@@ -129,53 +129,38 @@ public class StarredMobDisplay {
             if (entity instanceof EntityLivingBase && isDying((EntityLivingBase) entity)) return;
 
             Color color = new Color(
-                    Configuration.dungeonsStarredBoxColor.getRed(),
-                    Configuration.dungeonsStarredBoxColor.getGreen(),
-                    Configuration.dungeonsStarredBoxColor.getBlue(),
-                    Configuration.dungeonsStarredBoxColor.getAlpha()
+                    ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsStarredBoxColor).getRGB()
             );
 
             if (entity.getName().contains("Stormy")) {
                 color = new Color(
-                        Configuration.dungeonsStormyColor.getRed(),
-                        Configuration.dungeonsStormyColor.getGreen(),
-                        Configuration.dungeonsStormyColor.getBlue(),
-                        Configuration.dungeonsStormyColor.getAlpha()
+                        ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsStormyColor).getRGB()
                 );
             } else if (entity.getName().contains("Withermancer")) {
                 color = new Color(
-                        Configuration.dungeonsWithermancerColor.getRed(),
-                        Configuration.dungeonsWithermancerColor.getGreen(),
-                        Configuration.dungeonsWithermancerColor.getBlue(),
-                        Configuration.dungeonsWithermancerColor.getAlpha()
+                        ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsWithermancerColor).getRGB()
                 );
                 mobDisplayType = MobDisplayTypes.WITHERMANCER;
             } else if (entity.getName().contains("Zombie Commander")) {
                 color = new Color(
-                        Configuration.dungeonsZombieCommanderColor.getRed(),
-                        Configuration.dungeonsZombieCommanderColor.getGreen(),
-                        Configuration.dungeonsZombieCommanderColor.getBlue(),
-                        Configuration.dungeonsZombieCommanderColor.getAlpha()
+                        ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsZombieCommanderColor).getRGB()
                 );
             } else if (entity.getName().contains("Skeleton Master")) {
                 color = new Color(
-                        Configuration.dungeonsSkeletonMasterColor.getRed(),
-                        Configuration.dungeonsSkeletonMasterColor.getGreen(),
-                        Configuration.dungeonsSkeletonMasterColor.getBlue(),
-                        Configuration.dungeonsSkeletonMasterColor.getAlpha()
+                        ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsSkeletonMasterColor).getRGB()
                 );
             } else if (entity.getName().contains("Fels")) {
                 mobDisplayType = MobDisplayTypes.FELALIVE;
             }
 
-            if (Configuration.dungeonsStarredMobsEsp) GlStateManager.disableDepth();
+            if (NotEnoughFakepixel.feature.dungeons.dungeonsStarredMobsEsp) GlStateManager.disableDepth();
             RenderUtils.renderEntityHitbox(
                     entity,
                     event.partialTicks,
                     color,
                     mobDisplayType
             );
-            if (Configuration.dungeonsStarredMobsEsp) GlStateManager.enableDepth();
+            if (NotEnoughFakepixel.feature.dungeons.dungeonsStarredMobsEsp) GlStateManager.enableDepth();
             mobDisplayType = MobDisplayTypes.NONE;
             });
         }

@@ -1,63 +1,90 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.crimson;
-import cc.polyfrost.oneconfig.hud.TextHud;
-import net.minecraft.client.Minecraft;
-import org.ginafro.notenoughfakepixel.Configuration;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.core.config.Position;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class AshfangOverlay extends TextHud {
+public class AshfangOverlay {
 
-    private static char[] c = new char[]{'k', 'M'};
+    private final Position position;
 
     public AshfangOverlay() {
-        super(true);
+        this.position = NotEnoughFakepixel.feature.crimson.ashfangOverlayPos;
     }
 
-    @Override
-    protected void getLines(List<String> lines, boolean example) {
-        if (Crimson.checkEssentials()) return;
-        if (Configuration.crimsonAshfangOverlay) {lines.add("\u00a77Ashfang HP: \u00a7r" + formatAshfangHP(AshfangHelper.getAshfangHP()));}
-        if (Configuration.crimsonAshfangOverlay) {lines.add("\u00a77Blazing souls: \u00a7r" + AshfangHelper.getBlazingSoulCounter() + " / "+AshfangHelper.getHitsNeeded());}
-    }
+    /** Renders the overlay at the configured position */
+    public void render() {
+        if (!shouldShow()) return;
 
-    @Override
-    protected boolean shouldShow() {
-        if (!super.shouldShow()) {
-            return false;
+        List<String> lines = new ArrayList<>();
+        getLines(lines, false);
+
+        // Get absolute x and y coordinates based on the position
+        ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
+        int x = position.getAbsX(sr, 100); // Width assumed as 100
+        int y = position.getAbsY(sr, 20);  // Height assumed as 20
+
+        // Render each line
+        for (int i = 0; i < lines.size(); i++) {
+            Minecraft.getMinecraft().fontRendererObj.drawString(
+                    lines.get(i), x, y + i * 10, 0xFFFFFF // White text
+            );
         }
-        return (Configuration.crimsonAshfangOverlay && Crimson.checkAshfangArea(new int[]{Minecraft.getMinecraft().thePlayer.getPosition().getX(), Minecraft.getMinecraft().thePlayer.getPosition().getY(), Minecraft.getMinecraft().thePlayer.getPosition().getZ()}));
     }
 
+    /** Renders a dummy version for the position editor preview */
+    public void renderDummy() {
+        List<String> lines = new ArrayList<>();
+        getLines(lines, true);
+
+        ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
+        int x = position.getAbsX(sr, 100);
+        int y = position.getAbsY(sr, 20);
+
+        for (int i = 0; i < lines.size(); i++) {
+            Minecraft.getMinecraft().fontRendererObj.drawString(
+                    lines.get(i), x, y + i * 10, 0xFFFFFF
+            );
+        }
+    }
+
+    /** Populates the text lines to display */
+    private void getLines(List<String> lines, boolean example) {
+        if (Crimson.checkEssentials()) return; // Skip if essentials check fails
+        if (NotEnoughFakepixel.feature.crimson.crimsonAshfangOverlay) {
+            lines.add("\u00a77Ashfang HP: \u00a7r" + formatAshfangHP(AshfangHelper.getAshfangHP()));
+            lines.add("\u00a77Blazing souls: \u00a7r" + AshfangHelper.getBlazingSoulCounter() + " / " + AshfangHelper.getHitsNeeded());
+        }
+    }
+
+    /** Determines if the overlay should be shown */
+    private boolean shouldShow() {
+        return NotEnoughFakepixel.feature.crimson.crimsonAshfangOverlay &&
+                Crimson.checkAshfangArea(new int[]{
+                        Minecraft.getMinecraft().thePlayer.getPosition().getX(),
+                        Minecraft.getMinecraft().thePlayer.getPosition().getY(),
+                        Minecraft.getMinecraft().thePlayer.getPosition().getZ()
+                });
+    }
+
+    /** Formats Ashfang HP with color based on percentage */
     private static String formatAshfangHP(double hp) {
-        // Get the percentage of HP remaining
-        double percentage = hp / 50_000_000;
-
-        // Determine the prefix based on the percentage
-        String prefix;
-        if (percentage > 0.5) {
-            prefix = "§a"; // Green
-        } else if (percentage > 0.1) {
-            prefix = "§e"; // Yellow
-        } else {
-            prefix = "§c"; // Red
-        }
-
-        // Format the HP using coolFormat
-        String formattedHP = coolFormat(hp, 0);
-
-        // Add the prefix to the formatted HP
-        return prefix + formattedHP;
+        double percentage = hp / 50_000_000; // Assuming max HP is 50M
+        String prefix = percentage > 0.5 ? "§a" : percentage > 0.1 ? "§e" : "§c"; // Green, Yellow, Red
+        return prefix + coolFormat(hp, 0);
     }
 
-
+    /** Formats numbers into a compact form (e.g., 1k, 1M) */
+    private static final char[] SUFFIXES = {'k', 'M'};
     private static String coolFormat(double n, int iteration) {
         double d = ((long) n / 100) / 10.0;
-        boolean isRound = (d * 10) %10 == 0;//true if the decimal part is equal to 0 (then it's trimmed anyway)
-        return (d < 1000? //this determines the class, i.e. 'k', 'm' etc
-                ((d > 99.9 || isRound || (!isRound && d > 9.99)? //this decides whether to trim the decimals
-                        (int) d * 10 / 10 : d + "" // (int) d * 10 / 10 drops the decimal
-                ) + "" + c[iteration])
-                : coolFormat(d, iteration+1));
-
+        boolean isRound = (d * 10) % 10 == 0;
+        return (d < 1000 ?
+                ((d > 99.9 || isRound || (!isRound && d > 9.99) ? (int) d * 10 / 10 : d) + "" + SUFFIXES[iteration]) :
+                coolFormat(d, iteration + 1));
     }
 }

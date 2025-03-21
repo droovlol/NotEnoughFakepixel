@@ -10,10 +10,10 @@ public class JacobAuctionTimer {
     public boolean jacob , auction;
 
     public void onTick(TickEvent.ServerTickEvent e){
-        if(Configuration.jATimer){
+        //if(Configuration.jATimer){
             if(ScoreboardUtils.currentGamemode == Gamemode.SKYBLOCK){
 
-            }
+           // }
         }
     }
 

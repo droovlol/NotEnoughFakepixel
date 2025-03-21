@@ -18,6 +18,8 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
 import org.ginafro.notenoughfakepixel.utils.Logger;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
@@ -48,7 +50,7 @@ public class WaterSolver {
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
-        if (!Configuration.dungeonsWaterSolver) return;
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsWaterSolver) return;
         if (!DungeonManager.checkEssentials()) return;
         if (event.phase != TickEvent.Phase.START) return;
 
@@ -66,7 +68,7 @@ public class WaterSolver {
 
     @SubscribeEvent
     public void onWorldRender(RenderWorldLastEvent event) {
-        if (!Configuration.dungeonsWaterSolver) return;
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsWaterSolver) return;
         if (!DungeonManager.checkEssentials()) return;
         if (!inWaterRoom || woolBlocks == null || woolBlocks.isEmpty()) return;
         if (!woolBlocks.iterator().hasNext()) return;
@@ -150,7 +152,7 @@ public class WaterSolver {
 
     @SubscribeEvent()
     public void onWorldUnload(WorldEvent.Load event) {
-        if (!Configuration.dungeonsWaterSolver) return;
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsWaterSolver) return;
         if (!DungeonManager.checkEssentials()) return;
         waterLeverPos = null;
         //correctLevers = new boolean[]{true,true,true,true,true,true};

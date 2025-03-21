@@ -1,6 +1,5 @@
 package org.ginafro.notenoughfakepixel.utils;
 
-import cc.polyfrost.oneconfig.libs.checker.units.qual.A;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.client.Minecraft;

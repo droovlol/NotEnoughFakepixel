@@ -4,6 +4,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.features.Mining;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.variables.Location;
 
@@ -34,7 +36,7 @@ public class EventsMsgSupressor {
     }
 
     private void checkDonEspressoMessage(ClientChatReceivedEvent e) {
-        if (!Configuration.miningDisableDonEspresso) return;
+        if (!NotEnoughFakepixel.feature.mining.miningDisableDonEspresso) return;
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
         if (ScoreboardUtils.currentLocation != Location.DWARVEN) return;
         if (donEspressoPattern.matcher(e.message.getFormattedText()).find()) {

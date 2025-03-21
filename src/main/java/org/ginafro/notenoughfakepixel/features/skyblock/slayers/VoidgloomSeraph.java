@@ -2,34 +2,38 @@ package org.ginafro.notenoughfakepixel.features.skyblock.slayers;
 
 import net.minecraft.block.BlockBeacon;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S29PacketSoundEffect;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StringUtils;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.features.Slayer;
+import org.ginafro.notenoughfakepixel.config.gui.core.ChromaColour;
 import org.ginafro.notenoughfakepixel.events.Handlers.ScoreboardHandler;
 import org.ginafro.notenoughfakepixel.events.PacketReadEvent;
-import org.ginafro.notenoughfakepixel.utils.RenderUtils;
-import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
-import org.ginafro.notenoughfakepixel.utils.SoundUtils;
-import org.ginafro.notenoughfakepixel.utils.Waypoint;
+import org.ginafro.notenoughfakepixel.utils.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static org.ginafro.notenoughfakepixel.Configuration.slayerBeaconColor;
-
 public class VoidgloomSeraph {
+    public static String displayText = "";
+    private static long endTime = 0;
+    public static Minecraft mc = Minecraft.getMinecraft();
     ArrayList<EntityFallingBlock> fallingBlocks = new ArrayList<>();
     ArrayList<Waypoint> waypoints = new ArrayList<>();
     public static boolean isBoss = false;
@@ -76,6 +80,7 @@ public class VoidgloomSeraph {
             int[] coords = new int[]{(int)Math.floor(fallingBlocks.get(i).posX), (int)Math.floor(fallingBlocks.get(i).posY), (int)Math.floor(fallingBlocks.get(i).posZ)};
             waypoints.add(new Waypoint("BEACON",coords));
             SoundUtils.playSound(coords,"random.pop", 3.0f, 0.5f);
+            showCustomOverlay(EnumChatFormatting.RED + "BEACON!", 2000);
             indexToRemove.add(i);
         }
         for (Integer i : indexToRemove) {
@@ -88,7 +93,7 @@ public class VoidgloomSeraph {
     @SubscribeEvent
     public void onRenderLast(RenderWorldLastEvent event) {
         if (checkEssentials()) return;
-        if (!Configuration.slayerShowBeaconPath) return;
+        if (!NotEnoughFakepixel.feature.slayer.slayerShowBeaconPath) return;
         if (isBoss) {
         drawWaypoints(event.partialTicks);
         }
@@ -97,7 +102,7 @@ public class VoidgloomSeraph {
     @SubscribeEvent
     public void onSoundPacketReceive(PacketReadEvent event) {
         if (checkEssentials()) return;
-        if (!Configuration.slayerShowBeaconPath) return;
+        if (!NotEnoughFakepixel.feature.slayer.slayerShowBeaconPath) return;
         Packet packet = event.packet;
         if (packet instanceof S29PacketSoundEffect) {
             S29PacketSoundEffect soundEffect = (S29PacketSoundEffect) packet;
@@ -123,7 +128,7 @@ public class VoidgloomSeraph {
 
     @SubscribeEvent()
     public void onWorldUnload(WorldEvent.Unload event) {
-        if (Configuration.slayerShowBeaconPath) {
+        if (NotEnoughFakepixel.feature.slayer.slayerShowBeaconPath) {
             fallingBlocks.clear();
             waypoints.clear();
         }
@@ -136,7 +141,7 @@ public class VoidgloomSeraph {
         double viewerZ = viewer.lastTickPosZ + (viewer.posZ - viewer.lastTickPosZ) * partialTicks;
         for (Waypoint waypoint : waypoints) {
             if (waypoint == null || waypoint.isHidden()) continue;
-            Color colorDrawWaypoint = slayerBeaconColor.toJavaColor();
+            Color colorDrawWaypoint = ColorUtils.getColor(NotEnoughFakepixel.feature.slayer.slayerBeaconColor);
             colorDrawWaypoint = new Color(colorDrawWaypoint.getRed(), colorDrawWaypoint.getGreen(), colorDrawWaypoint.getBlue(), 150);
             AxisAlignedBB bb = new AxisAlignedBB(
                     waypoint.getCoordinates()[0] - viewerX,
@@ -159,16 +164,39 @@ public class VoidgloomSeraph {
                 (!ScoreboardUtils.currentLocation.isEnd());
     }
 
-
     @SubscribeEvent
     public void onChat(ClientChatReceivedEvent event) {
-        if (Configuration.slayerShowBeaconPath && ScoreboardUtils.currentGamemode.isSkyblock() && ScoreboardUtils.currentLocation.isEnd()) {
+        if (NotEnoughFakepixel.feature.slayer.slayerShowBeaconPath && ScoreboardUtils.currentGamemode.isSkyblock() && ScoreboardUtils.currentLocation.isEnd()) {
             String message = StringUtils.stripControlCodes(event.message.getUnformattedText());
 
-            if (message.contains("SLAYER QUEST COMPLETE!")) {
+            if (message.contains("SLAYER QUEST COMPLETE!") || message.contains("SLAYER QUEST FAILED!")) {
                 fallingBlocks.clear();
                 waypoints.clear();
             }
         }
+    }
+
+    private void showCustomOverlay(String text, int durationMillis) {
+        displayText = text;
+        endTime = System.currentTimeMillis() + durationMillis;
+    }
+
+    @SubscribeEvent
+    public void onRenderOverlay(RenderGameOverlayEvent.Post event) {
+        if (event.type != RenderGameOverlayEvent.ElementType.TEXT) return;
+        if (System.currentTimeMillis() > endTime) return;
+
+        FontRenderer fr = mc.fontRendererObj;
+
+        int screenWidth = event.resolution.getScaledWidth();
+        int screenHeight = event.resolution.getScaledHeight();
+
+        GlStateManager.pushMatrix();
+        GlStateManager.scale(4.0F, 4.0F, 4.0F);
+        int textWidth = fr.getStringWidth(displayText);
+        int x = (screenWidth / 8) - (textWidth / 2);
+        int y = (screenHeight / 8) - 10;
+        fr.drawStringWithShadow(displayText, x, y, 0xFF5555);
+        GlStateManager.popMatrix();
     }
 }

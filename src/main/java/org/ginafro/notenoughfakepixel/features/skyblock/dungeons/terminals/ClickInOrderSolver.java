@@ -15,6 +15,9 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.features.Dungeons;
+import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
 import org.lwjgl.input.Mouse;
@@ -43,20 +46,20 @@ public class ClickInOrderSolver {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onDrawScreenPre(GuiScreenEvent.DrawScreenEvent.Pre event) {
-        if (!Configuration.dungeonsTerminalClickInOrderSolver) return;
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalClickInOrderSolver) return;
         if (!(event.gui instanceof GuiChest)) return;
         if (!DungeonManager.checkEssentialsF7()) return;
         Container container = ((GuiChest) event.gui).inventorySlots;
         if (!(container instanceof ContainerChest)) return;
         String title = ((ContainerChest) container).getLowerChestInventory().getDisplayName().getUnformattedText();
-        if (Configuration.dungeonsCustomGuiClickIn && title.startsWith("Click in")) {
+        if (NotEnoughFakepixel.feature.dungeons.dungeonsCustomGuiClickIn && title.startsWith("Click in")) {
             event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
     public void onOpen(GuiOpenEvent e) {
-        if (!Configuration.dungeonsTerminalClickInOrderSolver) return;
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalClickInOrderSolver) return;
         if (!DungeonManager.checkEssentialsF7()) return;
         if (e.gui instanceof GuiChest) {
             GuiChest chest = (GuiChest) e.gui;
@@ -73,7 +76,7 @@ public class ClickInOrderSolver {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onDrawScreenPost(GuiScreenEvent.DrawScreenEvent.Post event) {
-        if (!Configuration.dungeonsTerminalClickInOrderSolver) return;
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalClickInOrderSolver) return;
         if (!DungeonManager.checkEssentialsF7()) return;
         if (!(event.gui instanceof GuiChest)) return;
         GuiChest chest = (GuiChest) event.gui;
@@ -87,9 +90,9 @@ public class ClickInOrderSolver {
         // Compute effective round: processed rounds + queued clicks
         int effectiveRound = processedRounds + clickQueue.size();
 
-        if (Configuration.dungeonsCustomGuiClickIn) {
+        if (NotEnoughFakepixel.feature.dungeons.dungeonsCustomGuiClickIn) {
             ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
-            float scale = Configuration.dungeonsTerminalsScale;
+            float scale = NotEnoughFakepixel.feature.dungeons.dungeonsTerminalsScale;
             int guiWidth = (int) (REGION_COLS * SLOT_SIZE * scale);
             int guiHeight = (int) (REGION_ROWS * SLOT_SIZE * scale);
             int screenWidth = sr.getScaledWidth();
@@ -116,18 +119,23 @@ public class ClickInOrderSolver {
 
                     int overlayColor = 0;
                     if (slot.getStack().stackSize == effectiveRound + 1) {
-                        overlayColor = Configuration.dungeonsCorrectColor.getRGB();
+                        overlayColor = ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsCorrectColor).getRGB();
                     } else if (slot.getStack().stackSize == effectiveRound + 2) {
-                        overlayColor = Configuration.dungeonsAlternativeColor.getRGB();
+                        overlayColor = ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsAlternativeColor).getRGB();
                     } else if (slot.getStack().stackSize == effectiveRound + 3) {
-                        Color alt = new Color(
-                                Configuration.dungeonsAlternativeColor.getRed(),
-                                Configuration.dungeonsAlternativeColor.getGreen(),
-                                Configuration.dungeonsAlternativeColor.getBlue(), 150);
-                        overlayColor = alt.getRGB();
+                        // Get the base color as a Color object
+                        Color baseColor = ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsAlternativeColor);
+                        // Create a new Color with alpha 150
+                        Color altColor = new Color(
+                                baseColor.getRed(),
+                                baseColor.getGreen(),
+                                baseColor.getBlue(),
+                                150
+                        );
+                        overlayColor = altColor.getRGB();
                     }
 
-                    if (Configuration.dungeonsTerminalHideIncorrect &&
+                    if (NotEnoughFakepixel.feature.dungeons.dungeonsTerminalHideIncorrect &&
                             slot.getStack().stackSize > effectiveRound + 2 &&
                             slot.getStack().getItemDamage() == 14) {
                         slot.getStack().getItem().setDamage(slot.getStack(), 15);
@@ -160,9 +168,9 @@ public class ClickInOrderSolver {
 
                     int overlayColor = 0;
                     if (slot.getStack().stackSize == effectiveRound + 1) {
-                        overlayColor = Configuration.dungeonsCorrectColor.getRGB();
+                        overlayColor = ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsCorrectColor).getRGB();
                     } else if (slot.getStack().stackSize == effectiveRound + 2) {
-                        overlayColor = Configuration.dungeonsAlternativeColor.getRGB();
+                        overlayColor = ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsAlternativeColor).getRGB();
                     }
 
                     RenderUtils.drawOnSlot(container.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, overlayColor);
@@ -173,7 +181,7 @@ public class ClickInOrderSolver {
 
     @SubscribeEvent
     public void onGuiRender(GuiScreenEvent.BackgroundDrawnEvent event) {
-        if (!Configuration.dungeonsTerminalClickInOrderSolver) return;
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalClickInOrderSolver) return;
         if (!DungeonManager.checkEssentialsF7()) return;
         if (event.gui instanceof GuiChest) {
             GuiChest chest = (GuiChest) event.gui;
@@ -196,20 +204,21 @@ public class ClickInOrderSolver {
                             if (slot.getStack().getItemDamage() == 14 || slot.getStack().getItemDamage() == 15) {
                                 slot.getStack().getItem().setDamage(slot.getStack(), 0);
                             }
-                            RenderUtils.drawOnSlot(container.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, Configuration.dungeonsCorrectColor.getRGB());
+                            RenderUtils.drawOnSlot(container.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsCorrectColor).getRGB());
                         } else if (slot.getStack().stackSize == effectiveRound + 2) {
                             if (slot.getStack().getItemDamage() == 14 || slot.getStack().getItemDamage() == 15) {
                                 slot.getStack().getItem().setDamage(slot.getStack(), 0);
                             }
-                            RenderUtils.drawOnSlot(container.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, Configuration.dungeonsAlternativeColor.getRGB());
+                            RenderUtils.drawOnSlot(container.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition,  ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsAlternativeColor).getRGB());
                         } else if (slot.getStack().stackSize == effectiveRound + 3) {
                             if (slot.getStack().getItemDamage() == 14 || slot.getStack().getItemDamage() == 15) {
                                 slot.getStack().getItem().setDamage(slot.getStack(), 0);
                             }
-                            RenderUtils.drawOnSlot(container.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, new Color(Configuration.dungeonsAlternativeColor.getRed(), Configuration.dungeonsAlternativeColor.getGreen(), Configuration.dungeonsAlternativeColor.getBlue(), 150).getRGB());
+                            Color base = ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsAlternativeColor);
+                            RenderUtils.drawOnSlot(container.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, new Color(base.getRed(), base.getGreen(), base.getBlue(), 150).getRGB());
                         }
 
-                        if (Configuration.dungeonsTerminalHideIncorrect && slot.getStack().stackSize > effectiveRound + 1 && slot.getStack().getItemDamage() == 14) {
+                        if (NotEnoughFakepixel.feature.dungeons.dungeonsTerminalHideIncorrect && slot.getStack().stackSize > effectiveRound + 1 && slot.getStack().getItemDamage() == 14) {
                             slot.getStack().getItem().setDamage(slot.getStack(), 15);
                             RenderUtils.drawOnSlot(container.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, new Color(113, 113, 113).getRGB());
                         }
@@ -221,9 +230,9 @@ public class ClickInOrderSolver {
 
     @SubscribeEvent
     public void onMouseClick(GuiScreenEvent.MouseInputEvent.Pre event) {
-        if (!Configuration.dungeonsTerminalClickInOrderSolver) return;
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalClickInOrderSolver) return;
         if (!DungeonManager.checkEssentialsF7()) return;
-        if (!Configuration.dungeonsTerminalHideIncorrect) return;
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalHideIncorrect) return;
         if (!Mouse.getEventButtonState() || Mouse.getEventButton() != 0) return;
         Minecraft mc = Minecraft.getMinecraft();
         if (!(mc.currentScreen instanceof GuiChest)) return;
@@ -234,9 +243,9 @@ public class ClickInOrderSolver {
                 .getDisplayName().getUnformattedText();
         if (!title.startsWith("Click in")) return;
 
-        if (Configuration.dungeonsCustomGuiClickIn) {
+        if (NotEnoughFakepixel.feature.dungeons.dungeonsCustomGuiClickIn) {
             ScaledResolution sr = new ScaledResolution(mc);
-            float scale = Configuration.dungeonsTerminalsScale;
+            float scale = NotEnoughFakepixel.feature.dungeons.dungeonsTerminalsScale;
             int guiWidth = (int) (REGION_COLS * SLOT_SIZE * scale);
             int guiHeight = (int) (REGION_ROWS * SLOT_SIZE * scale);
             int screenWidth = sr.getScaledWidth();
@@ -306,10 +315,12 @@ public class ClickInOrderSolver {
         if (slot.getStack().getItemDamage() == 5) {
             // Successfully clicked, remove from queue and increment processed rounds
             clickQueue.removeFirst();
+            float pitch = 0.8f + (float) (Math.random() * 0.4); // Random pitch between 0.8 and 1.2
+            mc.theWorld.playSound(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, "random.orb", 1.0f, pitch, false);
             processedRounds++;
         } else {
             // Pane is still red or not updated, send a click
-            mc.playerController.windowClick(cc.windowId, slotNumber, 2, 0, mc.thePlayer);
+            mc.playerController.windowClick(cc.windowId, slotNumber, 0, 0, mc.thePlayer);
         }
     }
 

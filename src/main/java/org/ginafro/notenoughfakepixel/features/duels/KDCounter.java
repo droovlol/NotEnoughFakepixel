@@ -1,63 +1,76 @@
 package org.ginafro.notenoughfakepixel.features.duels;
 
-import cc.polyfrost.oneconfig.hud.BasicHud;
-import cc.polyfrost.oneconfig.libs.universal.UMatrixStack;
-import cc.polyfrost.oneconfig.renderer.NanoVGHelper;
-import cc.polyfrost.oneconfig.renderer.font.Font;
-import cc.polyfrost.oneconfig.renderer.font.Fonts;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.Configuration;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.features.duels.Duels;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.variables.Gamemode;
 
-public class KDCounter extends BasicHud {
+public class KDCounter {
 
-    public static int deaths = 0;
-    public static int kill = 0;
-
-
+    private static int kills = 0;
+    private static int deaths = 0;
+    private String opponent = "";
+    private final Minecraft mc = Minecraft.getMinecraft();
 
     @SubscribeEvent
-    public void onChat(ClientChatReceivedEvent e){
-        if(ScoreboardUtils.currentGamemode != Gamemode.DUELS) return;
-        String opponent = "";
-        if(e.message.getUnformattedText().contains("Opponents")){
-            opponent = e.message.getUnformattedText().replace("Opponents: ", "");
+    public void onChat(ClientChatReceivedEvent e) {
+        if (ScoreboardUtils.currentGamemode != Gamemode.DUELS) return;
+        String msg = e.message.getUnformattedText();
+
+        if (msg.contains("Opponents: ")) {
+            opponent = msg.replace("Opponents: ", "").trim();
         }
-        String[] msges = e.message.getUnformattedText().split(" ");
-        if(msges[0] == opponent){
-            kill++;
+
+        String[] parts = msg.split(" ");
+        if (parts.length > 0) {
+            String firstWord = parts[0];
+            if (opponent.equals(firstWord)) {
+                kills++;
+            } else if (mc.thePlayer.getName().equals(firstWord)) {
+                deaths++;
+            }
         }
-        if(msges[0] == Minecraft.getMinecraft().thePlayer.getName()){
-            deaths++;
-        }
-        if(e.message.getUnformattedText().contains("WINNER")){
-            kill = 0;
+
+        if (msg.contains("WINNER")) {
+            kills = 0;
             deaths = 0;
+            opponent = "";
         }
     }
 
-    @Override
-    protected void draw(UMatrixStack matrices, float x, float y, float scale, boolean example) {
-        if(ScoreboardUtils.currentGamemode != Gamemode.DUELS) return;
-        GlStateManager.scale(scale,scale,scale);
-        Minecraft.getMinecraft().fontRendererObj.drawString("K/D: " + kill + "/" + deaths , (int) x, (int) y,-1);
+    @SubscribeEvent
+    public void onRender(RenderGameOverlayEvent.Post event) {
+        if (event.type != RenderGameOverlayEvent.ElementType.ALL) return;
+        if (!Duels.kdCounterEnabled) return;
+        if (ScoreboardUtils.currentGamemode != Gamemode.DUELS) return;
+
+        draw(Duels.kdCounterOffsetX, Duels.kdCounterOffsetY, Duels.kdCounterScale, false);
     }
 
-    @Override
-    protected float getWidth(float scale, boolean example) {
-        return 45 * scale;
+    private void draw(float x, float y, float scale, boolean example) {
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(x, y, 0);
+        GlStateManager.scale(scale, scale, scale);
+
+        String text = example ? "K/D: 3/2" : "K/D: " + kills + "/" + deaths;
+        mc.fontRendererObj.drawString(text, 0, 0, -1);
+
+        GlStateManager.popMatrix();
     }
 
-    @Override
-    protected float getHeight(float scale, boolean example) {
-        return 11 * scale ;
+    public void renderDummy() {
+        draw(Duels.kdCounterOffsetX, Duels.kdCounterOffsetY, Duels.kdCounterScale, true);
+    }
+
+    public float getWidth() {
+        return 45 * Duels.kdCounterScale; // "K/D: 10/10" is roughly 45 pixels wide at scale 1.0
+    }
+
+    public float getHeight() {
+        return 11 * Duels.kdCounterScale; // Font height is ~11 pixels at scale 1.0
     }
 }

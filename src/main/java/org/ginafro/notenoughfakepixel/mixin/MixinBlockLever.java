@@ -7,6 +7,8 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.features.QualityOfLife;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -18,16 +20,9 @@ public abstract class MixinBlockLever {
 
     @Inject(method = "setBlockBoundsBasedOnState", at = @At("HEAD"), cancellable = true)
     private void modifyLeverBoundingBox(IBlockAccess worldIn, BlockPos pos, CallbackInfo ci) {
-        if (Configuration.qolFullBlockLever) {
+        if (NotEnoughFakepixel.feature.qol.qolFullBlockLever) {
             ((BlockLever) (Object) this).setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
             ci.cancel();
-        }
-    }
-
-    @Inject(method = "getCollisionBoundingBox", at = @At("HEAD"), cancellable = true)
-    private void modifyCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state, CallbackInfoReturnable<AxisAlignedBB> cir) {
-        if (Configuration.qolFullBlockLever) {
-            cir.setReturnValue(new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1));
         }
     }
 }

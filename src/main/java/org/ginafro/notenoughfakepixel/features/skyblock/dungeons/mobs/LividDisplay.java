@@ -17,6 +17,8 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -38,13 +40,13 @@ public class LividDisplay {
 
     private static void initializeColors() {
         lividColors.put("Vendetta", EnumChatFormatting.WHITE);
-        lividColors.put("Crossed", EnumChatFormatting.DARK_PURPLE);
+        lividColors.put("Crossed", EnumChatFormatting.LIGHT_PURPLE);
         lividColors.put("Hockey", EnumChatFormatting.RED);
         lividColors.put("Doctor", EnumChatFormatting.GRAY);
         lividColors.put("Frog", EnumChatFormatting.DARK_GREEN);
         lividColors.put("Smile", EnumChatFormatting.GREEN);
         lividColors.put("Scream", EnumChatFormatting.BLUE);
-        lividColors.put("Purple", EnumChatFormatting.LIGHT_PURPLE);
+        lividColors.put("Purple", EnumChatFormatting.DARK_PURPLE);
         lividColors.put("Arcade", EnumChatFormatting.YELLOW);
     }
 
@@ -65,7 +67,7 @@ public class LividDisplay {
             World world = mc.theWorld;
             if (world == null) return;
 
-            if (!Configuration.dungeonsLividFinder) return;
+            if (!NotEnoughFakepixel.feature.dungeons.dungeonsLividFinder) return;
 
             if (world.getBlockState(pos).getBlock() == Blocks.wool) {
                 int woolColor = world.getBlockState(pos).getBlock().getDamageValue(world, pos);
@@ -99,7 +101,7 @@ public class LividDisplay {
 
     @SubscribeEvent
     public void onRenderEntity(RenderLivingEvent.Pre<EntityLivingBase> event) {
-        if (!Configuration.dungeonsLividFinder || livid == null) return;
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsLividFinder || livid == null) return;
 
         Entity entity = event.entity;
         if (entity instanceof EntityArmorStand && entity.hasCustomName()) {
@@ -112,7 +114,7 @@ public class LividDisplay {
 
     @SubscribeEvent
     public void onWorldRender(RenderWorldLastEvent event) {
-        if (Configuration.dungeonsLividFinder && livid != null) {
+        if (NotEnoughFakepixel.feature.dungeons.dungeonsLividFinder && livid != null) {
             AxisAlignedBB aabb = new AxisAlignedBB(livid.posX - 0.5, livid.posY - 2, livid.posZ - 0.5, livid.posX + 0.5, livid.posY, livid.posZ + 0.5);
             System.out.println("Rendering Livid highlight at: " + livid.getPosition());
             draw3DBox(aabb, LIVID_COLOUR, event.partialTicks);
@@ -148,11 +150,11 @@ public class LividDisplay {
     private static int getWoolColorFromChatColor(EnumChatFormatting color) {
         switch (color) {
             case WHITE: return 0;
-            case DARK_PURPLE: return 2;
+            case LIGHT_PURPLE: return 6;
             case YELLOW: return 4;
             case GREEN: return 5;
-            case GRAY: return 7;
-            case LIGHT_PURPLE: return 10;
+            case GRAY: return 8;
+            case DARK_PURPLE: return 10;
             case BLUE: return 11;
             case DARK_GREEN: return 13;
             case RED: return 14;

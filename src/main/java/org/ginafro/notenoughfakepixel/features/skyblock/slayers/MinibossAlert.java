@@ -9,6 +9,8 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.features.Slayer;
 import org.ginafro.notenoughfakepixel.events.PacketReadEvent;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.variables.Gamemode;
@@ -63,10 +65,10 @@ public class MinibossAlert {
         if (event.packet instanceof S29PacketSoundEffect) {
             S29PacketSoundEffect packet = (S29PacketSoundEffect) event.packet;
             if (packet.getSoundName().equals("random.explode") && packet.getVolume() == 0.6f && packet.getPitch() == 9/7f) {
-                if (Configuration.slayerMinibossTitle) {
+                if (NotEnoughFakepixel.feature.slayer.slayerMinibossTitle) {
                     showCustomOverlay(EnumChatFormatting.RED + "" + EnumChatFormatting.BOLD + "MINIBOSS!", 1000);
                 }
-                if (Configuration.slayerMinibossSound) {
+                if (NotEnoughFakepixel.feature.slayer.slayerMinibossSound) {
                     playSound();
                 }
             }

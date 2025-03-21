@@ -4,6 +4,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.features.QualityOfLife;
 
 public class Fullbright {
 
@@ -14,7 +16,7 @@ public class Fullbright {
 
     @SubscribeEvent
     public void onRender(RenderHandEvent event) {
-        if(Configuration.qolFullbright) changeBrightness(FULLBRIGHT);
+        if(NotEnoughFakepixel.feature.qol.qolFullbright) changeBrightness(FULLBRIGHT);
         else changeBrightness(BRIGHTEST);
     }
 

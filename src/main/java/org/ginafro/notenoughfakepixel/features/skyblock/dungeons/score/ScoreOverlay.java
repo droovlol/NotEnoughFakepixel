@@ -1,60 +1,131 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.dungeons.score;
 
-import cc.polyfrost.oneconfig.config.core.OneColor;
-import cc.polyfrost.oneconfig.hud.TextHud;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
 import org.ginafro.notenoughfakepixel.utils.ChatUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.variables.DungeonFloor;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ScoreOverlay extends TextHud {
+public class ScoreOverlay {
 
     private static int chatDisplaySeconds = 40;
     private long readyTime = Long.MAX_VALUE;
+    private final Minecraft mc = Minecraft.getMinecraft();
 
-    public ScoreOverlay() {
-        super(true,
-                0,
-                128,
-                1, true, true,
-                4f, 2000, 1250,
-                new OneColor(0, 0, 0, 150),
-                false, 2,
-                new OneColor(0, 0, 0, 127));
+    @SubscribeEvent
+    public void onRender(RenderGameOverlayEvent.Post event) {
+        if (event.type != RenderGameOverlayEvent.ElementType.ALL) return;
+        if (!shouldShow()) return;
+
+        ScaledResolution sr = new ScaledResolution(mc);
+        int overlayWidth = getWidth(1.0f); // Base width, scaled later
+        int overlayHeight = getHeight(1.0f); // Base height, scaled later
+        float x = NotEnoughFakepixel.feature.dungeons.scoreOverlayPos.getAbsX(sr, overlayWidth);
+        float y = NotEnoughFakepixel.feature.dungeons.scoreOverlayPos.getAbsY(sr, overlayHeight);
+        draw(x, y, NotEnoughFakepixel.feature.dungeons.scoreOverlayScale, false);
     }
 
-    @Override
-    protected boolean shouldShow() {
-        if (!super.shouldShow()) return false;
+    private boolean shouldShow() {
         if (!DungeonManager.checkEssentials()) return false;
-        return Configuration.dungeonsScoreOverlay;
+        return NotEnoughFakepixel.feature.dungeons.dungeonsScoreOverlay;
     }
 
-    @Override
-    protected void getLines(List<String> lines, boolean example) {
-        lines.add(getRankingDisplay());
-        lines.add(getVirtualRankingDisplay());
-        lines.add("");
-        lines.add(getSkillDisplay());
-        lines.add(getExplorationDisplay());
-        lines.add(getSpeedDisplay());
-        lines.add(getBonusDisplay());
-        lines.add("");
-        lines.add(getSecretDisplay());
+    private void draw(float x, float y, float scale, boolean example) {
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(x, y, 0);
+        GlStateManager.scale(scale, scale, scale);
+
+        List<String> lines = new ArrayList<>();
+        getLines(lines, example);
+
+        // Parse background color
+        String[] colorParts = NotEnoughFakepixel.feature.dungeons.scoreOverlayBackgroundColor.split(":");
+        int alpha = Integer.parseInt(colorParts[1]);
+        int red = Integer.parseInt(colorParts[2]);
+        int green = Integer.parseInt(colorParts[3]);
+        int blue = Integer.parseInt(colorParts[4]);
+        int bgColor = (alpha << 24) | (red << 16) | (green << 8) | blue;
+
+        // Calculate text dimensions (unscaled)
+        int textWidth = 0;
+        for (String line : lines) {
+            int lineWidth = mc.fontRendererObj.getStringWidth(line);
+            if (lineWidth > textWidth) textWidth = lineWidth;
+        }
+        textWidth += 4; // 2px padding on each side
+        int textHeight = lines.size() * 11; // 11px per line (8px font + 3px spacing)
+
+        // Draw background matching text dimensions
+        Gui.drawRect(0, 0, textWidth, textHeight, bgColor);
+
+        // Draw text
+        for (int i = 0; i < lines.size(); i++) {
+            mc.fontRendererObj.drawString(lines.get(i), 2, i * 11, -1); // 2px left padding
+        }
+
+        GlStateManager.popMatrix();
+    }
+
+    public void renderDummy() {
+        ScaledResolution sr = new ScaledResolution(mc);
+        int overlayWidth = getWidth(1.0f);
+        int overlayHeight = getHeight(1.0f);
+        float x = NotEnoughFakepixel.feature.dungeons.scoreOverlayPos.getAbsX(sr, overlayWidth);
+        float y = NotEnoughFakepixel.feature.dungeons.scoreOverlayPos.getAbsY(sr, overlayHeight);
+        draw(x, y, NotEnoughFakepixel.feature.dungeons.scoreOverlayScale, true);
+    }
+
+    public int getWidth(float scale) {
+        int baseWidth = mc.fontRendererObj.getStringWidth("Total score: 300 (S+)") + 4; // Base estimate
+        return (int) (baseWidth * scale);
+    }
+
+    public int getHeight(float scale) {
+        return (int) (110 * scale); // 10 lines × 11px
+    }
+
+    private void getLines(List<String> lines, boolean example) {
+        if (example) {
+            lines.add("\u00a77Total score: \u00a7a300\u00a76 (S+)");
+            lines.add("\u00a77Virtual score: \u00a7a310\u00a76 (S+)");
+            lines.add("");
+            lines.add("\u00a77Skill: \u00a7a100");
+            lines.add("\u00a77Exploration: \u00a7a100");
+            lines.add("\u00a77Speed: \u00a7a100");
+            lines.add("\u00a77Bonus: \u00a7a5");
+            lines.add("");
+            lines.add("\u00a77Secrets: \u00a7a100% \u00a7a/ 80% \u00a7a/ 100%");
+        } else {
+            lines.add(getRankingDisplay());
+            lines.add(getVirtualRankingDisplay());
+            lines.add("");
+            lines.add(getSkillDisplay());
+            lines.add(getExplorationDisplay());
+            lines.add(getSpeedDisplay());
+            lines.add(getBonusDisplay());
+            lines.add("");
+            lines.add(getSecretDisplay());
+        }
     }
 
     private String getRankingDisplay() {
         int totalScore = ScoreManager.getTotalScore();
         if (DungeonManager.isFinalStage() && ScoreManager.getExplorationClearScore() != 60) return EnumChatFormatting.RED + "UNKNOWN SCORE";
-        //if (DungeonManager.isFinalStage() && ) totalScore = (int) (0.7 * ScoreManager.getTotalScore());
         String returnString = "\u00a77Total score: ";
         if (totalScore < 100) returnString = returnString + EnumChatFormatting.RED + totalScore + EnumChatFormatting.RED + " (D)";
         else if (totalScore < 160) returnString = returnString + EnumChatFormatting.RED + totalScore + EnumChatFormatting.BLUE + " (C)";
@@ -108,7 +179,7 @@ public class ScoreOverlay extends TextHud {
     }
 
     private String getBonusDisplay() {
-        int threshold = Configuration.dungeonsIsPaul ? 15 : 5;
+        int threshold = NotEnoughFakepixel.feature.dungeons.dungeonsIsPaul ? 15 : 5;
         EnumChatFormatting enumChatFormatting;
         int bonusScore = ScoreManager.getBonusScore();
         if (bonusScore >= threshold) enumChatFormatting = EnumChatFormatting.GREEN;
@@ -137,20 +208,18 @@ public class ScoreOverlay extends TextHud {
         return returnString.toString();
     }
 
-    // POJAV FAKE OVERLAY ON CHAT
-
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent e) {
         if (!Configuration.isPojav()) return;
         if (!DungeonManager.checkEssentials()) return;
 
         if (ScoreManager.currentSeconds > 0 && ScoreManager.currentSeconds <= 8) {
-            readyTime = System.currentTimeMillis() + (chatDisplaySeconds * 1000L); // Reset the timer on dungeon load
+            readyTime = System.currentTimeMillis() + (chatDisplaySeconds * 1000L);
         }
 
         long currentTime = System.currentTimeMillis();
         if (currentTime >= readyTime) {
-            readyTime = currentTime + (chatDisplaySeconds * 1000L); // Schedule the next announcement
+            readyTime = currentTime + (chatDisplaySeconds * 1000L);
 
             ChatUtils.notifyChat(EnumChatFormatting.WHITE + "----- Dungeon Report -----");
             ChatUtils.notifyChat(getRankingDisplay());
@@ -169,18 +238,18 @@ public class ScoreOverlay extends TextHud {
     public void onChatReceived(ClientChatReceivedEvent event) {
         if (!Configuration.isPojav()) return;
         if (!DungeonManager.checkEssentials()) return;
-        if (event.message.getUnformattedText().equals("[NPC] Mort: Good luck.")) {
-            readyTime = System.currentTimeMillis() + (chatDisplaySeconds * 1000L); // Reset the timer on dungeon load
-        } else if (event.message.getUnformattedText().contains("> EXTRA STATS <")) {
-            readyTime = Long.MAX_VALUE; // Reset the timer on dungeon end
+        String msg = event.message.getUnformattedText();
+        if (msg.equals("[NPC] Mort: Good luck.")) {
+            readyTime = System.currentTimeMillis() + (chatDisplaySeconds * 1000L);
+        } else if (msg.contains("> EXTRA STATS <")) {
+            readyTime = Long.MAX_VALUE;
         }
     }
 
-    @SubscribeEvent()
+    @SubscribeEvent
     public void onWorldUnload(WorldEvent.Unload event) {
         if (!Configuration.isPojav()) return;
         if (!DungeonManager.checkEssentials()) return;
-        readyTime = Long.MAX_VALUE; // Reset the timer on dungeon unload
+        readyTime = Long.MAX_VALUE;
     }
-
 }

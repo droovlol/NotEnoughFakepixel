@@ -15,6 +15,8 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.variables.MobDisplayTypes;
@@ -47,7 +49,7 @@ public class ThreeWeirdos {
 
     @SubscribeEvent
     public void onChatReceive(ClientChatReceivedEvent e) {
-        if (!Configuration.dungeonsThreeWeirdos) return;
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsThreeWeirdos) return;
         if (mc.thePlayer == null) return;
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
         if (!ScoreboardUtils.currentLocation.isDungeon()) return;
@@ -64,6 +66,15 @@ public class ThreeWeirdos {
                     e.setCanceled(true);
                     foundResponse = true;
                     correctName = name;
+                    mc.theWorld.playSound(
+                            mc.thePlayer.posX,
+                            mc.thePlayer.posY,
+                            mc.thePlayer.posZ,
+                            "note.pling",
+                            4.0F,
+                            1.0F,
+                            false
+                    );
                     findRiddleChest(name);
                     return;
                 }
@@ -106,23 +117,14 @@ public class ThreeWeirdos {
 
     @SubscribeEvent
     public void onRenderLast(RenderWorldLastEvent event) {
-        if (!Configuration.dungeonsThreeWeirdos) return;
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsThreeWeirdos) return;
         if (mc.theWorld == null) return;
         if (!foundResponse) return;
         if (correctName.isEmpty()) return;
-        highlightNpc(correctName, event.partialTicks);
         if (riddleChest != null) {
             drawFilled3DBox(new AxisAlignedBB(riddleChest.getX() - 0.05, riddleChest.getY(), riddleChest.getZ() - 0.05,
                             riddleChest.getX() + 1.05, riddleChest.getY() + 1, riddleChest.getZ() + 1.05),
                     0x00FF00, true, true, event.partialTicks);
-        }
-    }
-
-    public void highlightNpc(String correctName, float partialTicks) {
-        for (Entity entity : mc.theWorld.loadedEntityList) {
-            if (entity.getDisplayName().getUnformattedText().contains(correctName)) {
-                RenderUtils.renderEntityHitbox(entity, partialTicks, new Color(90, 255, 90, 198), MobDisplayTypes.NONE);
-            }
         }
     }
 

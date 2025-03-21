@@ -24,6 +24,11 @@
     "RenderItemMixin",
     "MixinRenderEntityItem",
     "MixinEffectRenderer",
-    "MixinBlockLever"
+    "MixinBlockLever",
+    "MixinEntity",
+    "MixinEntityLivingBase",
+    "MixinItemRenderer",
+    "Accesors.EntityPlayerAccessor",
+    "MixinRenderPlayer"
   ]
 }

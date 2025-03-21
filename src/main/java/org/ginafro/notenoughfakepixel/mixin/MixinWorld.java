@@ -3,6 +3,8 @@ package org.ginafro.notenoughfakepixel.mixin;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.features.QualityOfLife;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -15,7 +17,7 @@ public class MixinWorld {
             int particleID, boolean p_175720_2_, double xCood, double yCoord, double zCoord,
             double xOffset, double yOffset, double zOffset, int[] p_175720_15_, CallbackInfo ci
     ) {
-        if (Configuration.qolDisableHyperionExplosions && particleID == 1) {
+        if (NotEnoughFakepixel.feature.qol.qolDisableHyperionExplosions && particleID == 1) {
             ci.cancel();
         }
     }
@@ -23,7 +25,7 @@ public class MixinWorld {
     @Inject(method = "updateWeather", at = @At("HEAD"), cancellable = true)
     private void disableRain(CallbackInfo ci) {
         // Check if the custom configuration option to disable rain is enabled
-        if (Configuration.qolDisableRain) {
+        if (NotEnoughFakepixel.feature.qol.qolDisableRain) {
             // Cast this mixin instance back to World
             World world = (World) (Object) this;
 

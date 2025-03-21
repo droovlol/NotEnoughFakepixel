@@ -15,6 +15,8 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.features.Experimentation;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.utils.TablistParser;
 import org.lwjgl.input.Mouse;
@@ -89,7 +91,7 @@ public class EnchantingSolvers {
 
     @SubscribeEvent
     public void onGuiDrawn(GuiScreenEvent.BackgroundDrawnEvent event) {
-        if (Configuration.experimentationUltraSequencerSolver && currentSolverType == SolverTypes.ULTRASEQUENCER) {
+        if (NotEnoughFakepixel.feature.experimentation.experimentationUltraSequencerSolver && currentSolverType == SolverTypes.ULTRASEQUENCER) {
 
             if(!(event.gui instanceof GuiChest)) return;
             GuiChest chest = (GuiChest) event.gui;
@@ -135,7 +137,7 @@ public class EnchantingSolvers {
                     RenderUtils.drawOnSlot(containerChest.inventorySlots.size(), slot.slot.xDisplayPosition, slot.slot.yDisplayPosition, color.getRGB(), slot.quantity);
                 }
             }
-        } else if (Configuration.experimentationChronomatronSolver && currentSolverType == SolverTypes.CHRONOMATRON){
+        } else if (NotEnoughFakepixel.feature.experimentation.experimentationChronomatronSolver && currentSolverType == SolverTypes.CHRONOMATRON){
             if(!(event.gui instanceof GuiChest)) return;
             GuiChest chest = (GuiChest) event.gui;
             Container container = chest.inventorySlots;

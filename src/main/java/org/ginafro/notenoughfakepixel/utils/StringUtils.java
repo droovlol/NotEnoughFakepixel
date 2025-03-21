@@ -4,6 +4,8 @@ import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.Map;
+import java.util.NavigableMap;
 
 public class StringUtils {
 
@@ -147,5 +149,19 @@ public class StringUtils {
 
     public static String formatNumber(Number num) {
         return NUMBER_FORMAT.format(num);
+    }
+
+    public static <T> Map<String, T> subMapWithKeysThatAreSuffixes(String prefix, NavigableMap<String, T> map) {
+        if ("".equals(prefix)) return map;
+        String lastKey = createLexicographicallyNextStringOfTheSameLength(prefix);
+        return map.subMap(prefix, true, lastKey, false);
+    }
+
+    public static String createLexicographicallyNextStringOfTheSameLength(String input) {
+        int lastCharPosition = input.length() - 1;
+        String inputWithoutLastChar = input.substring(0, lastCharPosition);
+        char lastChar = input.charAt(lastCharPosition);
+        char incrementedLastChar = (char) (lastChar + 1);
+        return inputWithoutLastChar + incrementedLastChar;
     }
 }

@@ -4,6 +4,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.features.QualityOfLife;
 import org.ginafro.notenoughfakepixel.utils.ChatUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 
@@ -24,13 +26,13 @@ public class ChatCleaner {
         if (Minecraft.getMinecraft().thePlayer == null) return;
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
         if (ChatUtils.middleBar.matcher(event.message.getFormattedText()).matches()) return;
-        cancelMessage(Configuration.qolDisableSellingRanks, event, sellingRankPattern);
-        cancelMessage(Configuration.qolDisableWatchdogInfo, event, watchdogPattern, true);
-        cancelMessage(Configuration.qolDisableWatchdogInfo, event, infoPattern, true);
-        cancelMessage(Configuration.qolDisableFriendJoin, event, friendJoinPattern, true);
-        cancelMessage(Configuration.qolDisableZombieRareDrops, event, potatoDropPattern, true);
-        cancelMessage(Configuration.qolDisableZombieRareDrops, event, poisonousPotatoDropPattern, true);
-        cancelMessage(Configuration.qolDisableZombieRareDrops, event, carrotDropPattern, true);
+        cancelMessage(NotEnoughFakepixel.feature.qol.qolDisableSellingRanks, event, sellingRankPattern);
+        cancelMessage(NotEnoughFakepixel.feature.qol.qolDisableWatchdogInfo, event, watchdogPattern, true);
+        cancelMessage(NotEnoughFakepixel.feature.qol.qolDisableWatchdogInfo, event, infoPattern, true);
+        cancelMessage(NotEnoughFakepixel.feature.qol.qolDisableFriendJoin, event, friendJoinPattern, true);
+        cancelMessage(NotEnoughFakepixel.feature.qol.qolDisableZombieRareDrops, event, potatoDropPattern, true);
+        cancelMessage(NotEnoughFakepixel.feature.qol.qolDisableZombieRareDrops, event, poisonousPotatoDropPattern, true);
+        cancelMessage(NotEnoughFakepixel.feature.qol.qolDisableZombieRareDrops, event, carrotDropPattern, true);
     }
 
     private void cancelMessage(boolean option, ClientChatReceivedEvent e, Pattern pattern, boolean formatted){

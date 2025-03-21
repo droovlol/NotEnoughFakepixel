@@ -9,13 +9,15 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
 
 public class HideTooltips {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onTooltipLow(ItemTooltipEvent event) {
-        if (!Configuration.dungeonsHideTooltips) return;
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsHideTooltips) return;
         if (!DungeonManager.checkEssentialsF7()) return;
         if (event.toolTip == null) return;
 

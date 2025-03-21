@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -14,26 +15,35 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ContainerChest;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemSkull;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import net.minecraft.network.play.server.S29PacketSoundEffect;
 import net.minecraft.util.*;
-import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.features.QualityOfLife;
+import org.ginafro.notenoughfakepixel.config.gui.core.ChromaColour;
 import org.ginafro.notenoughfakepixel.events.PacketReadEvent;
+import org.ginafro.notenoughfakepixel.utils.ColorUtils;
+import org.ginafro.notenoughfakepixel.utils.ItemUtils;
+import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
+import org.ginafro.notenoughfakepixel.variables.Gamemode;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -41,8 +51,7 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -56,11 +65,12 @@ public class MiscFeatures {
             Blocks.double_plant
     ));
 
+    List<ItemStack> armour = new ArrayList<>();
+
     private final Minecraft mc = Minecraft.getMinecraft();
 
     @SubscribeEvent
     public void onInteract(PlayerInteractEvent event) {
-        // Existing code for blocking unwanted placements…
         if (!ScoreboardUtils.currentGamemode.isSkyblock() || mc.thePlayer != event.entityPlayer) return;
         ItemStack item = event.entityPlayer.getHeldItem();
         if (item == null) return;
@@ -69,15 +79,26 @@ public class MiscFeatures {
             Block block = mc.theWorld.getBlockState(event.pos).getBlock();
 
             if (flowerPlaceable.contains(block)) {
-                if (Configuration.qolBlockPlacingItems && item.getDisplayName().contains("Flower of Truth")) {
+                if (NotEnoughFakepixel.feature.qol.qolBlockPlacingItems && item.getDisplayName().contains("Flower of Truth")) {
                     event.setCanceled(true);
                 }
-                if (Configuration.qolBlockPlacingItems && item.getDisplayName().contains("Spirit Sceptre")) {
+                if (NotEnoughFakepixel.feature.qol.qolBlockPlacingItems && item.getDisplayName().contains("Spirit Sceptre")) {
+                    event.setCanceled(true);
+                }
+                if (NotEnoughFakepixel.feature.qol.qolBlockPlacingItems && item.getDisplayName().contains("Bouquet of Lies")) {
                     event.setCanceled(true);
                 }
             }
 
-            if (Configuration.qolBlockPlacingItems && item.getItem() == Item.getItemFromBlock(Blocks.hopper) && item.getDisplayName().contains("Weird Tuba")) {
+            if (NotEnoughFakepixel.feature.qol.qolBlockPlacingItems && item.getDisplayName().contains("Superboom TNT")) {
+                event.setCanceled(true);
+            }
+
+            if (NotEnoughFakepixel.feature.qol.qolBlockPlacingItems && item.getDisplayName().contains("Infinityboom TNT")) {
+                event.setCanceled(true);
+            }
+
+            if (NotEnoughFakepixel.feature.qol.qolBlockPlacingItems && item.getItem() == Item.getItemFromBlock(Blocks.hopper) && item.getDisplayName().contains("Weird Tuba")) {
                 event.setCanceled(true);
             }
         }
@@ -199,7 +220,7 @@ public class MiscFeatures {
     }
 
     private String getConfiguredSound() {
-        switch (Configuration.qolEtherwarpSound) {
+        switch (NotEnoughFakepixel.feature.qol.qolEtherwarpSound) {
             case 1: return "mob.blaze.hit";
             case 2: return "note.pling";
             case 3: return "random.orb";
@@ -212,7 +233,7 @@ public class MiscFeatures {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onRenderLivingSpecialsPre(RenderLivingEvent.Specials.Pre<EntityLivingBase> event) {
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
-        if (Configuration.qolHideDyingMobs) {
+        if (NotEnoughFakepixel.feature.qol.qolHideDyingMobs) {
             EntityLivingBase entity = event.entity;
             String name = entity.getDisplayName().getUnformattedText();
 
@@ -229,7 +250,7 @@ public class MiscFeatures {
     public void onRenderLivingPre(RenderLivingEvent.Pre<EntityLivingBase> event) {
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
 
-        if (Configuration.qolHideDyingMobs) {
+        if (NotEnoughFakepixel.feature.qol.qolHideDyingMobs) {
             EntityLivingBase entity = event.entity;
 
             if (entity.getHealth() <= 0 || entity.isDead) {
@@ -240,6 +261,21 @@ public class MiscFeatures {
                 entity.setPositionAndUpdate(playerX, teleportY, playerZ);
 
                 event.setCanceled(true);
+            }
+        }
+
+        if (NotEnoughFakepixel.feature.qol.qolHidePlayerArmor) {
+            if (event.entity instanceof EntityPlayer) {
+                EntityPlayer player = (EntityPlayer) event.entity;
+
+                for (int i = 0; i < player.inventory.armorInventory.length; i++) {
+                    if (player.inventory.armorInventory[i] != null) {
+                        armour.add(player.inventory.armorInventory[i].copy());
+                        player.inventory.armorInventory[i] = null;
+                    } else {
+                        armour.add(null);
+                    }
+                }
             }
         }
     }
@@ -267,7 +303,7 @@ public class MiscFeatures {
     public void onRenderLivingSpecials(RenderLivingEvent.Specials.Pre<EntityLivingBase> event) {
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
 
-        if (Configuration.qolHideDyingMobs) {
+        if (NotEnoughFakepixel.feature.qol.qolHideDyingMobs) {
             EntityLivingBase entity = event.entity;
 
             if (entity.getHealth() <= 0 || entity.isDead) {
@@ -358,8 +394,8 @@ public class MiscFeatures {
         boolean isAirAbove2 = mc.theWorld.isAirBlock(target.up(2));
 
         if (isAirAbove1 && isAirAbove2) {
-            if (Configuration.qolEtherwarpOverlay) {
-                renderFilledBoundingBox(target, new Color(Configuration.qolEtherwarpOverlayColor.getRGB(), true));
+            if (NotEnoughFakepixel.feature.qol.qolEtherwarpOverlay) {
+                renderFilledBoundingBox(target, ColorUtils.getColor(NotEnoughFakepixel.feature.qol.qolEtherwarpOverlayColor));
             }
         }
     }
@@ -477,8 +513,8 @@ public class MiscFeatures {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onChatReceived(ClientChatReceivedEvent e) {
-        if (e.type == 2) return; // Ignore actionbar messages
-        if (Configuration.qolCopyChatMsg) {
+        if (e.type == 2) return;
+        if (NotEnoughFakepixel.feature.qol.qolCopyChatMsg) {
 
         String unformattedText = StringUtils.stripControlCodes(e.message.getUnformattedText());
 
@@ -497,8 +533,61 @@ public class MiscFeatures {
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
-        if (Configuration.qolAlwaysSprint) {
+        if (NotEnoughFakepixel.feature.qol.qolAlwaysSprint) {
         KeyBinding.setKeyBindState(mc.gameSettings.keyBindSprint.getKeyCode(), true);
         }
+    }
+
+    @SubscribeEvent
+    public void onRenderLivingPost(RenderLivingEvent.Post<EntityLivingBase> event) {
+        if (NotEnoughFakepixel.feature.qol.qolHidePlayerArmor && ScoreboardUtils.currentGamemode.isSkyblock()) {
+            if (event.entity instanceof EntityPlayer) {
+                EntityPlayer player = (EntityPlayer) event.entity;
+
+                for (int i = 0; i < player.inventory.armorInventory.length; i++) {
+                    player.inventory.armorInventory[i] = armour.get(i);
+                }
+
+                armour.clear();
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onOpen(GuiScreenEvent.BackgroundDrawnEvent e){
+        if (!NotEnoughFakepixel.feature.qol.qolShowJacobRewards) return;
+        if (ScoreboardUtils.currentGamemode != Gamemode.SKYBLOCK) return;
+        if (!(e.gui instanceof GuiChest)) return;
+
+        GuiChest chest = (GuiChest) e.gui;
+        Container container = chest.inventorySlots;
+
+        if (!(container instanceof ContainerChest)) return;
+        String title = ((ContainerChest) container).getLowerChestInventory().getDisplayName().getUnformattedText();
+        if (!title.startsWith("Your contests")) return;
+
+        ContainerChest containerChest = (ContainerChest) container;
+        for(Slot slot : containerChest.inventorySlots) {
+            // Skip player inventory
+            if (slot.inventory == Minecraft.getMinecraft().thePlayer.inventory) continue;
+            ItemStack item = slot.getStack();
+            // Skip empty slots
+            if (item == null) continue;
+
+            if(ItemUtils.getLoreLine(item, "Click to claim reward!") != null){
+                highlightSlotGreen(slot, chest);
+            }
+            else if(ItemUtils.getLoreLine(item, "Rewards claimed!") != null){
+                highlightSlotRed(slot, chest);
+            }
+        }
+    }
+
+    public static void highlightSlotGreen(Slot slot, GuiChest chest) {
+        RenderUtils.drawOnSlot(chest.inventorySlots.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, new Color(55, 255, 55).getRGB());
+    }
+
+    public static void highlightSlotRed(Slot slot, GuiChest chest) {
+        RenderUtils.drawOnSlot(chest.inventorySlots.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, new Color(255, 55, 55).getRGB());
     }
 }

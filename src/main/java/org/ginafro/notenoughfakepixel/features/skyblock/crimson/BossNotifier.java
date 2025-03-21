@@ -6,7 +6,9 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.utils.ChatUtils;
+import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.SoundUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,16 +42,16 @@ public class BossNotifier {
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent e){
         if (Crimson.checkEssentials()) return;
-        if (Configuration.crimsonBladesoulNotifier) {
+        if (NotEnoughFakepixel.feature.crimson.crimsonBladesoulNotifier) {
             playCountdown("Bladesoul", bladesoulReady, bladesoulLastKill,bladesoulScheduled);
         }
-        if (Configuration.crimsonMageOutlawNotifier) {
+        if (NotEnoughFakepixel.feature.crimson.crimsonMageOutlawNotifier) {
             playCountdown("Mage Outlaw", mageOutlawReady, mageOutlawLastKill,mageOutlawScheduled);
         }
-        if (Configuration.crimsonAshfangNotifier) {
+        if (NotEnoughFakepixel.feature.crimson.crimsonAshfangNotifier) {
             playCountdown("Ashfang", ashfangReady, ashfangLastKill,ashfangScheduled);
         }
-        if (Configuration.crimsonBarbarianDukeXNotifier) {
+        if (NotEnoughFakepixel.feature.crimson.crimsonBarbarianDukeXNotifier) {
             playCountdown("Barbarian Duke X", barbarianDukeXReady, barbarianDukeXLastKill,barbarianDukeXScheduled);
         }
     }
@@ -58,7 +60,7 @@ public class BossNotifier {
     public void onChat(@NotNull ClientChatReceivedEvent e){
         if (Crimson.checkEssentials()) return;
 
-        if (Configuration.crimsonBladesoulNotifier) {
+        if (NotEnoughFakepixel.feature.crimson.crimsonBladesoulNotifier) {
             Matcher matcher = Pattern.compile("BLADESOUL DOWN!").matcher(e.message.getUnformattedText());
             if (matcher.find()) {
                 bladesoulLastKill = System.currentTimeMillis();
@@ -68,7 +70,7 @@ public class BossNotifier {
             }
         }
 
-        if (Configuration.crimsonMageOutlawNotifier) {
+        if (NotEnoughFakepixel.feature.crimson.crimsonMageOutlawNotifier) {
             Matcher matcher = Pattern.compile("MAGE OUTLAW DOWN!").matcher(e.message.getUnformattedText());
             if (matcher.find()) {
                 mageOutlawLastKill = System.currentTimeMillis();
@@ -78,7 +80,7 @@ public class BossNotifier {
             }
         }
 
-        if (Configuration.crimsonAshfangNotifier) {
+        if (NotEnoughFakepixel.feature.crimson.crimsonAshfangNotifier) {
             Matcher matcher = Pattern.compile("ASHFANG DOWN!").matcher(e.message.getUnformattedText());
             if (matcher.find()) {
                 ashfangLastKill = System.currentTimeMillis();
@@ -88,7 +90,7 @@ public class BossNotifier {
             }
         }
 
-        if (Configuration.crimsonBarbarianDukeXNotifier) {
+        if (NotEnoughFakepixel.feature.crimson.crimsonBarbarianDukeXNotifier) {
             Matcher matcher = Pattern.compile("BARBARIAN DUKE X DOWN!").matcher(e.message.getUnformattedText());
             if (matcher.find()) {
                 barbarianDukeXLastKill = System.currentTimeMillis();
@@ -102,22 +104,22 @@ public class BossNotifier {
     @SubscribeEvent()
     public void onWorldUnload(WorldEvent.Unload event) {
         if (Crimson.checkEssentials()) return;
-        if (Configuration.crimsonBladesoulNotifier) {
+        if (NotEnoughFakepixel.feature.crimson.crimsonBladesoulNotifier) {
             Arrays.fill(bladesoulScheduled, false);
             bladesoulReady = -1;
             bladesoulLastKill = -1;
         }
-        if (Configuration.crimsonMageOutlawNotifier) {
+        if (NotEnoughFakepixel.feature.crimson.crimsonMageOutlawNotifier) {
             Arrays.fill(mageOutlawScheduled, false);
             mageOutlawReady = -1;
             mageOutlawLastKill = -1;
         }
-        if (Configuration.crimsonAshfangNotifier) {
+        if (NotEnoughFakepixel.feature.crimson.crimsonAshfangNotifier) {
             Arrays.fill(ashfangScheduled, false);
             ashfangReady = -1;
             ashfangLastKill = -1;
         }
-        if (Configuration.crimsonBarbarianDukeXNotifier) {
+        if (NotEnoughFakepixel.feature.crimson.crimsonBarbarianDukeXNotifier) {
             Arrays.fill(barbarianDukeXScheduled, false);
             barbarianDukeXReady = -1;
             barbarianDukeXLastKill = -1;

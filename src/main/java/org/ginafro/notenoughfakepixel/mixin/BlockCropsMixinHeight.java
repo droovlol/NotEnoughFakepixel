@@ -12,6 +12,8 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.features.QualityOfLife;
 import org.ginafro.notenoughfakepixel.mixin.Accesors.BlockAccessor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -43,14 +45,14 @@ public abstract class BlockCropsMixinHeight extends BlockMixinHitbox {
 
     @Override
     public void getSelectedBoundingBox(World worldIn, BlockPos pos, CallbackInfoReturnable<AxisAlignedBB> cir) {
-        if (Configuration.qolCropsHeight) {
+        if (NotEnoughFakepixel.feature.qol.qolCropsHeight) {
             updateCropsMaxY(worldIn, pos, worldIn.getBlockState(pos).getBlock());
         }
     }
 
     @Override
     public void collisionRayTrace(World worldIn, BlockPos pos, Vec3 start, Vec3 end, CallbackInfoReturnable<MovingObjectPosition> cir) {
-        if (Configuration.qolCropsHeight) {
+        if (NotEnoughFakepixel.feature.qol.qolCropsHeight) {
             updateCropsMaxY(worldIn, pos, worldIn.getBlockState(pos).getBlock());
         }
     }

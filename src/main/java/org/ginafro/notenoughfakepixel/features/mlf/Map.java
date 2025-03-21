@@ -1,48 +1,129 @@
 package org.ginafro.notenoughfakepixel.features.mlf;
 
-
-import cc.polyfrost.oneconfig.hud.BasicHud;
-import cc.polyfrost.oneconfig.libs.universal.UMatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.util.ResourceLocation;
-import org.ginafro.notenoughfakepixel.Configuration;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.util.StringUtils;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.ginafro.notenoughfakepixel.features.mlf.Info;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.variables.Gamemode;
 
-public class Map extends BasicHud {
+import java.util.ArrayList;
+import java.util.List;
 
+public class Map {
 
-    public Map(){
+    private String inc = "", bal = "", e1 = "", e2 = "";
+    private final Minecraft mc = Minecraft.getMinecraft();
 
-    }
+    @SubscribeEvent
+    public void onRender(RenderGameOverlayEvent.Post event) {
+        if (event.type != RenderGameOverlayEvent.ElementType.ALL) return;
+        if (!Info.mlfInfoHud) return;
+        if (ScoreboardUtils.currentGamemode != Gamemode.MLF) return;
 
-    @Override
-    protected void draw(UMatrixStack matrices, float x, float y, float s, boolean example) {
-        if(ScoreboardUtils.currentGamemode == Gamemode.MLF){
-            Minecraft mc = Minecraft.getMinecraft();
-            mc.getTextureManager().bindTexture(new ResourceLocation("notenoughfakepixel:mlf/map.png"));
-            float scale = 64 * s;
-            Gui.drawScaledCustomSizeModalRect((int)x , (int)y, 0F,0F,(int)scale,(int)scale,(int)scale,(int)scale,scale,scale );
+        ScaledResolution sr = new ScaledResolution(mc);
+        int x = (int) Info.mlfInfoOffsetX;
+        int y = (int) Info.mlfInfoOffsetY;
+
+        // Parse background color (assuming A:R:G:B format)
+        String[] colorParts = Info.mlfInfoBackgroundColor.split(":");
+        int alpha = Integer.parseInt(colorParts[1]); // Adjusted to match typical A:R:G:B
+        int red = Integer.parseInt(colorParts[2]);
+        int green = Integer.parseInt(colorParts[3]);
+        int blue = Integer.parseInt(colorParts[4]);
+        int bgColor = (alpha << 24) | (red << 16) | (green << 8) | blue;
+
+        // Update text lines from scoreboard
+        List<String> sideBarLines = ScoreboardUtils.getSidebarLines();
+        updateLines(sideBarLines);
+
+        // Prepare text lines
+        List<String> lines = new ArrayList<>();
+        lines.add("Income: " + inc);
+        lines.add("Balance: " + bal);
+        lines.add("Events: ");
+        if (!e1.isEmpty()) lines.add("- " + e1);
+        if (!e2.isEmpty()) lines.add("- " + e2);
+
+        // Calculate text dimensions
+        int textWidth = 0;
+        for (String line : lines) {
+            int lineWidth = mc.fontRendererObj.getStringWidth(line);
+            if (lineWidth > textWidth) textWidth = lineWidth;
+        }
+        textWidth += 4; // 2px padding on each side
+        int textHeight = lines.size() * 9; // 8px font height + 1px spacing per line
+
+        // Draw background matching text dimensions
+        Gui.drawRect(x, y, x + textWidth, y + textHeight, bgColor);
+
+        // Draw text
+        for (int i = 0; i < lines.size(); i++) {
+            mc.fontRendererObj.drawString(lines.get(i), x + 2, y + (i * 9), -1); // 2px left padding, 9px line spacing
         }
     }
 
-    @Override
-    protected boolean shouldDrawBackground() {
-        if(ScoreboardUtils.currentGamemode == Gamemode.MLF){
-            return true;
+    /** Updates the lines from the scoreboard */
+    private void updateLines(List<String> sideBarLines) {
+        if (sideBarLines == null) return;
+        e1 = "";
+        e2 = "";
+        for (String s : sideBarLines) {
+            if (s.contains("- ")) {
+                if (e1.isEmpty()) {
+                    e1 = StringUtils.stripControlCodes(s.replace("- ", ""));
+                } else {
+                    e2 = StringUtils.stripControlCodes(s.replace("- ", ""));
+                }
+            }
+            if (s.contains("Balance")) {
+                bal = StringUtils.stripControlCodes(s.replace("Balance: ", ""));
+            }
+            if (s.contains("Income")) {
+                inc = StringUtils.stripControlCodes(s.replace("Income: ", ""));
+            }
         }
-        return false;
     }
 
-    @Override
-    protected float getWidth(float scale, boolean example) {
-        return 64 * scale;
-    }
+    /** Renders a dummy version for the position editor */
+    public void renderDummy() {
+        ScaledResolution sr = new ScaledResolution(mc);
+        int x = (int) Info.mlfInfoOffsetX;
+        int y = (int) Info.mlfInfoOffsetY;
 
-    @Override
-    protected float getHeight(float scale, boolean example) {
-        return 64 * scale;
+        String[] colorParts = Info.mlfInfoBackgroundColor.split(":");
+        int alpha = Integer.parseInt(colorParts[1]); // Adjusted to match typical A:R:G:B
+        int red = Integer.parseInt(colorParts[2]);
+        int green = Integer.parseInt(colorParts[3]);
+        int blue = Integer.parseInt(colorParts[4]);
+        int bgColor = (alpha << 24) | (red << 16) | (green << 8) | blue;
+
+        // Dummy text lines
+        List<String> lines = new ArrayList<>();
+        lines.add("Income: 100");
+        lines.add("Balance: 500");
+        lines.add("Events: ");
+        lines.add("- Event 1");
+        lines.add("- Event 2");
+
+        // Calculate text dimensions
+        int textWidth = 0;
+        for (String line : lines) {
+            int lineWidth = mc.fontRendererObj.getStringWidth(line);
+            if (lineWidth > textWidth) textWidth = lineWidth;
+        }
+        textWidth += 4; // 2px padding on each side
+        int textHeight = lines.size() * 9; // 8px font height + 1px spacing per line
+
+        // Draw background matching text dimensions
+        Gui.drawRect(x, y, x + textWidth, y + textHeight, bgColor);
+
+        // Draw text
+        for (int i = 0; i < lines.size(); i++) {
+            mc.fontRendererObj.drawString(lines.get(i), x + 2, y + (i * 9), -1); // 2px left padding, 9px line spacing
+        }
     }
 }

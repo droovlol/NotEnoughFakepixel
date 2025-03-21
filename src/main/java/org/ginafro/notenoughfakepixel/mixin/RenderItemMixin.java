@@ -1,5 +1,7 @@
 package org.ginafro.notenoughfakepixel.mixin;
 
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.features.QualityOfLife;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,7 +19,7 @@ public class RenderItemMixin
     @Inject(method = "renderItemIntoGUI(Lnet/minecraft/item/ItemStack;II)V", at = @At("HEAD"))
     private void renderRarity(ItemStack itemStack, int xPosition, int yPosition, CallbackInfo info)
     {
-        if (Configuration.qolItemRarity)
+        if (NotEnoughFakepixel.feature.qol.qolItemRarity)
         {
             ItemBackgroundRarity.renderRarityOverlay(itemStack, xPosition, yPosition);
         }
