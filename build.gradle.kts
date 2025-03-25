@@ -36,7 +36,6 @@ loom {
             // If you don't want mixins, remove these lines
             property("mixin.debug", "true")
             arg("--tweakClass", "org.spongepowered.asm.launch.MixinTweaker")
-            arg("--tweakClass", "cc.polyfrost.oneconfig.loader.stage0.LaunchWrapperTweaker")
         }
     }
     runConfigs {
@@ -138,8 +137,7 @@ tasks.jar {
     manifest.attributes += mapOf(
         "ModSide" to "CLIENT",
         "TweakOrder" to 0,
-        "ForceLoadAsMod" to true,
-        "TweakClass" to "cc.polyfrost.oneconfig.loader.stage0.LaunchWrapperTweaker"
+        "ForceLoadAsMod" to true
     )
 }
 
