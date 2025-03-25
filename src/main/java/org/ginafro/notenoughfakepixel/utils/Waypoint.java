@@ -1,32 +1,20 @@
 package org.ginafro.notenoughfakepixel.utils;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 
+@Getter
 public class Waypoint {
     private final String type;
     private final int[] coordinates;
+    @Setter
     private boolean hidden = false;
 
     public Waypoint(String type, int[] coordinates) {
         this.type = type;
         this.coordinates = coordinates;
-    }
-
-    public boolean isHidden() {
-        return hidden;
-    }
-
-    public void setHidden(boolean hidden) {
-        this.hidden = hidden;
-    }
-
-
-    public String getType() {
-        return type;
-    }
-
-    public int[] getCoordinates() {
-        return coordinates;
     }
 
     public static Waypoint getClosestWaypoint(ArrayList<Waypoint> waypoints, int[] coords) {

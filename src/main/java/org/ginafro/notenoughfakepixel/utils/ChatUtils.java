@@ -2,7 +2,6 @@ package org.ginafro.notenoughfakepixel.utils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
 
 import java.util.regex.Pattern;
 

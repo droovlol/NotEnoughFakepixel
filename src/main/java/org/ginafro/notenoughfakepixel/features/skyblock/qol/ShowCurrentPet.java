@@ -10,13 +10,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.ginafro.notenoughfakepixel.utils.ColorUtils;
-import org.ginafro.notenoughfakepixel.utils.ItemUtils;
-import org.ginafro.notenoughfakepixel.utils.RenderUtils;
-import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
+import org.ginafro.notenoughfakepixel.utils.*;
 import org.ginafro.notenoughfakepixel.variables.Gamemode;
-
-import java.awt.*;
 
 public class ShowCurrentPet {
 
@@ -45,15 +40,9 @@ public class ShowCurrentPet {
 
                 String isEquipped = ItemUtils.getLoreLine(item, "Click to despawn!");
                 if(isEquipped != null){
-                    highlightSlot(slot, chest);
+                    InventoryUtils.highlightSlot(slot, chest, ColorUtils.getColor(NotEnoughFakepixel.feature.qol.qolPetEquippedColor));
                 }
             }
-
         }
-    }
-
-    public static void highlightSlot(Slot slot, GuiChest chest){
-        Color color = ColorUtils.getColor(NotEnoughFakepixel.feature.qol.qolPetEquippedColor);
-        RenderUtils.drawOnSlot(chest.inventorySlots.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, color.getRGB());
     }
 }

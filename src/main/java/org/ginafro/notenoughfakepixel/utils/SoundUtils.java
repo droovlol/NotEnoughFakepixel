@@ -1,7 +1,6 @@
 package org.ginafro.notenoughfakepixel.utils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 
+import net.minecraft.client.Minecraft;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 

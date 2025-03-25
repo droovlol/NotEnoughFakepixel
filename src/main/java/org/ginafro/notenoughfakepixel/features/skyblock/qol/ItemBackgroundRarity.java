@@ -1,5 +1,6 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.qol;
 
+import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
@@ -9,7 +10,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.ginafro.notenoughfakepixel.config.features.QualityOfLife;
 import org.lwjgl.opengl.GL11;
 
 
@@ -21,6 +21,7 @@ public class ItemBackgroundRarity {
     private static final Pattern RARITY_PATTERN = Pattern.compile("(§[0-9a-f]§l§ka§r )?([§0-9a-fk-or]+)(?<rarity>[A-Z]+)");
     private static final Pattern PET_PATTERN = Pattern.compile("§7\\[Lvl \\d+\\] (?<color>§[0-9a-fk-or]).+");
 
+    @Getter
     public enum ItemRarity {
         COMMON("COMMON", EnumChatFormatting.WHITE),
         UNCOMMON("UNCOMMON", EnumChatFormatting.GREEN),
@@ -39,14 +40,6 @@ public class ItemBackgroundRarity {
         ItemRarity(String name, EnumChatFormatting color) {
             this.name = name;
             this.color = color;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public EnumChatFormatting getColor() {
-            return color;
         }
 
         public static ItemRarity byBaseColor(String colorCode) {
@@ -95,7 +88,6 @@ public class ItemBackgroundRarity {
 
     private static int getColorValue(EnumChatFormatting format) {
         switch (format) {
-            case WHITE: return 0xFFFFFF;
             case GREEN: return 0x55FF55;
             case BLUE: return 0x5555FF;
             case DARK_PURPLE: return 0xAA00AA;

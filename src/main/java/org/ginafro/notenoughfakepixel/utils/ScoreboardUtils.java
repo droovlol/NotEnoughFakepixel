@@ -2,6 +2,8 @@ package org.ginafro.notenoughfakepixel.utils;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.scoreboard.Score;
@@ -35,6 +37,8 @@ public class ScoreboardUtils {
     public static DungeonFloor currentFloor = DungeonFloor.NONE;
     public static int clearedPercentage = -1;
 
+    @Getter
+    @Setter
     private static Pattern floorPattern = Pattern.compile(" §7⏣ §cThe Catacombs §7\\(<?floor>.{2}\\)");
 
     public static void parseScoreboard() {
@@ -84,11 +88,10 @@ public class ScoreboardUtils {
                 if (s1 != null) {
                     String name = StringUtils.stripControlCodes(s1.getUnformattedText());
                     if (name.contains("Server: ")) {
-                        currentLocation = Location.getLocation(
-                                name.replace("Server: ", "")
-                                        .replaceFirst("-\\d+", "-")
-                                        .replaceAll("\\s+","")
-                        );
+                        String serverName = name.replace("Server: ", "")
+                                .replaceFirst("-\\d+", "-")
+                                .trim();
+                        currentLocation = Location.getLocation(serverName);
                     }
                     if (name.contains("Area")) {
                         currentGamemode = Gamemode.SKYBLOCK;

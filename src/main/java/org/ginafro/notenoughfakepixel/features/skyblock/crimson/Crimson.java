@@ -3,9 +3,6 @@ package org.ginafro.notenoughfakepixel.features.skyblock.crimson;
 import net.minecraft.client.Minecraft;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Crimson {
 
     private static final int[][] ashfangArea = new int[][]{{-510,100,-1040}, {-450,200,-990}};

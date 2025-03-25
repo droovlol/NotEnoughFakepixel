@@ -1,5 +1,6 @@
 package org.ginafro.notenoughfakepixel.init;
 
+import lombok.Getter;
 import org.spongepowered.asm.lib.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -28,12 +29,9 @@ import java.util.zip.ZipInputStream;
  * @author Linnea Gräf
  */
 public class AutoDiscoveryMixinPlugin implements IMixinConfigPlugin {
+    @Getter
     private static final List<AutoDiscoveryMixinPlugin> mixinPlugins = new ArrayList<>();
-
-    public static List<AutoDiscoveryMixinPlugin> getMixinPlugins() {
-        return mixinPlugins;
-    }
-
+    @Getter
     private String mixinPackage;
 
     @Override
@@ -66,13 +64,6 @@ public class AutoDiscoveryMixinPlugin implements IMixinConfigPlugin {
             }
         }
         return classUrl;
-    }
-
-    /**
-     * Get the package that contains all the mixins. This value is set by mixin itself using {@link #onLoad}.
-     */
-    public String getMixinPackage() {
-        return mixinPackage;
     }
 
     /**

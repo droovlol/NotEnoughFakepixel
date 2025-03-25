@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.Slice;
 
 /// Thanks to Patcher for providing this mixin
-/// https://github.com/Sk1erLLC/Patcher/blob/4ce6e196e5ad1339f8a0ab96eb5680c2f6464583/src/main/java/club/sk1er/patcher/mixins/bugfixes/network/NetHandlerPlayClientMixin_SignChatSpam.java
+/// [...](https://github.com/Sk1erLLC/Patcher/blob/4ce6e196e5ad1339f8a0ab96eb5680c2f6464583/src/main/java/club/sk1er/patcher/mixins/bugfixes/network/NetHandlerPlayClientMixin_SignChatSpam.java)
 
 @Mixin(NetHandlerPlayClient.class)
 public class NetHandlerPlayClientMixin {

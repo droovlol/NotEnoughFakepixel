@@ -14,12 +14,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.ginafro.notenoughfakepixel.config.features.Experimentation;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.utils.TablistParser;
-import org.lwjgl.input.Mouse;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -34,12 +31,12 @@ public class EnchantingSolvers {
     private boolean noteFinished = true;
     private boolean resolved = false;
     static boolean resolving = false;
-    private Color green = new Color(0, 255, 0);
+    private final Color green = new Color(0, 255, 0);
     static int slotToClickUltrasequencer = 1;
     private boolean clicked = false;
     static int roundUltraSequencerSolver = 1;
 
-    class UltrasequencerSlot{
+    static class UltrasequencerSlot{
         public Slot slot;
         public int quantity;
 
@@ -49,19 +46,11 @@ public class EnchantingSolvers {
         }
     }
 
-    enum SolverTypes {
+    public enum SolverTypes {
         NONE,
         CHRONOMATRON,
         ULTRASEQUENCER,
         SUPERPAIRS
-    }
-
-    private SolverState solverState = SolverState.NONE;
-
-    private enum SolverState {
-        NONE,
-        REMEMBERING,
-        SOLVING
     }
 
     @SubscribeEvent()
@@ -230,7 +219,6 @@ public class EnchantingSolvers {
         else if (currentSolverType == SolverTypes.NONE){
             if (chronomatronOrder.isEmpty() && ultrasequencerSlots.isEmpty()) return;
 
-            //System.out.println("Deleting data");
             ultrasequencerSlots = new ArrayList<>();
             chronomatronOrder = new ArrayList<>();
             previousIndex = 0;

@@ -2,7 +2,6 @@ package org.ginafro.notenoughfakepixel.utils;
 
 import java.awt.Font;
 import java.awt.FontFormatException;
-import java.awt.GraphicsEnvironment;
 import java.io.IOException;
 import java.util.*;
 

@@ -6,7 +6,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.ginafro.notenoughfakepixel.config.features.Mining;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.utils.TablistParser;
 import org.ginafro.notenoughfakepixel.variables.Location;
@@ -105,7 +104,7 @@ public class MiningOverlay {
     }
 
     private String formatCommission(String commission) {
-        Double percent = Double.parseDouble(commission.split(":")[1].replaceAll("[ %]", ""));
+        double percent = Double.parseDouble(commission.split(":")[1].replaceAll("[ %]", ""));
         String colorCode = percent <= 33 ? "\u00a7c" : percent <= 79 ? "\u00a7e" : "\u00a7a";
         return "\u00a77" + commission.split(":")[0] + ": " + colorCode + percent + "%";
     }
@@ -118,6 +117,6 @@ public class MiningOverlay {
                 longest = commission.length();
             }
         }
-        return longest < MINIMUM_WIDTH ? MINIMUM_WIDTH : longest;
+        return Math.max(longest, MINIMUM_WIDTH);
     }
 }

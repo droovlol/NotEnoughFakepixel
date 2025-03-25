@@ -42,12 +42,10 @@ import org.ginafro.notenoughfakepixel.features.skyblock.enchanting.HideEnchantin
 import org.ginafro.notenoughfakepixel.features.skyblock.enchanting.PreventMissclicks;
 import org.ginafro.notenoughfakepixel.features.skyblock.fishing.GreatCatchNotifier;
 import org.ginafro.notenoughfakepixel.features.skyblock.mining.*;
-//import org.ginafro.notenoughfakepixel.features.skyblock.overlays.StorageOverlay;
 import org.ginafro.notenoughfakepixel.features.skyblock.qol.*;
 import org.ginafro.notenoughfakepixel.features.skyblock.diana.*;
 import org.ginafro.notenoughfakepixel.features.skyblock.slayers.*;
 import org.ginafro.notenoughfakepixel.events.Handlers.PacketHandler;
-//import org.ginafro.notenoughfakepixel.gui.CustomConfigGUI;
 import org.ginafro.notenoughfakepixel.utils.*;
 import org.lwjgl.input.Keyboard;
 

@@ -10,14 +10,14 @@ import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.ginafro.notenoughfakepixel.config.features.Slayer;
+import org.ginafro.notenoughfakepixel.utils.MapUtils;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -79,19 +79,16 @@ public class BlazeAttunements {
 
     private static final Pattern COLOR_PATTERN = Pattern.compile("ASHEN|SPIRIT|CRYSTAL|AURIC");
 
+    private static final Map<String, Integer> ATTUNEMENT_COLORS = MapUtils.mapOf(
+            MapUtils.Pair.of("ASHEN", Color.DARK_GRAY.getRGB()),
+            MapUtils.Pair.of("SPIRIT", Color.WHITE.getRGB()),
+            MapUtils.Pair.of("CRYSTAL", Color.CYAN.getRGB()),
+            MapUtils.Pair.of("AURIC", Color.YELLOW.getRGB())
+
+    );
+
     private static int getColorForAttunement(String attunement) {
-        switch (attunement) {
-            case "ASHEN":
-                return Color.DARK_GRAY.getRGB();
-            case "SPIRIT":
-                return Color.WHITE.getRGB();
-            case "CRYSTAL":
-                return Color.CYAN.getRGB();
-            case "AURIC":
-                return Color.YELLOW.getRGB();
-            default:
-                return -1;
-        }
+        return ATTUNEMENT_COLORS.getOrDefault(attunement, -1);
     }
 
     private static Entity getEntityBelow(Entity armorStand, float height) {

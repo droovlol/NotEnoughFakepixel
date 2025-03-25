@@ -3,12 +3,9 @@ package org.ginafro.notenoughfakepixel.features.skyblock.overlays;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.ginafro.notenoughfakepixel.utils.UnicodeFontRenderer;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;

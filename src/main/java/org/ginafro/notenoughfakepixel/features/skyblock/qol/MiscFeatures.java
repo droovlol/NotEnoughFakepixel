@@ -19,38 +19,25 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemSkull;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import net.minecraft.network.play.server.S29PacketSoundEffect;
 import net.minecraft.util.*;
+import net.minecraft.util.StringUtils;
 import net.minecraftforge.client.event.*;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.ginafro.notenoughfakepixel.config.features.QualityOfLife;
-import org.ginafro.notenoughfakepixel.config.gui.core.ChromaColour;
 import org.ginafro.notenoughfakepixel.events.PacketReadEvent;
-import org.ginafro.notenoughfakepixel.utils.ColorUtils;
-import org.ginafro.notenoughfakepixel.utils.ItemUtils;
-import org.ginafro.notenoughfakepixel.utils.RenderUtils;
-import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
+import org.ginafro.notenoughfakepixel.utils.*;
 import org.ginafro.notenoughfakepixel.variables.Gamemode;
-import org.jetbrains.annotations.NotNull;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -279,26 +266,7 @@ public class MiscFeatures {
             }
         }
     }
-/*
-    @SubscribeEvent
-    public void onRenderLivingPost(RenderLivingEvent.Post<EntityLivingBase> event) {
-        if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
 
-        if (Configuration.qolHideDyingMobs) {
-            EntityLivingBase entity = event.entity;
-
-            if (entity.getHealth() <= 0 || entity.isDead) {
-                double playerX = Minecraft.getMinecraft().thePlayer.posX;
-                double playerZ = Minecraft.getMinecraft().thePlayer.posZ;
-
-                double teleportY = -64.0;
-                entity.setPositionAndUpdate(playerX, teleportY, playerZ);
-
-                event.setCanceled(true);
-            }
-        }
-    }
-*/
     @SubscribeEvent
     public void onRenderLivingSpecials(RenderLivingEvent.Specials.Pre<EntityLivingBase> event) {
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
@@ -575,19 +543,12 @@ public class MiscFeatures {
             if (item == null) continue;
 
             if(ItemUtils.getLoreLine(item, "Click to claim reward!") != null){
-                highlightSlotGreen(slot, chest);
+                InventoryUtils.highlightSlotGreen(slot, chest);
             }
             else if(ItemUtils.getLoreLine(item, "Rewards claimed!") != null){
-                highlightSlotRed(slot, chest);
+                InventoryUtils.highlightSlotRed(slot, chest);
             }
         }
     }
 
-    public static void highlightSlotGreen(Slot slot, GuiChest chest) {
-        RenderUtils.drawOnSlot(chest.inventorySlots.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, new Color(55, 255, 55).getRGB());
-    }
-
-    public static void highlightSlotRed(Slot slot, GuiChest chest) {
-        RenderUtils.drawOnSlot(chest.inventorySlots.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, new Color(255, 55, 55).getRGB());
-    }
 }

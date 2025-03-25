@@ -2,8 +2,12 @@ package org.ginafro.notenoughfakepixel.utils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.gui.inventory.GuiChest;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 
+import java.awt.*;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -58,7 +62,15 @@ public class InventoryUtils {
         }
     }
 
-    public static void autoEquipItem(String name) {
-        autoEquipItem(name, 50);
+    public static void highlightSlotGreen(Slot slot, GuiChest chest) {
+        highlightSlot(slot, chest, new Color(55, 255, 55));
+    }
+
+    public static void highlightSlotRed(Slot slot, GuiChest chest) {
+        highlightSlot(slot, chest, new Color(255, 55, 55));
+    }
+
+    public static void highlightSlot(Slot slot, GuiChest chest, Color color){
+        RenderUtils.drawOnSlot(chest.inventorySlots.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, color.getRGB());
     }
 }

@@ -9,9 +9,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.ginafro.notenoughfakepixel.config.features.QualityOfLife;
 import org.ginafro.notenoughfakepixel.events.PacketReadEvent;
 import org.ginafro.notenoughfakepixel.utils.InventoryUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
@@ -75,11 +73,7 @@ public class MidasStaff {
         if (InventoryUtils.getSlot("Midas Staff") != -1) {
             if (!(event.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)) return; // Check if right click on air
             grassSoundCounter = 0;
-            //int[] playerCoords = new int[] {Minecraft.getMinecraft().thePlayer.getPosition().getX(), Minecraft.getMinecraft().thePlayer.getPosition().getY(), Minecraft.getMinecraft().thePlayer.getPosition().getZ()};
-            //SoundUtils.playSound(playerCoords, "dig.grass", 1.0f, 1.0f);
         }
-
     }
-
 
 }

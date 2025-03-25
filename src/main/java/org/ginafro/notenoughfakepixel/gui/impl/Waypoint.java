@@ -1,10 +1,12 @@
 package org.ginafro.notenoughfakepixel.gui.impl;
 
+import lombok.Getter;
 import net.minecraft.world.World;
 
 public class Waypoint {
 
     private static double x,y,z;
+    @Getter
     private static World world;
     public Waypoint(double x1, double y1, double z1, World w){
         x=x1;
@@ -27,10 +29,6 @@ public class Waypoint {
 
     public double getZ() {
         return z;
-    }
-
-    public static World getWorld(){
-        return world;
     }
 
 }

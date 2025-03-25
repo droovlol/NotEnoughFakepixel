@@ -1,9 +1,7 @@
 package org.ginafro.notenoughfakepixel.gui;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.GuiScreen;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,7 +10,6 @@ import java.util.List;
 public abstract class ModGUI extends GuiScreen{
 
     protected List<Button> buttons = new ArrayList<>();
-
 
     protected void drawrect(int x,int y, int x1, int y1 , int color){
         net.minecraft.client.gui.Gui.drawRect(x, y, x1, y1, color);

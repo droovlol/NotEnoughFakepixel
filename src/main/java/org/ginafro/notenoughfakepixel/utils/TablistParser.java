@@ -32,7 +32,7 @@ public class TablistParser {
     public static int secretPercentage = 0;
     public static int deaths = 0;
     public static String time = "";
-    //public static int secretsFound = 0;
+
     public static int crypts = 0;
 
     public static String currentOpenChestName = "";
