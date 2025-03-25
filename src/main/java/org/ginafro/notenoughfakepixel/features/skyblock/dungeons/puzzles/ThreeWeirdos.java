@@ -14,12 +14,8 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.ginafro.notenoughfakepixel.config.features.Dungeons;
-import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
-import org.ginafro.notenoughfakepixel.variables.MobDisplayTypes;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -29,7 +25,7 @@ import java.util.regex.Pattern;
 
 public class ThreeWeirdos {
 
-    private static String[] answers = {
+    private static final String[] answers = {
             "The reward is not in my chest!",
             "At least one of them is lying, and the reward is not in ",
             "My chest doesn't have the reward we are all telling the truth.",
@@ -38,8 +34,8 @@ public class ThreeWeirdos {
             "Both of them are telling the truth. Also, "
     };
 
-    private static Pattern threeWeirdosPattern = Pattern.compile("(§r§e\\[NPC] §r§c)(.+)(§r§f:)(.+)");
-    private static Pattern threeWeirdosSolved = Pattern.compile("§r§a§lPUZZLE SOLVED! (?<player>.+) §r§ewasn't fooled by three weirdos!(.+)");
+    private static final Pattern threeWeirdosPattern = Pattern.compile("(§r§e\\[NPC] §r§c)(.+)(§r§f:)(.+)");
+    private static final Pattern threeWeirdosSolved = Pattern.compile("§r§a§lPUZZLE SOLVED! (?<player>.+) §r§ewasn't fooled by three weirdos!(.+)");
 
     private final Minecraft mc = Minecraft.getMinecraft();
 

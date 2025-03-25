@@ -1,5 +1,6 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.dungeons.mobs;
 
+import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GlStateManager;
@@ -11,9 +12,7 @@ import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.events.RenderEntityModelEvent;
 import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.OutlineUtils;
@@ -31,6 +30,7 @@ public class StarredMobDisplay {
     private static final Pattern PATTERN2 = Pattern.compile("^.+ (?:§.)+0§c❤$");
     private static final Pattern PATTERN_RUNIC = Pattern.compile("^§.\\[§.Runic§.\\] §.+ (?:§.)+0§f/.+§c❤$");
 
+    @Getter
     private final Set<EntityLivingBase> currentEntities = new HashSet<>();
 
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -102,10 +102,6 @@ public class StarredMobDisplay {
                 PATTERN_RUNIC.matcher(name).matches();
     }
 
-    public Set<EntityLivingBase> getCurrentEntities() {
-        return currentEntities;
-    }
-
     public void clearCache() {
         currentEntities.clear();
     }
@@ -126,7 +122,7 @@ public class StarredMobDisplay {
             if (!entity.getName().contains("✮")) return;
 
             // Ensure entity is not dying before rendering
-            if (entity instanceof EntityLivingBase && isDying((EntityLivingBase) entity)) return;
+            if (isDying((EntityLivingBase) entity)) return;
 
             Color color = new Color(
                     ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsStarredBoxColor).getRGB()

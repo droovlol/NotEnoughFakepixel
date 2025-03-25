@@ -24,9 +24,7 @@ import net.minecraft.util.StringUtils;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -261,7 +259,6 @@ public class SpiritLeapHandler {
                 case "§c": return 0xFFFF5555;
                 case "§d": return 0xFFFF55FF;
                 case "§e": return 0xFFFFFF55;
-                case "§f": return 0xFFFFFFFF;
                 default: return 0xFFFFFFFF;
             }
         }

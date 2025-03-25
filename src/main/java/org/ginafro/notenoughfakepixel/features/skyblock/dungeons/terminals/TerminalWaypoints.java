@@ -6,10 +6,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -29,20 +28,7 @@ public class TerminalWaypoints {
                         || name.contains("Inactive Terminal")) {
 
                     // Get player's interpolated position
-                    double px = mc.thePlayer.lastTickPosX + (mc.thePlayer.posX - mc.thePlayer.lastTickPosX) * event.partialTicks;
-                    double py = mc.thePlayer.lastTickPosY + (mc.thePlayer.posY - mc.thePlayer.lastTickPosY) * event.partialTicks;
-                    double pz = mc.thePlayer.lastTickPosZ + (mc.thePlayer.posZ - mc.thePlayer.lastTickPosZ) * event.partialTicks;
-
-                    // Determine the block position for the entity (using floor to align with block boundaries)
-                    double blockX = Math.floor(entity.posX);
-                    double blockY = Math.floor(entity.posY);
-                    double blockZ = Math.floor(entity.posZ);
-
-                    // Create a block-sized bounding box (1x1x1) in world space relative to the camera
-                    AxisAlignedBB bb = new AxisAlignedBB(
-                            blockX - px, blockY - py, blockZ - pz,
-                            blockX - px + 1, blockY - py + 1, blockZ - pz + 1
-                    );
+                    AxisAlignedBB bb = getAxisAlignedBB(event, entity, mc);
 
                     GlStateManager.pushMatrix();
                     // Setup for filled box rendering (disable depth, texture, lighting, and culling)
@@ -69,6 +55,23 @@ public class TerminalWaypoints {
                 }
             }
         }
+    }
+
+    private static @NotNull AxisAlignedBB getAxisAlignedBB(RenderWorldLastEvent event, Entity entity, Minecraft mc) {
+        double px = mc.thePlayer.lastTickPosX + (mc.thePlayer.posX - mc.thePlayer.lastTickPosX) * event.partialTicks;
+        double py = mc.thePlayer.lastTickPosY + (mc.thePlayer.posY - mc.thePlayer.lastTickPosY) * event.partialTicks;
+        double pz = mc.thePlayer.lastTickPosZ + (mc.thePlayer.posZ - mc.thePlayer.lastTickPosZ) * event.partialTicks;
+
+        // Determine the block position for the entity (using floor to align with block boundaries)
+        double blockX = Math.floor(entity.posX);
+        double blockY = Math.floor(entity.posY);
+        double blockZ = Math.floor(entity.posZ);
+
+        // Create a block-sized bounding box (1x1x1) in world space relative to the camera
+        return new AxisAlignedBB(
+                blockX - px, blockY - py, blockZ - pz,
+                blockX - px + 1, blockY - py + 1, blockZ - pz + 1
+        );
     }
 
     private void drawFilledBB(AxisAlignedBB bb, Color color) {

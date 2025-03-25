@@ -45,7 +45,7 @@ public class CreeperSolver {
     static Vec3 creeperLocation = new Vec3(0, 0, 0);
     static List<Vec3[]> creeperLines = new ArrayList<>();
     private static int ticks = 0;
-    private static Set<BlockPos> usedEndBlocks = new HashSet<>(); // Track used endpoints
+    private static final Set<BlockPos> usedEndBlocks = new HashSet<>(); // Track used endpoints
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
@@ -63,7 +63,7 @@ public class CreeperSolver {
                 AxisAlignedBB creeperScan = new AxisAlignedBB(x - 14, y - 8, z - 13, x + 14, y + 8, z + 13);
                 List<EntityCreeper> creepers = world.getEntitiesWithinAABB(EntityCreeper.class, creeperScan);
 
-                if (creepers.size() > 0 && !creepers.get(0).isInvisible()) {
+                if (!creepers.isEmpty() && !creepers.get(0).isInvisible()) {
                     EntityCreeper creeper = creepers.get(0);
                     creeperLines.clear();
                     usedEndBlocks.clear();

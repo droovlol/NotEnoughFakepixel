@@ -11,13 +11,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.ginafro.notenoughfakepixel.config.features.Dungeons;
-import org.ginafro.notenoughfakepixel.utils.ChatUtils;
-import org.ginafro.notenoughfakepixel.utils.ItemUtils;
-import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
-import org.ginafro.notenoughfakepixel.utils.SoundUtils;
+import org.ginafro.notenoughfakepixel.utils.*;
 import org.ginafro.notenoughfakepixel.variables.Location;
 import org.lwjgl.input.Mouse;
 
@@ -73,7 +68,7 @@ public class SalvageItemsSaver {
                 String loreLegendary = ItemUtils.getLoreLine(itemToSavage, legendaryPattern);
                 String loreMythic = ItemUtils.getLoreLine(itemToSavage, mythicPattern);
                 int stars = ItemUtils.getExtraAttributesIntTag(container.getSlot(22).getStack(), "stars");
-                boolean starredItem = containsSubstring(starredItems, itemToSavage.getDisplayName());
+                boolean starredItem = StringUtils.containsSubstring(starredItems, itemToSavage.getDisplayName());
                 if (loreLegendary != null || loreMythic != null || stars > 0 || starredItem) {
                     event.setCanceled(true);
                     int[] cords = new int[] {Minecraft.getMinecraft().thePlayer.getPosition().getX(), Minecraft.getMinecraft().thePlayer.getPosition().getY(), Minecraft.getMinecraft().thePlayer.getPosition().getZ()};
@@ -82,14 +77,5 @@ public class SalvageItemsSaver {
                 }
             }
         }
-    }
-
-    public boolean containsSubstring(String[] keywords, String itemName) {
-        for (String keyword : keywords) {
-            if (itemName.contains(keyword)) {
-                return true; // Found a match
-            }
-        }
-        return false; // No match found
     }
 }

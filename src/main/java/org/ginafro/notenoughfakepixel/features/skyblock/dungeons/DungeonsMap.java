@@ -17,7 +17,6 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.Color;
@@ -25,8 +24,8 @@ import java.util.Map;
 
 public class DungeonsMap {
 
-    private static float playerMarkerScale = 1.4F;
-    private static float othersMarkerScale = 1.25F;
+    private static final float playerMarkerScale = 1.4F;
+    private static final float othersMarkerScale = 1.25F;
     private double playerPositionX, playerPositionY = 0;
     private static final Color[] colors = {Color.YELLOW, Color.BLUE, Color.RED, Color.ORANGE};
     private static final ResourceLocation mapIconsTexture = new ResourceLocation("textures/map/map_icons.png");
@@ -146,10 +145,10 @@ public class DungeonsMap {
 
         // Adjust for centering
         if (NotEnoughFakepixel.feature.dungeons.dungeonsMapPos.isCenterX()) {
-            x -= mapWidth / 2;
+            x -= (float) mapWidth / 2;
         }
         if (NotEnoughFakepixel.feature.dungeons.dungeonsMapPos.isCenterY()) {
-            y -= mapHeight / 2;
+            y -= (float) mapHeight / 2;
         }
 
         GlStateManager.disableTexture2D();
@@ -188,10 +187,10 @@ public class DungeonsMap {
 
         // Adjust for centering
         if (NotEnoughFakepixel.feature.dungeons.dungeonsMapPos.isCenterX()) {
-            x -= mapWidth / 2;
+            x -= (float) mapWidth / 2;
         }
         if (NotEnoughFakepixel.feature.dungeons.dungeonsMapPos.isCenterY()) {
-            y -= mapHeight / 2;
+            y -= (float) mapHeight / 2;
         }
 
         float x1 = x;

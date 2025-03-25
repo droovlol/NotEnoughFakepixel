@@ -12,7 +12,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
 import org.ginafro.notenoughfakepixel.utils.ChatUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
@@ -23,7 +22,7 @@ import java.util.List;
 
 public class ScoreOverlay {
 
-    private static int chatDisplaySeconds = 40;
+    private static final int chatDisplaySeconds = 40;
     private long readyTime = Long.MAX_VALUE;
     private final Minecraft mc = Minecraft.getMinecraft();
 

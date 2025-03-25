@@ -2,7 +2,6 @@ package org.ginafro.notenoughfakepixel.features.skyblock.dungeons.puzzles;
 
 import com.google.common.collect.Lists;
 import net.minecraft.block.BlockHopper;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -22,11 +21,9 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.opengl.GL11;
-import scala.tools.nsc.transform.patmat.Logic;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -55,7 +52,7 @@ public class SilverFishSolver {
         if (!NotEnoughFakepixel.feature.dungeons.dungeonsSilverfishSolver) return;
 
         List<EntitySilverfish> silverfishes = mc.theWorld.getEntities(EntitySilverfish.class, s -> mc.thePlayer.getDistanceToEntity(s) < 20);
-        if (silverfishes.size() > 0) {
+        if (!silverfishes.isEmpty()) {
             SilverFishSolver.silverfish = silverfishes.get(0);
             if (silverfishChestPos == null || roomFacing == null) {
                 if (ticks % 20 == 0) {
@@ -66,7 +63,7 @@ public class SilverFishSolver {
                         AxisAlignedBB entityScan = new AxisAlignedBB(x - 25, 67, z - 25, x + 25, 68, z + 25);
                         List<EntitySilverfish> silverfishList = mc.theWorld.getEntitiesWithinAABB(EntitySilverfish.class, entityScan);
                         List<EntityItem> items = mc.theWorld.getEntitiesWithinAABB(EntityItem.class, entityScan);
-                        if (silverfishList.size() > 0 && items.size() > 0) {
+                        if (!silverfishList.isEmpty() && !items.isEmpty()) {
                             double silverfishX = silverfishList.get(0).posX;
                             double silverfishZ = silverfishList.get(0).posZ;
                             for (EntityItem item : items) {
@@ -85,7 +82,7 @@ public class SilverFishSolver {
                                                 silverfishChestPos = blockPos.add(0, 1, 0);
                                                 TileEntity hopper = mc.theWorld.getTileEntity(blockPos.add(0, 3, 0));
                                                 roomFacing = BlockHopper.getFacing(hopper.getBlockMetadata());
-                                                System.out.println(String.format("Silverfish chest is at %s and is facing %s", silverfishChestPos, roomFacing));
+                                                System.out.printf("Silverfish chest is at %s and is facing %s%n", silverfishChestPos, roomFacing);
                                             }
                                             break;
                                         }
@@ -131,6 +128,8 @@ public class SilverFishSolver {
                 Vec3 pos = getVec3RelativeToGrid(point.x, point.y);
                 Vec3 pos2 = getVec3RelativeToGrid(point2.x, point2.y);
                 GlStateManager.disableCull();
+                assert pos != null;
+                assert pos2 != null;
                 draw3DLine(pos.addVector(0.5, 0.5, 0.5), pos2.addVector(0.5, 0.5, 0.5), 5, new Color(255, 0, 0), event.partialTicks);
                 GlStateManager.enableCull();
             }
@@ -198,7 +197,9 @@ public class SilverFishSolver {
         if (silverfishChestPos == null || roomFacing == null) return null;
         for (int row = 0; row < 17; row++) {
             for (int column = 0; column < 17; column++) {
-                if (new BlockPos(getVec3RelativeToGrid(column, row)).equals(pos)) {
+                Vec3 vec = getVec3RelativeToGrid(column, row);
+                if (vec == null) continue;
+                if (new BlockPos(vec).equals(pos)) {
                     return new Point(column, row);
                 }
             }
@@ -211,7 +212,9 @@ public class SilverFishSolver {
         int[][] grid = new int[17][17];
         for (int row = 0; row < 17; row++) {
             for (int column = 0; column < 17; column++) {
-                grid[row][column] = mc.theWorld.getBlockState(new BlockPos(getVec3RelativeToGrid(column, row))).getBlock() != Blocks.air ? 1 : 0;
+                Vec3 vec = getVec3RelativeToGrid(column, row);
+                if (vec == null) continue;
+                grid[row][column] = mc.theWorld.getBlockState(new BlockPos(vec)).getBlock() != Blocks.air ? 1 : 0;
             }
             if (row == 16) return grid;
         }
@@ -227,7 +230,7 @@ public class SilverFishSolver {
         queue.addLast(new Point(startX, startY));
         iceCaveColors[startY][startX] = startPoint;
 
-        while (queue.size() != 0) {
+        while (!queue.isEmpty()) {
             Point currPos = queue.pollFirst();
             // traverse adjacent nodes while sliding on the ice
             for (EnumFacing dir : EnumFacing.HORIZONTALS) {

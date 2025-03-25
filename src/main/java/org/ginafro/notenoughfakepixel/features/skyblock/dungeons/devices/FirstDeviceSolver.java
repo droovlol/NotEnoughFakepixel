@@ -10,14 +10,11 @@ import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.events.PacketWriteEvent;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
 import org.ginafro.notenoughfakepixel.utils.ColorUtils;
@@ -34,13 +31,11 @@ public class FirstDeviceSolver {
     private boolean resolving = false;
     private int positionInRound = 0;
     private int round = 1;
-    //private long lastTimeClicked = 0; // Track last break event timestamp
-    //private static final long CLICK_COOLDOWN_MS = 1000; // 700ms cooldown left-click
 
     @SubscribeEvent
     public void onRenderLast(RenderWorldLastEvent event) {
         if (!NotEnoughFakepixel.feature.dungeons.dungeonsFirstDeviceSolver) return;
-        //if (!DungeonManager.checkEssentialsF7()) return;
+
         // Check for sea lanterns
         if (startMemorising) {
             if (positionsToSolve == null) return;
@@ -53,7 +48,7 @@ public class FirstDeviceSolver {
                 }
             }
         }
-        // Show highligted button and next buttons
+        // Show highlighted button and next buttons
         if (resolving) {
             for (int i=0; i<round;i++) {
                 if (positionsIndexSolved[i] == -1) {
@@ -94,7 +89,6 @@ public class FirstDeviceSolver {
                     if (!resolving) return;
                     if (!Objects.equals(getBlockUnderButton(event.pos, enumfacing), positionsToSolve[positionsIndexSolved[positionInRound]])) {
                         event.setCanceled(true);
-                        //reset();
                         return;
                     }
                     positionInRound++;

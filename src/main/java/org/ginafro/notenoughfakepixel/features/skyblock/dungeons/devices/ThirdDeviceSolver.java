@@ -4,7 +4,6 @@ import net.minecraft.block.BlockSeaLantern;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItemFrame;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.C02PacketUseEntity;
@@ -12,14 +11,11 @@ import net.minecraft.util.BlockPos;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.events.PacketWriteEvent;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
 import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
-import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -77,10 +73,6 @@ public class ThirdDeviceSolver {
                             event.setCanceled(true);
                         }
                     }
-                    /*BlockPos blockPos = getBlockUnderItemFrame(itemFrame);
-                    if (mc.theWorld.getBlockState(blockPos).getBlock() == Blocks.sea_lantern) {
-                        event.setCanceled(true);
-                    }*/
                 }
             }
         }
@@ -116,7 +108,6 @@ public class ThirdDeviceSolver {
 
                     // Prepare position for rendering text
                     double[] renderPos = new double[]{posItemFrame.getX() - 0.7, posItemFrame.getY() - 2.3, posItemFrame.getZ()};
-                    //RenderUtils.drawTag(currentRotation+"/"+desiredRotation, renderPos, new Color(255, 255, 255));
 
                     // Display clicks needed
                     if (clicksNeeded == 0) {

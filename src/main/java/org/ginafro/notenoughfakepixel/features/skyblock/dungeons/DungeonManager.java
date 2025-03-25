@@ -1,11 +1,8 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.dungeons;
 
-import lombok.Getter;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.Configuration;
-import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.score.ScoreManager;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 
 public class DungeonManager {

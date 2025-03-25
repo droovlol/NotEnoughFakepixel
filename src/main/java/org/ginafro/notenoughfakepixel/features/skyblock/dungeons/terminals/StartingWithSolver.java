@@ -15,9 +15,7 @@ import net.minecraft.util.StringUtils;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
 import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
@@ -34,8 +32,8 @@ public class StartingWithSolver {
     private static final int COLUMNS = 9;
     private static final int ROWS = 6;
 
-    private List<Slot> lastCorrectSlots = new ArrayList<>();
-    private Map<Integer, SlotPosition> slotPositions = new HashMap<>();
+    private final List<Slot> lastCorrectSlots = new ArrayList<>();
+    private final Map<Integer, SlotPosition> slotPositions = new HashMap<>();
     private char lastLetter = ' ';
 
     private static class SlotPosition {

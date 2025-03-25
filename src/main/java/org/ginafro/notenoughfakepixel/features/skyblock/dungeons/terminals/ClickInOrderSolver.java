@@ -14,9 +14,7 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
@@ -37,10 +35,9 @@ public class ClickInOrderSolver {
     private static final int REGION_COLS = 7;
     private static final int REGION_ROWS = 2;
 
-    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-
     public ClickInOrderSolver() {
         // Start the queue processing task when the solver is instantiated
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(this::processQueue, 0, 50, TimeUnit.MILLISECONDS);
     }
 

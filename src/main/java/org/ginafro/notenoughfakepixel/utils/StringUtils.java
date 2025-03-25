@@ -159,4 +159,13 @@ public class StringUtils {
         char incrementedLastChar = (char) (lastChar + 1);
         return inputWithoutLastChar + incrementedLastChar;
     }
+
+    public static boolean containsSubstring(String[] keywords, String itemName) {
+        for (String keyword : keywords) {
+            if (itemName.contains(keyword)) {
+                return true; // Found a match
+            }
+        }
+        return false; // No match found
+    }
 }
