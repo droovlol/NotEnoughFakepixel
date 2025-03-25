@@ -1,11 +1,7 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.diana;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
@@ -22,14 +18,11 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.ginafro.notenoughfakepixel.config.features.DianaF;
 import org.ginafro.notenoughfakepixel.events.RenderEntityModelEvent;
 import org.ginafro.notenoughfakepixel.utils.*;
-import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.events.PacketReadEvent;
 import net.minecraft.client.Minecraft;
 import org.ginafro.notenoughfakepixel.variables.MobDisplayTypes;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.time.Instant;
@@ -46,14 +39,13 @@ import static org.ginafro.notenoughfakepixel.utils.ScoreboardUtils.getHubNumber;
 public class Diana {
     ParticleProcessor processor = new ParticleProcessor();
     Color white = new Color(255, 255, 255, 100);
-    private Queue<GaiaConstruct> listGaiaAlive = new ConcurrentLinkedQueue<>();
-    private Queue<SiameseLynx> listSiameseAlive = new ConcurrentLinkedQueue<>();
-    private int distanceRenderHitbox = 64;
-    private Pattern cooldownPattern = Pattern.compile("§r§cThis ability is on cooldown for [0-9] "+"more seconds.§r");
-    private Pattern minosInquisitor = Pattern.compile("§r§c§lUh oh! §r§eYou dug out §r§2Minos Inquisitor§r");
-    private Pattern minosInquisitorPartyChat = Pattern.compile("§9Party §8> (?:§[0-9a-f])*\\[?(?:(?:§[0-9a-f])?[A-Z](?:§[0-9a-f])?\\+*(?:§[0-9a-f])?)*\\]?(?:§[0-9a-f])*.*?: Minos Inquisitor found at .*,? ?x:(-?\\d+), y:(-?\\d+), z:(-?\\d+) in HUB-(1[0-9]|[1-9])");
-    private int counterTeleports = 0;
-    private String inquisitorSound = "mob.enderdragon.growl";
+    private final Queue<GaiaConstruct> listGaiaAlive = new ConcurrentLinkedQueue<>();
+    private final Queue<SiameseLynx> listSiameseAlive = new ConcurrentLinkedQueue<>();
+    private final Pattern cooldownPattern = Pattern.compile("§r§cThis ability is on cooldown for [0-9] "+"more seconds.§r");
+    private final Pattern minosInquisitor = Pattern.compile("§r§c§lUh oh! §r§eYou dug out §r§2Minos Inquisitor§r");
+    private final Pattern minosInquisitorPartyChat = Pattern.compile("§9Party §8> (?:§[0-9a-f])*\\[?(?:(?:§[0-9a-f])?[A-Z](?:§[0-9a-f])?\\+*(?:§[0-9a-f])?)*\\]?(?:§[0-9a-f])*.*?: Minos Inquisitor found at .*,? ?x:(-?\\d+), y:(-?\\d+), z:(-?\\d+) in HUB-(1[0-9]|[1-9])");
+    private final int counterTeleports = 0;
+    private final String inquisitorSound = "mob.enderdragon.growl";
     Instant lastCaptureTime = Instant.now();
     private final Map<String, int[]> locations = new HashMap<>();
 
@@ -65,7 +57,6 @@ public class Diana {
         Packet packet = event.packet;
          if (packet instanceof S2APacketParticles) {
              S2APacketParticles particles = (S2APacketParticles) packet;
-             //System.out.println(particles.getParticleType().getParticleName());
              // magicCrit enchantmenttable footstep -> empty (blue)
              // crit enchantmenttable -> mob (white)
              // dripLava enchantmenttable -> treasure (brown)
@@ -412,9 +403,10 @@ public class Diana {
 
     private void dianaMobRemover() {
         int[] playerCoords = new int[] {(int)Minecraft.getMinecraft().thePlayer.posX, (int)Minecraft.getMinecraft().thePlayer.posY, (int)Minecraft.getMinecraft().thePlayer.posZ};
+        int distanceRenderHitbox = 64;
         for (GaiaConstruct gaia : listGaiaAlive) {
             int[] gaiaCoords = new int[]{gaia.getEntity().getPosition().getX(), gaia.getEntity().getPosition().getY(), gaia.getEntity().getPosition().getZ()};
-            if (!processor.areCoordinatesClose(playerCoords,gaiaCoords,distanceRenderHitbox)) {
+            if (!processor.areCoordinatesClose(playerCoords,gaiaCoords, distanceRenderHitbox)) {
                 listGaiaAlive.remove(gaia);
                 //System.out.println("Gaia removed for distance, "+listGaiaAlive.size());
             }

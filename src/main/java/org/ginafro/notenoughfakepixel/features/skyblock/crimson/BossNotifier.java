@@ -189,9 +189,7 @@ public class BossNotifier {
         for (int i = 0; i < times; i++) {
             exec.schedule(new Runnable() {
                 public void run() {
-                    SoundUtils.playSound(new int[]{Minecraft.getMinecraft().thePlayer.getPosition().getX(),
-                            Minecraft.getMinecraft().thePlayer.getPosition().getY(),
-                            Minecraft.getMinecraft().thePlayer.getPosition().getZ()},countdownSound,2.0f,1.0f+ (float)(times*2)/10);
+                    SoundUtils.playSound(Minecraft.getMinecraft().thePlayer.getPosition() ,countdownSound,2.0f,1.0f+ (float)(times*2)/10);
                 }
             }, i, TimeUnit.SECONDS);
         }

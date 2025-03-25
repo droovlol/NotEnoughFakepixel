@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
+import org.ginafro.notenoughfakepixel.utils.SoundUtils;
 
 public class FirePillarDisplay {
     private static final Minecraft mc = Minecraft.getMinecraft();
@@ -70,15 +71,11 @@ public class FirePillarDisplay {
         );
 
         if (System.currentTimeMillis() - lastSoundTime > seconds * 150L) {
-            mc.getSoundHandler().playSound(
-                    new PositionedSoundRecord(
-                            new ResourceLocation("note.pling"),
-                            1.0F,  // Volume
-                            1.0F,  // Pitch
-                            (float) mc.thePlayer.posX, // X position
-                            (float) mc.thePlayer.posY, // Y position
-                            (float) mc.thePlayer.posZ  // Z position
-                    )
+            SoundUtils.playSound(
+                    mc.thePlayer.getPosition(),
+                    "note.pling",
+                    1.0F,
+                    1.0F
             );
             lastSoundTime = System.currentTimeMillis();
         }

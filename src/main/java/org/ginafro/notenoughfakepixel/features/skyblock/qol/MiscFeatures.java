@@ -189,9 +189,13 @@ public class MiscFeatures {
                     if (Math.abs(timeDifference) <= SOUND_WINDOW_MS) {
                         event.setCanceled(true);
                         String soundName = getConfiguredSound();
-                        mc.theWorld.playSound(
-                                soundPacket.getX(), soundPacket.getY(), soundPacket.getZ(),
-                                soundName, soundPacket.getVolume(), soundPacket.getPitch(), false
+                        SoundUtils.playSound(
+                                (float) soundPacket.getX(),
+                                (float) soundPacket.getY(),
+                                (float) soundPacket.getZ(),
+                                soundName,
+                                soundPacket.getVolume(),
+                                soundPacket.getPitch()
                         );
                         landingTime = null;
                         teleportTarget = null;

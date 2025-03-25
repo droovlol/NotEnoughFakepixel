@@ -22,6 +22,7 @@ import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
 import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
+import org.ginafro.notenoughfakepixel.utils.SoundUtils;
 import org.ginafro.notenoughfakepixel.variables.F7ColorsDict;
 import org.lwjgl.input.Mouse;
 
@@ -357,14 +358,11 @@ public class ClickOnColorsSolver {
     private void playCompletionSound() {
         Minecraft mc = Minecraft.getMinecraft();
         float pitch = 0.8f + (float) (Math.random() * 0.4); // Random pitch between 0.8 and 1.2
-        mc.theWorld.playSound(
-                mc.thePlayer.posX,
-                mc.thePlayer.posY,
-                mc.thePlayer.posZ,
+        SoundUtils.playSound(
+                mc.thePlayer.getPosition(),
                 "random.orb",
                 1.0f,
-                pitch,
-                false
+                pitch
         );
     }
 

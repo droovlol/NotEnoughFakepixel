@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
+import org.ginafro.notenoughfakepixel.utils.SoundUtils;
 
 import java.io.File;
 import java.io.FileReader;
@@ -70,14 +71,11 @@ public class Alerts {
                             i++;
                         }
                     }
-                    mc.theWorld.playSound(
-                            mc.thePlayer.posX,
-                            mc.thePlayer.posY,
-                            mc.thePlayer.posZ,
+                    SoundUtils.playSound(
+                            mc.thePlayer.getPosition(),
                             "note.pling",
                             2.0F,
-                            2.0F,
-                            false
+                            2.0F
                     );
                     showCustomOverlay(EnumChatFormatting.RED + alertText.replace("&", "§"), 2000);
                     return;
@@ -99,14 +97,11 @@ public class Alerts {
                 }
 
                 if (trigger) {
-                    mc.theWorld.playSound(
-                            mc.thePlayer.posX,
-                            mc.thePlayer.posY,
-                            mc.thePlayer.posZ,
+                    SoundUtils.playSound(
+                            mc.thePlayer.getPosition(),
                             "note.pling",
                             2.0F,
-                            2.0F,
-                            false
+                            2.0F
                     );
                     showCustomOverlay(EnumChatFormatting.RED + alertText.replace("&", "§"), 2000);
                     return;

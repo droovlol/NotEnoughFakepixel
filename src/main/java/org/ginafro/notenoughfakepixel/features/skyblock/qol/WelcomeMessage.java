@@ -80,9 +80,7 @@ public class WelcomeMessage {
                         player.getPosition().getY(),
                         player.getPosition().getZ()},"note.pling",2.0f,1.0f);
             }, 1000, TimeUnit.MILLISECONDS);
-            exec.schedule(() -> SoundUtils.playSound(new int[]{player.getPosition().getX(),
-                    player.getPosition().getY(),
-                    player.getPosition().getZ()},"note.pling",2.0f,1.6f), 1300, TimeUnit.MILLISECONDS);
+            exec.schedule(() -> SoundUtils.playSound(player.getPosition(),"note.pling",2.0f,1.6f), 1300, TimeUnit.MILLISECONDS);
         }
     }
 }

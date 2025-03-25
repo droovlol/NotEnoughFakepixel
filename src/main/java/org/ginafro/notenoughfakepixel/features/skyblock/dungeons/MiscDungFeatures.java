@@ -17,6 +17,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
+import org.ginafro.notenoughfakepixel.utils.SoundUtils;
 
 import java.awt.*;
 
@@ -37,30 +38,14 @@ public class MiscDungFeatures {
             if (NotEnoughFakepixel.feature.dungeons.dungeonsBloodReady) {
                 showCustomOverlay(EnumChatFormatting.RED + "BLOOD READY!", 2000);
                 if (mc.theWorld != null) {
-                    mc.theWorld.playSound(
-                            mc.thePlayer.posX,
-                            mc.thePlayer.posY,
-                            mc.thePlayer.posZ,
-                            "note.pling",
-                            2.0F,
-                            1.0F,
-                            false
-                    );
+                    SoundUtils.playSound(mc.thePlayer.getPosition(), "note.pling", 2.0F, 1.0F);
                     Minecraft.getMinecraft().thePlayer.sendChatMessage("/pc Blood Ready!");
                 }
             }
         }
         if (message.startsWith("A Spirit Bear has appeared!")) {
             if (mc.theWorld != null && NotEnoughFakepixel.feature.dungeons.dungeonsSpiritBow) {
-                mc.theWorld.playSound(
-                        mc.thePlayer.posX,
-                        mc.thePlayer.posY,
-                        mc.thePlayer.posZ,
-                        "mob.enderdragon.growl",
-                        2.0F,
-                        1.0F,
-                        false
-                );
+                SoundUtils.playSound(mc.thePlayer.getPosition(), "mob.enderdragon.growl", 2.0F, 1.0F);
             }
         }
     }

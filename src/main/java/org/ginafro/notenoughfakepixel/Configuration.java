@@ -88,10 +88,6 @@ public class Configuration {
     }
 
     @Expose
-    @Category(name = "General", desc = "General settings.")
-    public General general = new General();
-
-    @Expose
     @Category(name = "Quality of Life", desc = "Quality of Life settings.")
     public QualityOfLife qol = new QualityOfLife();
 
@@ -134,6 +130,10 @@ public class Configuration {
     @Expose
     @Category(name = "Duels", desc = "Duels settings.")
     public Duels duels = new Duels();
+
+    @Expose
+    @Category(name = "Debug", desc = "Debug settings.")
+    public Debug debug = new Debug();
 
     public static boolean isPojav() {
         return System.getProperty("os.name").contains("Android") || System.getProperty("os.name").contains("Linux");

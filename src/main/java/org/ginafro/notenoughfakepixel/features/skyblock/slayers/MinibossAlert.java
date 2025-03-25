@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.events.PacketReadEvent;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
+import org.ginafro.notenoughfakepixel.utils.SoundUtils;
 import org.ginafro.notenoughfakepixel.variables.Gamemode;
 
 public class MinibossAlert {
@@ -18,20 +19,6 @@ public class MinibossAlert {
     private final Minecraft mc = Minecraft.getMinecraft();
     private static String displayText = "";
     private static long endTime = 0;
-
-    private void playSound() {
-        if (mc.theWorld != null) {
-            mc.theWorld.playSound(
-                    mc.thePlayer.posX,
-                    mc.thePlayer.posY,
-                    mc.thePlayer.posZ,
-                    "random.orb",
-                    1.0F,
-                    1.0F,
-                    false
-            );
-        }
-    }
 
     private void showCustomOverlay(String text, int durationMillis) {
         displayText = text;
@@ -67,7 +54,7 @@ public class MinibossAlert {
                     showCustomOverlay(EnumChatFormatting.RED + "" + EnumChatFormatting.BOLD + "MINIBOSS!", 1000);
                 }
                 if (NotEnoughFakepixel.feature.slayer.slayerMinibossSound) {
-                    playSound();
+                    SoundUtils.playSound(mc.thePlayer.getPosition(), "random.orb", 1.0F, 1.0F);
                 }
             }
         }

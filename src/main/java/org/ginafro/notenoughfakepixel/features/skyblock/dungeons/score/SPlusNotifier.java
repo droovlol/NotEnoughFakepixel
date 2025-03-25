@@ -9,6 +9,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
+import org.ginafro.notenoughfakepixel.utils.SoundUtils;
+import org.newdawn.slick.Sound;
 
 public class SPlusNotifier {
 
@@ -40,15 +42,7 @@ public class SPlusNotifier {
 
         if (ScoreManager.getSecretPercentage() >= ScoreManager.getRequiredSecretNeeded() && ScoreManager.getRequiredSecretNeeded() != -1) {
             if (NotEnoughFakepixel.feature.dungeons.dungeonsSPlusNotifier) {
-                mc.theWorld.playSound(
-                        mc.thePlayer.posX,
-                        mc.thePlayer.posY,
-                        mc.thePlayer.posZ,
-                        "note.pling",
-                        2.0F,
-                        2.0F,
-                        false
-                );
+                SoundUtils.playSound(mc.thePlayer.getPosition(), "note.pling", 2.0F, 2.0F);
                 showCustomOverlay(EnumChatFormatting.RED + "300 Score!", 2000);
             }
             if (NotEnoughFakepixel.feature.dungeons.dungeonsSPlusMessage) {
