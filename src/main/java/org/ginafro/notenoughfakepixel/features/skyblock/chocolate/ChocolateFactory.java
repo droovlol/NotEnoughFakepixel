@@ -1,5 +1,7 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.chocolate;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.multiplayer.WorldClient;
@@ -19,28 +21,28 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.utils.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ChocolateFactory {
 
-    private Pattern upgradeCostPattern = Pattern.compile("(\u00A7.)(?<cost>[0-9,]+) Chocolate");
+    private final Pattern upgradeCostPattern = Pattern.compile("(§.)(?<cost>[0-9,]+) Chocolate");
+    @Getter
+    @Setter
     private Pattern pattern = Pattern.compile("Id:\"([^\"]+)\"");
-    private ArrayList<String> eggIDS = new ArrayList<>(); //"e3da4593-afbb-38df-bf1e-b57e27a2e0e1";
-    private String eggLime = "e3da4593-afbb-38df-bf1e-b57e27a2e0e1";
-    private String eggBlue = "15785089-b2b0-38ac-b379-8af3d6253c62";
-    private String eggCake = "9e39f2f4-8038-3aac-97fd-d7420cdf4601";
-    private ArrayList <Waypoint> waypoints = new ArrayList<>();
-
-
+    private final ArrayList<String> eggIDS = new ArrayList<>();
+    private final String eggLime = "e3da4593-afbb-38df-bf1e-b57e27a2e0e1";
+    private final String eggBlue = "15785089-b2b0-38ac-b379-8af3d6253c62";
+    private final String eggCake = "9e39f2f4-8038-3aac-97fd-d7420cdf4601";
+    private final ArrayList <Waypoint> waypoints = new ArrayList<>();
 
     public ChocolateFactory() {
         eggIDS.add(eggLime);
@@ -182,10 +184,7 @@ public class ChocolateFactory {
     }
 
     private boolean checkIfAdded(Waypoint waypoint) {
-        for (Waypoint w : waypoints) {
-            if (w.getCoordinates()[0] == waypoint.getCoordinates()[0] && w.getCoordinates()[1] == waypoint.getCoordinates()[1] && w.getCoordinates()[2] == waypoint.getCoordinates()[2]) return true;
-        }
-        return false;
+        return waypoints.stream().anyMatch(w -> Arrays.equals(w.getCoordinates(), waypoint.getCoordinates()));
     }
 
     private boolean isEgg(String id) {

@@ -1,9 +1,11 @@
 package org.ginafro.notenoughfakepixel.events;
 
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 import net.minecraft.client.gui.inventory.GuiContainer;
 
 
+@EqualsAndHashCode(callSuper = true)
 @Value
 public class GuiContainerBackgroundDrawnEvent extends CustomEvent {
 

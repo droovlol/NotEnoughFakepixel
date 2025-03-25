@@ -7,7 +7,7 @@ import org.lwjgl.input.Keyboard;
 public class QualityOfLife {
 
     @Expose
-    @ConfigOption(name = "NEF Alerts", desc = "Alerts.")
+    @ConfigOption(name = "NEF Alerts", desc = "Create custom alerts when a message is written in chat.")
     @ConfigEditorButton(runnableId = "nefAlerts", buttonText = "Edit")
     public String nefAlerts = "";
 

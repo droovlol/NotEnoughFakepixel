@@ -29,10 +29,9 @@ public class AshfangOverlay {
         int y = position.getAbsY(sr, 20);  // Height assumed as 20
 
         // Render each line
-        for (int i = 0; i < lines.size(); i++) {
-            Minecraft.getMinecraft().fontRendererObj.drawString(
-                    lines.get(i), x, y + i * 10, 0xFFFFFF // White text
-            );
+        for (String line : lines) {
+            Minecraft.getMinecraft().fontRendererObj.drawString(line, x, y, 0xFFFFFF); // White text
+            y += 10;
         }
     }
 
@@ -57,7 +56,7 @@ public class AshfangOverlay {
         if (Crimson.checkEssentials()) return; // Skip if essentials check fails
         if (NotEnoughFakepixel.feature.crimson.crimsonAshfangOverlay) {
             lines.add("\u00a77Ashfang HP: \u00a7r" + formatAshfangHP(AshfangHelper.getAshfangHP()));
-            lines.add("\u00a77Blazing souls: \u00a7r" + AshfangHelper.getBlazingSoulCounter() + " / " + AshfangHelper.getHitsNeeded());
+            lines.add("\u00a77Blazing souls: \u00a7r" + AshfangHelper.getBlazingSoulsCounter() + " / " + AshfangHelper.getHitsNeeded());
         }
     }
 
@@ -81,10 +80,10 @@ public class AshfangOverlay {
     /** Formats numbers into a compact form (e.g., 1k, 1M) */
     private static final char[] SUFFIXES = {'k', 'M'};
     private static String coolFormat(double n, int iteration) {
-        double d = ((long) n / 100) / 10.0;
+        double d = ((double) (long) n / 100) / 10.0;
         boolean isRound = (d * 10) % 10 == 0;
-        return (d < 1000 ?
-                ((d > 99.9 || isRound || (!isRound && d > 9.99) ? (int) d * 10 / 10 : d) + "" + SUFFIXES[iteration]) :
-                coolFormat(d, iteration + 1));
+        return d < 1000 ?
+                (isRound || d > 9.99 ? (int) d * 10 / 10 : d) + "" + SUFFIXES[iteration] :
+                coolFormat(d, iteration + 1);
     }
 }

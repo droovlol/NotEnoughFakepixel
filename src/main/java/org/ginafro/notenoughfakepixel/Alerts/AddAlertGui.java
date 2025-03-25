@@ -58,7 +58,7 @@ public class AddAlertGui extends GuiScreen {
         fontRendererObj.drawString(alertLabel, centerX - fontRendererObj.getStringWidth(alertLabel) / 2, centerY, 0xFFFFFF);
         alertField.drawTextBox();
 
-        String instruction = "To use Color codes use '&' it will replace the default color code symbol since we cant type it, can also be used to make the text bold.";
+        String instruction = "To use Color codes use '&' it will replace the default color code symbol since we cant type it";
         int saveButtonY = centerY + 2 * spacing + 30;
         int instructionY = saveButtonY + 20 + 10;
         fontRendererObj.drawString(instruction, centerX - fontRendererObj.getStringWidth(instruction) / 2, instructionY, 0xFFFFFF);

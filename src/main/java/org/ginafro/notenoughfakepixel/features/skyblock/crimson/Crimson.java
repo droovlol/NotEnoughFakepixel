@@ -8,16 +8,20 @@ import java.util.List;
 
 public class Crimson {
 
-    private static int[][] ashfangArea = new int[][]{{-510,100,-1040}, {-450,200,-990}};
+    private static final int[][] ashfangArea = new int[][]{{-510,100,-1040}, {-450,200,-990}};
 
     public static boolean checkEssentials(){
         return (Minecraft.getMinecraft().thePlayer == null) ||
                 (!ScoreboardUtils.currentGamemode.isSkyblock()) ||
                 (!ScoreboardUtils.currentLocation.isCrimson());
     }
-    public static boolean checkAshfangArea(int[] coords){
-        return coords[0] >= ashfangArea[0][0] && coords[0] <= ashfangArea[1][0] &&
-                coords[1] >= ashfangArea[0][1] && coords[1] <= ashfangArea[1][1] &&
-                coords[2] >= ashfangArea[0][2] && coords[2] <= ashfangArea[1][2];
+
+    public static boolean checkAshfangArea(int[] coords) {
+        for (int i = 0; i < coords.length; i++) {
+            if (coords[i] < ashfangArea[0][i] || coords[i] > ashfangArea[1][i]) {
+                return false;
+            }
+        }
+        return true;
     }
 }
