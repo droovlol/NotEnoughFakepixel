@@ -4,14 +4,13 @@ import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.util.IChatComponent;
-import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.ginafro.notenoughfakepixel.config.features.Dungeons;
 import org.ginafro.notenoughfakepixel.features.skyblock.diana.Diana;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.mobs.StarredMobDisplay;
 import org.ginafro.notenoughfakepixel.features.skyblock.qol.DamageCommas;
 import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import net.minecraft.client.model.ModelBase;
@@ -45,10 +44,15 @@ public abstract class MixinRendererLivingEntity<T extends EntityLivingBase> {
     @Shadow
     private static DynamicTexture textureBrightness;
 
-    StarredMobDisplay starredMobDisplay = new StarredMobDisplay();
-    Diana diana = new Diana();
-    Set<EntityLivingBase> entities = starredMobDisplay.getCurrentEntities();
-    Set<EntityLivingBase> inq = diana.getCurrentEntities();
+    @Unique
+    StarredMobDisplay notEnoughFakepixel$starredMobDisplay = new StarredMobDisplay();
+    @Unique
+    Diana notEnoughFakepixel$diana = new Diana();
+    @Unique
+    Set<EntityLivingBase> notEnoughFakepixel$entities = notEnoughFakepixel$starredMobDisplay.getCurrentEntities();
+
+    @Unique
+    Set<EntityLivingBase> notEnoughFakepixel$inq = notEnoughFakepixel$diana.getCurrentEntities();
 
     @Redirect(method = "renderName*", at = @At(value = "INVOKE", target =
             "Lnet/minecraft/entity/EntityLivingBase;getDisplayName()Lnet/minecraft/util/IChatComponent;"))
@@ -62,7 +66,7 @@ public abstract class MixinRendererLivingEntity<T extends EntityLivingBase> {
 
     @Inject(method = "setBrightness", at = @At(value = "HEAD"), cancellable = true)
     private <T extends EntityLivingBase> void setBrightness(T entity, float partialTicks, boolean combineTextures, CallbackInfoReturnable<Boolean> cir) {
-        if (entities.contains(entity) || inq.contains(entity)) {
+        if (notEnoughFakepixel$entities.contains(entity) || notEnoughFakepixel$inq.contains(entity)) {
             GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
             GlStateManager.enableTexture2D();
             glTexEnvi(8960, 8704, OpenGlHelper.GL_COMBINE);

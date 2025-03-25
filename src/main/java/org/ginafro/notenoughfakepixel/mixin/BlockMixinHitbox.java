@@ -1,6 +1,5 @@
 package org.ginafro.notenoughfakepixel.mixin;
 
-
 import net.minecraft.block.Block;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;

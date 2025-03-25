@@ -1,6 +1,5 @@
 package org.ginafro.notenoughfakepixel.mixin;
 
-
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.scoreboard.ScoreObjective;
@@ -15,7 +14,7 @@ public class InGameHudMixin {
     @Inject(method = "renderScoreboard", at = @At("HEAD"), cancellable = true)
     public void renderScoreboard(ScoreObjective objective, ScaledResolution scaledRes, CallbackInfo ci) {
 
-        // TODO
+        // TODO custom scoreboard rendering
 
     }
 

@@ -14,13 +14,10 @@ import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 
 @Mixin(RenderItem.class)
-public class RenderItemMixin
-{
+public class RenderItemMixin {
     @Inject(method = "renderItemIntoGUI(Lnet/minecraft/item/ItemStack;II)V", at = @At("HEAD"))
-    private void renderRarity(ItemStack itemStack, int xPosition, int yPosition, CallbackInfo info)
-    {
-        if (NotEnoughFakepixel.feature.qol.qolItemRarity)
-        {
+    private void renderRarity(ItemStack itemStack, int xPosition, int yPosition, CallbackInfo info) {
+        if (NotEnoughFakepixel.feature.qol.qolItemRarity) {
             ItemBackgroundRarity.renderRarityOverlay(itemStack, xPosition, yPosition);
         }
     }
