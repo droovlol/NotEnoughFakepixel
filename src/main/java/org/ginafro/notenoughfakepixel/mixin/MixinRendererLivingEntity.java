@@ -44,14 +44,10 @@ public abstract class MixinRendererLivingEntity<T extends EntityLivingBase> {
     @Shadow
     private static DynamicTexture textureBrightness;
 
-    @Unique
     StarredMobDisplay notEnoughFakepixel$starredMobDisplay = new StarredMobDisplay();
-    @Unique
     Diana notEnoughFakepixel$diana = new Diana();
-    @Unique
     Set<EntityLivingBase> notEnoughFakepixel$entities = notEnoughFakepixel$starredMobDisplay.getCurrentEntities();
 
-    @Unique
     Set<EntityLivingBase> notEnoughFakepixel$inq = notEnoughFakepixel$diana.getCurrentEntities();
 
     @Redirect(method = "renderName*", at = @At(value = "INVOKE", target =
