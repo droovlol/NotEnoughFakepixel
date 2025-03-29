@@ -1,6 +1,7 @@
 package org.ginafro.notenoughfakepixel.config.gui.core.config;
 
 import com.google.gson.annotations.Expose;
+import lombok.Getter;
 import net.minecraft.client.gui.ScaledResolution;
 
 public class Position {
@@ -11,9 +12,11 @@ public class Position {
     @Expose
     private int y;
 
+    @Getter
     @Expose
     private boolean centerX;
 
+    @Getter
     @Expose
     private boolean centerY;
 
@@ -39,14 +42,6 @@ public class Position {
 
     public Position clone() {
         return new Position(x, y, centerX, centerY);
-    }
-
-    public boolean isCenterX() {
-        return centerX;
-    }
-
-    public boolean isCenterY() {
-        return centerY;
     }
 
     public int getRawX() {

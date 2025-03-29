@@ -486,7 +486,7 @@ public class MiscFeatures {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onChatReceived(ClientChatReceivedEvent e) {
         if (e.type == 2) return;
-        if (NotEnoughFakepixel.feature.qol.qolCopyChatMsg) {
+        if (NotEnoughFakepixel.feature.misc.qolCopyChatMsg) {
 
         String unformattedText = StringUtils.stripControlCodes(e.message.getUnformattedText());
 
@@ -505,7 +505,7 @@ public class MiscFeatures {
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
-        if (NotEnoughFakepixel.feature.qol.qolAlwaysSprint) {
+        if (NotEnoughFakepixel.feature.misc.qolAlwaysSprint) {
         KeyBinding.setKeyBindState(mc.gameSettings.keyBindSprint.getKeyCode(), true);
         }
     }

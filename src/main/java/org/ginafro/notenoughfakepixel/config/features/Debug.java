@@ -12,8 +12,13 @@ public class Debug {
     public boolean debug = false;
 
     @Expose
-    @ConfigOption(name = "Show Sounds", desc = "Show Sounds debug.")
+    @ConfigOption(name = "Sound Debug", desc = "Show Sounds debug.")
     @ConfigEditorBoolean
     public boolean showSounds = false;
+
+    @Expose
+    @ConfigOption(name = "Force Pojav", desc = "Force Pojav detection in the mod.")
+    @ConfigEditorBoolean
+    public boolean forcePojav = false;
 
 }

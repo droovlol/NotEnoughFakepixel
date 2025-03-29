@@ -5,8 +5,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.ginafro.notenoughfakepixel.config.features.Debug;
-import org.ginafro.notenoughfakepixel.variables.Constants;
 
 public class SoundUtils {
 
@@ -20,24 +18,31 @@ public class SoundUtils {
     }
 
     public static void playSound(float x, float y, float z, String sound, float volume, float pitch) {
-        ResourceLocation res = new ResourceLocation(sound);
-        if (Minecraft.getMinecraft().getSoundHandler() == null) {
-            return;
-        }
-        if (NotEnoughFakepixel.feature.debug.debug && NotEnoughFakepixel.feature.debug.showSounds){
-            Logger.log( EnumChatFormatting.WHITE + "Playing sound: " + sound + " at " + x + ", " + y + ", " + z + " with volume " + volume + " and pitch " + pitch);
-        }
+        if (!NotEnoughFakepixel.feature.misc.enableSounds) return;
+        try {
+            ResourceLocation res = new ResourceLocation(sound);
+            if (Minecraft.getMinecraft().getSoundHandler() == null) {
+                return;
+            }
+            if (NotEnoughFakepixel.feature.debug.debug && NotEnoughFakepixel.feature.debug.showSounds) {
+                Logger.log(EnumChatFormatting.WHITE + "Playing sound: " + sound + " at " + x + ", " + y + ", " + z + " with volume " + volume + " and pitch " + pitch);
+            }
 
-        Minecraft.getMinecraft().getSoundHandler().playSound(
-                new net.minecraft.client.audio.PositionedSoundRecord(
-                        res,
-                        volume,
-                        pitch,
-                        x,
-                        y,
-                        z
-                )
-        );
+            Minecraft.getMinecraft().getSoundHandler().playSound(
+                    new net.minecraft.client.audio.PositionedSoundRecord(
+                            res,
+                            volume,
+                            pitch,
+                            x,
+                            y,
+                            z
+                    )
+            );
+        } catch (Exception e) {
+            if (NotEnoughFakepixel.feature.debug.debug) {
+                Logger.log(EnumChatFormatting.RED + "Failed to play sound: " + sound + ". Error " + e.getMessage());
+            }
+        }
     }
 
     public static void playSound(int[] cords, String sound, float volume, float pitch, int times, int delay) {

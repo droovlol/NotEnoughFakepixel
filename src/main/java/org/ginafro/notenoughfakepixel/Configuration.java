@@ -132,10 +132,14 @@ public class Configuration {
     public Duels duels = new Duels();
 
     @Expose
+    @Category(name = "Misc", desc = "Misc features.")
+    public Misc misc = new Misc();
+
+    @Expose
     @Category(name = "Debug", desc = "Debug settings.")
     public Debug debug = new Debug();
 
     public static boolean isPojav() {
-        return System.getProperty("os.name").contains("Android") || System.getProperty("os.name").contains("Linux");
+        return NotEnoughFakepixel.feature.debug.forcePojav || (System.getProperty("os.name").contains("Android") || System.getProperty("os.name").contains("Linux"));
     }
 }

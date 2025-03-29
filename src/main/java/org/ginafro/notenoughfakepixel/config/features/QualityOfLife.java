@@ -346,11 +346,6 @@ public class QualityOfLife {
     public boolean qolHideBlockBreakingParticles = false;
 
     @Expose
-    @ConfigOption(name = "Always Sprint", desc = "Always sprint.")
-    @ConfigEditorBoolean
-    public boolean qolAlwaysSprint = true;
-
-    @Expose
     @ConfigOption(name = "Disable Potion Effects in Inventory", desc = "Disable potion effects in inventory.")
     @ConfigEditorBoolean
     public boolean qolDisablePotionEffects = true;
@@ -369,11 +364,6 @@ public class QualityOfLife {
     @ConfigOption(name = "Disable Enderman Teleport", desc = "Disable enderman teleportation.")
     @ConfigEditorBoolean
     public boolean qolDisableEnderManTeleport = true;
-
-    @Expose
-    @ConfigOption(name = "Copy Chat Message", desc = "Enable copying chat messages.")
-    @ConfigEditorBoolean
-    public boolean qolCopyChatMsg = true;
 
     @Expose
     @ConfigOption(name = "Full Block Lever", desc = "Make levers full blocks.")
@@ -419,11 +409,6 @@ public class QualityOfLife {
     @ConfigOption(name = "Disable 'Selling Ranks' Messages", desc = "Disable 'selling ranks' messages.")
     @ConfigEditorBoolean
     public boolean qolDisableSellingRanks = false;
-
-    @Expose
-    @ConfigOption(name = "Scrollable Tooltips", desc = "Enable scrollable tooltips.")
-    @ConfigEditorBoolean
-    public boolean qolScrollableTooltips = true;
 
     @Expose
     @ConfigOption(name = "No Hurt Camera", desc = "Disable hurt camera effect.")
