@@ -24,6 +24,6 @@ public class Misc {
     @Expose
     @ConfigOption(name = "Sounds", desc = "Enable or disable sounds.")
     @ConfigEditorBoolean
-    public static boolean enableSounds = false;
+    public boolean enableSounds = false;
 
 }

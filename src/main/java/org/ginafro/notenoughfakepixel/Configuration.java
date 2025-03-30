@@ -38,7 +38,7 @@ public class Configuration {
             editOverlay(activeConfigCategory, 128, 128, NotEnoughFakepixel.feature.dungeons.dungeonsMapPos);
         }
         if ("editMlfInfoPosition".equals(runnableId)) {
-            Position tempPosition = new Position((int) Info.mlfInfoOffsetX, (int) Info.mlfInfoOffsetY);
+            Position tempPosition = new Position((int) NotEnoughFakepixel.feature.mlf.mlfInfoOffsetX, (int) NotEnoughFakepixel.feature.mlf.mlfInfoOffsetY);
             Minecraft.getMinecraft().displayGuiScreen(
                     new GuiPositionEditor(
                             tempPosition,
@@ -46,15 +46,15 @@ public class Configuration {
                             () -> new Map().renderDummy(),
                             () -> {
                                 ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
-                                Info.mlfInfoOffsetX = tempPosition.getAbsX(sr, 35);
-                                Info.mlfInfoOffsetY = tempPosition.getAbsY(sr, 60);
+                                NotEnoughFakepixel.feature.mlf.mlfInfoOffsetX = tempPosition.getAbsX(sr, 35);
+                                NotEnoughFakepixel.feature.mlf.mlfInfoOffsetY = tempPosition.getAbsY(sr, 60);
                             },
                             () -> {}
                     )
             );
         }
         if ("editKdCounterPosition".equals(runnableId)) {
-            Position tempPosition = new Position((int) Duels.kdCounterOffsetX, (int) Duels.kdCounterOffsetY);
+            Position tempPosition = new Position((int) NotEnoughFakepixel.feature.duels.kdCounterOffsetX, (int) NotEnoughFakepixel.feature.duels.kdCounterOffsetY);
             KDCounter kdCounter = new KDCounter();
             Minecraft.getMinecraft().displayGuiScreen(
                     new GuiPositionEditor(
@@ -63,8 +63,8 @@ public class Configuration {
                             kdCounter::renderDummy,
                             () -> {
                                 ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
-                                Duels.kdCounterOffsetX = tempPosition.getAbsX(sr, (int) kdCounter.getWidth());
-                                Duels.kdCounterOffsetY = tempPosition.getAbsY(sr, (int) kdCounter.getHeight());
+                                NotEnoughFakepixel.feature.duels.kdCounterOffsetX = tempPosition.getAbsX(sr, (int) kdCounter.getWidth());
+                                NotEnoughFakepixel.feature.duels.kdCounterOffsetY = tempPosition.getAbsY(sr, (int) kdCounter.getHeight());
                             },
                             () -> {}
                     )
