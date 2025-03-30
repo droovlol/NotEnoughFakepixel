@@ -18,10 +18,10 @@ import org.lwjgl.opengl.GL11;
 
 public class GuiElementColour extends GuiElement {
 
-    public static final ResourceLocation colour_selector_dot = new ResourceLocation("notenoughupdates:core/colour_selector_dot.png");
-    public static final ResourceLocation colour_selector_bar = new ResourceLocation("notenoughupdates:core/colour_selector_bar.png");
-    public static final ResourceLocation colour_selector_bar_alpha = new ResourceLocation("notenoughupdates:core/colour_selector_bar_alpha.png");
-    public static final ResourceLocation colour_selector_chroma = new ResourceLocation("notenoughupdates:core/colour_selector_chroma.png");
+    public static final ResourceLocation colour_selector_dot = new ResourceLocation("notenoughfakepixel:core/colour_selector_dot.png");
+    public static final ResourceLocation colour_selector_bar = new ResourceLocation("notenoughfakepixel:core/colour_selector_bar.png");
+    public static final ResourceLocation colour_selector_bar_alpha = new ResourceLocation("notenoughfakepixel:core/colour_selector_bar_alpha.png");
+    public static final ResourceLocation colour_selector_chroma = new ResourceLocation("notenoughfakepixel:core/colour_selector_chroma.png");
 
     private static final ResourceLocation colourPickerLocation = new ResourceLocation("mbcore:dynamic/colourpicker");
     private static final ResourceLocation colourPickerBarValueLocation = new ResourceLocation("mbcore:dynamic/colourpickervalue");
