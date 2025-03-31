@@ -15,7 +15,7 @@ import org.lwjgl.opengl.GL11;
 
 public class GuiOptionEditorKeybind extends GuiOptionEditor {
 
-    private static final ResourceLocation RESET = new ResourceLocation("notenoughupdates:itemcustomize/reset.png");
+    private static final ResourceLocation RESET = new ResourceLocation("notenoughfakepixel:core/reset.png");
 
     private int keyCode;
     private final int defaultKeyCode;
