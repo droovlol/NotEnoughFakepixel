@@ -270,6 +270,12 @@ public class QualityOfLife {
     public boolean playerSizeAccordion = false;
 
     @Expose
+    @ConfigOption(name = "Skytils's smolpeople", desc = "Enable smolpeople")
+    @ConfigEditorBoolean
+    @ConfigAccordionId(id = 7)
+    public boolean smolPeople = false;
+
+    @Expose
     @ConfigOption(name = "Player Size Toggle", desc = "Enable size adjustment for the client player")
     @ConfigEditorBoolean
     @ConfigAccordionId(id = 7)
@@ -293,46 +299,40 @@ public class QualityOfLife {
     @ConfigAccordionId(id = 7)
     public float z = 1.0f;
 
-    // Player Spin Subcategory
-    @Expose
-    @ConfigOption(name = "Player Spin Settings", desc = "Settings for player rotation.")
-    @ConfigEditorAccordion(id = 8)
-    public boolean playerSpinAccordion = false;
-
     @Expose
     @ConfigOption(name = "Player Spin Toggle", desc = "Enable spinning for the client player")
     @ConfigEditorBoolean
-    @ConfigAccordionId(id = 8)
+    @ConfigAccordionId(id = 7)
     public boolean spintoggle = false;
 
     @Expose
     @ConfigOption(name = "Player Spin Speed", desc = "Speed of the rotation (degrees per 0.01s)")
     @ConfigEditorSlider(minValue = 0.1f, maxValue = 10.0f, minStep = 0.1f)
-    @ConfigAccordionId(id = 8)
+    @ConfigAccordionId(id = 7)
     public float speed = 1.0f;
 
     @Expose
     @ConfigOption(name = "Player Rotation Axis X", desc = "X component of the rotation axis")
     @ConfigEditorSlider(minValue = -1.0f, maxValue = 1.0f, minStep = 0.1f)
-    @ConfigAccordionId(id = 8)
+    @ConfigAccordionId(id = 7)
     public float value1 = 0.0f;
 
     @Expose
     @ConfigOption(name = "Player Rotation Axis Y", desc = "Y component of the rotation axis")
     @ConfigEditorSlider(minValue = -1.0f, maxValue = 1.0f, minStep = 0.1f)
-    @ConfigAccordionId(id = 8)
+    @ConfigAccordionId(id = 7)
     public float value2 = 1.0f;
 
     @Expose
     @ConfigOption(name = "Player Rotation Axis Z", desc = "Z component of the rotation axis")
     @ConfigEditorSlider(minValue = -1.0f, maxValue = 1.0f, minStep = 0.1f)
-    @ConfigAccordionId(id = 8)
+    @ConfigAccordionId(id = 7)
     public float value3 = 0.0f;
 
     @Expose
     @ConfigOption(name = "Reset Player Size Values", desc = "Vanilla Look!")
     @ConfigEditorButton(runnableId = "resetSizeValues", buttonText = "Reset!")
-    @ConfigAccordionId(id = 8)
+    @ConfigAccordionId(id = 7)
     public String resetSizeValuesButton = "";
 
     @Expose
