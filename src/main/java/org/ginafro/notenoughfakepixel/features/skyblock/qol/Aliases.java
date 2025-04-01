@@ -13,7 +13,7 @@ public class Aliases {
 
     private static final Map<String, String> commandMap = new HashMap<>();
 
-    static {
+    /*static {
         for (int i = 1; i <= 7; i++) {
             commandMap.put("f" + i, "/joindungeon " + i);
             commandMap.put("m" + i, "/joindungeon " + i + " master");
@@ -28,7 +28,7 @@ public class Aliases {
         commandMap.put("pl", "/p list");
         commandMap.put("pd", "/p disband");
         commandMap.put("fl", "/f list");
-    }
+    }*/
 
     public Aliases() {
         MinecraftForge.EVENT_BUS.register(this);
