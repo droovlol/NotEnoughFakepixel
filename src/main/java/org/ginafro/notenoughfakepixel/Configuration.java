@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import org.ginafro.notenoughfakepixel.Alerts.AlertManagementGui;
+import org.ginafro.notenoughfakepixel.features.skyblock.qol.CustomAliases.AliasManagementGui;
 import org.ginafro.notenoughfakepixel.config.features.*;
 import org.ginafro.notenoughfakepixel.config.gui.config.ConfigEditor;
 import org.ginafro.notenoughfakepixel.config.gui.core.GuiElement;
@@ -85,6 +86,9 @@ public class Configuration {
         if ("nefAlerts".equals(runnableId)) {
             Minecraft.getMinecraft().displayGuiScreen(new AlertManagementGui());
         }
+        if("nefAlias".equals(runnableId)){
+            Minecraft.getMinecraft().displayGuiScreen(new AliasManagementGui());
+        }
     }
 
     @Expose
@@ -124,7 +128,7 @@ public class Configuration {
     public Fishing fishing = new Fishing();
 
     @Expose
-    @Category(name = "My little farm", desc = "Mlf settings.")
+    @Category(name = "My Little Farm", desc = "Mlf settings.")
     public Info mlf = new Info();
 
     @Expose
