@@ -76,9 +76,6 @@ public class Configuration {
         if ("resetItemValues".equals(runnableId)) {
             NotEnoughFakepixel.feature.qol.resetItemValues();
         }
-        if ("resetSizeValues".equals(runnableId)) {
-            NotEnoughFakepixel.feature.qol.resetSizeValues();
-        }
         if ("editSlayerOverlayPosition".equals(runnableId)) {
             editOverlay(activeConfigCategory, 100, 20, NotEnoughFakepixel.feature.slayer.slayerBossHPPos);
         }

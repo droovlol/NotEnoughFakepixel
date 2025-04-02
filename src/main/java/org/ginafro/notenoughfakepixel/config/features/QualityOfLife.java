@@ -276,66 +276,6 @@ public class QualityOfLife {
     public boolean smolPeople = false;
 
     @Expose
-    @ConfigOption(name = "Player Size Toggle", desc = "Enable size adjustment for the client player")
-    @ConfigEditorBoolean
-    @ConfigAccordionId(id = 7)
-    public boolean sizetoggle = false;
-
-    @Expose
-    @ConfigOption(name = "Player X Scale", desc = "Scale factor in the X direction")
-    @ConfigEditorSlider(minValue = 0.1f, maxValue = 2.0f, minStep = 0.1f)
-    @ConfigAccordionId(id = 7)
-    public float x = 1.0f;
-
-    @Expose
-    @ConfigOption(name = "Player Y Scale", desc = "Scale factor in the Y direction")
-    @ConfigEditorSlider(minValue = -2.0f, maxValue = 2.0f, minStep = 0.1f)
-    @ConfigAccordionId(id = 7)
-    public float y = 1.0f;
-
-    @Expose
-    @ConfigOption(name = "Player Z Scale", desc = "Scale factor in the Z direction")
-    @ConfigEditorSlider(minValue = 0.1f, maxValue = 2.0f, minStep = 0.1f)
-    @ConfigAccordionId(id = 7)
-    public float z = 1.0f;
-
-    @Expose
-    @ConfigOption(name = "Player Spin Toggle", desc = "Enable spinning for the client player")
-    @ConfigEditorBoolean
-    @ConfigAccordionId(id = 7)
-    public boolean spintoggle = false;
-
-    @Expose
-    @ConfigOption(name = "Player Spin Speed", desc = "Speed of the rotation (degrees per 0.01s)")
-    @ConfigEditorSlider(minValue = 0.1f, maxValue = 10.0f, minStep = 0.1f)
-    @ConfigAccordionId(id = 7)
-    public float speed = 1.0f;
-
-    @Expose
-    @ConfigOption(name = "Player Rotation Axis X", desc = "X component of the rotation axis")
-    @ConfigEditorSlider(minValue = -1.0f, maxValue = 1.0f, minStep = 0.1f)
-    @ConfigAccordionId(id = 7)
-    public float value1 = 0.0f;
-
-    @Expose
-    @ConfigOption(name = "Player Rotation Axis Y", desc = "Y component of the rotation axis")
-    @ConfigEditorSlider(minValue = -1.0f, maxValue = 1.0f, minStep = 0.1f)
-    @ConfigAccordionId(id = 7)
-    public float value2 = 1.0f;
-
-    @Expose
-    @ConfigOption(name = "Player Rotation Axis Z", desc = "Z component of the rotation axis")
-    @ConfigEditorSlider(minValue = -1.0f, maxValue = 1.0f, minStep = 0.1f)
-    @ConfigAccordionId(id = 7)
-    public float value3 = 0.0f;
-
-    @Expose
-    @ConfigOption(name = "Reset Player Size Values", desc = "Vanilla Look!")
-    @ConfigEditorButton(runnableId = "resetSizeValues", buttonText = "Reset!")
-    @ConfigAccordionId(id = 7)
-    public String resetSizeValuesButton = "";
-
-    @Expose
     @ConfigOption(name = "1.12 Crops Height", desc = "Use 1.12 crops height.")
     @ConfigEditorBoolean
     public boolean qolCropsHeight = false;
@@ -447,17 +387,5 @@ public class QualityOfLife {
         doesScaleSwing = true;
         ignoreHaste = true;
         customSpeed = 0f;
-    }
-
-    public void resetSizeValues() {
-        sizetoggle = false;
-        x = 1.0f;
-        y = 1.0f;
-        z = 1.0f;
-        spintoggle = false;
-        speed = 1.0f;
-        value1 = 0.0f;
-        value2 = 1.0f;
-        value3 = 0.0f;
     }
 }
