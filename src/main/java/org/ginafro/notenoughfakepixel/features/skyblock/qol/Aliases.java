@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Aliases {
-
+/*
     private static final Map<String, String> commandMap = new HashMap<>();
 
     static {
@@ -136,4 +136,5 @@ public class Aliases {
             return true;
         }
     }
+    */
 }
