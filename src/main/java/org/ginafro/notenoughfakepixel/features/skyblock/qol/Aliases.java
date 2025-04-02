@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Aliases {
-/*
+
     private static final Map<String, String> commandMap = new HashMap<>();
 
     static {
@@ -41,7 +41,7 @@ public class Aliases {
         ClientCommandHandler.instance.registerCommand(new PtCommand());
     }
 
-    private static class AliasCommand extends CommandBase {
+    public static class AliasCommand extends CommandBase {
         private final String shortCommand;
         private final String fullCommand;
 
@@ -62,7 +62,8 @@ public class Aliases {
 
         @Override
         public void processCommand(ICommandSender sender, String[] args) {
-            Minecraft.getMinecraft().thePlayer.sendChatMessage(fullCommand);
+            String fullCommandWithSlash = fullCommand.startsWith("/") ? fullCommand : "/" + fullCommand;
+            Minecraft.getMinecraft().thePlayer.sendChatMessage(fullCommandWithSlash);
         }
 
         @Override
@@ -135,5 +136,4 @@ public class Aliases {
             return true;
         }
     }
-    */
 }

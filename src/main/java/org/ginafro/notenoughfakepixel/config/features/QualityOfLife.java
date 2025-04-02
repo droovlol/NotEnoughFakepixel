@@ -11,6 +11,11 @@ public class QualityOfLife {
     @ConfigEditorButton(runnableId = "nefAlerts", buttonText = "Edit")
     public String nefAlerts = "";
 
+    @Expose
+    @ConfigOption(name = "NEF Aliases", desc = "Create custom aliases to run a command with an alias")
+    @ConfigEditorButton(runnableId = "nefAlias", buttonText = "Edit")
+    public String nefAlias = "";
+
     // Visual Tweaks Subcategory
     @Expose
     @ConfigOption(name = "Visual Tweaks", desc = "Settings for visual enhancements.")
