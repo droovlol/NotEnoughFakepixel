@@ -6,6 +6,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.StringUtils;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.features.mlf.Info;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.variables.Gamemode;
@@ -21,15 +22,15 @@ public class Map {
     @SubscribeEvent
     public void onRender(RenderGameOverlayEvent.Post event) {
         if (event.type != RenderGameOverlayEvent.ElementType.ALL) return;
-        if (!Info.mlfInfoHud) return;
+        if (!NotEnoughFakepixel.feature.mlf.mlfInfoHud) return;
         if (ScoreboardUtils.currentGamemode != Gamemode.MLF) return;
 
         ScaledResolution sr = new ScaledResolution(mc);
-        int x = (int) Info.mlfInfoOffsetX;
-        int y = (int) Info.mlfInfoOffsetY;
+        int x = (int) NotEnoughFakepixel.feature.mlf.mlfInfoOffsetX;
+        int y = (int) NotEnoughFakepixel.feature.mlf.mlfInfoOffsetY;
 
         // Parse background color (assuming A:R:G:B format)
-        String[] colorParts = Info.mlfInfoBackgroundColor.split(":");
+        String[] colorParts = NotEnoughFakepixel.feature.mlf.mlfInfoBackgroundColor.split(":");
         int alpha = Integer.parseInt(colorParts[1]); // Adjusted to match typical A:R:G:B
         int red = Integer.parseInt(colorParts[2]);
         int green = Integer.parseInt(colorParts[3]);
@@ -91,10 +92,10 @@ public class Map {
     /** Renders a dummy version for the position editor */
     public void renderDummy() {
         ScaledResolution sr = new ScaledResolution(mc);
-        int x = (int) Info.mlfInfoOffsetX;
-        int y = (int) Info.mlfInfoOffsetY;
+        int x = (int) NotEnoughFakepixel.feature.mlf.mlfInfoOffsetX;
+        int y = (int) NotEnoughFakepixel.feature.mlf.mlfInfoOffsetY;
 
-        String[] colorParts = Info.mlfInfoBackgroundColor.split(":");
+        String[] colorParts = NotEnoughFakepixel.feature.mlf.mlfInfoBackgroundColor.split(":");
         int alpha = Integer.parseInt(colorParts[1]); // Adjusted to match typical A:R:G:B
         int red = Integer.parseInt(colorParts[2]);
         int green = Integer.parseInt(colorParts[3]);

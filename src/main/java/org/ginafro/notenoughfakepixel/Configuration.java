@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import org.ginafro.notenoughfakepixel.Alerts.AlertManagementGui;
+import org.ginafro.notenoughfakepixel.features.skyblock.qol.CustomAliases.AliasManagementGui;
 import org.ginafro.notenoughfakepixel.config.features.*;
 import org.ginafro.notenoughfakepixel.config.gui.config.ConfigEditor;
 import org.ginafro.notenoughfakepixel.config.gui.core.GuiElement;
@@ -38,7 +39,7 @@ public class Configuration {
             editOverlay(activeConfigCategory, 128, 128, NotEnoughFakepixel.feature.dungeons.dungeonsMapPos);
         }
         if ("editMlfInfoPosition".equals(runnableId)) {
-            Position tempPosition = new Position((int) Info.mlfInfoOffsetX, (int) Info.mlfInfoOffsetY);
+            Position tempPosition = new Position((int) NotEnoughFakepixel.feature.mlf.mlfInfoOffsetX, (int) NotEnoughFakepixel.feature.mlf.mlfInfoOffsetY);
             Minecraft.getMinecraft().displayGuiScreen(
                     new GuiPositionEditor(
                             tempPosition,
@@ -46,15 +47,15 @@ public class Configuration {
                             () -> new Map().renderDummy(),
                             () -> {
                                 ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
-                                Info.mlfInfoOffsetX = tempPosition.getAbsX(sr, 35);
-                                Info.mlfInfoOffsetY = tempPosition.getAbsY(sr, 60);
+                                NotEnoughFakepixel.feature.mlf.mlfInfoOffsetX = tempPosition.getAbsX(sr, 35);
+                                NotEnoughFakepixel.feature.mlf.mlfInfoOffsetY = tempPosition.getAbsY(sr, 60);
                             },
                             () -> {}
                     )
             );
         }
         if ("editKdCounterPosition".equals(runnableId)) {
-            Position tempPosition = new Position((int) Duels.kdCounterOffsetX, (int) Duels.kdCounterOffsetY);
+            Position tempPosition = new Position((int) NotEnoughFakepixel.feature.duels.kdCounterOffsetX, (int) NotEnoughFakepixel.feature.duels.kdCounterOffsetY);
             KDCounter kdCounter = new KDCounter();
             Minecraft.getMinecraft().displayGuiScreen(
                     new GuiPositionEditor(
@@ -63,8 +64,8 @@ public class Configuration {
                             kdCounter::renderDummy,
                             () -> {
                                 ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
-                                Duels.kdCounterOffsetX = tempPosition.getAbsX(sr, (int) kdCounter.getWidth());
-                                Duels.kdCounterOffsetY = tempPosition.getAbsY(sr, (int) kdCounter.getHeight());
+                                NotEnoughFakepixel.feature.duels.kdCounterOffsetX = tempPosition.getAbsX(sr, (int) kdCounter.getWidth());
+                                NotEnoughFakepixel.feature.duels.kdCounterOffsetY = tempPosition.getAbsY(sr, (int) kdCounter.getHeight());
                             },
                             () -> {}
                     )
@@ -76,14 +77,14 @@ public class Configuration {
         if ("resetItemValues".equals(runnableId)) {
             NotEnoughFakepixel.feature.qol.resetItemValues();
         }
-        if ("resetSizeValues".equals(runnableId)) {
-            NotEnoughFakepixel.feature.qol.resetSizeValues();
-        }
         if ("editSlayerOverlayPosition".equals(runnableId)) {
             editOverlay(activeConfigCategory, 100, 20, NotEnoughFakepixel.feature.slayer.slayerBossHPPos);
         }
         if ("nefAlerts".equals(runnableId)) {
             Minecraft.getMinecraft().displayGuiScreen(new AlertManagementGui());
+        }
+        if("nefAlias".equals(runnableId)){
+            Minecraft.getMinecraft().displayGuiScreen(new AliasManagementGui());
         }
     }
 
@@ -124,7 +125,7 @@ public class Configuration {
     public Fishing fishing = new Fishing();
 
     @Expose
-    @Category(name = "My little farm", desc = "Mlf settings.")
+    @Category(name = "My Little Farm", desc = "Mlf settings.")
     public Info mlf = new Info();
 
     @Expose

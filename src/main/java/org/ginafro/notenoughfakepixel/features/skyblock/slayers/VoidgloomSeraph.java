@@ -25,6 +25,7 @@ import org.ginafro.notenoughfakepixel.utils.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class VoidgloomSeraph {
@@ -80,10 +81,11 @@ public class VoidgloomSeraph {
             showCustomOverlay(EnumChatFormatting.RED + "BEACON!", 2000);
             indexToRemove.add(i);
         }
-        for (Integer i : indexToRemove) {
-            fallingBlocks.remove((int)i);
-            fallingBlocksFound.remove((int)i);
-        }
+            indexToRemove.sort(Collections.reverseOrder());
+            for (Integer i : indexToRemove) {
+                fallingBlocks.remove((int)i);
+                fallingBlocksFound.remove((int)i);
+            }
     }
     }
 
@@ -100,6 +102,7 @@ public class VoidgloomSeraph {
     public void onSoundPacketReceive(PacketReadEvent event) {
         if (checkEssentials()) return;
         if (!NotEnoughFakepixel.feature.slayer.slayerShowBeaconPath) return;
+        if (isBoss) {
         Packet packet = event.packet;
         if (packet instanceof S29PacketSoundEffect) {
             S29PacketSoundEffect soundEffect = (S29PacketSoundEffect) packet;
@@ -115,6 +118,7 @@ public class VoidgloomSeraph {
                 fallingBlocks.clear();
                 waypoints.clear();
             }
+        }
         }
     }
 

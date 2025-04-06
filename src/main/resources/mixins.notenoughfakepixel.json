@@ -29,6 +29,7 @@
     "MixinEntityLivingBase",
     "MixinItemRenderer",
     "Accesors.EntityPlayerAccessor",
-    "MixinRenderPlayer"
+    "MixinLayerCape",
+    "MixinModelBiped"
   ]
 }

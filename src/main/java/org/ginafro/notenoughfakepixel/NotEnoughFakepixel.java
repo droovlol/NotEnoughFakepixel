@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.ginafro.notenoughfakepixel.Alerts.Alerts;
+import org.ginafro.notenoughfakepixel.features.skyblock.qol.CustomAliases.CustomAliases;
 import org.ginafro.notenoughfakepixel.commands.CopyCommand;
 import org.ginafro.notenoughfakepixel.config.gui.commands.Commands;
 import org.ginafro.notenoughfakepixel.config.gui.config.ConfigEditor;
@@ -102,12 +103,12 @@ public class NotEnoughFakepixel {
         }
 
         ClientCommandHandler.instance.registerCommand(new CopyCommand());
-
         new Aliases();
 
         ClientRegistry.registerKeyBinding(openGuiKey);
         Commands.init();
         Alerts.load();
+        CustomAliases.load();
         registerModEvents();
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::saveConfig));
