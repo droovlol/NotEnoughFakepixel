@@ -94,8 +94,9 @@ public class ClickOnColorsSolver {
                 if (isCorrect) {
                     correctSlots.add(slot);
                 } else {
-                    if (NotEnoughFakepixel.feature.dungeons.dungeonsTerminalHideIncorrect) {
-                        item.setItem(((ContainerChest) container).inventorySlots.get(0).getStack().getItem());
+                    ItemStack referenceStack = ((ContainerChest) container).inventorySlots.get(0).getStack();
+                    if (referenceStack != null && referenceStack.getItem() != null) {
+                        item.setItem(referenceStack.getItem());
                         item.getItem().setDamage(item, 15);
                     }
                 }

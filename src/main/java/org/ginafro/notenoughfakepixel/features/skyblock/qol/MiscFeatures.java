@@ -190,12 +190,12 @@ public class MiscFeatures {
                         event.setCanceled(true);
                         String soundName = getConfiguredSound();
                         SoundUtils.playSound(
-                                (float) soundPacket.getX(),
-                                (float) soundPacket.getY(),
-                                (float) soundPacket.getZ(),
+                                (float) player.posX,
+                                (float) player.posY,
+                                (float) player.posZ,
                                 soundName,
-                                soundPacket.getVolume(),
-                                soundPacket.getPitch()
+                                2.0f,
+                                1.0f
                         );
                         landingTime = null;
                         teleportTarget = null;
