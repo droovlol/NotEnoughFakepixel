@@ -1,6 +1,19 @@
 package org.ginafro.notenoughfakepixel.utils;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.opengl.GL11;
+
+import java.util.List;
+
+import static net.minecraft.client.gui.Gui.*;
 
 public class Utils {
 
@@ -25,6 +38,8 @@ public class Utils {
                         + "" + c[iteration] : shortNumberFormat(d, iteration + 1);
 
     }
+
+
 
     public static @NotNull String commaFormat(double n) {
         // This function will only apply commas to a number.

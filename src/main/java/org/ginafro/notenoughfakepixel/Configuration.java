@@ -89,6 +89,9 @@ public class Configuration {
         if("nefAlias".equals(runnableId)){
             Minecraft.getMinecraft().displayGuiScreen(new AliasManagementGui());
         }
+        if("slotReset".equals(runnableId)){
+            NotEnoughFakepixel.resetLockedSlots();
+        }
     }
 
     @Expose
@@ -132,12 +135,20 @@ public class Configuration {
     public Info mlf = new Info();
 
     @Expose
+    @Category(name = "Slot Locking", desc = "Slot Locking Settings")
+    public SlotLocking sl = new SlotLocking();
+
+    @Expose
     @Category(name = "Duels", desc = "Duels settings.")
     public Duels duels = new Duels();
 
     @Expose
     @Category(name = "Misc", desc = "Misc features.")
     public Misc misc = new Misc();
+
+    @Expose
+    @Category(name = "Overlays", desc = "GUI Overlays")
+    public Overlays overlays = new Overlays();
 
     @Expose
     @Category(name = "Debug", desc = "Debug settings.")

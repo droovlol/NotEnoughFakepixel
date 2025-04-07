@@ -269,11 +269,11 @@ public class QualityOfLife {
     public String resetItemValuesButton = "";
 
     // Player Size Subcategory
+
     @Expose
     @ConfigOption(name = "Player Size Settings", desc = "Settings for player size adjustments.")
     @ConfigEditorAccordion(id = 7)
     public boolean playerSizeAccordion = false;
-
     @Expose
     @ConfigOption(name = "Skytils's smolpeople", desc = "Enable smolpeople")
     @ConfigEditorBoolean

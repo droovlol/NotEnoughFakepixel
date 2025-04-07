@@ -3,6 +3,7 @@ package org.ginafro.notenoughfakepixel.utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.inventory.GuiChest;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
@@ -69,8 +70,7 @@ public class InventoryUtils {
     public static void highlightSlotRed(Slot slot, GuiChest chest) {
         highlightSlot(slot, chest, new Color(255, 55, 55));
     }
-
-    public static void highlightSlot(Slot slot, GuiChest chest, Color color){
-        RenderUtils.drawOnSlot(chest.inventorySlots.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, color.getRGB());
+    public static void highlightSlot(Slot slot, GuiContainer container, Color color){
+        RenderUtils.drawOnSlot(container.inventorySlots.inventorySlots.size(),slot.xDisplayPosition,slot.yDisplayPosition,color.getRGB());
     }
 }

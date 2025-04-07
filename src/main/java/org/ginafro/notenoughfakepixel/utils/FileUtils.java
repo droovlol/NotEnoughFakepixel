@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class FileUtils {
 
-    public static File SOULS_FILE = new File(NotEnoughFakepixel.nefFolder,"gainedsouls.json");
+    public static File SOULS_FILE = new File(NotEnoughFakepixel.configDirectory,"gainedsouls.json");
     public static ResourceLocation ALL_SOULS = new ResourceLocation("notenoughfakepixel","fairysouls.json");
     public static Gson gson = new GsonBuilder().setPrettyPrinting().create();
     public static Map<String, List<String>> templateMap = new HashMap<>();

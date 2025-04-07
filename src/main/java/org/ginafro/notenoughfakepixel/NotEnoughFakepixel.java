@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.ginafro.notenoughfakepixel.Alerts.Alerts;
+import org.ginafro.notenoughfakepixel.features.skyblock.overlays.bazaar.GUIHandler;
 import org.ginafro.notenoughfakepixel.features.skyblock.qol.CustomAliases.CustomAliases;
 import org.ginafro.notenoughfakepixel.commands.CopyCommand;
 import org.ginafro.notenoughfakepixel.config.gui.commands.Commands;
@@ -47,6 +48,7 @@ import org.ginafro.notenoughfakepixel.features.skyblock.qol.*;
 import org.ginafro.notenoughfakepixel.features.skyblock.diana.*;
 import org.ginafro.notenoughfakepixel.features.skyblock.slayers.*;
 import org.ginafro.notenoughfakepixel.events.Handlers.PacketHandler;
+import org.ginafro.notenoughfakepixel.features.skyblock.slotlocking.SlotLocking;
 import org.ginafro.notenoughfakepixel.utils.*;
 import org.lwjgl.input.Keyboard;
 
@@ -66,7 +68,7 @@ public class NotEnoughFakepixel {
 
     private final Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
 
-    public static File configDirectory;
+    public static File configDirectory = new File("config/Notenoughfakepixel");;
     private File configFile;
 
     public static Configuration feature;
@@ -77,12 +79,10 @@ public class NotEnoughFakepixel {
     public void init(FMLInitializationEvent event) {
         instance = this;
         MinecraftForge.EVENT_BUS.register(this);
-
+        SlotLocking.getInstance().loadConfig();
         if (!nefFolder.exists()) {
             nefFolder.mkdirs();
         }
-
-        configDirectory = new File("config/Notenoughfakepixel");
         if (!configDirectory.exists()) {
             configDirectory.mkdirs();
         }
@@ -105,11 +105,13 @@ public class NotEnoughFakepixel {
         ClientCommandHandler.instance.registerCommand(new CopyCommand());
         new Aliases();
 
+
         ClientRegistry.registerKeyBinding(openGuiKey);
         Commands.init();
         Alerts.load();
         CustomAliases.load();
         registerModEvents();
+        SlotLocking.getInstance().saveConfig();
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::saveConfig));
     }
@@ -174,7 +176,8 @@ public class NotEnoughFakepixel {
         MinecraftForge.EVENT_BUS.register(new EnchantingSolvers());
         MinecraftForge.EVENT_BUS.register(new HideEnchantingTooltips());
         MinecraftForge.EVENT_BUS.register(new PreventMissclicks());
-
+        // Slot Locking
+        MinecraftForge.EVENT_BUS.register(new SlotLocking());
         // Chocolate Factory
         MinecraftForge.EVENT_BUS.register(new ChocolateFactory());
         // QOL
@@ -195,6 +198,7 @@ public class NotEnoughFakepixel {
         MinecraftForge.EVENT_BUS.register(new MiscFeatures());
         MinecraftForge.EVENT_BUS.register(new ItemAnimations());
         MinecraftForge.EVENT_BUS.register(new Alerts());
+        MinecraftForge.EVENT_BUS.register(new CrackedWallHighlight());
 
         MinecraftForge.EVENT_BUS.register(new Fullbright());
         MinecraftForge.EVENT_BUS.register(new KDCounter());
@@ -214,10 +218,16 @@ public class NotEnoughFakepixel {
         MinecraftForge.EVENT_BUS.register(new BlazeAttunements());
         MinecraftForge.EVENT_BUS.register(new SlayerTimer());
         MinecraftForge.EVENT_BUS.register(new SlayerHealthDisplay());
-
+        // Overlays
+        MinecraftForge.EVENT_BUS.register(new GUIHandler());
         // Parsers
         MinecraftForge.EVENT_BUS.register(new TablistParser());
         MinecraftForge.EVENT_BUS.register(new ScoreboardUtils());
+    }
+
+
+    public static void resetLockedSlots() {
+        SlotLocking.getInstance().resetSlotLocking();
     }
 
     public static GuiScreen openGui;
@@ -252,6 +262,7 @@ public class NotEnoughFakepixel {
 
             try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(configFile), StandardCharsets.UTF_8))) {
                 writer.write(gson.toJson(feature));
+                SlotLocking.getInstance().saveConfig();
             }
         } catch (IOException ignored) {
         }
