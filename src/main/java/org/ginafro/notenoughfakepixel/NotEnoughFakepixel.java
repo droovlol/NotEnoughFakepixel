@@ -15,7 +15,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.ginafro.notenoughfakepixel.Alerts.Alerts;
-import org.ginafro.notenoughfakepixel.features.skyblock.overlays.bazaar.GUIHandler;
 import org.ginafro.notenoughfakepixel.features.skyblock.qol.CustomAliases.CustomAliases;
 import org.ginafro.notenoughfakepixel.commands.CopyCommand;
 import org.ginafro.notenoughfakepixel.config.gui.commands.Commands;
@@ -54,6 +53,7 @@ import org.lwjgl.input.Keyboard;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 @Mod(modid = "notenoughfakepixel", useMetadata = true)
 public class NotEnoughFakepixel {
@@ -68,7 +68,7 @@ public class NotEnoughFakepixel {
 
     private final Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
 
-    public static File configDirectory = new File("config/Notenoughfakepixel");;
+    public static File configDirectory = new File("config/Notenoughfakepixel");
     private File configFile;
 
     public static Configuration feature;
@@ -90,7 +90,7 @@ public class NotEnoughFakepixel {
         configFile = new File(configDirectory, "config.json");
 
         if (configFile.exists()) {
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8))) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(configFile.toPath()), StandardCharsets.UTF_8))) {
                 feature = gson.fromJson(reader, Configuration.class);
             } catch (Exception ignored) {
             }
@@ -198,7 +198,6 @@ public class NotEnoughFakepixel {
         MinecraftForge.EVENT_BUS.register(new MiscFeatures());
         MinecraftForge.EVENT_BUS.register(new ItemAnimations());
         MinecraftForge.EVENT_BUS.register(new Alerts());
-        MinecraftForge.EVENT_BUS.register(new CrackedWallHighlight());
 
         MinecraftForge.EVENT_BUS.register(new Fullbright());
         MinecraftForge.EVENT_BUS.register(new KDCounter());
@@ -218,8 +217,6 @@ public class NotEnoughFakepixel {
         MinecraftForge.EVENT_BUS.register(new BlazeAttunements());
         MinecraftForge.EVENT_BUS.register(new SlayerTimer());
         MinecraftForge.EVENT_BUS.register(new SlayerHealthDisplay());
-        // Overlays
-        MinecraftForge.EVENT_BUS.register(new GUIHandler());
         // Parsers
         MinecraftForge.EVENT_BUS.register(new TablistParser());
         MinecraftForge.EVENT_BUS.register(new ScoreboardUtils());
