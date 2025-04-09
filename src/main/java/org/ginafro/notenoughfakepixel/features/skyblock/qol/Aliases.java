@@ -11,34 +11,10 @@ import java.util.Map;
 
 public class Aliases {
 
-    private static final Map<String, String> commandMap = new HashMap<>();
-
-    static {
-        for (int i = 1; i <= 7; i++) {
-            commandMap.put("f" + i, "/joindungeon " + i);
-            commandMap.put("m" + i, "/joindungeon " + i + " master");
-        }
-        for (int i = 1; i <= 99; i++) {
-            commandMap.put("fl " + i, "/f list " + i);
-        }
-        String[] warps = {"isle", "dh", "hub", "end", "park", "farm","forge","dwarven","castle","crypts","crypt","gold","deep","da","museum"};
-        for (String warp : warps) {
-            commandMap.put(warp, "/warp " + warp);
-        }
-        commandMap.put("pl", "/p list");
-        commandMap.put("pd", "/p disband");
-        commandMap.put("fl", "/f list");
-    }
-
     public Aliases() {
         MinecraftForge.EVENT_BUS.register(this);
 
-        for (String shortCmd : commandMap.keySet()) {
-            ClientCommandHandler.instance.registerCommand(new AliasCommand(shortCmd, commandMap.get(shortCmd)));
-        }
-
         ClientCommandHandler.instance.registerCommand(new VpCommand());
-        ClientCommandHandler.instance.registerCommand(new PtCommand());
     }
 
     public static class AliasCommand extends CommandBase {

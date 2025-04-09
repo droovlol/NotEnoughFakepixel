@@ -27,15 +27,9 @@
     "MixinBlockLever",
     "MixinEntity",
     "MixinEntityLivingBase",
-    "MixinGuiContainer",
     "MixinItemRenderer",
     "Accesors.EntityPlayerAccessor",
-    "Accesors.AccessorGuiContainer",
-    "MixinRenderPlayer",
     "MixinLayerCape",
-    "MixinModelBiped",
-    "MixinMinecraft",
-    "MixinEntityPlayerSP",
-    "MixinInventoryPlayer"
+    "MixinModelBiped"
   ]
 }
