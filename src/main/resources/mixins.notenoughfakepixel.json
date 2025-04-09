@@ -31,6 +31,9 @@
     "Accesors.EntityPlayerAccessor",
     "MixinLayerCape",
     "MixinModelBiped",
-    "Accesors.AccessorGuiContainer"
+    "Accesors.AccessorGuiContainer",
+    "MixinGuiContainer",
+    "MixinMinecraft",
+    "MixinInventoryPlayer"
   ]
 }
