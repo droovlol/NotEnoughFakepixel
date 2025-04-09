@@ -39,7 +39,7 @@ public class ClickInOrderSolver {
     public ClickInOrderSolver() {
         // Start the queue processing task when the solver is instantiated
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleAtFixedRate(this::processQueue, 0, 0, TimeUnit.MILLISECONDS);
+        executor.scheduleAtFixedRate(this::processQueue, 0, 20, TimeUnit.MILLISECONDS);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
