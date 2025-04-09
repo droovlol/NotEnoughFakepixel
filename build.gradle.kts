@@ -3,6 +3,7 @@ import org.apache.commons.lang3.SystemUtils
 plugins {
     idea
     java
+    kotlin("jvm") version "1.8.21"
     id("gg.essential.loom") version "0.10.0.5"
     id("dev.architectury.architectury-pack200") version "0.1.3"
     id("com.github.johnrengelman.shadow") version "8.1.1"
@@ -59,6 +60,7 @@ loom {
 }
 
 sourceSets.main {
+    java.srcDirs("src/main/java", "src/main/kotlin")
     output.setResourcesDir(sourceSets.main.flatMap { it.java.classesDirectory })
 }
 
@@ -84,6 +86,7 @@ dependencies {
 
     // If you don't want mixins, remove these lines
     implementation("org.slick2d:slick2d-core:1.0.1")
+    implementation(kotlin("stdlib"))
     shadowImpl("org.spongepowered:mixin:0.7.11-SNAPSHOT") {
         isTransitive = false
     }
