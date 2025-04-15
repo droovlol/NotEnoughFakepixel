@@ -79,6 +79,12 @@ public class Crimson {
     public boolean crimsonAshfangHurtSound = true;
 
     @Expose
+    @ConfigOption(name = "Edit Ashfang Overlay Position", desc = "Adjust the overlay position visually")
+    @ConfigEditorButton(runnableId = "editAshfangPosition", buttonText = "Edit Position")
+    @ConfigAccordionId(id = 1)
+    public String editAshOverlayPositionButton = "";
+
+    @Expose
     @ConfigOption(name = "Ashfang Overlay", desc = "Show overlay for Ashfang HP and Blazing Souls.")
     @ConfigEditorBoolean
     @ConfigAccordionId(id = 1)
