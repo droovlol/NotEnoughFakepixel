@@ -34,6 +34,7 @@
     "Accesors.AccessorGuiContainer",
     "MixinGuiContainer",
     "MixinMinecraft",
-    "MixinInventoryPlayer"
+    "MixinInventoryPlayer",
+    "MixinEntityPlayerSP"
   ]
 }
