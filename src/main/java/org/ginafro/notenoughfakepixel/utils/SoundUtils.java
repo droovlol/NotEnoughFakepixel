@@ -2,7 +2,6 @@ package org.ginafro.notenoughfakepixel.utils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.audio.SoundCategory;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
@@ -28,12 +27,9 @@ public class SoundUtils {
         if (mc.getSoundHandler() == null) return;
 
         mc.addScheduledTask(() -> {
-            float oldLevel = Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.MASTER);
-            Minecraft.getMinecraft().gameSettings.setSoundLevel(SoundCategory.MASTER, 1);
             mc.getSoundHandler().playSound(
                     PositionedSoundRecord.create(new ResourceLocation(sound), pitch)
             );
-            Minecraft.getMinecraft().gameSettings.setSoundLevel(SoundCategory.MASTER, oldLevel);
         });
     }
 }

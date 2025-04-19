@@ -19,7 +19,8 @@ public class MiddleClickEvent {
             "Experimentation Table",
             "Chronomatron",
             "Ultrasequencer",
-            "Superpairs"
+            "Superpairs",
+            "Complete the maze!"
     );
 
     @SubscribeEvent
@@ -45,7 +46,7 @@ public class MiddleClickEvent {
                                 container.windowId,  // The window ID of the chest
                                 slot,               // Slot clicked
                                 2,                  // Middle-click (button 2)
-                                3,                  // Click type (3 is PICKUP_ALL for middle-click)
+                                0,                  // Click type (3 is PICKUP_ALL for middle-click)
                                 mc.thePlayer        // Player entity
                         );
                     }
@@ -63,7 +64,7 @@ public class MiddleClickEvent {
                                 container.windowId,  // The window ID of the chest
                                 slot,               // Slot clicked
                                 2,                  // Middle-click (button 2)
-                                3,                  // Click type (3 is PICKUP_ALL for middle-click)
+                                0,                  // Click type (3 is PICKUP_ALL for middle-click)
                                 mc.thePlayer        // Player entity
                         );
                     }
@@ -80,7 +81,7 @@ public class MiddleClickEvent {
                                 container.windowId,  // The window ID of the chest
                                 slot,               // Slot clicked
                                 2,                  // Middle-click (button 2)
-                                3,                  // Click type (3 is PICKUP_ALL for middle-click)
+                                0,                  // Click type (3 is PICKUP_ALL for middle-click)
                                 mc.thePlayer        // Player entity
                         );
                     }
@@ -97,7 +98,7 @@ public class MiddleClickEvent {
                                 container.windowId,  // The window ID of the chest
                                 slot,               // Slot clicked
                                 2,                  // Middle-click (button 2)
-                                3,                  // Click type (3 is PICKUP_ALL for middle-click)
+                                0,                  // Click type (3 is PICKUP_ALL for middle-click)
                                 mc.thePlayer        // Player entity
                         );
                     }
@@ -116,7 +117,7 @@ public class MiddleClickEvent {
                             container.windowId,  // The window ID of the chest
                             slot,               // Slot clicked
                             2,                  // Middle-click (button 2)
-                            3,                  // Click type (3 is PICKUP_ALL for middle-click)
+                            0,                  // Click type (3 is PICKUP_ALL for middle-click)
                             mc.thePlayer        // Player entity
                     );
                 }
