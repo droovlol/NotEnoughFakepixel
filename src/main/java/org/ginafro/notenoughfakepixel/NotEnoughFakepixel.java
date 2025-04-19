@@ -132,7 +132,9 @@ public class NotEnoughFakepixel {
         MinecraftForge.EVENT_BUS.register(new CorrectPanesSolver());
         MinecraftForge.EVENT_BUS.register(new FirstDeviceSolver());
         MinecraftForge.EVENT_BUS.register(new ThirdDeviceSolver());
+        //MinecraftForge.EVENT_BUS.register(new FourthDeviceSolver());
         MinecraftForge.EVENT_BUS.register(new HideTooltips());
+        MinecraftForge.EVENT_BUS.register(new WitherDoors());
 
         MinecraftForge.EVENT_BUS.register(new AutoReadyDungeon());
         MinecraftForge.EVENT_BUS.register(new AutoCloseChests());

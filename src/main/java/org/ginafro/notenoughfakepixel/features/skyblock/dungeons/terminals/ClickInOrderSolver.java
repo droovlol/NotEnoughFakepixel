@@ -116,7 +116,7 @@ public class ClickInOrderSolver {
                         continue;
 
                     int overlayColor = 0;
-                    if (slot.getStack().stackSize == effectiveRound + 1) {
+                    if (slot.getStack() != null && slot.getStack().stackSize == effectiveRound + 1) {
                         overlayColor = ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsCorrectColor).getRGB();
                     } else if (slot.getStack().stackSize == effectiveRound + 2) {
                         overlayColor = ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsAlternativeColor).getRGB();
