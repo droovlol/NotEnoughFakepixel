@@ -2,6 +2,8 @@ package org.ginafro.notenoughfakepixel.features.skyblock.crimson;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.Position;
 
@@ -14,6 +16,13 @@ public class AshfangOverlay {
 
     public AshfangOverlay() {
         this.position = NotEnoughFakepixel.feature.crimson.ashfangOverlayPos;
+    }
+
+    @SubscribeEvent
+    public void onRender(RenderGameOverlayEvent.Post event) {
+        if (event.type != RenderGameOverlayEvent.ElementType.ALL) return;
+        if (!shouldShow()) return;
+        render();
     }
 
     /** Renders the overlay at the configured position */

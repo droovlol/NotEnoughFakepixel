@@ -30,10 +30,6 @@
     "MixinItemRenderer",
     "Accesors.EntityPlayerAccessor",
     "MixinLayerCape",
-    "MixinModelBiped",
-    "Accesors.AccessorGuiContainer",
-    "MixinGuiContainer",
-    "MixinInventoryPlayer",
-    "MixinMinecraft"
+    "MixinModelBiped"
   ]
 }

@@ -448,5 +448,10 @@ public class Dungeons {
     public float dungeonsScaleItemDrop = 3.5f;
 
     @Expose
+    @ConfigOption(name = "Highlight WitherDoors", desc = "Box wither doors.")
+    @ConfigEditorBoolean
+    public boolean dungeonsWitherDoors = true;
+
+    @Expose
     public Position scoreOverlayPos = new Position(10, 10, false, true);
 }

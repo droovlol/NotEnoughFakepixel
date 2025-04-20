@@ -190,9 +190,9 @@ public class MiscFeatures {
                         event.setCanceled(true);
                         String soundName = getConfiguredSound();
                         SoundUtils.playSound(
-                                (float) player.posX,
-                                (float) player.posY,
-                                (float) player.posZ,
+                                (int) player.posX,
+                                (int) player.posY,
+                                (int) player.posZ,
                                 soundName,
                                 2.0f,
                                 1.0f

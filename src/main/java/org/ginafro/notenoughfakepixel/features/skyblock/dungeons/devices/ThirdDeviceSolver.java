@@ -29,24 +29,24 @@ public class ThirdDeviceSolver {
     private static final Map<BlockPos, Integer> itemFramesRotations = new HashMap<>();
 
     static {
-        // Define expected rotations for item frames in goldor phase
-        itemFramesRotations.put(new BlockPos(6, 121, 85), 3);
-        itemFramesRotations.put(new BlockPos(6, 120, 85), 1);
-        itemFramesRotations.put(new BlockPos(6, 120, 84), 1);
-        itemFramesRotations.put(new BlockPos(6, 120, 83), 7);
+        // Define expected rotations for item frames in goldor phase (Y + 1)
+        itemFramesRotations.put(new BlockPos(6, 122, 85), 3);
+        itemFramesRotations.put(new BlockPos(6, 121, 85), 1);
+        itemFramesRotations.put(new BlockPos(6, 121, 84), 1);
         itemFramesRotations.put(new BlockPos(6, 121, 83), 7);
-
         itemFramesRotations.put(new BlockPos(6, 122, 83), 7);
-        itemFramesRotations.put(new BlockPos(6, 123, 83), 7);
-        itemFramesRotations.put(new BlockPos(6, 124, 83), 5);
-        itemFramesRotations.put(new BlockPos(6, 124, 84), 5);
-        itemFramesRotations.put(new BlockPos(6, 124, 85), 5);
 
-        itemFramesRotations.put(new BlockPos(6, 124, 86), 5);
+        itemFramesRotations.put(new BlockPos(6, 123, 83), 7);
+        itemFramesRotations.put(new BlockPos(6, 124, 83), 7);
+        itemFramesRotations.put(new BlockPos(6, 125, 83), 5);
+        itemFramesRotations.put(new BlockPos(6, 125, 84), 5);
+        itemFramesRotations.put(new BlockPos(6, 125, 85), 5);
+
+        itemFramesRotations.put(new BlockPos(6, 125, 86), 5);
+        itemFramesRotations.put(new BlockPos(6, 125, 87), 3);
         itemFramesRotations.put(new BlockPos(6, 124, 87), 3);
         itemFramesRotations.put(new BlockPos(6, 123, 87), 3);
         itemFramesRotations.put(new BlockPos(6, 122, 87), 3);
-        itemFramesRotations.put(new BlockPos(6, 121, 87), 3);
     }
 
     // Cancel click when sea lantern behind
@@ -107,7 +107,7 @@ public class ThirdDeviceSolver {
                     int clicksNeeded = (desiredRotation - currentRotation + 8) % 8;
 
                     // Prepare position for rendering text
-                    double[] renderPos = new double[]{posItemFrame.getX() - 0.7, posItemFrame.getY() - 2.3, posItemFrame.getZ()};
+                    double[] renderPos = new double[]{posItemFrame.getX() - 0.7, posItemFrame.getY() - 3.3, posItemFrame.getZ()};
 
                     // Display clicks needed
                     if (clicksNeeded == 0) {

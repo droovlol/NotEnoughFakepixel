@@ -116,7 +116,7 @@ public class ClickInOrderSolver {
                         continue;
 
                     int overlayColor = 0;
-                    if (slot.getStack().stackSize == effectiveRound + 1) {
+                    if (slot.getStack() != null && slot.getStack().stackSize == effectiveRound + 1) {
                         overlayColor = ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsCorrectColor).getRGB();
                     } else if (slot.getStack().stackSize == effectiveRound + 2) {
                         overlayColor = ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsAlternativeColor).getRGB();
@@ -144,11 +144,11 @@ public class ClickInOrderSolver {
                     int y = (row - 1) * SLOT_SIZE;
                     drawRect(x, y, x + SLOT_SIZE, y + SLOT_SIZE, overlayColor);
 
-                    String stackSizeText = String.valueOf(slot.getStack().stackSize);
-                    int textWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(stackSizeText);
-                    int textX = x + (SLOT_SIZE / 2) - (textWidth / 2);
-                    int textY = y + (SLOT_SIZE / 2) - 4;
-                    if (slot.getStack().stackSize > effectiveRound) {
+                    if (slot.getStack() != null && slot.getStack().stackSize > effectiveRound) {
+                        String stackSizeText = String.valueOf(slot.getStack().stackSize);
+                        int textWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(stackSizeText);
+                        int textX = x + (SLOT_SIZE / 2) - (textWidth / 2);
+                        int textY = y + (SLOT_SIZE / 2) - 4;
                         Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(
                                 stackSizeText, textX, textY, 0xFFFFFF);
                     }

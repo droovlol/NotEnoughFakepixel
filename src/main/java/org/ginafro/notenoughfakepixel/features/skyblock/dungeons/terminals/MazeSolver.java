@@ -278,7 +278,7 @@ public class MazeSolver {
                 mc.playerController.windowClick(
                         container.windowId,
                         hoveredSlot.slotNumber,
-                        0,
+                        2,
                         0,
                         mc.thePlayer
                 );
