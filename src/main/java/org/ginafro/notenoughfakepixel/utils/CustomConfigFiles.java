@@ -7,8 +7,8 @@ import java.io.File;
 public enum CustomConfigFiles {
 
     FAIRY_SOULS(NotEnoughFakepixel.configDirectory + File.separator + "gainedsouls.json"),
-    SLOT_LOCKING(NotEnoughFakepixel.configDirectory + File.separator +  "slotlocking.json");
-
+    SLOT_LOCKING(NotEnoughFakepixel.configDirectory + File.separator +  "slotlocking.json"),
+    STORAGE_FOLDER(NotEnoughFakepixel.configDirectory + File.separator + "storage");
     public String path;
     CustomConfigFiles(String s){
         path = s;

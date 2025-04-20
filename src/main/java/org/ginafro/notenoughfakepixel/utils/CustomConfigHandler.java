@@ -3,6 +3,7 @@ package org.ginafro.notenoughfakepixel.utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import jline.internal.Nullable;
+import org.ginafro.notenoughfakepixel.features.skyblock.overlays.storage.StorageData;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.ginafro.notenoughfakepixel.utils.CustomConfigFiles.STORAGE_FOLDER;
 
 public class CustomConfigHandler {
 
@@ -33,6 +36,33 @@ public class CustomConfigHandler {
             ).printStackTrace();
             makeBackup(file,".corrupted");
             return null;
+        }
+    }
+
+    public static StorageData loadStorageData(String chestName){
+        if(!new File(STORAGE_FOLDER.path).exists()) return null;
+        File file = new File(STORAGE_FOLDER.path, chestName.replace(" ","") + ".json");
+        if (!file.exists()) return null;
+
+        try (FileReader reader = new FileReader(file)) {
+            return gson.fromJson(reader, StorageData.class); // Convert JSON back to StorageData
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static void saveStorageData(StorageData data) {
+        File folder = new File(STORAGE_FOLDER.path);
+        if(folder.exists()){
+            folder.mkdirs();
+        }
+        File file = new File(folder, data.chestName.replace(" ","") + ".json");
+        try (FileWriter writer = new FileWriter(file)) {
+            String json = gson.toJson(data); // Convert StorageData to JSON
+            writer.write(json);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

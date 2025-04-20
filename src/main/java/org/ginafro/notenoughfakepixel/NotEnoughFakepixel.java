@@ -15,6 +15,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.ginafro.notenoughfakepixel.Alerts.Alerts;
+import org.ginafro.notenoughfakepixel.features.skyblock.overlays.storage.StorageDataHandler;
+import org.ginafro.notenoughfakepixel.features.skyblock.overlays.storage.StorageOverlay;
 import org.ginafro.notenoughfakepixel.features.skyblock.qol.CustomAliases.CustomAliases;
 import org.ginafro.notenoughfakepixel.commands.CopyCommand;
 import org.ginafro.notenoughfakepixel.config.gui.commands.Commands;
@@ -69,6 +71,7 @@ public class NotEnoughFakepixel {
     private final Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
 
     public static File configDirectory = new File("config/Notenoughfakepixel");
+    public static File storageDirectory = new File("config/Notenoughfakepixel/storage");
     private File configFile;
 
     public static Configuration feature;
@@ -86,6 +89,11 @@ public class NotEnoughFakepixel {
         if (!configDirectory.exists()) {
             configDirectory.mkdirs();
         }
+
+        if(!storageDirectory.exists()){
+            storageDirectory.mkdirs();
+        }
+
 
         configFile = new File(configDirectory, "config.json");
 
@@ -198,6 +206,10 @@ public class NotEnoughFakepixel {
         MinecraftForge.EVENT_BUS.register(new MiscFeatures());
         MinecraftForge.EVENT_BUS.register(new ItemAnimations());
         MinecraftForge.EVENT_BUS.register(new Alerts());
+
+        // Overlays
+        MinecraftForge.EVENT_BUS.register(new StorageOverlay.StorageEvent());
+        MinecraftForge.EVENT_BUS.register(new StorageDataHandler());
 
         MinecraftForge.EVENT_BUS.register(new Fullbright());
         MinecraftForge.EVENT_BUS.register(new KDCounter());
