@@ -453,5 +453,15 @@ public class Dungeons {
     public boolean dungeonsWitherDoors = true;
 
     @Expose
+    @ConfigOption(name = "Active Witherdoor color", desc = "Active Witherdoor color.")
+    @ConfigEditorColour
+    public String dungeonsWitherDoorsActive = "0:255:0:255:0";
+
+    @Expose
+    @ConfigOption(name = "Inactive Witherdoor color", desc = "Inactive Witherdoor color.")
+    @ConfigEditorColour
+    public String dungeonsWitherDoorsInactive = "0:255:255:0:0";
+
+    @Expose
     public Position scoreOverlayPos = new Position(10, 10, false, true);
 }

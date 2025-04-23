@@ -15,9 +15,11 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -157,10 +159,13 @@ public class WitherDoors {
         double maxY = minY + 4;
         double maxZ = minZ + 3;
 
-        float r = isActive ? 0.0F : 1.0F; // Green if active, red otherwise
-        float g = isActive ? 1.0F : 0.0F;
-        float b = 0.0F;
-        float a = 1.0F;
+        Color color = isActive ?
+                ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsWitherDoorsActive) :
+                ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsWitherDoorsInactive);
+        float r = color.getRed() / 255.0f;
+        float g = color.getGreen() / 255.0f;
+        float b = color.getBlue() / 255.0f;
+        float a = color.getAlpha() / 255.0f;
 
         // Bottom face
         worldRenderer.pos(minX, minY, minZ).color(r, g, b, a).endVertex();

@@ -2,6 +2,7 @@ package org.ginafro.notenoughfakepixel.config.features;
 
 import com.google.gson.annotations.Expose;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.*;
+import org.lwjgl.input.Keyboard;
 
 public class DianaF {
 
@@ -16,6 +17,12 @@ public class DianaF {
     @ConfigEditorBoolean
     @ConfigAccordionId(id = 0)
     public boolean dianaBurrowGuess = true;
+
+    @Expose
+    @ConfigOption(name = "Warp Keybbind", desc = "Keybind to quickly warp to the nearest guess burrow.")
+    @ConfigEditorKeybind(defaultKey = Keyboard.KEY_H)
+    @ConfigAccordionId(id = 0)
+    public int warpKeybind = Keyboard.KEY_H;
 
     @Expose
     @ConfigOption(name = "Show Waypoints on Burrows", desc = "Show waypoints on burrows.")
