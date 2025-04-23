@@ -296,7 +296,7 @@ public class QualityOfLife {
     public boolean qolDisablePotionEffects = true;
 
     @Expose
-    @ConfigOption(name = "Middle Click on Terminals and Enchanting", desc = "Enable middle click on terminals and enchanting GUI.")
+    @ConfigOption(name = "Middle Click on skyblock GUIs", desc = "Enable middle click on skyblock GUIs.")
     @ConfigEditorBoolean
     public boolean qolMiddleClickChests = true;
 
@@ -373,12 +373,12 @@ public class QualityOfLife {
     @Expose
     @ConfigOption(name = "Damage Commas", desc = "Add commas to damage numbers.")
     @ConfigEditorBoolean
-    public boolean qolDmgCommas = true;
+    public boolean qolDmgCommas = false;
 
     @Expose
     @ConfigOption(name = "Damage Formatter", desc = "Format damage numbers (e.g., 167k instead of 167000).")
     @ConfigEditorBoolean
-    public boolean qolDmgFormatter = true;
+    public boolean qolDmgFormatter = false;
 
     // Method to handle the reset button functionality
     public void resetItemValues() {

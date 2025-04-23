@@ -463,5 +463,15 @@ public class Dungeons {
     public String dungeonsWitherDoorsInactive = "0:255:255:0:0";
 
     @Expose
+    @ConfigOption(name = "Floor 7 Withers box", desc = "Box withers in f7.")
+    @ConfigEditorBoolean
+    public boolean dungeonsWithersBox = true;
+
+    @Expose
+    @ConfigOption(name = "Floor 7 Withers box color", desc = "Floor 7 Withers box color.")
+    @ConfigEditorColour
+    public String dungeonsWithersBoxColor = "0:255:0:255:0";
+
+    @Expose
     public Position scoreOverlayPos = new Position(10, 10, false, true);
 }
