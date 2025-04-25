@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.ginafro.notenoughfakepixel.Alerts.Alerts;
+import org.ginafro.notenoughfakepixel.features.capes.CapeManager;
 import org.ginafro.notenoughfakepixel.features.skyblock.overlays.storage.StorageDataHandler;
 import org.ginafro.notenoughfakepixel.features.skyblock.overlays.storage.StorageOverlay;
 import org.ginafro.notenoughfakepixel.features.skyblock.qol.CustomAliases.CustomAliases;
@@ -93,7 +94,7 @@ public class NotEnoughFakepixel {
         if(!storageDirectory.exists()){
             storageDirectory.mkdirs();
         }
-
+        CapeManager.loadCapesFromGitHub();
 
         configFile = new File(configDirectory, "config.json");
 
