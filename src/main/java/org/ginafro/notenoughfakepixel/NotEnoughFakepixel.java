@@ -64,7 +64,7 @@ public class NotEnoughFakepixel {
     public static final File nefFolder = new File(Minecraft.getMinecraft().mcDataDir, "NotEnoughFakepixel");
 
     public static final KeyBinding openGuiKey = new KeyBinding(
-            "Open GUI",
+            "Open GUI", 
             Keyboard.KEY_P,
             "NotEnoughFakepixel"
     );

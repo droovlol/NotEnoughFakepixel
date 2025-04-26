@@ -54,7 +54,7 @@ public class CapeGui extends GuiScreen {
         }
         sW = (int)(326 * scale);
         sH = (int)(37 * scale);
-        sX = wX + wH - (int)(330 * scale);
+        sX = wX + wH - (int)(210 * scale);
         sY = wY + (int)(42 * scale);
         searchBar = new GuiTextField(1001,mc.fontRendererObj,sX,sY,sW,sH);
         searchBar.setEnableBackgroundDrawing(false);
@@ -62,13 +62,15 @@ public class CapeGui extends GuiScreen {
     }
 
     public void update(){
-        HashMap<Integer,CapeButton> caMap = new HashMap<>();
+        Map<Integer,CapeButton> caMap = new HashMap<>();
         if(!searchBar.getText().isEmpty()){
-            capeMap.forEach((ca,cb) -> {
+            capeMap.forEach((ca, cb) -> {
                 if(cb.ca.capeName.startsWith(searchBar.getText())){
                     caMap.put(ca,cb);
                 }
             });
+        }else{
+            caMap.putAll(capeMap);
         }
         for(int i = 0; i <= caMap.size();i++){
             CapeButton b = caMap.get(i);
