@@ -23,6 +23,23 @@ public class Utils {
         return (x - inputStart) / (inputEnd - inputStart) * (outputEnd - outputStart) + outputStart;
     }
 
+    public static float getScale(){
+        int sc = Minecraft.getMinecraft().gameSettings.guiScale;
+        if(sc == 0){
+            return 1.0f;
+        }
+        switch(sc){
+            case 2:
+                return 1f/2.0f;
+            case 3:
+                return 1f/3.0f;
+            case 4:
+                return 1f/4.0f;
+            default:
+                return 1.0f;
+        }
+    }
+
     public static String shortNumberFormat(double n, int iteration) {
         // This function will convert a number into a short number format.
         // For example, 1231 -> 1.2k, 1233000 -> 1.2m, 1323000000 -> 1.3b, 1000000000000 -> 1t

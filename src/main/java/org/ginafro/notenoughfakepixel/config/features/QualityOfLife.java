@@ -16,6 +16,11 @@ public class QualityOfLife {
     @ConfigEditorButton(runnableId = "nefAlias", buttonText = "Edit")
     public String nefAlias = "";
 
+    @Expose
+    @ConfigOption(name = "NEF Capes", desc = "Choose from a variety of capes provided by nef")
+    @ConfigEditorButton(runnableId = "nefCapes", buttonText = "Choose")
+    public String nefCapes = "";
+
     // Visual Tweaks Subcategory
     @Expose
     @ConfigOption(name = "Visual Tweaks", desc = "Settings for visual enhancements.")

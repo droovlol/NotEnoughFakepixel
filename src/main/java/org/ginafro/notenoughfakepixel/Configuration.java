@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import org.ginafro.notenoughfakepixel.Alerts.AlertManagementGui;
+import org.ginafro.notenoughfakepixel.features.capes.gui.CapeGui;
 import org.ginafro.notenoughfakepixel.features.skyblock.qol.CustomAliases.AliasManagementGui;
 import org.ginafro.notenoughfakepixel.config.features.*;
 import org.ginafro.notenoughfakepixel.config.gui.config.ConfigEditor;
@@ -88,6 +89,9 @@ public class Configuration {
         }
         if("slotReset".equals(runnableId)){
             NotEnoughFakepixel.resetLockedSlots();
+        }
+        if("nefCapes".equals(runnableId)){
+            Minecraft.getMinecraft().displayGuiScreen(new CapeGui());
         }
     }
 

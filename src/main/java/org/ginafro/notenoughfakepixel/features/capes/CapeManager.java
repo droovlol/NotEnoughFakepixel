@@ -38,8 +38,9 @@ public class CapeManager {
                     String file = (String) entry.get("file");
                     int width = ((Double) entry.get("width")).intValue();
                     int height = ((Double) entry.get("height")).intValue();
+                    String name = (String)entry.get("name");
 
-                    Cape cape = new Cape(width, height, id, file);
+                    Cape cape = new Cape(width, height, id, file,name);
                     allCapes.add(cape);
                     capesByID.put(id, cape);
                 }
@@ -60,18 +61,18 @@ public class CapeManager {
     }
 
     public static Cape getCape() {
+        loadCapeTextureAsync(currentCape);
         return currentCape;
     }
 
     public static void setCape(int id) {
-        if (capesByID.containsKey(id)) {
-            currentCape = capesByID.get(id);
-            loadCapeTextureAsync(currentCape);
-        }
+        currentCape = capesByID.getOrDefault(id,currentCape);
     }
 
     public static List<Cape> getAllCapes() {
-        loadCapesFromGitHub();
+        if(capesByID.isEmpty() || allCapes.isEmpty()){
+            loadCapesFromGitHub();
+        }
         return allCapes;
     }
     public static ResourceLocation getCapeTexture(Cape cape) {
