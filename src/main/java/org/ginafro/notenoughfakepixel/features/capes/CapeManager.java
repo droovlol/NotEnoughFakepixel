@@ -26,6 +26,24 @@ public class CapeManager {
 
     private static final ExecutorService executor = Executors.newCachedThreadPool();
 
+    private static final Map<UUID, Integer> syncedCapes = new HashMap<>();
+
+    public static void syncCape(UUID uuid, int capeID) {
+        syncedCapes.put(uuid, capeID);
+    }
+
+    public static Cape getCapeForPlayer(UUID uuid) {
+        Integer id = syncedCapes.get(uuid);
+        if (id != null) {
+            return getCapeByID(id);
+        }
+        return null;
+    }
+
+    public static Cape getCapeByID(Integer id){
+        return capesByID.get(id);
+    }
+
     public static void loadCapesFromGitHub() {
         executor.execute(() -> {
             try {
@@ -66,6 +84,9 @@ public class CapeManager {
     }
 
     public static void setCape(int id) {
+        if(id == -11){
+            currentCape = null;
+        }
         currentCape = capesByID.getOrDefault(id,currentCape);
     }
 

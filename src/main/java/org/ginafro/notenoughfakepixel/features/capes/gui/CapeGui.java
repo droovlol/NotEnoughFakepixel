@@ -30,6 +30,8 @@ public class CapeGui extends GuiScreen {
     public Map<Integer,CapeButton> capeMap = new HashMap<>();
     public GuiTextField searchBar;
     public int sX,sY,sW,sH;
+    public ResourceLocation gui_cape = new ResourceLocation("notenoughfakepixel","cape_gui.png");
+    public ResourceLocation gui_cape_s = new ResourceLocation("notenoughfakepixel","cape_gui_s.png");
     @Override
     public void initGui() {
         super.initGui();
@@ -45,35 +47,37 @@ public class CapeGui extends GuiScreen {
         bW = (wH - (int)(30 * scale)) / 3;
         for(int i = 0;i < CapeManager.getAllCapes().size();i++){
             Cape c = CapeManager.getAllCapes().get(i);
-            CapeButton b = new CapeButton(i,-9999,-9999,bW,bH,c);
+            ResourceLocation tex = gui_cape;
             if(c == CapeManager.getCape()){
                 selected = c;
+                tex = gui_cape_s;
             }
+            CapeButton b = new CapeButton(i,-9999,-9999,bW,bH,c,tex);
             capeMap.putIfAbsent(c.capeID,b);
             buttonList.add(b);
         }
+        buttonList.add(new ResetButton(101,wX + (wW / 2) - (int)(50 * scale),wY + wH - (int)(50 * scale), (int) (100 * scale), (int) (35 * scale)));
         sW = (int)(326 * scale);
         sH = (int)(37 * scale);
-        sX = wX + wH - (int)(210 * scale);
-        sY = wY + (int)(42 * scale);
+        sX = wX + wH - (int)(90 * scale);
+        sY = wY + (int)(15 * scale);
         searchBar = new GuiTextField(1001,mc.fontRendererObj,sX,sY,sW,sH);
         searchBar.setEnableBackgroundDrawing(false);
         update();
     }
 
     public void update(){
-        Map<Integer,CapeButton> caMap = new HashMap<>();
         if(!searchBar.getText().isEmpty()){
-            capeMap.forEach((ca, cb) -> {
-                if(cb.ca.capeName.startsWith(searchBar.getText())){
-                    caMap.put(ca,cb);
+            for(Integer in : capeMap.keySet()){
+                CapeButton b = capeMap.get(in);
+                if(b.ca.capeName.toLowerCase().startsWith(searchBar.getText().toLowerCase())){
+                    scrollOffset = b.id;
+                    break;
                 }
-            });
-        }else{
-            caMap.putAll(capeMap);
+            }
         }
-        for(int i = 0; i <= caMap.size();i++){
-            CapeButton b = caMap.get(i);
+        for(int i = 0; i <= capeMap.size();i++){
+            CapeButton b = capeMap.get(i);
             if(b == null){
                 continue;
             }
@@ -84,10 +88,16 @@ public class CapeGui extends GuiScreen {
                 b.yPosition = -9999;
             }
             if(b.id >= scrollOffset && b.id < scrollOffset + 4){
-                b.xPosition = wX + (int)(20 * scale) + ((bW + (int)(10 * scale)) * Math.abs(scrollOffset - b.id));
+                b.xPosition = wX + (int)(45 * scale) + ((bW + (int)(10 * scale)) * Math.abs(scrollOffset - b.id));
                 b.yPosition = wY + (int)(75 * scale);
                 b.enabled = true;
                 b.visible = true;
+            }
+            if(b.tex == gui_cape_s && b.ca != selected){
+                b.tex = gui_cape;
+            }
+            if(b.ca == selected && b.tex == gui_cape){
+                b.tex = gui_cape_s;
             }
         }
     }
@@ -128,7 +138,7 @@ public class CapeGui extends GuiScreen {
                 Minecraft.getMinecraft().displayGuiScreen(null);
             }
         }
-        if(keyCode == Minecraft.getMinecraft().gameSettings.keyBindInventory.getKeyCode()){
+        if(keyCode == Minecraft.getMinecraft().gameSettings.keyBindInventory.getKeyCode() && !searchBar.isFocused()){
             Minecraft.getMinecraft().displayGuiScreen(null);
         }
         searchBar.textboxKeyTyped(typedChar,keyCode);
@@ -166,6 +176,18 @@ public class CapeGui extends GuiScreen {
         if(button instanceof CapeButton){
             ((CapeButton)button).process();
             selected = ((CapeButton)button).ca;
+        }
+        if(button instanceof ResetButton){
+            CapeManager.setCape(-11);
+            selected=null;
+            for(GuiButton b : buttonList){
+                if(b instanceof CapeButton){
+                    CapeButton cb = (CapeButton) b;
+                    if(cb.tex == gui_cape_s){
+                        cb.tex = gui_cape;
+                    }
+                }
+            }
         }
     }
 }

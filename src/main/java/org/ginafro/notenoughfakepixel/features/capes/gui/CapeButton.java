@@ -7,23 +7,22 @@ import net.minecraft.util.ResourceLocation;
 import org.ginafro.notenoughfakepixel.features.capes.Cape;
 import org.ginafro.notenoughfakepixel.features.capes.CapeManager;
 import org.ginafro.notenoughfakepixel.features.capes.CapePreviewRenderer;
+import org.ginafro.notenoughfakepixel.features.capes.network.CapeNetworkHandler;
 
 public class CapeButton extends GuiButton {
 
     public Cape ca;
-    public ResourceLocation tex = new ResourceLocation("notenoughfakepixel","cape_gui.png");
-    public CapeButton(int buttonId, int x, int y, int widthIn, int heightIn, Cape c) {
+    public ResourceLocation tex;
+    public CapeButton(int buttonId, int x, int y, int widthIn, int heightIn, Cape c,ResourceLocation tex) {
         super(buttonId, x, y, widthIn, heightIn, "");
         ca = c;
+        this.tex=tex;
     }
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if(this.enabled && this.visible){
             GlStateManager.color(1f,1f,1f);
-            if(CapeGui.selected == ca){
-                tex = new ResourceLocation("notenoughfakepixel","cape_gui_s.png");
-            }
             Minecraft.getMinecraft().getTextureManager().bindTexture(tex);
             drawScaledCustomSizeModalRect(xPosition,yPosition,0,0,width,height,width,height,width,height);
             CapePreviewRenderer.drawCape(xPosition + width / 2,yPosition + 15,90,ca);
