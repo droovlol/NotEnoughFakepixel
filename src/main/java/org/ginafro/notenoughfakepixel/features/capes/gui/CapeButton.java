@@ -7,7 +7,6 @@ import net.minecraft.util.ResourceLocation;
 import org.ginafro.notenoughfakepixel.features.capes.Cape;
 import org.ginafro.notenoughfakepixel.features.capes.CapeManager;
 import org.ginafro.notenoughfakepixel.features.capes.CapePreviewRenderer;
-import org.ginafro.notenoughfakepixel.features.capes.network.CapeNetworkHandler;
 
 public class CapeButton extends GuiButton {
 
