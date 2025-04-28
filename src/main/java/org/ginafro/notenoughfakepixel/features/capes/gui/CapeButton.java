@@ -1,8 +1,10 @@
 package org.ginafro.notenoughfakepixel.features.capes.gui;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 import org.ginafro.notenoughfakepixel.features.capes.Cape;
 import org.ginafro.notenoughfakepixel.features.capes.CapeManager;
