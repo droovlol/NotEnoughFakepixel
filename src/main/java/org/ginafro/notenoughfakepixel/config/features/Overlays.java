@@ -41,8 +41,9 @@ public class Overlays {
     public String searchColor = "0:255:0:255:0";
 
     @Expose
-    @ConfigOption(name = "Bazaar Overlay", desc= "Redesign of Bazaar GUI")
+    @ConfigOption(name = "Equipment Overlay",desc = "Shows what equipment u are wearing")
     @ConfigEditorBoolean
-    public boolean bazaarOverlay = true;
+    public boolean equipment = true;
+
 
 }

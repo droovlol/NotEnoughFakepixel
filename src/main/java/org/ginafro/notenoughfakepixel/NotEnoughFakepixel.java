@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.ginafro.notenoughfakepixel.Alerts.Alerts;
 import org.ginafro.notenoughfakepixel.features.capes.CapeManager;
+import org.ginafro.notenoughfakepixel.features.skyblock.overlays.inventory.equipment.EquipmentOverlay;
 import org.ginafro.notenoughfakepixel.features.cosmetics.CosmeticsManager;
 import org.ginafro.notenoughfakepixel.features.cosmetics.impl.Bandana;
 import org.ginafro.notenoughfakepixel.features.cosmetics.loader.OBJLoader;
@@ -124,6 +125,8 @@ public class NotEnoughFakepixel {
             saveConfig();
         }
 
+        EquipmentOverlay.loadData();
+
         ClientCommandHandler.instance.registerCommand(new CopyCommand());
         new Aliases();
 
@@ -225,6 +228,7 @@ public class NotEnoughFakepixel {
         // Overlays
         MinecraftForge.EVENT_BUS.register(new StorageOverlay.StorageEvent());
         MinecraftForge.EVENT_BUS.register(new StorageDataHandler());
+        MinecraftForge.EVENT_BUS.register(new EquipmentOverlay());
 
         MinecraftForge.EVENT_BUS.register(new Fullbright());
         MinecraftForge.EVENT_BUS.register(new KDCounter());
