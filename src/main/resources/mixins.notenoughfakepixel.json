@@ -35,6 +35,7 @@
     "MixinGuiContainer",
     "MixinInventoryPlayer",
     "MixinAbstractClientPlayer",
-    "MixinEntityPlayerSP"
+    "MixinEntityPlayerSP",
+    "MixinModelPlayer"
   ]
 }
