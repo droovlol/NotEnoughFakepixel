@@ -24,11 +24,15 @@ public class SoundUtils {
         if (!NotEnoughFakepixel.feature.misc.enableSounds) return;
 
         Minecraft mc = Minecraft.getMinecraft();
-        if (mc.getSoundHandler() == null) return;
+        if (mc.theWorld == null || mc.thePlayer == null) return;
 
         mc.addScheduledTask(() -> {
-            mc.getSoundHandler().playSound(
-                    PositionedSoundRecord.create(new ResourceLocation(sound), pitch)
+            mc.theWorld.playSound(
+                    mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ,
+                    new ResourceLocation(sound).toString(),
+                    volume,
+                    pitch,
+                    false
             );
         });
     }

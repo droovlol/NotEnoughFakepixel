@@ -10,6 +10,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -17,6 +18,8 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.utils.ChatUtils;
+import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -70,12 +73,10 @@ public class LividDisplay {
             if (world.getBlockState(pos).getBlock() == Blocks.wool) {
                 int woolColor = world.getBlockState(pos).getBlock().getDamageValue(world, pos);
                 List<Entity> entities = world.getLoadedEntityList();
-                System.out.println("Detected wool at position " + pos + " with color value: " + woolColor);
 
                 for (Entity entity : entities) {
                     if (!(entity instanceof EntityArmorStand) || !entity.hasCustomName()) continue;
                     String name = entity.getCustomNameTag();
-                    System.out.println("Checking entity with name: " + name);
 
                     for (Map.Entry<String, EnumChatFormatting> entry : lividColors.entrySet()) {
                         if (name.contains(entry.getKey())) {
@@ -85,14 +86,12 @@ public class LividDisplay {
                                 EnumChatFormatting chatColor = entry.getValue();
                                 Color color = getColorFromEnumChatFormatting(chatColor);
                                 LIVID_COLOUR = color.getRGB();
-                                System.out.println("Found matching Livid: " + name + " with color " + color);
                                 return;
                             }
                         }
                     }
                 }
                 livid = null;
-                System.out.println("No matching Livid entity found.");
             }
         }
     }
@@ -114,8 +113,14 @@ public class LividDisplay {
     public void onWorldRender(RenderWorldLastEvent event) {
         if (NotEnoughFakepixel.feature.dungeons.dungeonsLividFinder && livid != null) {
             AxisAlignedBB aabb = new AxisAlignedBB(livid.posX - 0.5, livid.posY - 2, livid.posZ - 0.5, livid.posX + 0.5, livid.posY, livid.posZ + 0.5);
-            System.out.println("Rendering Livid highlight at: " + livid.getPosition());
             draw3DBox(aabb, LIVID_COLOUR, event.partialTicks);
+            RenderUtils.draw3DLine(new Vec3(livid.posX,livid.posY,livid.posZ),
+                    Minecraft.getMinecraft().thePlayer.getPositionEyes(event.partialTicks),
+                    new Color(LIVID_COLOUR),
+                    8,
+                    true,
+                    event.partialTicks
+            );
         }
     }
 

@@ -101,7 +101,7 @@ public class WitherDoors {
             return;
         }
         String msg = event.message.getUnformattedText();
-        if (msg.startsWith("RIGHT CLICK on the WITHER DOOR to open it") || msg.startsWith("RIGHT CLICK on the BLOOD DOOR to open it")) {
+        if (msg.startsWith("RIGHT CLICK on the WITHER DOOR to open it") || msg.startsWith("RIGHT CLICK on the BLOOD DOOR to open it") || msg.startsWith("A Wither Key was picked up!")) {
             activateNextDoor();
         }
     }

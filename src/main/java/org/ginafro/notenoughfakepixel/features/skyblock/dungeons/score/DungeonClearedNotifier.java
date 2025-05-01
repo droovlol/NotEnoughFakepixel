@@ -16,7 +16,7 @@ public class DungeonClearedNotifier {
 
         if (ScoreManager.getExplorationClearScore() == 60) {
             Minecraft.getMinecraft().ingameGUI.displayTitle(EnumChatFormatting.GOLD + "Dungeon cleared!", "", 2, 100, 2);
-            Minecraft.getMinecraft().thePlayer.sendChatMessage("[NEF] Dungeon 100% cleared!");
+            Minecraft.getMinecraft().thePlayer.sendChatMessage("/pc [NEF] Dungeon 100% cleared!");
             reminded = true;
         }
     }
