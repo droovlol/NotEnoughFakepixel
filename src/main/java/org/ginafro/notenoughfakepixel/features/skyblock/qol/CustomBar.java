@@ -27,10 +27,10 @@ public class CustomBar {
     @SubscribeEvent
     public void onRender(RenderGameOverlayEvent e){
         if(e.type == RenderGameOverlayEvent.ElementType.HEALTH || e.type == RenderGameOverlayEvent.ElementType.ARMOR || e.type == RenderGameOverlayEvent.ElementType.FOOD){
-            e.setCanceled(true);
             if(ScoreboardUtils.currentGamemode.isSkyblock() && NotEnoughFakepixel.feature.overlays.statOverlay) {
                 renderCustomHealth(e.resolution);
                 renderCustomMana(e.resolution);
+                e.setCanceled(true);
             }
         }
     }
