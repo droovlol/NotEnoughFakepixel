@@ -229,6 +229,7 @@ public class NotEnoughFakepixel {
         MinecraftForge.EVENT_BUS.register(new StorageOverlay.StorageEvent());
         MinecraftForge.EVENT_BUS.register(new StorageDataHandler());
         MinecraftForge.EVENT_BUS.register(new EquipmentOverlay());
+        MinecraftForge.EVENT_BUS.register(new CustomBar());
 
         MinecraftForge.EVENT_BUS.register(new Fullbright());
         MinecraftForge.EVENT_BUS.register(new KDCounter());
