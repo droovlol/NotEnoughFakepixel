@@ -55,7 +55,7 @@ public class CustomBar {
                 maxMana = Integer.parseInt(manaValues[1]);
             }
         }
-        if(e.isCancelable()){
+        if(e.isCancelable() && NotEnoughFakepixel.feature.overlays.statOverlay){
             e.setCanceled(true);
         }
     }
