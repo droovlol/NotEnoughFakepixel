@@ -17,6 +17,9 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.ginafro.notenoughfakepixel.Alerts.Alerts;
 import org.ginafro.notenoughfakepixel.features.capes.CapeManager;
 import org.ginafro.notenoughfakepixel.features.skyblock.overlays.inventory.equipment.EquipmentOverlay;
+import org.ginafro.notenoughfakepixel.features.cosmetics.CosmeticsManager;
+import org.ginafro.notenoughfakepixel.features.cosmetics.impl.Bandana;
+import org.ginafro.notenoughfakepixel.features.cosmetics.loader.OBJLoader;
 import org.ginafro.notenoughfakepixel.features.skyblock.overlays.storage.StorageDataHandler;
 import org.ginafro.notenoughfakepixel.features.skyblock.overlays.storage.StorageOverlay;
 import org.ginafro.notenoughfakepixel.features.skyblock.qol.CustomAliases.CustomAliases;
@@ -79,14 +82,24 @@ public class NotEnoughFakepixel {
     private File configFile;
 
     public static Configuration feature;
+    private OBJLoader objLoader;
 
+    public OBJLoader getObjLoader() {
+        return objLoader;
+    }
     public static NotEnoughFakepixel instance;
+
+    public void registerCosmetics(){
+        CosmeticsManager.registerCosmetics(new Bandana());
+    }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         instance = this;
         MinecraftForge.EVENT_BUS.register(this);
         SlotLocking.getInstance().loadConfig();
+        objLoader = new OBJLoader();
+        registerCosmetics();
         if (!nefFolder.exists()) {
             nefFolder.mkdirs();
         }
@@ -220,6 +233,7 @@ public class NotEnoughFakepixel {
         MinecraftForge.EVENT_BUS.register(new StorageOverlay.StorageEvent());
         MinecraftForge.EVENT_BUS.register(new StorageDataHandler());
         MinecraftForge.EVENT_BUS.register(new EquipmentOverlay());
+        MinecraftForge.EVENT_BUS.register(new CustomBar());
 
         MinecraftForge.EVENT_BUS.register(new Fullbright());
         MinecraftForge.EVENT_BUS.register(new KDCounter());

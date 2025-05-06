@@ -46,4 +46,10 @@ public class Overlays {
     public boolean equipment = true;
 
 
+    @Expose
+    @ConfigOption(name = "Stats Overlay",desc = "Changes how the game shows your stats to bars")
+    @ConfigEditorBoolean
+    public boolean statOverlay = true;
+
+
 }
