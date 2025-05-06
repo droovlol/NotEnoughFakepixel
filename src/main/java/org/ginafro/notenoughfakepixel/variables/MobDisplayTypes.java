@@ -24,7 +24,7 @@ public enum MobDisplayTypes {
     ITEMBIG(-0.5, 1.0, -0.5, 0.5, 2.0, 0.5),
     WITHERESSENCE(-0.3, 2.5, -0.3, 0.3, 3.0, 0.3),
     WITHERMANCER(-0.5, -1.6, -0.5, 0.5, 0.8, 0.5),
-    WITHER(-0.45, 0.0, -0.45, 0.45, 3.5, 0.45),
+    WITHER(-0.55, 0.6, -0.55, 0.55, 2.6, 0.55),
     NONE(-0.5, -1.0, -0.5, 0.5, 1.0, 0.5);
 
     final double x1;

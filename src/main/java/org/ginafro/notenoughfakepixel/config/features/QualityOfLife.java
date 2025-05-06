@@ -376,6 +376,16 @@ public class QualityOfLife {
     public boolean qolHideDyingMobs = true;
 
     @Expose
+    @ConfigOption(name = "Show Relic waypoints", desc = "Arachne relic waypoints.")
+    @ConfigEditorBoolean
+    public boolean qolRelicWaypoints = false;
+
+    @Expose
+    @ConfigOption(name = "Reforge helper", desc = "Reforge helper.")
+    @ConfigEditorBoolean
+    public boolean qolReforgeHelper = true;
+
+    @Expose
     @ConfigOption(name = "Damage Commas", desc = "Add commas to damage numbers.")
     @ConfigEditorBoolean
     public boolean qolDmgCommas = false;

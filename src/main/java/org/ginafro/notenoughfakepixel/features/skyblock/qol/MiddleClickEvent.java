@@ -19,7 +19,7 @@ public class MiddleClickEvent {
     private static final List<String> excludedNames = Arrays.asList(
             "Chest", "Large Chest", "Anvil", "Storage", "Drill Anvil", "Enchant Item",
             "Runic Pedestal", "Rune Removal", "Reforge Anvil", "Reforge Item",
-            "Offer Pets", "Exp Sharing", "Convert to Dungeon Item", "Upgrade Item"
+            "Offer Pets", "Exp Sharing", "Convert to Dungeon Item", "Upgrade Item", "Accessory Bag"
     );
 
     @SubscribeEvent

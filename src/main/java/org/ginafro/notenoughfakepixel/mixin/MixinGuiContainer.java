@@ -1,12 +1,18 @@
 package org.ginafro.notenoughfakepixel.mixin;
 
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.events.GuiContainerBackgroundDrawnEvent;
 import org.ginafro.notenoughfakepixel.events.SlotClickEvent;
 import org.ginafro.notenoughfakepixel.features.skyblock.slotlocking.SlotLocking;
+import org.ginafro.notenoughfakepixel.utils.ReforgePair;
+import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,6 +21,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+
+import java.awt.*;
 
 import static org.ginafro.notenoughfakepixel.config.gui.core.util.render.RenderUtils.drawGradientRect;
 
@@ -86,6 +94,50 @@ public class MixinGuiContainer {
                     slotId, 2, 3, $this.mc.thePlayer
             );
             ci.cancel();
+        }
+    }
+
+    private ReforgePair reforgeToRender;
+
+    @Inject(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/RenderItem;renderItemOverlayIntoGUI(Lnet/minecraft/client/gui/FontRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
+            ordinal = 0), locals = LocalCapture.CAPTURE_FAILSOFT)
+    private void drawSlot(Slot slotIn, CallbackInfo ci, int x, int y, ItemStack item, boolean flag, boolean flag1,
+                          ItemStack itemstack1, String s) {
+        if (!NotEnoughFakepixel.feature.qol.qolReforgeHelper) return;
+
+        if (slotIn.inventory.getDisplayName().getUnformattedText().equals("Reforge Item") && slotIn.slotNumber == 13) {
+            if (item != null && item.hasDisplayName()) {
+                String[] nameParts = item.getDisplayName().split(" ");
+                if (nameParts.length > 2) {
+                    String reforge = NotEnoughFakepixel.instance.getUtils().stripColor(nameParts[0]);
+                    String displayReforge;
+                    String lockedReforge = NotEnoughFakepixel.instance.getUtils().getLockedEnchantment();
+                    if (lockedReforge.length() > 0 && reforge.toLowerCase().contains(lockedReforge.toLowerCase())) {
+                        displayReforge = EnumChatFormatting.RED + reforge;
+                    } else {
+                        displayReforge = EnumChatFormatting.YELLOW + reforge;
+                    }
+                    x -= 28;
+                    y += 22;
+                    FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
+                    float halfStringWidth = fr.getStringWidth(displayReforge) / 2;
+                    reforgeToRender = new ReforgePair(x-halfStringWidth, y, displayReforge);
+                }
+            }
+        }
+        if (slotIn.slotNumber == 53) {
+            GL11.glPushMatrix();
+            GL11.glDisable(GL11.GL_LIGHTING);
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            GL11.glDisable(GL11.GL_BLEND);
+            if (reforgeToRender != null) {
+                FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
+                fr.drawStringWithShadow(reforgeToRender.getEnchant(), reforgeToRender.getX(), reforgeToRender.getY(), new Color(255, 255, 255, 255).getRGB());
+                reforgeToRender = null;
+            }
+            GL11.glEnable(GL11.GL_LIGHTING);
+            GL11.glEnable(GL11.GL_DEPTH_TEST);
+            GL11.glPopMatrix();
         }
     }
 }

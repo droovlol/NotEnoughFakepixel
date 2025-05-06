@@ -93,6 +93,9 @@ public class Configuration {
         if("nefCapes".equals(runnableId)){
             Minecraft.getMinecraft().displayGuiScreen(new CapeGui());
         }
+        if ("editTerminalTrackerPosition".equals(runnableId)) {
+            editOverlay(activeConfigCategory, 150, 115, NotEnoughFakepixel.feature.dungeons.terminalTrackerPos);
+        }
     }
 
     @Expose

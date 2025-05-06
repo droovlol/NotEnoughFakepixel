@@ -1,4 +1,4 @@
-package org.ginafro.notenoughfakepixel.features.skyblock.slotlocking;
+ package org.ginafro.notenoughfakepixel.features.skyblock.slotlocking;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -9,6 +9,7 @@ import net.minecraft.client.audio.PositionedSound;
 import net.minecraft.client.audio.SoundCategory;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiChat;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -69,7 +70,6 @@ public class SlotLocking {
     public static class LockedSlot {
         public boolean locked = false;
         public int boundTo = -1;
-
     }
 
     public static class SlotLockData {
@@ -78,7 +78,6 @@ public class SlotLocking {
     }
 
     public static class SlotLockProfile {
-
         public SlotLockData[] slotLockData = new SlotLockData[1];
     }
 
@@ -159,10 +158,8 @@ public class SlotLocking {
         }
     }
 
-
     private static final Pattern WINDOW_REGEX = Pattern.compile(".+ Backpack (?:✦ )?\\(Slot #(\\d+)\\)");
     private static final Pattern ECHEST_WINDOW_REGEX = Pattern.compile("Ender Chest \\((\\d+)/(\\d+)\\)");
-
 
     private LockedSlot[] getDataForProfile() {
         if (ScoreboardUtils.currentGamemode != Gamemode.SKYBLOCK ||
@@ -193,7 +190,7 @@ public class SlotLocking {
             profile.slotLockData[0] = new SlotLockData();
         }
 
-            return profile.slotLockData[0].lockedSlots;
+        return profile.slotLockData[0].lockedSlots;
     }
 
     private LockedSlot getLockedSlot(LockedSlot[] lockedSlots, int index) {
@@ -317,7 +314,6 @@ public class SlotLocking {
             if (slot != null && slot.getSlotIndex() != 8 && slot.inventory == Minecraft.getMinecraft().thePlayer.inventory) {
                 int slotNum = slot.getSlotIndex();
                 if (slotNum >= 0 && slotNum <= 39) {
-
                     boolean isHotbar = slotNum < 9;
                     boolean isInventory = !isHotbar && slotNum < 36;
                     boolean isArmor = !isHotbar && !isInventory;
@@ -402,34 +398,36 @@ public class SlotLocking {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void drawScreenEvent(GuiScreenEvent.DrawScreenEvent.Post event) {
-        if (NotEnoughFakepixel.feature.sl.enableSlotBinding && !event.isCanceled() && pairingSlot != null &&
-                lockKeyHeld) {
-            LockedSlot[] lockedSlots = getDataForProfile();
-            LockedSlot lockedSlot = getLockedSlot(lockedSlots, pairingSlot.getSlotIndex());
-            if (lockedSlot.boundTo >= 0 && lockedSlot.boundTo < 8) {
-                return;
-            }
-
-            if (!(Minecraft.getMinecraft().currentScreen instanceof GuiContainer)) {
-                return;
-            }
-            AccessorGuiContainer container = (AccessorGuiContainer) Minecraft.getMinecraft().currentScreen;
-
-            int x1 = container.getGuiLeft() + pairingSlot.xDisplayPosition + 8;
-            int y1 = container.getGuiTop() + pairingSlot.yDisplayPosition + 8;
-            int x2 = event.mouseX;
-            int y2 = event.mouseY;
-
-            if (x2 > x1 - 8 && x2 < x1 + 8 &&
-                    y2 > y1 - 8 && y2 < y1 + 8) {
-                return;
-            }
-
-            drawLinkArrow(x1, y1, x2, y2);
-            setTopHalfBarrier = true;
-        } else {
+        if (!NotEnoughFakepixel.feature.sl.enableSlotBinding || event.isCanceled() || pairingSlot == null || !lockKeyHeld) {
             setTopHalfBarrier = false;
+            return;
         }
+
+        LockedSlot[] lockedSlots = getDataForProfile();
+        LockedSlot lockedSlot = getLockedSlot(lockedSlots, pairingSlot.getSlotIndex());
+        if (lockedSlot == null || lockedSlot.boundTo >= 0 && lockedSlot.boundTo < 8) {
+            setTopHalfBarrier = false;
+            return;
+        }
+
+        if (!(Minecraft.getMinecraft().currentScreen instanceof GuiContainer)) {
+            setTopHalfBarrier = false;
+            return;
+        }
+        AccessorGuiContainer container = (AccessorGuiContainer) Minecraft.getMinecraft().currentScreen;
+
+        int x1 = container.getGuiLeft() + pairingSlot.xDisplayPosition + 8;
+        int y1 = container.getGuiTop() + pairingSlot.yDisplayPosition + 8;
+        int x2 = event.mouseX;
+        int y2 = event.mouseY;
+
+        if (x2 > x1 - 8 && x2 < x1 + 8 && y2 > y1 - 8 && y2 < y1 + 8) {
+            setTopHalfBarrier = false;
+            return;
+        }
+
+        drawLinkArrow(x1, y1, x2, y2);
+        setTopHalfBarrier = true;
     }
 
     private void drawLinkArrow(int x1, int y1, int x2, int y2) {
@@ -458,7 +456,7 @@ public class SlotLocking {
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
 
-        int lines = 6;
+        int lines = 2; // Reduced from 6 to 2
         for (int i = 0; i < lines; i++) {
             worldrenderer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION);
             worldrenderer.pos(x1 - side.x + side.x * i / lines, y1 - side.y + side.y * i / lines, 0.0D).endVertex();
@@ -541,175 +539,141 @@ public class SlotLocking {
 
     public void drawSlot(Slot slot) {
         LockedSlot locked = getLockedSlot(slot);
-        if (locked != null) {
-            if (locked.locked) {
-                GlStateManager.translate(0, 0, 400);
-                Minecraft.getMinecraft().getTextureManager().bindTexture(LOCK);
-                GlStateManager.color(1, 1, 1, 0.5f);
-                GlStateManager.depthMask(false);
-                GlStateManager.enableBlend();
-                System.out.println("Will Render Locked Texture");
-                RenderUtils.drawTexturedRect(slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, 0, 1, 0, 1, GL11.GL_NEAREST);
-                System.out.println("Rendered Locked Texture");
-                GlStateManager.depthMask(true);
-                GlStateManager.translate(0, 0, -400);
-            } else if (NotEnoughFakepixel.feature.sl.enableSlotBinding && slot.canBeHovered() &&
-                    locked.boundTo >= 0 && locked.boundTo <= 39) {
-                if (!(Minecraft.getMinecraft().currentScreen instanceof GuiContainer)) {
-                    return;
-                }
-                GuiContainer container = (GuiContainer) Minecraft.getMinecraft().currentScreen;
+        if (locked == null) return;
 
-                final ScaledResolution scaledresolution = new ScaledResolution(Minecraft.getMinecraft());
-                final int scaledWidth = scaledresolution.getScaledWidth();
-                final int scaledHeight = scaledresolution.getScaledHeight();
-                int mouseX = Mouse.getX() * scaledWidth / Minecraft.getMinecraft().displayWidth;
-                int mouseY = scaledHeight - Mouse.getY() * scaledHeight / Minecraft.getMinecraft().displayHeight - 1;
+        GuiScreen screen = Minecraft.getMinecraft().currentScreen;
+        if (!(screen instanceof GuiContainer)) return;
+        GuiContainer container = (GuiContainer) screen;
 
-                Slot boundSlot = container.inventorySlots.getSlotFromInventory(
-                        Minecraft.getMinecraft().thePlayer.inventory,
-                        locked.boundTo
-                );
-                if (boundSlot == null) {
-                    return;
-                }
+        boolean isBound = NotEnoughFakepixel.feature.sl.enableSlotBinding && slot.canBeHovered() &&
+                locked.boundTo >= 0 && locked.boundTo <= 39;
 
-                boolean hoverOverSlot = ((AccessorGuiContainer) container).doIsMouseOverSlot(slot, mouseX, mouseY);
+        if (locked.locked) {
+            renderLockIcon(slot);
+        } else if (isBound) {
+            renderBoundIcon(slot, container);
+        } else if (NotEnoughFakepixel.feature.sl.enableSlotBinding && slot.getSlotIndex() < 8 &&
+                pairingSlot != null && lockKeyHeld) {
+            renderHotbarHighlight(slot, container);
+        }
+    }
 
-                if (hoverOverSlot || slot.getSlotIndex() >= 9) {
-                    Minecraft.getMinecraft().getTextureManager().bindTexture(BOUND);
-                    GlStateManager.color(1, 1, 1, 0.7f);
-                    GlStateManager.depthMask(false);
-                    GlStateManager.enableBlend();
-                    RenderUtils.drawTexturedRect(
-                            slot.xDisplayPosition,
-                            slot.yDisplayPosition,
-                            16,
-                            16,
-                            0,
-                            1,
-                            0,
-                            1,
-                            GL11.GL_NEAREST
-                    );
-                    GlStateManager.depthMask(true);
+    private void renderLockIcon(Slot slot) {
+        GlStateManager.translate(0, 0, 400);
+        Minecraft.getMinecraft().getTextureManager().bindTexture(LOCK);
+        GlStateManager.color(1, 1, 1, 0.5f);
+        GlStateManager.depthMask(false);
+        GlStateManager.enableBlend();
+        RenderUtils.drawTexturedRect(slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, 0, 1, 0, 1, GL11.GL_NEAREST);
+        GlStateManager.depthMask(true);
+        GlStateManager.translate(0, 0, -400);
+    }
 
-                    //Rerender Text over Top
-                    if (slot.getStack() != null) {
-                        Minecraft.getMinecraft().getRenderItem().renderItemOverlayIntoGUI(
-                                Minecraft.getMinecraft().fontRendererObj,
-                                slot.getStack(),
-                                slot.xDisplayPosition,
-                                slot.yDisplayPosition,
-                                null
-                        );
-                    }
-                } else if (pairingSlot != null && lockKeyHeld && slot.getSlotIndex() < 8) {
-                    int x1 = ((AccessorGuiContainer) container).getGuiLeft() + pairingSlot.xDisplayPosition;
-                    int y1 = ((AccessorGuiContainer) container).getGuiTop() + pairingSlot.yDisplayPosition;
+    private void renderBoundIcon(Slot slot, GuiContainer container) {
+        final ScaledResolution scaledresolution = new ScaledResolution(Minecraft.getMinecraft());
+        final int scaledWidth = scaledresolution.getScaledWidth();
+        final int scaledHeight = scaledresolution.getScaledHeight();
+        int mouseX = Mouse.getX() * scaledWidth / Minecraft.getMinecraft().displayWidth;
+        int mouseY = scaledHeight - Mouse.getY() * scaledHeight / Minecraft.getMinecraft().displayHeight - 1;
 
-                    if (mouseX <= x1 || mouseX >= x1 + 16 ||
-                            mouseY <= y1 || mouseY >= y1 + 16) {
-                        Gui.drawRect(
-                                slot.xDisplayPosition,
-                                slot.yDisplayPosition,
-                                slot.xDisplayPosition + 16,
-                                slot.yDisplayPosition + 16,
-                                0x80ffffff
-                        );
-                    }
-                }
+        LockedSlot locked = getLockedSlot(slot);
+        Slot boundSlot = container.inventorySlots.getSlotFromInventory(
+                Minecraft.getMinecraft().thePlayer.inventory,
+                locked.boundTo
+        );
+        if (boundSlot == null) return;
 
-                if (hoverOverSlot) {
-                    LockedSlot boundLocked = getLockedSlot(boundSlot);
-                    if (boundLocked == null || boundLocked.locked ||
-                            (boundSlot.getSlotIndex() >= 9 && boundLocked.boundTo != slot.getSlotIndex())) {
-                        locked.boundTo = -1;
-                        return;
-                    }
+        boolean hoverOverSlot = ((AccessorGuiContainer) container).doIsMouseOverSlot(slot, mouseX, mouseY);
 
-                    Minecraft.getMinecraft().getTextureManager().bindTexture(BOUND);
-                    GlStateManager.color(1, 1, 1, 0.7f);
-                    GlStateManager.depthMask(false);
-                    GlStateManager.enableBlend();
-                    System.out.println("Will Render Bound Texture");
-                    RenderUtils.drawTexturedRect(
-                            boundSlot.xDisplayPosition,
-                            boundSlot.yDisplayPosition,
-                            16,
-                            16,
-                            0,
-                            1,
-                            0,
-                            1,
-                            GL11.GL_NEAREST
-                    );
-                    System.out.println("Rendered Bound Texture");
-                    GlStateManager.depthMask(true);
+        if (hoverOverSlot || slot.getSlotIndex() >= 9) {
+            Minecraft.getMinecraft().getTextureManager().bindTexture(BOUND);
+            GlStateManager.color(1, 1, 1, 0.7f);
+            GlStateManager.depthMask(false);
+            GlStateManager.enableBlend();
+            RenderUtils.drawTexturedRect(
+                    slot.xDisplayPosition,
+                    slot.yDisplayPosition,
+                    16,
+                    16,
+                    0,
+                    1,
+                    0,
+                    1,
+                    GL11.GL_NEAREST
+            );
+            GlStateManager.depthMask(true);
+        }
 
-                    //Rerender Text over Top
-                    if (boundSlot.getStack() != null) {
-                        Minecraft.getMinecraft().getRenderItem().renderItemOverlayIntoGUI(
-                                Minecraft.getMinecraft().fontRendererObj,
-                                boundSlot.getStack(),
-                                boundSlot.xDisplayPosition,
-                                boundSlot.yDisplayPosition,
-                                null
-                        );
-                    }
-
-                    int maxIter = 100;
-                    float x1 = slot.xDisplayPosition + 8;
-                    float y1 = slot.yDisplayPosition + 8;
-                    float x2 = boundSlot.xDisplayPosition + 8;
-                    float y2 = boundSlot.yDisplayPosition + 8;
-                    Vector2f vec = new Vector2f(x2 - x1, y2 - y1);
-                    vec.normalise(vec);
-
-                    while (x1 > slot.xDisplayPosition && x1 < slot.xDisplayPosition + 16 &&
-                            y1 > slot.yDisplayPosition && y1 < slot.yDisplayPosition + 16) {
-                        if (maxIter-- < 50) break;
-                        x1 += vec.x;
-                        y1 += vec.y;
-                    }
-                    while (x2 > boundSlot.xDisplayPosition && x2 < boundSlot.xDisplayPosition + 16 &&
-                            y2 > boundSlot.yDisplayPosition && y2 < boundSlot.yDisplayPosition + 16) {
-                        if (maxIter-- < 0) break;
-                        x2 -= vec.x;
-                        y2 -= vec.y;
-                    }
-
-                    GlStateManager.translate(0, 0, 200);
-                    drawLinkArrow((int) x1, (int) y1, (int) x2, (int) y2);
-                    GlStateManager.translate(0, 0, -200);
-                }
-            } else if (NotEnoughFakepixel.feature.sl.enableSlotBinding && slot.getSlotIndex() < 8 &&
-                    pairingSlot != null && lockKeyHeld) {
-                if (!(Minecraft.getMinecraft().currentScreen instanceof GuiContainer)) {
-                    return;
-                }
-                GuiContainer container = (GuiContainer) Minecraft.getMinecraft().currentScreen;
-
-                final ScaledResolution scaledresolution = new ScaledResolution(Minecraft.getMinecraft());
-                final int scaledWidth = scaledresolution.getScaledWidth();
-                final int scaledHeight = scaledresolution.getScaledHeight();
-                int mouseX = Mouse.getX() * scaledWidth / Minecraft.getMinecraft().displayWidth;
-                int mouseY = scaledHeight - Mouse.getY() * scaledHeight / Minecraft.getMinecraft().displayHeight - 1;
-
-                int x1 = ((AccessorGuiContainer) container).getGuiLeft() + pairingSlot.xDisplayPosition;
-                int y1 = ((AccessorGuiContainer) container).getGuiTop() + pairingSlot.yDisplayPosition;
-
-                if (mouseX <= x1 || mouseX >= x1 + 16 ||
-                        mouseY <= y1 || mouseY >= y1 + 16) {
-                    Gui.drawRect(
-                            slot.xDisplayPosition,
-                            slot.yDisplayPosition,
-                            slot.xDisplayPosition + 16,
-                            slot.yDisplayPosition + 16,
-                            0x80ffffff
-                    );
-                }
+        if (hoverOverSlot) {
+            LockedSlot boundLocked = getLockedSlot(boundSlot);
+            if (boundLocked == null || boundLocked.locked ||
+                    (boundSlot.getSlotIndex() >= 9 && boundLocked.boundTo != slot.getSlotIndex())) {
+                locked.boundTo = -1;
+                return;
             }
+
+            Minecraft.getMinecraft().getTextureManager().bindTexture(BOUND);
+            GlStateManager.color(1, 1, 1, 0.7f);
+            GlStateManager.depthMask(false);
+            GlStateManager.enableBlend();
+            RenderUtils.drawTexturedRect(
+                    boundSlot.xDisplayPosition,
+                    boundSlot.yDisplayPosition,
+                    16,
+                    16,
+                    0,
+                    1,
+                    0,
+                    1,
+                    GL11.GL_NEAREST
+            );
+            GlStateManager.depthMask(true);
+
+            int maxIter = 100;
+            float x1 = slot.xDisplayPosition + 8;
+            float y1 = slot.yDisplayPosition + 8;
+            float x2 = boundSlot.xDisplayPosition + 8;
+            float y2 = boundSlot.yDisplayPosition + 8;
+            Vector2f vec = new Vector2f(x2 - x1, y2 - y1);
+            vec.normalise(vec);
+
+            while (x1 > slot.xDisplayPosition && x1 < slot.xDisplayPosition + 16 &&
+                    y1 > slot.yDisplayPosition && y1 < slot.yDisplayPosition + 16) {
+                if (maxIter-- < 50) break;
+                x1 += vec.x;
+                y1 += vec.y;
+            }
+            while (x2 > boundSlot.xDisplayPosition && x2 < boundSlot.xDisplayPosition + 16 &&
+                    y2 > boundSlot.yDisplayPosition && y2 < boundSlot.yDisplayPosition + 16) {
+                if (maxIter-- < 0) break;
+                x2 -= vec.x;
+                y2 -= vec.y;
+            }
+
+            GlStateManager.translate(0, 0, 200);
+            drawLinkArrow((int) x1, (int) y1, (int) x2, (int) y2);
+            GlStateManager.translate(0, 0, -200);
+        }
+    }
+
+    private void renderHotbarHighlight(Slot slot, GuiContainer container) {
+        final ScaledResolution scaledresolution = new ScaledResolution(Minecraft.getMinecraft());
+        final int scaledWidth = scaledresolution.getScaledWidth();
+        final int scaledHeight = scaledresolution.getScaledHeight();
+        int mouseX = Mouse.getX() * scaledWidth / Minecraft.getMinecraft().displayWidth;
+        int mouseY = scaledHeight - Mouse.getY() * scaledHeight / Minecraft.getMinecraft().displayHeight - 1;
+
+        int x1 = ((AccessorGuiContainer) container).getGuiLeft() + pairingSlot.xDisplayPosition;
+        int y1 = ((AccessorGuiContainer) container).getGuiTop() + pairingSlot.yDisplayPosition;
+
+        if (mouseX <= x1 || mouseX >= x1 + 16 || mouseY <= y1 || mouseY >= y1 + 16) {
+            Gui.drawRect(
+                    slot.xDisplayPosition,
+                    slot.yDisplayPosition,
+                    slot.xDisplayPosition + 16,
+                    slot.yDisplayPosition + 16,
+                    0x80ffffff
+            );
         }
     }
 
@@ -820,7 +784,7 @@ public class SlotLocking {
     }
 
     public void resetSlotLocking() {
-        String  profileName = "generic";
+        String profileName = "generic";
         SlotLockProfile slotLockProfile = config.profileData.get(profileName);
         if (slotLockProfile != null) {
             slotLockProfile.slotLockData[0] = new SlotLockData();
