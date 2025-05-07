@@ -1,6 +1,7 @@
 package org.ginafro.notenoughfakepixel.config.features;
 
 import com.google.gson.annotations.Expose;
+import org.ginafro.notenoughfakepixel.config.gui.core.config.Position;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.*;
 import org.lwjgl.input.Keyboard;
 
@@ -19,10 +20,29 @@ public class DianaF {
     public boolean dianaBurrowGuess = true;
 
     @Expose
+    @ConfigOption(name = "Warp helper", desc = "Show the closest warp to the guess.")
+    @ConfigEditorBoolean
+    @ConfigAccordionId(id = 0)
+    public boolean dianaWarpHelper = true;
+
+    @Expose
     @ConfigOption(name = "Warp Keybbind", desc = "Keybind to quickly warp to the nearest guess burrow.")
     @ConfigEditorKeybind(defaultKey = Keyboard.KEY_H)
     @ConfigAccordionId(id = 0)
     public int warpKeybind = Keyboard.KEY_H;
+
+    @Expose
+    @ConfigOption(name = "Warp helper scale", desc = "Scale of the warp text.")
+    @ConfigEditorSlider(minValue = 1.0f, maxValue = 5.0f, minStep = 0.1f)
+    @ConfigAccordionId(id = 0)
+    public float warpHelperScale = 1.0f;
+
+    @Expose
+    @ConfigOption(name = "Edit Warp helper Position", desc = "Adjust the Warp helper position visually")
+    @ConfigEditorButton(runnableId = "editWarpHelperPosition", buttonText = "Edit Position")
+    @ConfigAccordionId(id = 0)
+    public String editWarpHelperPositionButton = "";
+
 
     @Expose
     @ConfigOption(name = "Show Waypoints on Burrows", desc = "Show waypoints on burrows.")
@@ -120,4 +140,7 @@ public class DianaF {
     @ConfigOption(name = "Disable Ancestral Spade Cooldown Message", desc = "Mute Ancestral Spade cooldown message.")
     @ConfigEditorBoolean
     public boolean dianaCancelCooldownSpadeMessage = true;
+
+    @Expose
+    public Position warpHelperPos = new Position(10, 10, false, true);
 }

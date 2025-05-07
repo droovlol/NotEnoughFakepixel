@@ -22,6 +22,7 @@ public class WarpOverlay {
     private String displayText = null;
     private String warpCommand = null;
     private boolean wasKeyPressed = false;
+    private long cooldownEndTime = 0;
     private final GuessBurrow guessBurrow;
 
     public WarpOverlay(GuessBurrow guessBurrow) {
@@ -30,7 +31,9 @@ public class WarpOverlay {
 
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.START || !ScoreboardUtils.currentLocation.isHub()) {
+        if (event.phase != TickEvent.Phase.START ||
+                !NotEnoughFakepixel.feature.diana.dianaWarpHelper ||
+                !ScoreboardUtils.currentLocation.isHub()) {
             displayText = null;
             warpCommand = null;
             return;
@@ -43,10 +46,16 @@ public class WarpOverlay {
             return;
         }
 
+        if (System.currentTimeMillis() < cooldownEndTime) {
+            displayText = null;
+            warpCommand = null;
+            return;
+        }
+
         Vec3 playerPos = new Vec3(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ);
         Vec3 guessPoint = guessBurrow.guessPoint;
 
-        if (guessPoint != null && distance(playerPos, guessPoint) <= 150.0) {
+        if (guessPoint != null && distance(playerPos, guessPoint) <= 100.0) {
             displayText = null;
             warpCommand = null;
             return;
@@ -67,6 +76,7 @@ public class WarpOverlay {
             boolean isKeyDown = Keyboard.isKeyDown(NotEnoughFakepixel.feature.diana.warpKeybind);
             if (isKeyDown && !wasKeyPressed && mc.thePlayer != null) {
                 mc.thePlayer.sendChatMessage(warpCommand);
+                cooldownEndTime = System.currentTimeMillis() + 5000;
             }
             wasKeyPressed = isKeyDown;
         } else {
@@ -76,18 +86,27 @@ public class WarpOverlay {
 
     @SubscribeEvent
     public void onRenderGameOverlay(RenderGameOverlayEvent.Post event) {
-        if (event.type != RenderGameOverlayEvent.ElementType.ALL || displayText == null) {
+        if (event.type != RenderGameOverlayEvent.ElementType.ALL ||
+                displayText == null ||
+                !NotEnoughFakepixel.feature.diana.dianaWarpHelper) {
             return;
         }
 
         Minecraft mc = Minecraft.getMinecraft();
         ScaledResolution scaledRes = new ScaledResolution(mc);
-        int width = scaledRes.getScaledWidth();
-        int height = scaledRes.getScaledHeight();
+        int overlayWidth = 1;
+        int overlayHeight = 1;
 
-        int x = width / 2 - mc.fontRendererObj.getStringWidth(displayText) / 2;
-        int y = 10;
-        mc.fontRendererObj.drawStringWithShadow(displayText, x, y, 0xFFFFFF);
+        int x = NotEnoughFakepixel.feature.diana.warpHelperPos.getAbsX(scaledRes, overlayWidth);
+        int y = NotEnoughFakepixel.feature.diana.warpHelperPos.getAbsY(scaledRes, overlayHeight);
+        float scale = NotEnoughFakepixel.feature.diana.warpHelperScale;
+
+        mc.fontRendererObj.drawStringWithShadow(
+                displayText,
+                x / scale,
+                y / scale,
+                0xFFFFFF
+        );
     }
 
     private static double distance(Vec3 v1, Vec3 v2) {
