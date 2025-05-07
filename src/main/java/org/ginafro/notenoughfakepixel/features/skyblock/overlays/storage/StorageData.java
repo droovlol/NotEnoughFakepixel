@@ -2,9 +2,12 @@ package org.ginafro.notenoughfakepixel.features.skyblock.overlays.storage;
 
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 
+import java.io.*;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,20 +36,31 @@ public class StorageData {
     public static String itemStackToJson(ItemStack stack) {
         NBTTagCompound nbt = new NBTTagCompound();
         stack.writeToNBT(nbt);
-        return nbt.toString();
+
+        try (ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+             DataOutputStream dataOut = new DataOutputStream(byteOut)) {
+            CompressedStreamTools.write(nbt, dataOut);
+            return Base64.getEncoder().encodeToString(byteOut.toByteArray());
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to convert ItemStack to Base64 JSON", e);
+        }
     }
 
-    public static ItemStack jsonToItemStack(String json) throws NBTException {
-        NBTTagCompound nbt = net.minecraft.nbt.JsonToNBT.getTagFromJson(json);
-        return ItemStack.loadItemStackFromNBT(nbt);
+    public static ItemStack jsonToItemStack(String base64) throws NBTException {
+        try (ByteArrayInputStream byteIn = new ByteArrayInputStream(Base64.getDecoder().decode(base64));
+             DataInputStream dataIn = new DataInputStream(byteIn)) {
+            NBTTagCompound nbt = CompressedStreamTools.read(dataIn);
+            return ItemStack.loadItemStackFromNBT(nbt);
+        } catch (Exception e) {
+            throw new NBTException("Failed to read ItemStack from Base64 JSON: " + e.getMessage());
+        }
     }
 
     public Map<Integer, ItemStack> getItemStacks() throws NBTException {
         Map<Integer, ItemStack> itemStacks = new HashMap<>();
         for (Map.Entry<Integer, String> entry : items.entrySet()) {
-            itemStacks.put(entry.getKey(), jsonToItemStack(entry.getValue())); // Convert JSON back to ItemStack
+            itemStacks.put(entry.getKey(), jsonToItemStack(entry.getValue()));
         }
         return itemStacks;
     }
-
 }
