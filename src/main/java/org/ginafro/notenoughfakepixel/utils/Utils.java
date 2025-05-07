@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static net.minecraft.client.gui.Gui.*;
 
@@ -67,5 +68,19 @@ public class Utils {
         return input.replaceAll("[§|&][0-9a-fk-or]", "");
     }
 
+    private String lockedEnchantment = "";
+
+    public String getLockedEnchantment() {
+        return lockedEnchantment;
+    }
+
+    public void setLockedEnchantment(String lockedEnchantment) {
+        this.lockedEnchantment = lockedEnchantment;
+    }
+
+    private final Pattern STRIP_COLOR_PATTERN = Pattern.compile( "(?i)" + '\u00A7' + "[0-9A-FK-OR]" );
+    public String stripColor(final String input) {
+        return STRIP_COLOR_PATTERN.matcher(input).replaceAll("");
+    }
 
 }

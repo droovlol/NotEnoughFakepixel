@@ -250,6 +250,30 @@ public class Dungeons {
     public boolean terminalsAccordion = false;
 
     @Expose
+    @ConfigOption(name = "Terminal tracker", desc = "Shows how many terminals done on the current phase of goldor.")
+    @ConfigEditorBoolean
+    @ConfigAccordionId(id = 4)
+    public boolean dungeonsTerminalTracker = true;
+
+    @Expose
+    @ConfigOption(name = "Terminal tracker Scale", desc = "Scale of the terminal tracker text.")
+    @ConfigEditorSlider(minValue = 1.0f, maxValue = 5.0f, minStep = 0.1f)
+    @ConfigAccordionId(id = 4)
+    public float dungeonsTerminalTrackerScale = 1.0f;
+
+    @Expose
+    @ConfigOption(name = "Terminal tracker Color", desc = "Color of Stormy.")
+    @ConfigEditorColour
+    @ConfigAccordionId(id = 4)
+    public String dungeonsTerminalTrackerColor = "0:173:216:230:255";
+
+    @Expose
+    @ConfigOption(name = "Edit Terminal tracker Position", desc = "Adjust the Terminal tracker position visually")
+    @ConfigEditorButton(runnableId = "editTerminalTrackerPosition", buttonText = "Edit Position")
+    @ConfigAccordionId(id = 4)
+    public String editTerminalTrackerPositionButton = "";
+
+    @Expose
     @ConfigOption(name = "Custom Click in Order Terminal GUI", desc = "Use custom GUI for Click in Order terminal.")
     @ConfigEditorBoolean
     @ConfigAccordionId(id = 4)
@@ -474,4 +498,7 @@ public class Dungeons {
 
     @Expose
     public Position scoreOverlayPos = new Position(10, 10, false, true);
+
+    @Expose
+    public Position terminalTrackerPos = new Position(10, 10, false, true);
 }

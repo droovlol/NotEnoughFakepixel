@@ -75,6 +75,8 @@ public class NotEnoughFakepixel {
 
     private final Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
 
+    private Utils utils = new Utils();
+
     public static File configDirectory = new File("config/Notenoughfakepixel");
     public static File storageDirectory = new File("config/Notenoughfakepixel/storage");
     private File configFile;
@@ -187,6 +189,7 @@ public class NotEnoughFakepixel {
         MinecraftForge.EVENT_BUS.register(new SpiritLeapHandler.ChestGuiOverlayHandler());
         MinecraftForge.EVENT_BUS.register(new MiscDungFeatures());
         MinecraftForge.EVENT_BUS.register(new TerminalWaypoints());
+        MinecraftForge.EVENT_BUS.register(new TerminalTracker());
 
         // Mining
         MinecraftForge.EVENT_BUS.register(new MiningOverlay());
@@ -224,6 +227,7 @@ public class NotEnoughFakepixel {
         MinecraftForge.EVENT_BUS.register(new MiscFeatures());
         MinecraftForge.EVENT_BUS.register(new ItemAnimations());
         MinecraftForge.EVENT_BUS.register(new Alerts());
+        MinecraftForge.EVENT_BUS.register(new RelicWaypoints());
 
         // Overlays
         MinecraftForge.EVENT_BUS.register(new StorageOverlay.StorageEvent());
@@ -317,6 +321,10 @@ public class NotEnoughFakepixel {
         if (openGuiKey.isPressed() && Minecraft.getMinecraft().currentScreen == null) {
             screenToOpen = new GuiScreenElementWrapper(new ConfigEditor(feature));
         }
+    }
+
+    public Utils getUtils() {
+        return utils;
     }
 
     @SubscribeEvent
