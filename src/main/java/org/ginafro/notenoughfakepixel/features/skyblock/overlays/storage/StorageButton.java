@@ -56,11 +56,18 @@ public class StorageButton extends GuiButton {
             return;
         }
         String title = s + " " + (n + 1);
-        int titleX = xPosition + (width - mc.fontRendererObj.getStringWidth(title)) / 2;
+        // Scale title text based on button width
+        float textScale = Math.min(1.0f, (float)width / 150.0f); // Base scale for width ~150 pixels
+        int titleWidth = mc.fontRendererObj.getStringWidth(title);
+        int titleX = xPosition + (width - (int)(titleWidth * textScale)) / 2;
         int titleY = yPosition + 5;
-        mc.fontRendererObj.drawStringWithShadow(title, titleX, titleY, 0xFFFFFF);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(titleX, titleY, 0);
+        GlStateManager.scale(textScale, textScale, 1.0f);
+        mc.fontRendererObj.drawStringWithShadow(title, 0, 0, 0xFFFFFF);
+        GlStateManager.popMatrix();
         float slotSize = (width - 4f) / 9.00f;
-        float slotScale = (slotSize - 2f) / 16.00f;
+        float slotScale = Math.max((slotSize - 2f) / 16.00f, 0.5f); // Minimum scale of 0.5
         RenderHelper.enableStandardItemLighting();
         for (Map.Entry<Integer, ItemStack> entry : stackMapCache.entrySet()) {
             int slotIndex = entry.getKey();

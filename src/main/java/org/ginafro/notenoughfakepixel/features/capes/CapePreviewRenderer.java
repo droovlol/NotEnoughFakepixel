@@ -20,6 +20,11 @@ public class CapePreviewRenderer {
 
     public static void drawCape(int x, int y, int scale, Cape cape) {
         ResourceLocation capeTexture = CapeManager.getCapeTexture(cape);
+
+        if (capeTexture == null) {
+            return;
+        }
+
         Minecraft mc = Minecraft.getMinecraft();
         CapeModel capeModel = new CapeModel();
 

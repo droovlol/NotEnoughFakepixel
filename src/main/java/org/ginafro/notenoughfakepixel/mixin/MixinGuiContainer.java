@@ -135,6 +135,7 @@ public class MixinGuiContainer {
                 fr.drawStringWithShadow(reforgeToRender.getEnchant(), reforgeToRender.getX(), reforgeToRender.getY(), new Color(255, 255, 255, 255).getRGB());
                 reforgeToRender = null;
             }
+            GL11.glEnable(GL11.GL_BLEND);
             GL11.glEnable(GL11.GL_LIGHTING);
             GL11.glEnable(GL11.GL_DEPTH_TEST);
             GL11.glPopMatrix();

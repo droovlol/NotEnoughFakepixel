@@ -27,8 +27,11 @@ public class CapeButton extends GuiButton {
             Minecraft.getMinecraft().getTextureManager().bindTexture(tex);
             drawScaledCustomSizeModalRect(xPosition,yPosition,0,0,width,height,width,height,width,height);
             CapePreviewRenderer.drawCape(xPosition + width / 2,yPosition + 15,90,ca);
+            if (ca != null) {
+                CapePreviewRenderer.drawCape(xPosition + width / 2,yPosition + 15,90,ca);
+            }
             drawName(mc);
-             }
+        }
     }
 
     private void drawName(Minecraft mc) {
