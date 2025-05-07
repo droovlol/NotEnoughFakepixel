@@ -20,7 +20,8 @@ public abstract class MixinAbstractClientPlayer {
 
     @Inject(method = "getLocationCape", at = @At("HEAD"), cancellable = true)
     public void onGetCape(CallbackInfoReturnable<ResourceLocation> cir) {
-        if(CapeManager.hasCape()) {
+
+        if(CapeManager.hasCape() && playerInfo != null) {
             if(Minecraft.getMinecraft().thePlayer.getGameProfile().getName().equals(playerInfo.getGameProfile().getName())){
                 cir.setReturnValue(CapeManager.getCapeTexture(CapeManager.getCape()));
             }
