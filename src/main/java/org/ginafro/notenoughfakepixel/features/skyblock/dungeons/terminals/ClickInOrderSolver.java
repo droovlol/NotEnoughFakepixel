@@ -29,7 +29,6 @@ import java.util.concurrent.TimeUnit;
 
 public class ClickInOrderSolver {
 
-    // We remove the static 'round' variable and use the sum of processed rounds and queued clicks
     private final LinkedList<Integer> clickQueue = new LinkedList<>();
     private int processedRounds = 0;
     private static final int SLOT_SIZE = 16;
@@ -37,9 +36,8 @@ public class ClickInOrderSolver {
     private static final int REGION_ROWS = 2;
 
     public ClickInOrderSolver() {
-        // Start the queue processing task when the solver is instantiated
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleAtFixedRate(this::processQueue, 0, 20, TimeUnit.MILLISECONDS);
+        executor.scheduleAtFixedRate(this::processQueue, 0, 25, TimeUnit.MILLISECONDS);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -85,7 +83,6 @@ public class ClickInOrderSolver {
         if (!title.startsWith("Click in")) return;
         ContainerChest containerChest = (ContainerChest) container;
 
-        // Compute effective round: processed rounds + queued clicks
         int effectiveRound = processedRounds + clickQueue.size();
 
         if (NotEnoughFakepixel.feature.dungeons.dungeonsCustomGuiClickIn) {
@@ -121,9 +118,7 @@ public class ClickInOrderSolver {
                     } else if (slot.getStack().stackSize == effectiveRound + 2) {
                         overlayColor = ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsAlternativeColor).getRGB();
                     } else if (slot.getStack().stackSize == effectiveRound + 3) {
-                        // Get the base color as a Color object
                         Color baseColor = ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsAlternativeColor);
-                        // Create a new Color with alpha 150
                         Color altColor = new Color(
                                 baseColor.getRed(),
                                 baseColor.getGreen(),
@@ -188,7 +183,6 @@ public class ClickInOrderSolver {
                 String title = ((ContainerChest) container).getLowerChestInventory().getDisplayName().getUnformattedText();
                 if (!title.startsWith("Click in")) return;
                 ContainerChest containerChest = (ContainerChest) container;
-                // Compute effective round
                 int effectiveRound = processedRounds + clickQueue.size();
 
                 for (int i = 1; i < 3; i++) {
@@ -309,15 +303,11 @@ public class ClickInOrderSolver {
         if (slot == null || slot.getStack() == null) return;
         if (!title.startsWith("Click in")) return;
 
-        // Check if the pane is green (damage value 5 indicates success)
         if (slot.getStack().getItemDamage() == 5) {
-            // Successfully clicked, remove from queue and increment processed rounds
             clickQueue.removeFirst();
-            float pitch = 0.8f + (float) (Math.random() * 0.4); // Random pitch between 0.8 and 1.2
-            SoundUtils.playSound(mc.thePlayer.getPosition(), "random.orb", 1.0f, pitch);
+            SoundUtils.playSound(mc.thePlayer.getPosition(), "gui.button.press", 1.0f, 1.0f);
             processedRounds++;
         } else {
-            // Pane is still red or not updated, send a click
             mc.playerController.windowClick(cc.windowId, slotNumber, 0, 0, mc.thePlayer);
         }
     }

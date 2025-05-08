@@ -26,8 +26,7 @@ import org.ginafro.notenoughfakepixel.utils.SoundUtils;
 import org.ginafro.notenoughfakepixel.variables.F7ColorsDict;
 import org.lwjgl.input.Mouse;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ClickOnColorsSolver {
 
@@ -36,23 +35,31 @@ public class ClickOnColorsSolver {
     private static final int INNER_COLUMNS = 7;
     private static final int INNER_ROWS = 4;
 
+    private final Set<Integer> clickedSlots = new HashSet<>();
+    private long lastRecheckTime = 0;
+
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onDrawScreenPre(GuiScreenEvent.DrawScreenEvent.Pre event) {
-        if(!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalSelectColorsSolver) return;
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalSelectColorsSolver) return;
         if (!(event.gui instanceof GuiChest)) return;
         if (!DungeonManager.checkEssentialsF7()) return;
-        Container container = ((GuiChest) event.gui).inventorySlots;
+
+        GuiChest chestGui = (GuiChest) event.gui;
+        Container container = chestGui.inventorySlots;
         if (!(container instanceof ContainerChest)) return;
-        String title = ((ContainerChest) container).getLowerChestInventory().getDisplayName().getUnformattedText();
-        if (NotEnoughFakepixel.feature.dungeons.dungeonsCustomGuiColors && title.startsWith("Select all the")) {
+
+        String displayName = ((ContainerChest) container).getLowerChestInventory().getDisplayName().getUnformattedText().trim();
+        if (NotEnoughFakepixel.feature.dungeons.dungeonsCustomGuiColors && displayName.startsWith("Select all the")) {
             event.setCanceled(true);
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void onDrawScreenPost(GuiScreenEvent.DrawScreenEvent.Post event) {
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalSelectColorsSolver) return;
         if (!(event.gui instanceof GuiChest)) return;
         if (!DungeonManager.checkEssentialsF7()) return;
+
         GuiChest chest = (GuiChest) event.gui;
         Container container = chest.inventorySlots;
         if (!(container instanceof ContainerChest)) return;
@@ -61,6 +68,12 @@ public class ClickOnColorsSolver {
         if (!title.startsWith("Select all the")) return;
 
         String targetColor = title.split("the ")[1].split(" items")[0].toLowerCase();
+
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastRecheckTime >= 1000) {
+            clickedSlots.clear();
+            lastRecheckTime = currentTime;
+        }
 
         if (NotEnoughFakepixel.feature.dungeons.dungeonsCustomGuiColors) {
             List<Slot> correctSlots = new ArrayList<>();
@@ -74,56 +87,43 @@ public class ClickOnColorsSolver {
                 if (row < 1 || row > 4 || col < 1 || col > 7) continue;
 
                 ItemStack item = slot.getStack();
-                if (item == null) continue;
-                if (item.isItemEnchanted()) {
-                    if (NotEnoughFakepixel.feature.dungeons.dungeonsTerminalHideIncorrect) {
-                        item.setItem(((ContainerChest) container).inventorySlots.get(0).getStack().getItem());
-                        item.getItem().setDamage(item, 15);
-                    }
-                    continue;
-                }
-                boolean isCorrect = false;
-                if (item.getItem() == Items.dye) {
-                    isCorrect = targetColor.equals(F7ColorsDict.getColorFromDye(item.getMetadata()).toString());
-                } else if (Block.getBlockFromItem(item.getItem()) instanceof BlockStainedGlassPane ||
-                        Block.getBlockFromItem(item.getItem()) instanceof BlockStainedGlass ||
-                        Block.getBlockFromItem(item.getItem()) instanceof BlockColored ||
-                        Block.getBlockFromItem(item.getItem()) instanceof BlockCarpet) {
-                    isCorrect = targetColor.equals(F7ColorsDict.getColorFromMain(item.getMetadata()).toString());
-                }
-                if (isCorrect) {
+                if (item == null || item.isItemEnchanted()) continue;
+
+                if (isCorrectColor(item, targetColor)) {
                     correctSlots.add(slot);
-                } else {
-                    ItemStack referenceStack = ((ContainerChest) container).inventorySlots.get(0).getStack();
-                    if (referenceStack != null && referenceStack.getItem() != null) {
-                        item.setItem(referenceStack.getItem());
-                        item.getItem().setDamage(item, 15);
-                    }
                 }
             }
 
-            ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
-            float scale = NotEnoughFakepixel.feature.dungeons.dungeonsTerminalsScale;
-            int guiWidth = (int) (INNER_COLUMNS * SLOT_SIZE * scale);
-            int guiHeight = (int) (INNER_ROWS * SLOT_SIZE * scale);
-            int guiLeft = (sr.getScaledWidth() - guiWidth) / 2;
-            int guiTop = (sr.getScaledHeight() - guiHeight) / 2;
+            renderCustomGui(chest, correctSlots, targetColor);
+        } else {
+            handleDefaultGui(chest, targetColor);
+        }
+    }
 
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(guiLeft, guiTop, 0);
-            GlStateManager.scale(scale, scale, 1.0f);
+    private void renderCustomGui(GuiChest chest, List<Slot> correctSlots, String targetColor) {
+        ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
+        float scale = NotEnoughFakepixel.feature.dungeons.dungeonsTerminalsScale;
+        int guiWidth = (int) (INNER_COLUMNS * SLOT_SIZE * scale);
+        int guiHeight = (int) (INNER_ROWS * SLOT_SIZE * scale);
+        int guiLeft = (sr.getScaledWidth() - guiWidth) / 2;
+        int guiTop = (sr.getScaledHeight() - guiHeight) / 2;
 
-            Gui.drawRect(-2, -12,
-                    (INNER_COLUMNS * SLOT_SIZE) + 2,
-                    (INNER_ROWS * SLOT_SIZE) + 2,
-                    0x80000000
-            );
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(guiLeft, guiTop, 0);
+        GlStateManager.scale(scale, scale, 1.0f);
 
-            Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(
-                    "§8[§bNEF§8] §aColors", 0, -10, 0xFFFFFF);
+        Gui.drawRect(-2, -12,
+                (INNER_COLUMNS * SLOT_SIZE) + 2,
+                (INNER_ROWS * SLOT_SIZE) + 2,
+                0x80000000);
 
-            for (Slot slot : correctSlots) {
-                int slotId = ((ContainerChest) container).inventorySlots.indexOf(slot);
+        Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(
+                "§8[§bNEF§8] §a" + capitalizeFirstLetter(targetColor),
+                0, -10, 0xFFFFFF);
+
+        for (Slot slot : correctSlots) {
+            if (!clickedSlots.contains(slot.slotNumber)) {
+                int slotId = ((ContainerChest) chest.inventorySlots).inventorySlots.indexOf(slot);
                 int row = slotId / COLUMNS;
                 int col = slotId % COLUMNS;
 
@@ -135,116 +135,42 @@ public class ClickOnColorsSolver {
                         innerY + SLOT_SIZE - 1,
                         ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsCorrectColor).getRGB());
             }
-            GlStateManager.popMatrix();
-        } else {
-            for (Slot slot : ((ContainerChest) container).inventorySlots) {
-                if (slot.inventory == Minecraft.getMinecraft().thePlayer.inventory) continue;
-                int slotId = ((ContainerChest) container).inventorySlots.indexOf(slot);
-                if (slotId == 49) {
-                    if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalHideIncorrect) continue;
-                    ItemStack item = slot.getStack();
-                    if (item != null) {
-                        item.setItem(((ContainerChest) container).inventorySlots.get(0).getStack().getItem());
-                        item.getItem().setDamage(item, 15);
-                    }
-                    continue;
-                }
-                ItemStack item = slot.getStack();
-                if (item == null) continue;
-                if (item.isItemEnchanted()) {
-                    if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalHideIncorrect) continue;
-                    item.setItem(((ContainerChest) container).inventorySlots.get(0).getStack().getItem());
-                    item.getItem().setDamage(item, 15);
-                    continue;
-                }
-                boolean isCorrect = false;
-                if (item.getItem() == Items.dye) {
-                    isCorrect = targetColor.equals(F7ColorsDict.getColorFromDye(item.getMetadata()).toString());
-                } else if (Block.getBlockFromItem(item.getItem()) instanceof BlockStainedGlassPane ||
-                        Block.getBlockFromItem(item.getItem()) instanceof BlockStainedGlass ||
-                        Block.getBlockFromItem(item.getItem()) instanceof BlockColored ||
-                        Block.getBlockFromItem(item.getItem()) instanceof BlockCarpet) {
-                    isCorrect = targetColor.equals(F7ColorsDict.getColorFromMain(item.getMetadata()).toString());
-                }
-                if (isCorrect) {
-                    RenderUtils.drawOnSlot(((ContainerChest) container).inventorySlots.size(),
-                            slot.xDisplayPosition, slot.yDisplayPosition, ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsCorrectColor).getRGB());
-                } else {
-                    if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalHideIncorrect) continue;
-                    item.setItem(((ContainerChest) container).inventorySlots.get(0).getStack().getItem());
-                    item.getItem().setDamage(item, 15);
-                }
-            }
         }
+        GlStateManager.popMatrix();
     }
 
-    @SubscribeEvent
-    public void onGuiRender(GuiScreenEvent.BackgroundDrawnEvent e){
-        if(!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalSelectColorsSolver) return;
-        if (!DungeonManager.checkEssentialsF7()) return;
-        if(!(e.gui instanceof GuiChest)) return;
-
-        GuiChest chest = (GuiChest) e.gui;
-        Container container = chest.inventorySlots;
-
-        if(!(container instanceof ContainerChest)) return;
-        String title = ((ContainerChest) container).getLowerChestInventory().getDisplayName().getUnformattedText();
-        if (!title.startsWith("Select all the")) return;
-        String color = title.split("the ")[1].split(" items")[0].toLowerCase();
-
-        ContainerChest containerChest = (ContainerChest) container;
-        for(Slot slot : containerChest.inventorySlots) {
+    private void handleDefaultGui(GuiChest chest, String targetColor) {
+        ContainerChest container = (ContainerChest) chest.inventorySlots;
+        for (Slot slot : container.inventorySlots) {
             if (slot.inventory == Minecraft.getMinecraft().thePlayer.inventory) continue;
 
-            ItemStack itemStack = slot.getStack();
-            if (itemStack == null) continue;
+            ItemStack item = slot.getStack();
+            if (item == null) continue;
 
-            if (containerChest.inventorySlots.indexOf(slot) == 49) {
-                if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalHideIncorrect) continue;
-                itemStack.setItem(containerChest.inventorySlots.get(0).getStack().getItem());
-                itemStack.getItem().setDamage(itemStack, 15);
+            int slotId = container.inventorySlots.indexOf(slot);
+            if (slotId == 49) {
+                if (NotEnoughFakepixel.feature.dungeons.dungeonsTerminalHideIncorrect) {
+                    item.setItem(container.inventorySlots.get(0).getStack().getItem());
+                    item.getItem().setDamage(item, 15);
+                }
                 continue;
             }
 
-            // Hide already clicked
-            if (itemStack.isItemEnchanted()) {
-                if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalHideIncorrect) continue;
-                itemStack.setItem(containerChest.inventorySlots.get(0).getStack().getItem());
-                itemStack.getItem().setDamage(itemStack, 15);
+            if (item.isItemEnchanted()) {
+                if (NotEnoughFakepixel.feature.dungeons.dungeonsTerminalHideIncorrect) {
+                    item.setItem(container.inventorySlots.get(0).getStack().getItem());
+                    item.getItem().setDamage(item, 15);
+                }
                 continue;
             }
 
-            // If its tint
-            if (itemStack.getItem() == Items.dye) {
-                //System.out.println(F7ColorsDict.getColorFromDye(itemStack.getMetadata()).toString() + " " + color);
-                if (color.equals(F7ColorsDict.getColorFromDye(itemStack.getMetadata()).toString())) {
-                    RenderUtils.drawOnSlot(chest.inventorySlots.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsCorrectColor).getRGB());
-                } else {
-                    // HIDE OTHER SLOTS
-                    if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalHideIncorrect) continue;
-                    // Hide unwanted slots
-                    itemStack.setItem(containerChest.inventorySlots.get(0).getStack().getItem());
-                    itemStack.getItem().setDamage(itemStack, 15);
-                }
-                // If its glass type
-            } else if (Block.getBlockFromItem(itemStack.getItem()) instanceof BlockStainedGlassPane ||
-                    Block.getBlockFromItem(itemStack.getItem()) instanceof BlockStainedGlass ||
-                    Block.getBlockFromItem(itemStack.getItem()) instanceof BlockColored ||
-                    Block.getBlockFromItem(itemStack.getItem()) instanceof BlockCarpet) {
-                if (color.equals(F7ColorsDict.getColorFromMain(itemStack.getMetadata()).toString())) {
-                    //itemStack.getItem().setDamage(itemStack, 0);
-                    RenderUtils.drawOnSlot(chest.inventorySlots.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsCorrectColor).getRGB());
-                } else {
-                    if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalHideIncorrect) continue;
-                    if (itemStack.getMetadata() != 15) {
-                        itemStack.setItem(containerChest.inventorySlots.get(0).getStack().getItem());
-                        itemStack.getItem().setDamage(itemStack, 15);
-                    }
-                }
-            } else {
-                if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalHideIncorrect) continue;
-                itemStack.setItem(containerChest.inventorySlots.get(0).getStack().getItem());
-                itemStack.getItem().setDamage(itemStack, 15);
+            if (isCorrectColor(item, targetColor)) {
+                RenderUtils.drawOnSlot(container.inventorySlots.size(),
+                        slot.xDisplayPosition, slot.yDisplayPosition,
+                        ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsCorrectColor).getRGB());
+            } else if (NotEnoughFakepixel.feature.dungeons.dungeonsTerminalHideIncorrect) {
+                item.setItem(container.inventorySlots.get(0).getStack().getItem());
+                item.getItem().setDamage(item, 15);
             }
         }
     }
@@ -253,117 +179,120 @@ public class ClickOnColorsSolver {
     public void onMouseClick(GuiScreenEvent.MouseInputEvent.Pre event) {
         if (!NotEnoughFakepixel.feature.dungeons.dungeonsPreventMissclicks) return;
         if (!DungeonManager.checkEssentialsF7()) return;
-        if (!Mouse.getEventButtonState() || Mouse.getEventButton() != 0) return;
+        if (!Mouse.getEventButtonState()) return;
 
         Minecraft mc = Minecraft.getMinecraft();
         if (!(mc.currentScreen instanceof GuiChest)) return;
+
         GuiChest guiChest = (GuiChest) mc.currentScreen;
         Container container = guiChest.inventorySlots;
         if (!(container instanceof ContainerChest)) return;
+
         String title = ((ContainerChest) container).getLowerChestInventory().getDisplayName().getUnformattedText();
         if (!title.startsWith("Select all the")) return;
 
         if (NotEnoughFakepixel.feature.dungeons.dungeonsCustomGuiColors) {
-            final int SLOT_SIZE = 18;
-            final int COLUMNS = 9;
-            final int ROWS = 6;
+            handleCustomGuiClick(event, guiChest, title);
+        } else {
+            handleDefaultGuiClick(event, guiChest);
+        }
+    }
 
-            ScaledResolution sr = new ScaledResolution(mc);
-            float scale = NotEnoughFakepixel.feature.dungeons.dungeonsTerminalsScale;
-            int guiWidth = (int) (INNER_COLUMNS * SLOT_SIZE * scale);
-            int guiHeight = (int) (INNER_ROWS * SLOT_SIZE * scale);
-            int screenWidth = sr.getScaledWidth();
-            int screenHeight = sr.getScaledHeight();
-            int guiLeft = (screenWidth - guiWidth) / 2;
-            int guiTop = (screenHeight - guiHeight) / 2;
+    private void handleCustomGuiClick(GuiScreenEvent.MouseInputEvent.Pre event, GuiChest guiChest, String title) {
+        Minecraft mc = Minecraft.getMinecraft();
+        ScaledResolution sr = new ScaledResolution(mc);
+        float scale = NotEnoughFakepixel.feature.dungeons.dungeonsTerminalsScale;
 
-            int mouseX = (Mouse.getEventX() * sr.getScaledWidth()) / mc.displayWidth;
-            int mouseY = sr.getScaledHeight() - (Mouse.getEventY() * sr.getScaledHeight()) / mc.displayHeight - 1;
+        int mouseX = (Mouse.getEventX() * sr.getScaledWidth()) / mc.displayWidth;
+        int mouseY = sr.getScaledHeight() - (Mouse.getEventY() * sr.getScaledHeight()) / mc.displayHeight - 1;
 
-            if (mouseX < guiLeft || mouseX >= guiLeft + guiWidth ||
-                    mouseY < guiTop || mouseY >= guiTop + guiHeight) {
-                event.setCanceled(true);
-                return;
-            }
+        int guiWidth = (int) (INNER_COLUMNS * SLOT_SIZE * scale);
+        int guiHeight = (int) (INNER_ROWS * SLOT_SIZE * scale);
+        int guiLeft = (sr.getScaledWidth() - guiWidth) / 2;
+        int guiTop = (sr.getScaledHeight() - guiHeight) / 2;
 
-            float relX = (mouseX - guiLeft) / scale;
-            float relY = (mouseY - guiTop) / scale;
+        if (mouseX < guiLeft || mouseX >= guiLeft + guiWidth ||
+                mouseY < guiTop || mouseY >= guiTop + guiHeight) {
+            event.setCanceled(true);
+            return;
+        }
 
-            List<Slot> correctSlots = new ArrayList<>();
-            String targetColor = title.split("the ")[1].split(" items")[0].toLowerCase();
-            for (Slot slot : ((ContainerChest) container).inventorySlots) {
-                int slotId = ((ContainerChest) container).inventorySlots.indexOf(slot);
-                if (slot.inventory == mc.thePlayer.inventory || slotId == 49) continue;
-                int row = slotId / COLUMNS;
-                int col = slotId % COLUMNS;
-                if (row == 0 || row == (ROWS - 1) || col == 0 || col == (COLUMNS - 1)) continue;
+        float relX = (mouseX - guiLeft) / scale;
+        float relY = (mouseY - guiTop) / scale;
 
-                ItemStack item = slot.getStack();
-                if (item == null) continue;
-                if (item.isItemEnchanted()) continue;
-                boolean isCorrect = false;
-                if (item.getItem() == Items.dye) {
-                    isCorrect = targetColor.equals(F7ColorsDict.getColorFromDye(item.getMetadata()).toString());
-                } else if (Block.getBlockFromItem(item.getItem()) instanceof BlockStainedGlassPane ||
-                        Block.getBlockFromItem(item.getItem()) instanceof BlockStainedGlass ||
-                        Block.getBlockFromItem(item.getItem()) instanceof BlockColored ||
-                        Block.getBlockFromItem(item.getItem()) instanceof BlockCarpet) {
-                    isCorrect = targetColor.equals(F7ColorsDict.getColorFromMain(item.getMetadata()).toString());
-                }
-                if (isCorrect) {
-                    correctSlots.add(slot);
-                }
-            }
+        String targetColor = title.split("the ")[1].split(" items")[0].toLowerCase();
+        ContainerChest container = (ContainerChest) guiChest.inventorySlots;
 
-            boolean validClick = false;
-            for (Slot slot : correctSlots) {
-                int slotId = ((ContainerChest) container).inventorySlots.indexOf(slot);
-                int row = slotId / COLUMNS;
-                int col = slotId % COLUMNS;
+        for (Slot slot : container.inventorySlots) {
+            int slotId = container.inventorySlots.indexOf(slot);
+            if (slot.inventory == mc.thePlayer.inventory || slotId == 49) continue;
 
+            int row = slotId / COLUMNS;
+            int col = slotId % COLUMNS;
+            if (row < 1 || row > 4 || col < 1 || col > 7) continue;
+
+            ItemStack item = slot.getStack();
+            if (item == null || item.isItemEnchanted()) continue;
+
+            if (isCorrectColor(item, targetColor)) {
                 int innerX = (col - 1) * SLOT_SIZE;
                 int innerY = (row - 1) * SLOT_SIZE;
 
                 if (relX >= innerX && relX < innerX + SLOT_SIZE &&
                         relY >= innerY && relY < innerY + SLOT_SIZE) {
                     mc.playerController.windowClick(
-                            ((ContainerChest) container).windowId,
+                            container.windowId,
                             slot.slotNumber,
                             2,
                             0,
                             mc.thePlayer
                     );
-                    playCompletionSound(); // Play sound on click
-                    validClick = true;
-                    break;
-                }
-            }
-            if (!validClick) {
-                event.setCanceled(true);
-            }
-        } else {
-            GuiChest gui = (GuiChest) mc.currentScreen;
-            Slot hoveredSlot = gui.getSlotUnderMouse();
-            if (hoveredSlot != null && hoveredSlot.getStack() != null) {
-                ItemStack item = hoveredSlot.getStack();
-                if (Block.getBlockFromItem(item.getItem()) instanceof BlockStainedGlassPane && item.getMetadata() == 15) {
+                    playCompletionSound();
+                    clickedSlots.add(slot.slotNumber);
                     event.setCanceled(true);
-                } else {
-                    // Assume valid click in default GUI (could add color check if needed)
-                    playCompletionSound(); // Play sound on click
+                    return;
                 }
+            }
+        }
+        event.setCanceled(true);
+    }
+
+    private void handleDefaultGuiClick(GuiScreenEvent.MouseInputEvent.Pre event, GuiChest guiChest) {
+        Slot hoveredSlot = guiChest.getSlotUnderMouse();
+        if (hoveredSlot != null && hoveredSlot.getStack() != null) {
+            ItemStack item = hoveredSlot.getStack();
+            if (Block.getBlockFromItem(item.getItem()) instanceof BlockStainedGlassPane &&
+                    item.getMetadata() == 15) {
+                event.setCanceled(true);
+            } else {
+                playCompletionSound();
             }
         }
     }
 
+    private boolean isCorrectColor(ItemStack item, String targetColor) {
+        if (item.getItem() == Items.dye) {
+            return targetColor.equals(F7ColorsDict.getColorFromDye(item.getMetadata()).toString());
+        } else if (Block.getBlockFromItem(item.getItem()) instanceof BlockStainedGlassPane ||
+                Block.getBlockFromItem(item.getItem()) instanceof BlockStainedGlass ||
+                Block.getBlockFromItem(item.getItem()) instanceof BlockColored ||
+                Block.getBlockFromItem(item.getItem()) instanceof BlockCarpet) {
+            return targetColor.equals(F7ColorsDict.getColorFromMain(item.getMetadata()).toString());
+        }
+        return false;
+    }
+
+    private String capitalizeFirstLetter(String str) {
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
+
     private void playCompletionSound() {
         Minecraft mc = Minecraft.getMinecraft();
-        float pitch = 0.8f + (float) (Math.random() * 0.4); // Random pitch between 0.8 and 1.2
         SoundUtils.playSound(
                 mc.thePlayer.getPosition(),
-                "random.orb",
+                "gui.button.press",
                 1.0f,
-                pitch
+                1.0f
         );
     }
 

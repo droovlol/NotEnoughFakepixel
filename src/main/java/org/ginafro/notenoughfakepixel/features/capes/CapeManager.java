@@ -8,12 +8,12 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.Properties;
 
 public class CapeManager {
 
@@ -25,8 +25,11 @@ public class CapeManager {
     private static Cape currentCape = null;
 
     private static final ExecutorService executor = Executors.newCachedThreadPool();
-
     private static final Map<UUID, Integer> syncedCapes = new HashMap<>();
+
+    // Configuration handling
+    private static final File CONFIG_DIR = new File(Minecraft.getMinecraft().mcDataDir, "config/Notenoughfakepixel");
+    private static final File CONFIG_FILE = new File(CONFIG_DIR, "capes.cfg");
 
     public static void syncCape(UUID uuid, int capeID) {
         syncedCapes.put(uuid, capeID);
@@ -40,7 +43,7 @@ public class CapeManager {
         return null;
     }
 
-    public static Cape getCapeByID(Integer id){
+    public static Cape getCapeByID(Integer id) {
         return capesByID.get(id);
     }
 
@@ -58,18 +61,17 @@ public class CapeManager {
                     int height = ((Double) entry.get("height")).intValue();
                     String name = (String)entry.get("name");
 
-                    Cape cape = new Cape(width, height, id, file,name);
+                    Cape cape = new Cape(width, height, id, file, name);
                     allCapes.add(cape);
                     capesByID.put(id, cape);
                 }
 
                 if (!allCapes.isEmpty()) {
-                    currentCape = allCapes.get(15);
+                    currentCape = allCapes.get(0);
                 }
 
                 System.out.println("✅ Loaded cape metadata from GitHub (" + allCapes.size() + " capes).");
-
-                // Optionally preload all cape textures
+                loadSelectedCape();
                 allCapes.forEach(CapeManager::loadCapeTextureAsync);
 
             } catch (Exception e) {
@@ -84,18 +86,21 @@ public class CapeManager {
     }
 
     public static void setCape(int id) {
-        if(id == -11){
+        if (id == -11) {
             currentCape = null;
+        } else {
+            currentCape = capesByID.getOrDefault(id, currentCape);
         }
-        currentCape = capesByID.getOrDefault(id,currentCape);
+        saveSelectedCape();
     }
 
     public static List<Cape> getAllCapes() {
-        if(capesByID.isEmpty() || allCapes.isEmpty()){
+        if (capesByID.isEmpty() || allCapes.isEmpty()) {
             loadCapesFromGitHub();
         }
         return allCapes;
     }
+
     public static ResourceLocation getCapeTexture(Cape cape) {
         return dynamicTextures.get(cape.capeID);
     }
@@ -124,21 +129,18 @@ public class CapeManager {
                     return;
                 }
 
-                // Now run texture registration on the main client thread (has OpenGL context)
                 Minecraft.getMinecraft().addScheduledTask(() -> {
                     try {
                         DynamicTexture dyn = new DynamicTexture(image);
                         ResourceLocation loc = Minecraft.getMinecraft().getTextureManager()
                                 .getDynamicTextureLocation(String.valueOf(cape.capeID), dyn);
                         dynamicTextures.put(cape.capeID, loc);
-
                         System.out.println("✅ Cape loaded and registered: " + cape.capeFile + " → " + loc);
                     } catch (Exception e) {
                         System.err.println("❌ GL error while creating cape texture: " + cape.capeFile);
                         e.printStackTrace();
                     }
                 });
-
             } catch (Exception e) {
                 System.err.println("❌ Failed to download cape " + cape.capeFile);
                 e.printStackTrace();
@@ -146,6 +148,40 @@ public class CapeManager {
         });
     }
 
+    private static void saveSelectedCape() {
+        executor.execute(() -> {
+            try {
+                Properties props = new Properties();
+                props.setProperty("selectedCapeID",
+                        currentCape != null ? String.valueOf(currentCape.capeID) : "-11");
+
+                CONFIG_DIR.mkdirs();
+                try (OutputStream out = new FileOutputStream(CONFIG_FILE)) {
+                    props.store(out, "NotEnoughFakepixel Cape Settings");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private static void loadSelectedCape() {
+        if (!CONFIG_FILE.exists()) return;
+
+        try (InputStream in = new FileInputStream(CONFIG_FILE)) {
+            Properties props = new Properties();
+            props.load(in);
+            int savedID = Integer.parseInt(props.getProperty("selectedCapeID", "-11"));
+
+            Minecraft.getMinecraft().addScheduledTask(() -> {
+                if (savedID != -11) {
+                    currentCape = capesByID.get(savedID);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public static int getCapeWidth() {
         return getCape() != null ? getCape().width : 64;
@@ -154,5 +190,4 @@ public class CapeManager {
     public static int getCapeHeight() {
         return getCape() != null ? getCape().height : 32;
     }
-
 }

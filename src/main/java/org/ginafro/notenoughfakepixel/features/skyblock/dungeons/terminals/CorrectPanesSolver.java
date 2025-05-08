@@ -21,22 +21,20 @@ import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.utils.SoundUtils;
 import org.lwjgl.input.Mouse;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CorrectPanesSolver {
 
     private static final int SLOT_SIZE = 16;
     private static final int COLUMNS = 9;
     private static final int ROWS = 6;
-
     private static final int INNER_COLUMNS = 7;
     private static final int INNER_ROWS = 4;
 
     private final List<Slot> lastCorrectSlots = new ArrayList<>();
     private final Map<Integer, SlotPosition> slotPositions = new HashMap<>();
+    private final Set<Integer> clickedSlots = new HashSet<>();
+    private long lastRecheckTime = 0;
 
     private static class SlotPosition {
         final int x;
@@ -88,6 +86,12 @@ public class CorrectPanesSolver {
         slotPositions.clear();
 
         if (NotEnoughFakepixel.feature.dungeons.dungeonsCustomGuiPanes) {
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastRecheckTime >= 1000) {
+                clickedSlots.clear();
+                lastRecheckTime = currentTime;
+            }
+
             for (Slot slot : containerChest.inventorySlots) {
                 int slotId = containerChest.inventorySlots.indexOf(slot);
                 if (slot.inventory == Minecraft.getMinecraft().thePlayer.inventory || slotId == 49) continue;
@@ -113,15 +117,12 @@ public class CorrectPanesSolver {
             }
 
             ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
-            int screenWidth = sr.getScaledWidth();
-            int screenHeight = sr.getScaledHeight();
-
             GlStateManager.pushMatrix();
             float scale = NotEnoughFakepixel.feature.dungeons.dungeonsTerminalsScale;
             int guiWidth = (int) (INNER_COLUMNS * SLOT_SIZE * scale);
             int guiHeight = (int) (INNER_ROWS * SLOT_SIZE * scale);
-            int guiLeft = (screenWidth - guiWidth) / 2;
-            int guiTop = (screenHeight - guiHeight) / 2;
+            int guiLeft = (sr.getScaledWidth() - guiWidth) / 2;
+            int guiTop = (sr.getScaledHeight() - guiHeight) / 2;
 
             GlStateManager.translate(guiLeft, guiTop, 0);
             GlStateManager.scale(scale, scale, 1.0f);
@@ -138,54 +139,16 @@ public class CorrectPanesSolver {
                     0xFFFFFF);
 
             for (Slot slot : lastCorrectSlots) {
-                SlotPosition pos = slotPositions.get(containerChest.inventorySlots.indexOf(slot));
-                if (pos != null) {
-                    drawRect(pos.x + 1, pos.y + 1, pos.x + SLOT_SIZE - 1, pos.y + SLOT_SIZE - 1, ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsCorrectColor).getRGB());
-                }
-            }
-            GlStateManager.popMatrix();
-        }
-    }
-
-    @SubscribeEvent
-    public void onGuiRender(GuiScreenEvent.BackgroundDrawnEvent e) {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalCorrectPanesSolver) return;
-        if (!DungeonManager.checkEssentialsF7()) return;
-        if (!(e.gui instanceof GuiChest)) return;
-
-        GuiChest chest = (GuiChest) e.gui;
-        Container container = chest.inventorySlots;
-        if (!(container instanceof ContainerChest)) return;
-
-        ContainerChest containerChest = (ContainerChest) container;
-        String name = containerChest.getLowerChestInventory().getDisplayName().getUnformattedText();
-        if (!name.equals("Correct all the panes!")) return;
-
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsCustomGuiPanes) {
-            for (Slot slot : containerChest.inventorySlots) {
-                if (slot.inventory == Minecraft.getMinecraft().thePlayer.inventory) continue;
-                int slotId = containerChest.inventorySlots.indexOf(slot);
-                if (slotId == 49) continue;
-
-                int originalRow = slotId / COLUMNS;
-                int originalColumn = slotId % COLUMNS;
-                if (originalRow == 0 || originalRow == ROWS - 1 || originalColumn == 0 || originalColumn == COLUMNS - 1) {
-                    continue;
-                }
-
-                ItemStack item = slot.getStack();
-                if (item == null) continue;
-                if (Block.getBlockFromItem(item.getItem()) instanceof BlockStainedGlassPane) {
-                    int meta = item.getMetadata();
-                    if (meta == 5) {
-                        item.getItem().setDamage(item, 15);
-                    } else if (meta == 14 || meta == 0) {
-                        RenderUtils.drawOnSlot(chest.inventorySlots.inventorySlots.size(),
-                                slot.xDisplayPosition, slot.yDisplayPosition,
+                if (!clickedSlots.contains(slot.slotNumber)) {
+                    SlotPosition pos = slotPositions.get(containerChest.inventorySlots.indexOf(slot));
+                    if (pos != null) {
+                        drawRect(pos.x + 1, pos.y + 1,
+                                pos.x + SLOT_SIZE - 1, pos.y + SLOT_SIZE - 1,
                                 ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsCorrectColor).getRGB());
                     }
                 }
             }
+            GlStateManager.popMatrix();
         }
     }
 
@@ -211,9 +174,6 @@ public class CorrectPanesSolver {
             ScaledResolution sr = new ScaledResolution(mc);
             float scale = NotEnoughFakepixel.feature.dungeons.dungeonsTerminalsScale;
 
-            int button = Mouse.getEventButton();
-            if (button != 0) return; // Only process left clicks
-
             int mouseX = (Mouse.getEventX() * sr.getScaledWidth()) / mc.displayWidth;
             int mouseY = sr.getScaledHeight() - (Mouse.getEventY() * sr.getScaledHeight()) / mc.displayHeight - 1;
 
@@ -231,44 +191,36 @@ public class CorrectPanesSolver {
             float relX = (mouseX - guiLeft) / scale;
             float relY = (mouseY - guiTop) / scale;
 
-            int innerColumn = (int) (relX / SLOT_SIZE);
-            int innerRow = (int) (relY / SLOT_SIZE);
-
-            if (innerColumn < 0 || innerColumn >= INNER_COLUMNS || innerRow < 0 || innerRow >= INNER_ROWS) {
-                event.setCanceled(true);
-                return;
+            boolean validClick = false;
+            for (Slot slot : lastCorrectSlots) {
+                SlotPosition pos = slotPositions.get(containerChest.inventorySlots.indexOf(slot));
+                if (pos != null && relX >= pos.x && relX <= pos.x + SLOT_SIZE &&
+                        relY >= pos.y && relY <= pos.y + SLOT_SIZE) {
+                    mc.playerController.windowClick(
+                            containerChest.windowId,
+                            slot.slotNumber,
+                            2,
+                            0,
+                            mc.thePlayer
+                    );
+                    playCompletionSound();
+                    clickedSlots.add(slot.slotNumber);
+                    validClick = true;
+                    break;
+                }
             }
-
-            int originalRow = innerRow + 1;
-            int originalColumn = innerColumn + 1;
-            int slotId = originalRow * COLUMNS + originalColumn;
-
-            if (slotId < 0 || slotId >= containerChest.inventorySlots.size()) {
-                event.setCanceled(true);
-                return;
-            }
-
-            Slot slot = containerChest.inventorySlots.get(slotId);
-            if (lastCorrectSlots.contains(slot)) {
-                mc.playerController.windowClick(
-                        containerChest.windowId,
-                        slot.slotNumber,
-                        2,
-                        0,
-                        mc.thePlayer
-                );
-                playCompletionSound(); // Play sound on click
-                event.setCanceled(true);
-            } else {
-                event.setCanceled(true);
-            }
+            event.setCanceled(true);
         }
     }
 
     private void playCompletionSound() {
         Minecraft mc = Minecraft.getMinecraft();
-        float pitch = 0.8f + (float) (Math.random() * 0.4); // Random pitch between 0.8 and 1.2
-        SoundUtils.playSound(mc.thePlayer.getPosition(), "random.orb", 1.0f, pitch);
+        SoundUtils.playSound(
+                mc.thePlayer.getPosition(),
+                "gui.button.press",
+                1.0f,
+                1.0f
+        );
     }
 
     private static void drawRect(int left, int top, int right, int bottom, int color) {

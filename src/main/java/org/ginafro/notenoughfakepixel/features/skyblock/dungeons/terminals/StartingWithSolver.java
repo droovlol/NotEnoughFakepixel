@@ -22,10 +22,7 @@ import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.utils.SoundUtils;
 import org.lwjgl.input.Mouse;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class StartingWithSolver {
 
@@ -35,6 +32,8 @@ public class StartingWithSolver {
 
     private final List<Slot> lastCorrectSlots = new ArrayList<>();
     private final Map<Integer, SlotPosition> slotPositions = new HashMap<>();
+    private final Set<Integer> clickedSlots = new HashSet<>();
+    private long lastRecheckTime = 0;
     private char lastLetter = ' ';
 
     private static class SlotPosition {
@@ -121,6 +120,12 @@ public class StartingWithSolver {
                 }
             }
 
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastRecheckTime >= 1000) {
+                clickedSlots.clear();
+                lastRecheckTime = currentTime;
+            }
+
             GlStateManager.pushMatrix();
             float scale = NotEnoughFakepixel.feature.dungeons.dungeonsTerminalsScale;
             int guiWidth = (int) (INNER_COLUMNS * SLOT_SIZE * scale);
@@ -146,21 +151,23 @@ public class StartingWithSolver {
             );
 
             for (Slot slot : lastCorrectSlots) {
-                int slotIndex = containerChest.inventorySlots.indexOf(slot);
-                int row = slotIndex / COLUMNS;
-                int col = slotIndex % COLUMNS;
+                if (!clickedSlots.contains(slot.slotNumber)) {
+                    int slotIndex = containerChest.inventorySlots.indexOf(slot);
+                    int row = slotIndex / COLUMNS;
+                    int col = slotIndex % COLUMNS;
 
-                int innerCol = col - 1;
-                int innerRow = row - 1;
+                    int innerCol = col - 1;
+                    int innerRow = row - 1;
 
-                int x = innerCol * SLOT_SIZE;
-                int y = innerRow * SLOT_SIZE;
+                    int x = innerCol * SLOT_SIZE;
+                    int y = innerRow * SLOT_SIZE;
 
-                drawRect(x + 1, y + 1,
-                        x + SLOT_SIZE - 1,
-                        y + SLOT_SIZE - 1,
-                        ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsCorrectColor).getRGB()
-                );
+                    drawRect(x + 1, y + 1,
+                            x + SLOT_SIZE - 1,
+                            y + SLOT_SIZE - 1,
+                            ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsCorrectColor).getRGB()
+                    );
+                }
             }
             GlStateManager.popMatrix();
         }
@@ -244,9 +251,6 @@ public class StartingWithSolver {
         if (NotEnoughFakepixel.feature.dungeons.dungeonsCustomGuiStartsWith) {
             ScaledResolution sr = new ScaledResolution(mc);
             float scale = NotEnoughFakepixel.feature.dungeons.dungeonsTerminalsScale;
-            int button = Mouse.getEventButton();
-            if (button != 0) return; // Only handle left clicks
-
             int mouseX = (Mouse.getEventX() * sr.getScaledWidth()) / mc.displayWidth;
             int mouseY = sr.getScaledHeight() - (Mouse.getEventY() * sr.getScaledHeight()) / mc.displayHeight - 1;
 
@@ -255,39 +259,35 @@ public class StartingWithSolver {
             int guiLeft = (sr.getScaledWidth() - guiWidth) / 2;
             int guiTop = (sr.getScaledHeight() - guiHeight) / 2;
 
-            if (mouseX < guiLeft || mouseX >= guiLeft + guiWidth ||
-                    mouseY < guiTop || mouseY >= guiTop + guiHeight) {
+            if (mouseX >= guiLeft && mouseX < guiLeft + guiWidth &&
+                    mouseY >= guiTop && mouseY < guiTop + guiHeight) {
                 event.setCanceled(true);
-                return;
-            }
 
-            float relX = (mouseX - guiLeft) / scale;
-            float relY = (mouseY - guiTop) / scale;
+                float relX = (mouseX - guiLeft) / scale;
+                float relY = (mouseY - guiTop) / scale;
 
-            boolean validClick = false;
-            for (Slot slot : lastCorrectSlots) {
-                int slotIndex = containerChest.inventorySlots.indexOf(slot);
-                if (slotIndex == -1) continue;
+                for (Slot slot : lastCorrectSlots) {
+                    int slotIndex = containerChest.inventorySlots.indexOf(slot);
+                    if (slotIndex == -1) continue;
 
-                int x = (slotIndex % COLUMNS) * SLOT_SIZE;
-                int y = (slotIndex / COLUMNS) * SLOT_SIZE;
+                    int x = (slotIndex % COLUMNS) * SLOT_SIZE;
+                    int y = (slotIndex / COLUMNS) * SLOT_SIZE;
 
-                if (relX >= x && relX <= x + SLOT_SIZE &&
-                        relY >= y && relY <= y + SLOT_SIZE) {
-                    mc.playerController.windowClick(
-                            containerChest.windowId,
-                            slot.slotNumber,
-                            2,
-                            button,
-                            mc.thePlayer
-                    );
-                    playCompletionSound(); // Play sound on click
-                    validClick = true;
-                    break;
+                    if (relX >= x && relX <= x + SLOT_SIZE &&
+                            relY >= y && relY <= y + SLOT_SIZE) {
+                        mc.playerController.windowClick(
+                                containerChest.windowId,
+                                slot.slotNumber,
+                                2,
+                                0,
+                                mc.thePlayer
+                        );
+                        playCompletionSound();
+                        clickedSlots.add(slot.slotNumber);
+                        break;
+                    }
                 }
             }
-
-            if (!validClick) event.setCanceled(true);
         } else {
             Slot hoveredSlot = guiChest.getSlotUnderMouse();
             if (hoveredSlot != null && hoveredSlot.getStack() != null) {
@@ -299,8 +299,7 @@ public class StartingWithSolver {
                 if (isBadItem || isWrongLetter) {
                     event.setCanceled(true);
                 } else {
-                    // Valid click in default GUI
-                    playCompletionSound(); // Play sound on click
+                    playCompletionSound();
                 }
             }
         }
@@ -308,12 +307,11 @@ public class StartingWithSolver {
 
     private void playCompletionSound() {
         Minecraft mc = Minecraft.getMinecraft();
-        float pitch = 0.8f + (float) (Math.random() * 0.4); // Random pitch between 0.8 and 1.2
         SoundUtils.playSound(
                 mc.thePlayer.getPosition(),
-                "random.orb",
+                "gui.button.press",
                 1.0f,
-                pitch
+                1.0f
         );
     }
 
