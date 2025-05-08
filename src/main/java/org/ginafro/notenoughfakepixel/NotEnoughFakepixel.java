@@ -99,7 +99,7 @@ public class NotEnoughFakepixel {
         MinecraftForge.EVENT_BUS.register(this);
         SlotLocking.getInstance().loadConfig();
         objLoader = new OBJLoader();
-        registerCosmetics();
+        //registerCosmetics();
         if (!nefFolder.exists()) {
             nefFolder.mkdirs();
         }
@@ -233,7 +233,7 @@ public class NotEnoughFakepixel {
         MinecraftForge.EVENT_BUS.register(new StorageOverlay.StorageEvent());
         MinecraftForge.EVENT_BUS.register(new StorageDataHandler());
         MinecraftForge.EVENT_BUS.register(new EquipmentOverlay());
-        MinecraftForge.EVENT_BUS.register(new CustomBar());
+        //MinecraftForge.EVENT_BUS.register(new CustomBar());
 
         MinecraftForge.EVENT_BUS.register(new Fullbright());
         MinecraftForge.EVENT_BUS.register(new KDCounter());
