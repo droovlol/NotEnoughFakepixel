@@ -301,9 +301,9 @@ public class QualityOfLife {
     public boolean qolDisablePotionEffects = true;
 
     @Expose
-    @ConfigOption(name = "Middle Click on skyblock GUIs", desc = "Enable middle click on skyblock GUIs.")
-    @ConfigEditorBoolean
-    public boolean qolMiddleClickChests = true;
+    //@ConfigOption(name = "Middle Click on skyblock GUIs", desc = "Enable middle click on skyblock GUIs.")
+    //@ConfigEditorBoolean
+    public boolean qolMiddleClickChests = false;
 
     @Expose
     @ConfigOption(name = "Visual Cooldowns", desc = "Use weapon durability as a cooldown timer.")
