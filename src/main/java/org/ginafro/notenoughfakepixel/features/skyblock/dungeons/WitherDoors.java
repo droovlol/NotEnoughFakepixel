@@ -12,6 +12,7 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
@@ -79,19 +80,22 @@ public class WitherDoors {
     private void updateDoors() {
         if (!NotEnoughFakepixel.feature.dungeons.dungeonsWitherDoors) return;
         if (!ScoreboardUtils.currentLocation.isDungeon()) {
-            allDoors.clear();
-            activeDoors.clear();
             return;
         }
-        allDoors = findDoors();
-        Iterator<BlockPos> iterator = allDoors.iterator();
-        while (iterator.hasNext()) {
-            BlockPos door = iterator.next();
-            if (!isDoorStructure(door)) {
-                iterator.remove();
-                activeDoors.remove(door);
-            }
-        }
+        allDoors.addAll(findDoors());
+    }
+
+    @SubscribeEvent
+    public void onWorldLoad(WorldEvent.Load event) {
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsWitherDoors) return;
+        updateDoors();
+    }
+
+    @SubscribeEvent
+    public void onWorldUnload(WorldEvent.Unload event) {
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsWitherDoors) return;
+        allDoors.clear();
+        activeDoors.clear();
     }
 
     @SubscribeEvent
@@ -101,8 +105,24 @@ public class WitherDoors {
             return;
         }
         String msg = event.message.getUnformattedText();
-        if (msg.startsWith("RIGHT CLICK on the WITHER DOOR to open it") || msg.startsWith("RIGHT CLICK on the BLOOD DOOR to open it") || msg.startsWith("A Wither Key was picked up!")) {
+        if (msg.startsWith("RIGHT CLICK on the WITHER DOOR to open it") ||
+                msg.startsWith("RIGHT CLICK on the BLOOD DOOR to open it") ||
+                msg.startsWith("A Wither Key was picked up!")) {
+
+            if (allDoors.isEmpty()) {
+                updateDoors();
+            }
             activateNextDoor();
+        } else if (msg.endsWith("opened a WITHER door!")) {
+            Iterator<BlockPos> iterator = activeDoors.iterator();
+            while (iterator.hasNext()) {
+                BlockPos door = iterator.next();
+                allDoors.removeIf(pos -> pos.equals(door));
+                iterator.remove();
+            }
+        } else if (msg.endsWith("The BLOOD DOOR has been opened!")) {
+            allDoors.clear();
+            activeDoors.clear();
         }
     }
 
@@ -112,6 +132,17 @@ public class WitherDoors {
                 activeDoors.clear();
                 activeDoors.add(door);
                 break;
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent event) {
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsWitherDoors) return;
+        if (event.phase == TickEvent.Phase.END) {
+            if (System.currentTimeMillis() - lastUpdateTime > UPDATE_INTERVAL) {
+                updateDoors();
+                lastUpdateTime = System.currentTimeMillis();
             }
         }
     }
@@ -196,16 +227,5 @@ public class WitherDoors {
         worldRenderer.pos(maxX, maxY, maxZ).color(r, g, b, a).endVertex();
         worldRenderer.pos(minX, minY, maxZ).color(r, g, b, a).endVertex();
         worldRenderer.pos(minX, maxY, maxZ).color(r, g, b, a).endVertex();
-    }
-
-    @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent event) {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsWitherDoors) return;
-        if (event.phase == TickEvent.Phase.END) {
-            if (System.currentTimeMillis() - lastUpdateTime > UPDATE_INTERVAL) {
-                updateDoors();
-                lastUpdateTime = System.currentTimeMillis();
-            }
-        }
     }
 }

@@ -289,7 +289,7 @@ public class Dungeons {
     @ConfigOption(name = "Custom Maze Terminal GUI", desc = "Use custom GUI for Maze terminal.")
     @ConfigEditorBoolean
     @ConfigAccordionId(id = 4)
-    public boolean dungeonsCustomGuiMaze = false;
+    public boolean dungeonsCustomGuiMaze = true;
 
     @Expose
     @ConfigOption(name = "Custom Starts With Terminal GUI", desc = "Use custom GUI for Starts With terminal.")

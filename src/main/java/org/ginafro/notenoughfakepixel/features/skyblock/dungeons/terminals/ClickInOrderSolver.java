@@ -270,7 +270,7 @@ public class ClickInOrderSolver {
             }
             int expectedRound = processedRounds + clickQueue.size() + 1;
             if (slot.getStack().stackSize == expectedRound) {
-                mc.playerController.windowClick(container.windowId, slot.slotNumber, 0, 0, mc.thePlayer);
+                mc.playerController.windowClick(container.windowId, slot.slotNumber, 2, 0, mc.thePlayer);
                 clickQueue.add(slot.slotNumber);
                 event.setCanceled(true);
             } else {
@@ -310,7 +310,7 @@ public class ClickInOrderSolver {
             SoundUtils.playSound(mc.thePlayer.getPosition(), "gui.button.press", 1.0f, 1.0f);
             processedRounds++;
         } else {
-            mc.playerController.windowClick(cc.windowId, slotNumber, 0, 0, mc.thePlayer);
+            mc.playerController.windowClick(cc.windowId, slotNumber, 2, 0, mc.thePlayer);
         }
     }
 

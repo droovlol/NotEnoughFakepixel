@@ -110,7 +110,7 @@ public class NotEnoughFakepixel {
         if(!storageDirectory.exists()){
             storageDirectory.mkdirs();
         }
-        CapeManager.loadCapesFromGitHub();
+        //CapeManager.loadCapesFromGitHub();
 
         configFile = new File(configDirectory, "config.json");
 
@@ -238,9 +238,12 @@ public class NotEnoughFakepixel {
         MinecraftForge.EVENT_BUS.register(new Fullbright());
         MinecraftForge.EVENT_BUS.register(new KDCounter());
         MinecraftForge.EVENT_BUS.register(new Map());
+
         // Diana
         MinecraftForge.EVENT_BUS.register(new Diana());
         MinecraftForge.EVENT_BUS.register(new GuessBurrow());
+        //MinecraftForge.EVENT_BUS.register(new WarpOverlay(new GuessBurrow()));
+
         // Crimson
         MinecraftForge.EVENT_BUS.register(new AshfangOverlay());
         MinecraftForge.EVENT_BUS.register(new BossNotifier());

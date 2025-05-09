@@ -38,6 +38,30 @@ public class DianaF {
     public float warpHelperScale = 1.0f;
 
     @Expose
+    @ConfigOption(name = "Dark Auction warp", desc = "")
+    @ConfigEditorBoolean
+    @ConfigAccordionId(id = 0)
+    public boolean dianaWarpDa = true;
+
+    @Expose
+    @ConfigOption(name = "Museum warp", desc = "")
+    @ConfigEditorBoolean
+    @ConfigAccordionId(id = 0)
+    public boolean dianaWarpMuseum = true;
+
+    @Expose
+    @ConfigOption(name = "Crypts warp", desc = "")
+    @ConfigEditorBoolean
+    @ConfigAccordionId(id = 0)
+    public boolean dianaWarpCrypts = true;
+
+    @Expose
+    @ConfigOption(name = "Castle warp", desc = "")
+    @ConfigEditorBoolean
+    @ConfigAccordionId(id = 0)
+    public boolean dianaWarpCastle = true;
+
+    @Expose
     @ConfigOption(name = "Edit Warp helper Position", desc = "Adjust the Warp helper position visually")
     @ConfigEditorButton(runnableId = "editWarpHelperPosition", buttonText = "Edit Position")
     @ConfigAccordionId(id = 0)
