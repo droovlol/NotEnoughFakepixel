@@ -270,7 +270,9 @@ public class ClickInOrderSolver {
             }
             int expectedRound = processedRounds + clickQueue.size() + 1;
             if (slot.getStack().stackSize == expectedRound) {
+                mc.playerController.windowClick(container.windowId, slot.slotNumber, 0, 0, mc.thePlayer);
                 clickQueue.add(slot.slotNumber);
+                event.setCanceled(true);
             } else {
                 event.setCanceled(true);
             }
