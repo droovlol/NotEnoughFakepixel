@@ -3,7 +3,7 @@ package org.ginafro.notenoughfakepixel;
 import com.google.gson.annotations.Expose;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
-import org.ginafro.notenoughfakepixel.Alerts.AlertManagementGui;
+import org.ginafro.notenoughfakepixel.alerts.AlertManagementGui;
 import org.ginafro.notenoughfakepixel.features.capes.gui.CapeGui;
 import org.ginafro.notenoughfakepixel.features.skyblock.qol.CustomAliases.AliasManagementGui;
 import org.ginafro.notenoughfakepixel.config.features.*;

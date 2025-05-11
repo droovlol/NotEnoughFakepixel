@@ -1,10 +1,14 @@
-package org.ginafro.notenoughfakepixel.envCheck;
+package org.ginafro.notenoughfakepixel.envcheck;
 
 import javax.swing.*;
 import java.lang.reflect.Field;
 import java.util.Objects;
 
 public class ForgeScan {
+
+    private ForgeScan(){
+        // Prevent instantiation
+    }
 
     /*
      * This class is responsible for checking the environment in which the mod is running.

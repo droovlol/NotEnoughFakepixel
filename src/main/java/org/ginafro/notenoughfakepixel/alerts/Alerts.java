@@ -1,4 +1,4 @@
-package org.ginafro.notenoughfakepixel.Alerts;
+package org.ginafro.notenoughfakepixel.alerts;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;

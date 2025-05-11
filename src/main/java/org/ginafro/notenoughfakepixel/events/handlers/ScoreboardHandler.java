@@ -1,4 +1,4 @@
-package org.ginafro.notenoughfakepixel.events.Handlers;
+package org.ginafro.notenoughfakepixel.events.handlers;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;

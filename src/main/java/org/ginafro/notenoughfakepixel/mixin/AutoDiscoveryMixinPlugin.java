@@ -1,6 +1,6 @@
 package org.ginafro.notenoughfakepixel.mixin;
 
-import org.ginafro.notenoughfakepixel.envCheck.ForgeScan;
+import org.ginafro.notenoughfakepixel.envcheck.ForgeScan;
 import org.spongepowered.asm.lib.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;

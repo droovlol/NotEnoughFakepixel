@@ -1,4 +1,4 @@
-package org.ginafro.notenoughfakepixel.events.Handlers;
+package org.ginafro.notenoughfakepixel.events.handlers;
 
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;

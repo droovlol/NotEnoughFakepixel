@@ -1,4 +1,4 @@
-package org.ginafro.notenoughfakepixel.events.Handlers;
+package org.ginafro.notenoughfakepixel.events.handlers;
 
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
