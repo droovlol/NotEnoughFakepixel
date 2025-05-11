@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.ginafro.notenoughfakepixel.Alerts.Alerts;
+import org.ginafro.notenoughfakepixel.events.Handlers.ConnectionHandler;
 import org.ginafro.notenoughfakepixel.features.capes.CapeManager;
 import org.ginafro.notenoughfakepixel.features.skyblock.overlays.inventory.equipment.EquipmentOverlay;
 import org.ginafro.notenoughfakepixel.features.cosmetics.CosmeticsManager;
@@ -259,6 +260,7 @@ public class NotEnoughFakepixel {
         // Parsers
         MinecraftForge.EVENT_BUS.register(new TablistParser());
         MinecraftForge.EVENT_BUS.register(new ScoreboardUtils());
+        MinecraftForge.EVENT_BUS.register(new ConnectionHandler());
     }
 
 
@@ -328,11 +330,5 @@ public class NotEnoughFakepixel {
 
     public Utils getUtils() {
         return utils;
-    }
-
-    @SubscribeEvent
-    public void onServerConnect(FMLNetworkEvent.ClientConnectedToServerEvent event) {
-        event.manager.channel().pipeline().addBefore("packet_handler", "nef_packet_handler", new PacketHandler());
-        System.out.println("Added packet handler to channel pipeline.");
     }
 }
