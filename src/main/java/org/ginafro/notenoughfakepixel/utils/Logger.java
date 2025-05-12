@@ -5,7 +5,16 @@ import net.minecraft.util.ChatComponentText;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.variables.Constants;
 
+import java.util.logging.Level;
+
 public class Logger {
+
+    private Logger(){
+        // Prevent instantiation
+    }
+
+    private static final java.util.logging.Logger LOGGER =
+            java.util.logging.Logger.getLogger(Logger.class.getName());
 
     /**
      * Logs a message to the chat.
@@ -42,7 +51,17 @@ public class Logger {
      */
     public static void logConsole(String message) {
         if (!Config.feature.debug.debug) return;
-        System.out.println(Constants.PREFIX + message);
+        LOGGER.log(Level.INFO, Constants.PREFIX + message);
+    }
+
+    /**
+     * Logs an error to the console with a new line.
+     *
+     * @param error The String message to log.
+     */
+    public static void logErrorConsole(String error) {
+        if (!Config.feature.debug.debug) return;
+        LOGGER.log(Level.WARNING, Constants.PREFIX + error);
     }
 
     /**

@@ -64,7 +64,6 @@ public class NotEnoughFakepixel {
 
         EquipmentOverlay.loadData();
 
-        ClientCommandHandler.instance.registerCommand(new CopyCommand());
         new Aliases();
 
         Commands.init();
@@ -73,6 +72,7 @@ public class NotEnoughFakepixel {
 
         ModEventRegistrar.registerModEvents();
         ModEventRegistrar.registerKeybinds();
+        ModEventRegistrar.registerCommands();
 
         SlotLocking.getInstance().saveConfig();
     }

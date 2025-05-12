@@ -5,11 +5,13 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
+import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterCommand;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 
+@RegisterCommand
 public class CopyCommand extends CommandBase {
     @Override
     public String getCommandName() {

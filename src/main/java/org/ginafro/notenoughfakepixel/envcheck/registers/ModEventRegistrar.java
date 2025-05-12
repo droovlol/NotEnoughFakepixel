@@ -1,24 +1,41 @@
 package org.ginafro.notenoughfakepixel.envcheck.registers;
 
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.command.ICommand;
+import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import org.ginafro.notenoughfakepixel.utils.Logger;
 import org.reflections.Reflections;
 import org.reflections.scanners.FieldAnnotationsScanner;
 import org.reflections.util.ConfigurationBuilder;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class ModEventRegistrar {
 
+    private static final String BASE_PACKAGE = "org.ginafro.notenoughfakepixel";
+
     public static void registerModEvents() {
-        new Reflections("org.ginafro.notenoughfakepixel")
-                .getTypesAnnotatedWith(RegisterEvents.class)
+        registerAnnotated(BASE_PACKAGE, RegisterEvents.class, MinecraftForge.EVENT_BUS::register);
+    }
+
+    public static void registerCommands() {
+        registerAnnotated(BASE_PACKAGE, RegisterCommand.class, instance ->
+                ClientCommandHandler.instance.registerCommand((ICommand) instance));
+    }
+
+    private static void registerAnnotated(String basePackage, Class<? extends Annotation> annotation, Consumer<Object> registrar) {
+        new Reflections(basePackage)
+                .getTypesAnnotatedWith(annotation)
                 .forEach(clazz -> {
                     try {
-                        MinecraftForge.EVENT_BUS.register(clazz.newInstance());
+                        registrar.accept(clazz.newInstance());
                     } catch (Exception e) {
+                        Logger.logErrorConsole("Failed to register: " + clazz.getName());
                         e.printStackTrace();
                     }
                 });
@@ -26,7 +43,7 @@ public class ModEventRegistrar {
 
     public static void registerKeybinds() {
         Reflections reflections = new Reflections(new ConfigurationBuilder()
-                .forPackages("org.ginafro.notenoughfakepixel")
+                .forPackages(BASE_PACKAGE)
                 .addScanners(new FieldAnnotationsScanner()));
 
         reflections.getTypesAnnotatedWith(RegisterKeybind.class);
