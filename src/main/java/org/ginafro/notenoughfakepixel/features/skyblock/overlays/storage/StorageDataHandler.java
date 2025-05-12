@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.events.SlotClickEvent;
 import org.ginafro.notenoughfakepixel.utils.CustomConfigHandler;
 import org.ginafro.notenoughfakepixel.utils.FileUtils;
@@ -14,6 +15,7 @@ import org.ginafro.notenoughfakepixel.utils.FileUtils;
 import java.util.HashMap;
 import java.util.Map;
 
+@RegisterEvents
 public class StorageDataHandler {
 
     @SubscribeEvent

@@ -2,11 +2,13 @@ package org.ginafro.notenoughfakepixel.events.handlers;
 
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.events.NEFClientConnectedToServerEvent;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
+@RegisterEvents
 public class ConnectionHandler {
 
     private static final String TARGET_SERVER = "fakepixel.fun";

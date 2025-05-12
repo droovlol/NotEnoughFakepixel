@@ -7,11 +7,13 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.events.handlers.ScoreboardHandler;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 
 import java.util.List;
 
+@RegisterEvents
 public class SlayerTimer {
 
     private long startTime = -1;

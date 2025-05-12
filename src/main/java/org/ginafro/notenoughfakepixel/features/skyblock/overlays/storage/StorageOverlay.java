@@ -14,6 +14,7 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.CustomConfigHandler;
 import org.lwjgl.input.Keyboard;
@@ -410,6 +411,7 @@ public class StorageOverlay {
         }
     }
 
+    @RegisterEvents
     public static class StorageEvent {
         @SubscribeEvent
         public void onOpen(GuiScreenEvent.BackgroundDrawnEvent e) {

@@ -12,7 +12,9 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 
+@RegisterEvents
 public class HideEnchantingTooltips {
 
     @SubscribeEvent(priority = EventPriority.LOW)

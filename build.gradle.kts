@@ -86,6 +86,7 @@ dependencies {
 
     // If you don't want mixins, remove these lines
     implementation("org.slick2d:slick2d-core:1.0.1")
+    implementation("org.reflections:reflections:0.9.12")
     implementation(kotlin("stdlib"))
     shadowImpl("org.spongepowered:mixin:0.7.11-SNAPSHOT") {
         isTransitive = false

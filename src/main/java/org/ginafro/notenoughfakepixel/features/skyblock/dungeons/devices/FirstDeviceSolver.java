@@ -15,6 +15,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.events.PacketWriteEvent;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
 import org.ginafro.notenoughfakepixel.utils.ColorUtils;
@@ -23,6 +24,7 @@ import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import java.awt.*;
 import java.util.Objects;
 
+@RegisterEvents
 public class FirstDeviceSolver {
 
     private BlockPos[] positionsToSolve;

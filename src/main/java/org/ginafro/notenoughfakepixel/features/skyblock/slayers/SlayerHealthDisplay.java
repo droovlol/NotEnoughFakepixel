@@ -10,11 +10,13 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.Position;
+import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.events.handlers.ScoreboardHandler;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
+@RegisterEvents
 public class SlayerHealthDisplay {
     private final Minecraft mc = Minecraft.getMinecraft();
     private String displayText = "";

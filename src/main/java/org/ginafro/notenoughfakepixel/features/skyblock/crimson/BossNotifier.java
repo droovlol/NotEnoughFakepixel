@@ -8,6 +8,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.ChatUtils;
 import org.ginafro.notenoughfakepixel.utils.SoundUtils;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +18,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.*;
 
+@RegisterEvents
 public class BossNotifier {
     private final static String countdownSound = "random.orb";
     private final static String titleSoundMageOutlawReady = "mob.wither.spawn";

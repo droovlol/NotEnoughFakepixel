@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.mixin.Accesors.EntityPlayerAccessor;
 
 /**
@@ -17,6 +18,7 @@ import org.ginafro.notenoughfakepixel.mixin.Accesors.EntityPlayerAccessor;
  *
  * @author Aton - THANK YOU
  */
+@RegisterEvents
 public class ItemAnimations {
 
     public static Minecraft mc = Minecraft.getMinecraft();

@@ -3,8 +3,10 @@ package org.ginafro.notenoughfakepixel.features.skyblock.dungeons;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 
+@RegisterEvents
 public class DungeonManager {
     private static boolean isBossStage = false; // This includes blood room
     private static boolean isFinalStage = false;

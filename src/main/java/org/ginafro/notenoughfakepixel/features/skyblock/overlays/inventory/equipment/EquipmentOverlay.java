@@ -23,6 +23,7 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.features.skyblock.overlays.storage.StorageData;
 import org.ginafro.notenoughfakepixel.mixin.Accesors.AccessorGuiContainer;
 import org.ginafro.notenoughfakepixel.utils.CustomConfigFiles;
@@ -47,6 +48,7 @@ import static org.ginafro.notenoughfakepixel.utils.CustomConfigFiles.EQUIPMENTS;
 import static org.ginafro.notenoughfakepixel.utils.CustomConfigFiles.STORAGE_FOLDER;
 import static org.ginafro.notenoughfakepixel.utils.CustomConfigHandler.gson;
 
+@RegisterEvents
 public class EquipmentOverlay {
 
     public static final int EQUIPMENT_SLOT_OFFSET_Y = 8;

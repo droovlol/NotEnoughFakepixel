@@ -4,7 +4,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 
+@RegisterEvents
 public class Fullbright {
 
     private static final Minecraft mc = Minecraft.getMinecraft();

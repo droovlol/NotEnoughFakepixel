@@ -7,6 +7,7 @@ import net.minecraft.util.StringUtils;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.features.mlf.Info;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.variables.Gamemode;
@@ -14,6 +15,7 @@ import org.ginafro.notenoughfakepixel.variables.Gamemode;
 import java.util.ArrayList;
 import java.util.List;
 
+@RegisterEvents
 public class Map {
 
     private String inc = "", bal = "", e1 = "", e2 = "";
