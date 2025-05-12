@@ -3,6 +3,7 @@ package org.ginafro.notenoughfakepixel.features.skyblock.diana;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
@@ -251,6 +252,10 @@ public class GuessBurrow {
         } else {
             displayText = null;
             warpCommand = null;
+        }
+
+        if (Minecraft.getMinecraft().currentScreen instanceof GuiChat) {
+            return;
         }
 
         if (Config.feature.diana.dianaWarpHelper && warpCommand != null) {
