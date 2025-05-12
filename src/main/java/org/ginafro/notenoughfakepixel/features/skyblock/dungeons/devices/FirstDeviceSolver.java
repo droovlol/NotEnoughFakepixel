@@ -14,7 +14,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.events.PacketWriteEvent;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
@@ -28,7 +28,7 @@ import java.util.Objects;
 public class FirstDeviceSolver {
 
     private BlockPos[] positionsToSolve;
-    private int[] positionsIndexSolved = new int[]{-1,-1,-1,-1,-1};
+    private int[] positionsIndexSolved = new int[]{-1, -1, -1, -1, -1};
     private boolean startMemorising = false;
     private boolean resolving = false;
     private int positionInRound = 0;
@@ -36,15 +36,15 @@ public class FirstDeviceSolver {
 
     @SubscribeEvent
     public void onRenderLast(RenderWorldLastEvent event) {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsFirstDeviceSolver) return;
+        if (!Config.feature.dungeons.dungeonsFirstDeviceSolver) return;
 
         // Check for sea lanterns
         if (startMemorising) {
             if (positionsToSolve == null) return;
             for (int i = 0; i < positionsToSolve.length; i++) {
                 Block targetBlock = Minecraft.getMinecraft().theWorld.getBlockState(positionsToSolve[i]).getBlock();
-                if (targetBlock == Blocks.sea_lantern && positionsIndexSolved[round-1] == -1 && !checkIfAdded(positionsIndexSolved,i)) {
-                    positionsIndexSolved[round-1] = i;
+                if (targetBlock == Blocks.sea_lantern && positionsIndexSolved[round - 1] == -1 && !checkIfAdded(positionsIndexSolved, i)) {
+                    positionsIndexSolved[round - 1] = i;
                     resolving = true;
                     startMemorising = false;
                 }
@@ -52,17 +52,17 @@ public class FirstDeviceSolver {
         }
         // Show highlighted button and next buttons
         if (resolving) {
-            for (int i=0; i<round;i++) {
+            for (int i = 0; i < round; i++) {
                 if (positionsIndexSolved[i] == -1) {
                     reset();
                     return;
                 }
-                Color baseColor = ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsAlternativeColor);
+                Color baseColor = ColorUtils.getColor(Config.feature.dungeons.dungeonsAlternativeColor);
                 if (i == positionInRound) {
-                    RenderUtils.highlightBlock(positionsToSolve[positionsIndexSolved[i]], ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsCorrectColor), false, true, event.partialTicks);
-                } else if (i == positionInRound+1) {
-                    RenderUtils.highlightBlock(positionsToSolve[positionsIndexSolved[i]], ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsAlternativeColor), false, true, event.partialTicks);
-                } else if (i == positionInRound+2) {
+                    RenderUtils.highlightBlock(positionsToSolve[positionsIndexSolved[i]], ColorUtils.getColor(Config.feature.dungeons.dungeonsCorrectColor), false, true, event.partialTicks);
+                } else if (i == positionInRound + 1) {
+                    RenderUtils.highlightBlock(positionsToSolve[positionsIndexSolved[i]], ColorUtils.getColor(Config.feature.dungeons.dungeonsAlternativeColor), false, true, event.partialTicks);
+                } else if (i == positionInRound + 2) {
                     RenderUtils.highlightBlock(positionsToSolve[positionsIndexSolved[i]], new Color(
                             baseColor.getRed(),
                             baseColor.getGreen(),
@@ -77,7 +77,7 @@ public class FirstDeviceSolver {
     // Check for initial button interact
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onInteract(PlayerInteractEvent event) {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsFirstDeviceSolver) return;
+        if (!Config.feature.dungeons.dungeonsFirstDeviceSolver) return;
         if (!DungeonManager.checkEssentialsF7()) return;
         if (Minecraft.getMinecraft().thePlayer != event.entityPlayer) return;
         if (event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
@@ -87,7 +87,7 @@ public class FirstDeviceSolver {
                 EnumFacing enumfacing = Minecraft.getMinecraft().theWorld.getBlockState(event.pos).getValue(BlockButton.FACING);
                 Block blockClicked = Minecraft.getMinecraft().theWorld.getBlockState(getBlockUnderButton(event.pos, enumfacing)).getBlock();
                 // Check if button is pressed over an obsidian block
-                if (Objects.equals(blockClicked.getUnlocalizedName(), Blocks.obsidian.getUnlocalizedName())){
+                if (Objects.equals(blockClicked.getUnlocalizedName(), Blocks.obsidian.getUnlocalizedName())) {
                     if (!resolving) return;
                     if (!Objects.equals(getBlockUnderButton(event.pos, enumfacing), positionsToSolve[positionsIndexSolved[positionInRound]])) {
                         event.setCanceled(true);
@@ -103,8 +103,8 @@ public class FirstDeviceSolver {
                     if (round == 6) {
                         reset();
                     }
-                // Else if over an emerald block
-                } else if (Objects.equals(blockClicked.getUnlocalizedName(), Blocks.emerald_block.getUnlocalizedName()) ) {//&& !startMemorising) {
+                    // Else if over an emerald block
+                } else if (Objects.equals(blockClicked.getUnlocalizedName(), Blocks.emerald_block.getUnlocalizedName())) {//&& !startMemorising) {
                     BlockPos pos = getBlockUnderButton(event.pos, enumfacing);
                     positionsToSolve = getSurroundingBlocks(pos, enumfacing);
                     reset();
@@ -116,7 +116,7 @@ public class FirstDeviceSolver {
 
     @SubscribeEvent
     public void onDiggingPacket(PacketWriteEvent event) {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsFirstDeviceSolver) return;
+        if (!Config.feature.dungeons.dungeonsFirstDeviceSolver) return;
         if (!DungeonManager.checkEssentialsF7()) return;
         Packet packet = event.packet;
         if (packet instanceof C07PacketPlayerDigging) {
@@ -147,7 +147,7 @@ public class FirstDeviceSolver {
                     if (round == 6) {
                         reset();
                     }
-                // Else if over an emerald block
+                    // Else if over an emerald block
                 } else if (Objects.equals(blockClicked.getUnlocalizedName(), Blocks.emerald_block.getUnlocalizedName()) && !startMemorising) {
                     BlockPos pos = getBlockUnderButton(((C07PacketPlayerDigging) packet).getPosition(), enumfacing);
                     positionsToSolve = getSurroundingBlocks(pos, enumfacing);
@@ -160,7 +160,7 @@ public class FirstDeviceSolver {
 
     @SubscribeEvent()
     public void onWorldUnload(WorldEvent.Unload event) {
-        if (NotEnoughFakepixel.feature.dungeons.dungeonsFirstDeviceSolver) reset();
+        if (Config.feature.dungeons.dungeonsFirstDeviceSolver) reset();
     }
 
     private static BlockPos getBlockUnderButton(BlockPos pos, EnumFacing facing) {
@@ -217,7 +217,7 @@ public class FirstDeviceSolver {
     }
 
     private void reset() {
-        positionsIndexSolved = new int[]{-1,-1,-1,-1,-1};
+        positionsIndexSolved = new int[]{-1, -1, -1, -1, -1};
         startMemorising = false;
         resolving = false;
         positionInRound = 0;

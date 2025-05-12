@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface RegisterEvents {
-    // This is a marker annotation for classes that should be registered as events
+@Target(ElementType.FIELD)
+public @interface RegisterKeybind {
+    // This is a marker annotation for classes that should be registered as keybinds
 }

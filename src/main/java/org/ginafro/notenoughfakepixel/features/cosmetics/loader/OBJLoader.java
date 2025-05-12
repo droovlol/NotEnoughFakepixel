@@ -1,20 +1,15 @@
 package org.ginafro.notenoughfakepixel.features.cosmetics.loader;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
-import static org.lwjgl.opengl.GL11.GL_FRONT;
-import static org.lwjgl.opengl.GL11.GL_COMPILE;
-import static org.lwjgl.opengl.GL11.GL_SHININESS;
-import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.Scanner;
+
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  * OBJloader class. Loads in Wavefront .obj file in to the program.

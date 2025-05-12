@@ -1,23 +1,24 @@
 package org.ginafro.notenoughfakepixel.config.gui.core.config.gui;
 
-import static org.ginafro.notenoughfakepixel.config.gui.GuiTextures.DELETE;
-import static org.ginafro.notenoughfakepixel.config.gui.GuiTextures.button_tex;
-
-import org.ginafro.notenoughfakepixel.config.gui.core.config.struct.ConfigProcessor;
-import org.ginafro.notenoughfakepixel.config.gui.core.util.lerp.LerpUtils;
-import org.ginafro.notenoughfakepixel.config.gui.core.util.render.RenderUtils;
-import org.ginafro.notenoughfakepixel.config.gui.core.util.render.TextRenderUtils;
-import org.ginafro.notenoughfakepixel.config.gui.utils.Utils;
-import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
+import org.ginafro.notenoughfakepixel.config.gui.core.config.struct.ConfigProcessor;
+import org.ginafro.notenoughfakepixel.config.gui.core.util.lerp.LerpUtils;
+import org.ginafro.notenoughfakepixel.config.gui.core.util.render.RenderUtils;
+import org.ginafro.notenoughfakepixel.config.gui.core.util.render.TextRenderUtils;
+import org.ginafro.notenoughfakepixel.config.gui.utils.Utils;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.ginafro.notenoughfakepixel.config.gui.GuiTextures.DELETE;
+import static org.ginafro.notenoughfakepixel.config.gui.GuiTextures.button_tex;
 
 public class GuiOptionEditorDraggableList extends GuiOptionEditor {
 

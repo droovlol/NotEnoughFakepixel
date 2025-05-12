@@ -12,8 +12,8 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.mixin.Accesors.AccessorGuiPlayerTabOverlay;
 
@@ -42,29 +42,30 @@ public class TablistParser {
 
     @SideOnly(Side.CLIENT)
     static class PlayerComparator implements Comparator<NetworkPlayerInfo> {
-        private PlayerComparator() {}
+        private PlayerComparator() {
+        }
 
         public int compare(NetworkPlayerInfo o1, NetworkPlayerInfo o2) {
             ScorePlayerTeam team1 = o1.getPlayerTeam();
             ScorePlayerTeam team2 = o2.getPlayerTeam();
             return ComparisonChain.start().compareTrueFirst(
-                o1.getGameType() != WorldSettings.GameType.SPECTATOR,
-                o2.getGameType() != WorldSettings.GameType.SPECTATOR
-            )
-            .compare(
-                    team1 != null ? team1.getRegisteredName() : "",
-                    team2 != null ? team2.getRegisteredName() : ""
-            )
-            .compare(o1.getGameProfile().getName(), o2.getGameProfile().getName()).result();
+                            o1.getGameType() != WorldSettings.GameType.SPECTATOR,
+                            o2.getGameType() != WorldSettings.GameType.SPECTATOR
+                    )
+                    .compare(
+                            team1 != null ? team1.getRegisteredName() : "",
+                            team2 != null ? team2.getRegisteredName() : ""
+                    )
+                    .compare(o1.getGameProfile().getName(), o2.getGameProfile().getName()).result();
         }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onGuiOpen(GuiOpenEvent event) {
-        if(!ScoreboardUtils.currentGamemode.isSkyblock()) return;
-        if(event.gui == null) return;
+        if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
+        if (event.gui == null) return;
 
-        if(event.gui instanceof GuiChest){
+        if (event.gui instanceof GuiChest) {
             GuiChest chest = (GuiChest) event.gui;
             ContainerChest container = (ContainerChest) chest.inventorySlots;
 
@@ -76,14 +77,14 @@ public class TablistParser {
     }
 
     @SubscribeEvent
-    public void onTick(TickEvent.ClientTickEvent e){
-        if(lastTime < 20) {
+    public void onTick(TickEvent.ClientTickEvent e) {
+        if (lastTime < 20) {
             lastTime++;
             return;
         }
-        if(e.phase != TickEvent.Phase.END) return;
-        if(Minecraft.getMinecraft().thePlayer == null) return;
-        if(!ScoreboardUtils.currentGamemode.isSkyblock()) return;
+        if (e.phase != TickEvent.Phase.END) return;
+        if (Minecraft.getMinecraft().thePlayer == null) return;
+        if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
 
         List<NetworkPlayerInfo> players =
                 playerOrdering.sortedCopy(Minecraft.getMinecraft().thePlayer.sendQueue.getPlayerInfoMap());
@@ -164,7 +165,7 @@ public class TablistParser {
 
                 serverInfo.add(cleanLine);
 
-            // PLAYER STATS SECTION
+                // PLAYER STATS SECTION
             } else if (isPlayerStats) {
                 // Extract Deaths count (in brackets)
                 if (cleanLine.startsWith("Deaths: ")) {
@@ -186,7 +187,7 @@ public class TablistParser {
                         crypts = Integer.parseInt(cleanLine.substring(8).trim());
                     }
                 }
-            // ACCOUNT INFO SECTION
+                // ACCOUNT INFO SECTION
             } else if (isAccountInfo) {
                 accountInfo.add(cleanLine);
             }
@@ -197,7 +198,8 @@ public class TablistParser {
             String[] footer = ((AccessorGuiPlayerTabOverlay) Minecraft.getMinecraft().ingameGUI.getTabList())
                     .getFooter().getFormattedText()
                     .split("\n");
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
 
         lastTime = 0;
     }

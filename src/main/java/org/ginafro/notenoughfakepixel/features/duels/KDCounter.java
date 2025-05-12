@@ -5,9 +5,8 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
-import org.ginafro.notenoughfakepixel.features.duels.Duels;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.variables.Gamemode;
 
@@ -48,10 +47,10 @@ public class KDCounter {
     @SubscribeEvent
     public void onRender(RenderGameOverlayEvent.Post event) {
         if (event.type != RenderGameOverlayEvent.ElementType.ALL) return;
-        if (!NotEnoughFakepixel.feature.duels.kdCounterEnabled) return;
+        if (!Config.feature.duels.kdCounterEnabled) return;
         if (ScoreboardUtils.currentGamemode != Gamemode.DUELS) return;
 
-        draw(NotEnoughFakepixel.feature.duels.kdCounterOffsetX, NotEnoughFakepixel.feature.duels.kdCounterOffsetY, NotEnoughFakepixel.feature.duels.kdCounterScale, false);
+        draw(Config.feature.duels.kdCounterOffsetX, Config.feature.duels.kdCounterOffsetY, Config.feature.duels.kdCounterScale, false);
     }
 
     private void draw(float x, float y, float scale, boolean example) {
@@ -66,14 +65,14 @@ public class KDCounter {
     }
 
     public void renderDummy() {
-        draw(NotEnoughFakepixel.feature.duels.kdCounterOffsetX, NotEnoughFakepixel.feature.duels.kdCounterOffsetY, NotEnoughFakepixel.feature.duels.kdCounterScale, true);
+        draw(Config.feature.duels.kdCounterOffsetX, Config.feature.duels.kdCounterOffsetY, Config.feature.duels.kdCounterScale, true);
     }
 
     public float getWidth() {
-        return 45 * NotEnoughFakepixel.feature.duels.kdCounterScale; // "K/D: 10/10" is roughly 45 pixels wide at scale 1.0
+        return 45 * Config.feature.duels.kdCounterScale; // "K/D: 10/10" is roughly 45 pixels wide at scale 1.0
     }
 
     public float getHeight() {
-        return 11 * NotEnoughFakepixel.feature.duels.kdCounterScale; // Font height is ~11 pixels at scale 1.0
+        return 11 * Config.feature.duels.kdCounterScale; // Font height is ~11 pixels at scale 1.0
     }
 }

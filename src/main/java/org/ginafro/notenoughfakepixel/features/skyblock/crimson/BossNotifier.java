@@ -7,7 +7,7 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.ChatUtils;
 import org.ginafro.notenoughfakepixel.utils.SoundUtils;
@@ -16,7 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RegisterEvents
 public class BossNotifier {
@@ -39,28 +40,28 @@ public class BossNotifier {
     private long bladesoulReady = -1;
 
     @SubscribeEvent
-    public void onTick(TickEvent.ClientTickEvent e){
+    public void onTick(TickEvent.ClientTickEvent e) {
         if (Crimson.checkEssentials()) return;
-        if (NotEnoughFakepixel.feature.crimson.crimsonBladesoulNotifier) {
-            playCountdown("Bladesoul", bladesoulReady, bladesoulLastKill,bladesoulScheduled);
+        if (Config.feature.crimson.crimsonBladesoulNotifier) {
+            playCountdown("Bladesoul", bladesoulReady, bladesoulLastKill, bladesoulScheduled);
         }
-        if (NotEnoughFakepixel.feature.crimson.crimsonMageOutlawNotifier) {
-            playCountdown("Mage Outlaw", mageOutlawReady, mageOutlawLastKill,mageOutlawScheduled);
+        if (Config.feature.crimson.crimsonMageOutlawNotifier) {
+            playCountdown("Mage Outlaw", mageOutlawReady, mageOutlawLastKill, mageOutlawScheduled);
         }
-        if (NotEnoughFakepixel.feature.crimson.crimsonAshfangNotifier) {
-            playCountdown("Ashfang", ashfangReady, ashfangLastKill,ashfangScheduled);
+        if (Config.feature.crimson.crimsonAshfangNotifier) {
+            playCountdown("Ashfang", ashfangReady, ashfangLastKill, ashfangScheduled);
         }
-        if (NotEnoughFakepixel.feature.crimson.crimsonBarbarianDukeXNotifier) {
-            playCountdown("Barbarian Duke X", barbarianDukeXReady, barbarianDukeXLastKill,barbarianDukeXScheduled);
+        if (Config.feature.crimson.crimsonBarbarianDukeXNotifier) {
+            playCountdown("Barbarian Duke X", barbarianDukeXReady, barbarianDukeXLastKill, barbarianDukeXScheduled);
         }
     }
 
     @SubscribeEvent
-    public void onChat(@NotNull ClientChatReceivedEvent e){
+    public void onChat(@NotNull ClientChatReceivedEvent e) {
         if (Crimson.checkEssentials()) return;
         int spawnBossMilliseconds = 125000;
 
-        if (NotEnoughFakepixel.feature.crimson.crimsonBladesoulNotifier) {
+        if (Config.feature.crimson.crimsonBladesoulNotifier) {
             Matcher matcher = Pattern.compile("BLADESOUL DOWN!").matcher(e.message.getUnformattedText());
             if (matcher.find()) {
                 bladesoulLastKill = System.currentTimeMillis();
@@ -70,7 +71,7 @@ public class BossNotifier {
             }
         }
 
-        if (NotEnoughFakepixel.feature.crimson.crimsonMageOutlawNotifier) {
+        if (Config.feature.crimson.crimsonMageOutlawNotifier) {
             Matcher matcher = Pattern.compile("MAGE OUTLAW DOWN!").matcher(e.message.getUnformattedText());
             if (matcher.find()) {
                 mageOutlawLastKill = System.currentTimeMillis();
@@ -80,7 +81,7 @@ public class BossNotifier {
             }
         }
 
-        if (NotEnoughFakepixel.feature.crimson.crimsonAshfangNotifier) {
+        if (Config.feature.crimson.crimsonAshfangNotifier) {
             Matcher matcher = Pattern.compile("ASHFANG DOWN!").matcher(e.message.getUnformattedText());
             if (matcher.find()) {
                 ashfangLastKill = System.currentTimeMillis();
@@ -90,7 +91,7 @@ public class BossNotifier {
             }
         }
 
-        if (NotEnoughFakepixel.feature.crimson.crimsonBarbarianDukeXNotifier) {
+        if (Config.feature.crimson.crimsonBarbarianDukeXNotifier) {
             Matcher matcher = Pattern.compile("BARBARIAN DUKE X DOWN!").matcher(e.message.getUnformattedText());
             if (matcher.find()) {
                 barbarianDukeXLastKill = System.currentTimeMillis();
@@ -103,22 +104,22 @@ public class BossNotifier {
     @SubscribeEvent()
     public void onWorldUnload(WorldEvent.Unload event) {
         if (Crimson.checkEssentials()) return;
-        if (NotEnoughFakepixel.feature.crimson.crimsonBladesoulNotifier) {
+        if (Config.feature.crimson.crimsonBladesoulNotifier) {
             Arrays.fill(bladesoulScheduled, false);
             bladesoulReady = -1;
             bladesoulLastKill = -1;
         }
-        if (NotEnoughFakepixel.feature.crimson.crimsonMageOutlawNotifier) {
+        if (Config.feature.crimson.crimsonMageOutlawNotifier) {
             Arrays.fill(mageOutlawScheduled, false);
             mageOutlawReady = -1;
             mageOutlawLastKill = -1;
         }
-        if (NotEnoughFakepixel.feature.crimson.crimsonAshfangNotifier) {
+        if (Config.feature.crimson.crimsonAshfangNotifier) {
             Arrays.fill(ashfangScheduled, false);
             ashfangReady = -1;
             ashfangLastKill = -1;
         }
-        if (NotEnoughFakepixel.feature.crimson.crimsonBarbarianDukeXNotifier) {
+        if (Config.feature.crimson.crimsonBarbarianDukeXNotifier) {
             Arrays.fill(barbarianDukeXScheduled, false);
             barbarianDukeXReady = -1;
             barbarianDukeXLastKill = -1;
@@ -131,26 +132,26 @@ public class BossNotifier {
             if (bossScheduled[0] && System.currentTimeMillis() > timeBossReady) {
                 notifyTitle(boss);
                 bossScheduled[0] = false;
-            } else if (bossScheduled[1] && System.currentTimeMillis() > timeBossReady-123000) {
-                notifyChat(boss,120);
+            } else if (bossScheduled[1] && System.currentTimeMillis() > timeBossReady - 123000) {
+                notifyChat(boss, 120);
                 bossScheduled[1] = false;
-            } else if (bossScheduled[2] && System.currentTimeMillis() > timeBossReady-60000) {
-                notifyChat(boss,60);
+            } else if (bossScheduled[2] && System.currentTimeMillis() > timeBossReady - 60000) {
+                notifyChat(boss, 60);
                 bossScheduled[2] = false;
-            } else if (bossScheduled[3] && System.currentTimeMillis() > timeBossReady-30000) {
-                notifyChat(boss,30);
+            } else if (bossScheduled[3] && System.currentTimeMillis() > timeBossReady - 30000) {
+                notifyChat(boss, 30);
                 bossScheduled[3] = false;
-            } else if (bossScheduled[4] && System.currentTimeMillis() > timeBossReady-10000) {
-                notifyChat(boss,10);
+            } else if (bossScheduled[4] && System.currentTimeMillis() > timeBossReady - 10000) {
+                notifyChat(boss, 10);
                 bossScheduled[4] = false;
-            }  else if (bossScheduled[5] && System.currentTimeMillis() > timeBossReady-5000) {
-                notifyChat(boss,5);
+            } else if (bossScheduled[5] && System.currentTimeMillis() > timeBossReady - 5000) {
+                notifyChat(boss, 5);
                 bossScheduled[5] = false;
             }
         }
     }
 
-    private void notifyChat(String boss, int seconds){
+    private void notifyChat(String boss, int seconds) {
         String joinText = " spawning in ";
         if (seconds == 120) {
             ChatUtils.notifyChat(EnumChatFormatting.YELLOW + boss + joinText + "2 minutes");
@@ -161,7 +162,7 @@ public class BossNotifier {
         }
         SoundUtils.playSound(new int[]{Minecraft.getMinecraft().thePlayer.getPosition().getX(),
                 Minecraft.getMinecraft().thePlayer.getPosition().getY(),
-                Minecraft.getMinecraft().thePlayer.getPosition().getZ()},countdownSound,2.0f,1.0f
+                Minecraft.getMinecraft().thePlayer.getPosition().getZ()}, countdownSound, 2.0f, 1.0f
         );
     }
 
@@ -186,12 +187,12 @@ public class BossNotifier {
         }
     }
 
-    private static void playCountdownSound(int times){
+    private static void playCountdownSound(int times) {
         ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(4);
         for (int i = 0; i < times; i++) {
             exec.schedule(new Runnable() {
                 public void run() {
-                    SoundUtils.playSound(Minecraft.getMinecraft().thePlayer.getPosition() ,countdownSound,2.0f,1.0f+ (float)(times*2)/10);
+                    SoundUtils.playSound(Minecraft.getMinecraft().thePlayer.getPosition(), countdownSound, 2.0f, 1.0f + (float) (times * 2) / 10);
                 }
             }, i, TimeUnit.SECONDS);
         }

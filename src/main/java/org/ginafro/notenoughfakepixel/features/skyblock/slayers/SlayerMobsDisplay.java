@@ -5,7 +5,7 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
@@ -13,7 +13,7 @@ import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.variables.Constants;
 import org.ginafro.notenoughfakepixel.variables.MobDisplayTypes;
 
-import java.awt.Color;
+import java.awt.*;
 
 @RegisterEvents
 public class SlayerMobsDisplay {
@@ -23,8 +23,8 @@ public class SlayerMobsDisplay {
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.thePlayer == null || mc.theWorld == null) return;
 
-        if (NotEnoughFakepixel.feature.slayer.slayerBosses) onRender(event, true);
-        if (NotEnoughFakepixel.feature.slayer.slayerMinibosses) onRender(event, false);
+        if (Config.feature.slayer.slayerBosses) onRender(event, true);
+        if (Config.feature.slayer.slayerMinibosses) onRender(event, false);
     }
 
     private void onRender(RenderWorldLastEvent event, boolean isBoss) {
@@ -49,8 +49,8 @@ public class SlayerMobsDisplay {
     }
 
     private void showHitboxHub(float partialTicks) {
-        Color bossColor = ColorUtils.getColor(NotEnoughFakepixel.feature.slayer.slayerBossColor);
-        Color minibossColor = ColorUtils.getColor(NotEnoughFakepixel.feature.slayer.slayerColor);
+        Color bossColor = ColorUtils.getColor(Config.feature.slayer.slayerBossColor);
+        Color minibossColor = ColorUtils.getColor(Config.feature.slayer.slayerColor);
 
         WorldClient world = Minecraft.getMinecraft().theWorld;
         world.loadedEntityList.forEach(entity -> {
@@ -85,7 +85,7 @@ public class SlayerMobsDisplay {
     }
 
     private void showHitbox(MobDisplayTypes type, float partialTicks, String[] namesList, boolean isBoss) {
-        Color color = ColorUtils.getColor(NotEnoughFakepixel.feature.slayer.slayerBossColor);
+        Color color = ColorUtils.getColor(Config.feature.slayer.slayerBossColor);
         WorldClient world = Minecraft.getMinecraft().theWorld;
         world.loadedEntityList.forEach(entity -> {
             if (entity == null || entity.getName() == null) return;

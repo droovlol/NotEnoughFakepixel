@@ -18,7 +18,7 @@ public class Bandana extends CosmeticsHandler {
     public Bandana() {
         super("Bandana", CosmeticsType.HAT);
         try {
-            model =  NotEnoughFakepixel.instance.getObjLoader().loadModel(Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation("notenoughfakepixel:cosmetics/bandana/bandana.obj")).getInputStream());
+            model = NotEnoughFakepixel.instance.getObjLoader().loadModel(Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation("notenoughfakepixel:cosmetics/bandana/bandana.obj")).getInputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }

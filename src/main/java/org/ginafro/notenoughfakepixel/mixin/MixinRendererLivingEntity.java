@@ -1,27 +1,26 @@
 package org.ginafro.notenoughfakepixel.mixin;
 
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.util.IChatComponent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import net.minecraftforge.common.MinecraftForge;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
+import org.ginafro.notenoughfakepixel.events.RenderEntityModelEvent;
 import org.ginafro.notenoughfakepixel.features.skyblock.diana.Diana;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.mobs.StarredMobDisplay;
 import org.ginafro.notenoughfakepixel.features.skyblock.qol.DamageCommas;
 import org.ginafro.notenoughfakepixel.utils.ColorUtils;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraftforge.common.MinecraftForge;
 import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.ginafro.notenoughfakepixel.events.RenderEntityModelEvent;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -29,7 +28,8 @@ import java.awt.*;
 import java.nio.FloatBuffer;
 import java.util.Set;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glTexEnv;
+import static org.lwjgl.opengl.GL11.glTexEnvi;
 
 @Mixin(RendererLivingEntity.class)
 public abstract class MixinRendererLivingEntity<T extends EntityLivingBase> {
@@ -89,7 +89,7 @@ public abstract class MixinRendererLivingEntity<T extends EntityLivingBase> {
             glTexEnvi(8960, OpenGlHelper.GL_OPERAND0_ALPHA, 770);
             this.brightnessBuffer.position(0);
             Color color = new Color(
-                    ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsStarredBoxColor).getRed()
+                    ColorUtils.getColor(Config.feature.dungeons.dungeonsStarredBoxColor).getRed()
             );
             brightnessBuffer.put(color.getRed() / 255f);
             brightnessBuffer.put(color.getGreen() / 255f);

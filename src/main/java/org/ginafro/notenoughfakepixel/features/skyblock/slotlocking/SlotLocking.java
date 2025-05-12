@@ -1,24 +1,20 @@
- package org.ginafro.notenoughfakepixel.features.skyblock.slotlocking;
+package org.ginafro.notenoughfakepixel.features.skyblock.slotlocking;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import lombok.var;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSound;
 import net.minecraft.client.audio.SoundCategory;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
@@ -33,14 +29,17 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.KeybindHelper;
 import org.ginafro.notenoughfakepixel.config.gui.core.util.render.RenderUtils;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.events.ReplaceItemEvent;
 import org.ginafro.notenoughfakepixel.events.SlotClickEvent;
 import org.ginafro.notenoughfakepixel.mixin.Accesors.AccessorGuiContainer;
-import org.ginafro.notenoughfakepixel.utils.*;
+import org.ginafro.notenoughfakepixel.utils.CustomConfigFiles;
+import org.ginafro.notenoughfakepixel.utils.CustomConfigHandler;
+import org.ginafro.notenoughfakepixel.utils.ItemUtils;
+import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.variables.Gamemode;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -65,6 +64,7 @@ public class SlotLocking {
     private final ResourceLocation BOUND = new ResourceLocation("notenoughfakepixel:skyblock/bound.png");
     public String currentlyOpenChestName = "";
     public String lastOpenChestName = "";
+
     public static SlotLocking getInstance() {
         return INSTANCE;
     }
@@ -97,7 +97,9 @@ public class SlotLocking {
         realSlot = slot;
     }
 
-    public Slot getRealSlot() {return realSlot;}
+    public Slot getRealSlot() {
+        return realSlot;
+    }
 
     public void loadConfig() {
         config = CustomConfigHandler.loadConfig(SlotLockingConfig.class, new File(CustomConfigFiles.SLOT_LOCKING.path));
@@ -107,7 +109,7 @@ public class SlotLocking {
     }
 
     public void changedSlot(int slotNumber) {
-        int pingModifier = NotEnoughFakepixel.feature.sl.slotLockSwapDelay;
+        int pingModifier = Config.feature.sl.slotLockSwapDelay;
         if (pingModifier == 0) {
             return;
         }
@@ -126,7 +128,7 @@ public class SlotLocking {
     }
 
     public boolean isSwapedSlotLocked() {
-        int pingModifier = NotEnoughFakepixel.feature.sl.slotLockSwapDelay;
+        int pingModifier = Config.feature.sl.slotLockSwapDelay;
         if (pingModifier == 0) {
             return false;
         }
@@ -143,7 +145,7 @@ public class SlotLocking {
     private final long[] slotChanges = new long[9];
 
     public void saveConfig() {
-        CustomConfigHandler.saveConfig(config,new File(CustomConfigFiles.SLOT_LOCKING.path));
+        CustomConfigHandler.saveConfig(config, new File(CustomConfigFiles.SLOT_LOCKING.path));
         loadConfig();
     }
 
@@ -165,10 +167,10 @@ public class SlotLocking {
 
     private LockedSlot[] getDataForProfile() {
         if (ScoreboardUtils.currentGamemode != Gamemode.SKYBLOCK ||
-                !NotEnoughFakepixel.feature.sl.enableSlotLocking)
+                !Config.feature.sl.enableSlotLocking)
             return null;
 
-        if (NotEnoughFakepixel.feature.sl.disableInStorage) {
+        if (Config.feature.sl.disableInStorage) {
             if (currentlyOpenChestName.trim().equals("Storage")) return null;
 
             currentlyOpenChestName = StringUtils.stripControlCodes(currentlyOpenChestName);
@@ -221,7 +223,7 @@ public class SlotLocking {
     @SubscribeEvent(priority = EventPriority.LOW)
     public void keyboardInput(GuiScreenEvent.KeyboardInputEvent.Pre event) {
         if (ScoreboardUtils.currentGamemode != Gamemode.SKYBLOCK ||
-                !NotEnoughFakepixel.feature.sl.enableSlotLocking) {
+                !Config.feature.sl.enableSlotLocking) {
             return;
         }
         if (!(Minecraft.getMinecraft().currentScreen instanceof GuiContainer)) {
@@ -229,7 +231,7 @@ public class SlotLocking {
         }
         GuiContainer container = (GuiContainer) Minecraft.getMinecraft().currentScreen;
 
-        int key = NotEnoughFakepixel.feature.sl.slotLockKey;
+        int key = Config.feature.sl.slotLockKey;
         if (!lockKeyHeld && KeybindHelper.isKeyPressed(key) && !Keyboard.isRepeatEvent()) {
             Slot slot = getFocusedSlot(container);
             if (slot != null && slot.getSlotIndex() != 8 && slot.inventory == Minecraft.getMinecraft().thePlayer.inventory) {
@@ -254,8 +256,8 @@ public class SlotLocking {
                         lockedSlots[slotNum].locked = !lockedSlots[slotNum].locked;
                         lockedSlots[slotNum].boundTo = -1;
 
-                        if (NotEnoughFakepixel.feature.sl.slotLockSound) {
-                            float vol = NotEnoughFakepixel.feature.sl.slotLockSoundVol / 100f;
+                        if (Config.feature.sl.slotLockSound) {
+                            float vol = Config.feature.sl.slotLockSoundVol / 100f;
                             if (vol > 0) {
                                 if (vol > 1) vol = 1;
                                 final float volF = vol;
@@ -297,7 +299,7 @@ public class SlotLocking {
     @SubscribeEvent(priority = EventPriority.LOW)
     public void mouseEvent(GuiScreenEvent.MouseInputEvent.Pre event) {
         if (ScoreboardUtils.currentGamemode != Gamemode.SKYBLOCK ||
-                !NotEnoughFakepixel.feature.sl.enableSlotLocking) {
+                !Config.feature.sl.enableSlotLocking) {
             return;
         }
         if (!(Minecraft.getMinecraft().currentScreen instanceof GuiContainer)) {
@@ -305,7 +307,7 @@ public class SlotLocking {
         }
         GuiContainer container = (GuiContainer) Minecraft.getMinecraft().currentScreen;
 
-        if (NotEnoughFakepixel.feature.sl.enableSlotBinding && lockKeyHeld && pairingSlot != null) {
+        if (Config.feature.sl.enableSlotBinding && lockKeyHeld && pairingSlot != null) {
             final ScaledResolution scaledresolution = new ScaledResolution(Minecraft.getMinecraft());
             final int scaledWidth = scaledresolution.getScaledWidth();
             final int scaledHeight = scaledresolution.getScaledHeight();
@@ -365,8 +367,8 @@ public class SlotLocking {
             lockedSlots[lockIndex].locked = !lockedSlots[lockIndex].locked;
             lockedSlots[lockIndex].boundTo = -1;
 
-            if (NotEnoughFakepixel.feature.sl.slotLockSound) {
-                float vol = NotEnoughFakepixel.feature.sl.slotLockSoundVol / 100f;
+            if (Config.feature.sl.slotLockSound) {
+                float vol = Config.feature.sl.slotLockSoundVol / 100f;
                 if (vol > 0) {
                     if (vol > 1) vol = 1;
                     final float volF = vol;
@@ -400,7 +402,7 @@ public class SlotLocking {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void drawScreenEvent(GuiScreenEvent.DrawScreenEvent.Post event) {
-        if (!NotEnoughFakepixel.feature.sl.enableSlotBinding || event.isCanceled() || pairingSlot == null || !lockKeyHeld) {
+        if (!Config.feature.sl.enableSlotBinding || event.isCanceled() || pairingSlot == null || !lockKeyHeld) {
             setTopHalfBarrier = false;
             return;
         }
@@ -478,7 +480,7 @@ public class SlotLocking {
             slotClickEvent.setCanceled(true);
             return;
         }
-        if (NotEnoughFakepixel.feature.sl.enableSlotBinding
+        if (Config.feature.sl.enableSlotBinding
                 && slotClickEvent.clickType == 1 &&
                 locked.boundTo != -1) {
             Slot boundSlot = slotClickEvent.guiContainer.inventorySlots.getSlotFromInventory(
@@ -532,8 +534,8 @@ public class SlotLocking {
                     from, to, 2, Minecraft.getMinecraft().thePlayer
             );
             slotClickEvent.setCanceled(true);
-        } else if (NotEnoughFakepixel.feature.sl.enableSlotBinding && locked.boundTo != -1 &&
-                NotEnoughFakepixel.feature.sl.bindingAlsoLocks) {
+        } else if (Config.feature.sl.enableSlotBinding && locked.boundTo != -1 &&
+                Config.feature.sl.bindingAlsoLocks) {
             slotClickEvent.setCanceled(true);
         }
         saveConfig();
@@ -547,14 +549,14 @@ public class SlotLocking {
         if (!(screen instanceof GuiContainer)) return;
         GuiContainer container = (GuiContainer) screen;
 
-        boolean isBound = NotEnoughFakepixel.feature.sl.enableSlotBinding && slot.canBeHovered() &&
+        boolean isBound = Config.feature.sl.enableSlotBinding && slot.canBeHovered() &&
                 locked.boundTo >= 0 && locked.boundTo <= 39;
 
         if (locked.locked) {
             renderLockIcon(slot);
         } else if (isBound) {
             renderBoundIcon(slot, container);
-        } else if (NotEnoughFakepixel.feature.sl.enableSlotBinding && slot.getSlotIndex() < 8 &&
+        } else if (Config.feature.sl.enableSlotBinding && slot.getSlotIndex() < 8 &&
                 pairingSlot != null && lockKeyHeld) {
             renderHotbarHighlight(slot, container);
         }
@@ -681,7 +683,7 @@ public class SlotLocking {
 
     public LockedSlot getLockedSlot(Slot slot) {
         if (ScoreboardUtils.currentGamemode != Gamemode.SKYBLOCK ||
-                !NotEnoughFakepixel.feature.sl.enableSlotLocking)
+                !Config.feature.sl.enableSlotLocking)
             return null;
         if (slot == null) {
             return null;
@@ -698,7 +700,7 @@ public class SlotLocking {
 
     public LockedSlot getLockedSlotIndex(int index) {
         if (ScoreboardUtils.currentGamemode != Gamemode.SKYBLOCK ||
-                !NotEnoughFakepixel.feature.sl.enableSlotLocking) {
+                !Config.feature.sl.enableSlotLocking) {
             return null;
         }
 
@@ -712,14 +714,14 @@ public class SlotLocking {
     public boolean isSlotLocked(Slot slot) {
         LockedSlot locked = getLockedSlot(slot);
         return locked != null &&
-                (locked.locked || (NotEnoughFakepixel.feature.sl.bindingAlsoLocks && locked.boundTo != -1));
+                (locked.locked || (Config.feature.sl.bindingAlsoLocks && locked.boundTo != -1));
     }
 
     public boolean isSlotIndexLocked(int index) {
         LockedSlot locked = getLockedSlotIndex(index);
 
         return locked != null &&
-                (locked.locked || (NotEnoughFakepixel.feature.sl.bindingAlsoLocks && locked.boundTo != -1));
+                (locked.locked || (Config.feature.sl.bindingAlsoLocks && locked.boundTo != -1));
     }
 
     boolean setTopHalfBarrier = false;

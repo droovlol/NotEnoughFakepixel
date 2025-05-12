@@ -1,14 +1,14 @@
 package org.ginafro.notenoughfakepixel.config.gui.core.config.gui;
 
-import static org.ginafro.notenoughfakepixel.config.gui.GuiTextures.*;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import org.ginafro.notenoughfakepixel.config.gui.core.ChromaColour;
 import org.ginafro.notenoughfakepixel.config.gui.core.GuiElementColour;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.struct.ConfigProcessor;
 import org.ginafro.notenoughfakepixel.config.gui.core.util.render.RenderUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.input.Mouse;
+
+import static org.ginafro.notenoughfakepixel.config.gui.GuiTextures.button_white;
 
 public class GuiOptionEditorColour extends GuiOptionEditor {
 
@@ -52,16 +52,16 @@ public class GuiOptionEditorColour extends GuiOptionEditor {
 
         if (Mouse.getEventButtonState() && Mouse.getEventButton() == 0 && mouseX > x + width / 6 - 24 && mouseX < x + width / 6 + 24 && mouseY > y + height - 7 - 14 && mouseY < y + height - 7 + 2) {
             colourElement =
-                new GuiElementColour(
-                    mouseX,
-                    mouseY,
-                    (String) option.get(),
-                    val -> {
-                        option.set(val);
-                        chromaColour = val;
-                    },
-                    () -> colourElement = null
-                );
+                    new GuiElementColour(
+                            mouseX,
+                            mouseY,
+                            (String) option.get(),
+                            val -> {
+                                option.set(val);
+                                chromaColour = val;
+                            },
+                            () -> colourElement = null
+                    );
         }
 
         return false;

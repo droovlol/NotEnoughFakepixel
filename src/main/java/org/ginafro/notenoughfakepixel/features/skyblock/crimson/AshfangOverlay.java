@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.Position;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 
@@ -17,7 +17,7 @@ public class AshfangOverlay {
     private final Position position;
 
     public AshfangOverlay() {
-        this.position = NotEnoughFakepixel.feature.crimson.ashfangOverlayPos;
+        this.position = Config.feature.crimson.ashfangOverlayPos;
     }
 
     @SubscribeEvent
@@ -27,7 +27,9 @@ public class AshfangOverlay {
         render();
     }
 
-    /** Renders the overlay at the configured position */
+    /**
+     * Renders the overlay at the configured position
+     */
     public void render() {
         if (!shouldShow()) return;
 
@@ -46,7 +48,9 @@ public class AshfangOverlay {
         }
     }
 
-    /** Renders a dummy version for the position editor preview */
+    /**
+     * Renders a dummy version for the position editor preview
+     */
     public void renderDummy() {
         List<String> lines = new ArrayList<>();
         getLines(lines, true);
@@ -62,18 +66,22 @@ public class AshfangOverlay {
         }
     }
 
-    /** Populates the text lines to display */
+    /**
+     * Populates the text lines to display
+     */
     private void getLines(List<String> lines, boolean example) {
         if (Crimson.checkEssentials()) return; // Skip if essentials check fails
-        if (NotEnoughFakepixel.feature.crimson.crimsonAshfangOverlay) {
+        if (Config.feature.crimson.crimsonAshfangOverlay) {
             lines.add("\u00a77Ashfang HP: \u00a7r" + formatAshfangHP(AshfangHelper.getAshfangHP()));
             lines.add("\u00a77Blazing souls: \u00a7r" + AshfangHelper.getBlazingSoulsCounter() + " / " + AshfangHelper.getHitsNeeded());
         }
     }
 
-    /** Determines if the overlay should be shown */
+    /**
+     * Determines if the overlay should be shown
+     */
     private boolean shouldShow() {
-        return NotEnoughFakepixel.feature.crimson.crimsonAshfangOverlay &&
+        return Config.feature.crimson.crimsonAshfangOverlay &&
                 Crimson.checkAshfangArea(new int[]{
                         Minecraft.getMinecraft().thePlayer.getPosition().getX(),
                         Minecraft.getMinecraft().thePlayer.getPosition().getY(),
@@ -81,15 +89,20 @@ public class AshfangOverlay {
                 });
     }
 
-    /** Formats Ashfang HP with color based on percentage */
+    /**
+     * Formats Ashfang HP with color based on percentage
+     */
     private static String formatAshfangHP(double hp) {
         double percentage = hp / 50_000_000; // Assuming max HP is 50M
         String prefix = percentage > 0.5 ? "§a" : percentage > 0.1 ? "§e" : "§c"; // Green, Yellow, Red
         return prefix + coolFormat(hp, 0);
     }
 
-    /** Formats numbers into a compact form (e.g., 1k, 1M) */
+    /**
+     * Formats numbers into a compact form (e.g., 1k, 1M)
+     */
     private static final char[] SUFFIXES = {'k', 'M'};
+
     private static String coolFormat(double n, int iteration) {
         double d = ((double) (long) n / 100) / 10.0;
         boolean isRound = (d * 10) % 10 == 0;

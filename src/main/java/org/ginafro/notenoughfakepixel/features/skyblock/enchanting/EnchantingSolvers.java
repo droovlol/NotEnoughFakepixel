@@ -1,6 +1,6 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.enchanting;
 
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.init.Blocks;
@@ -14,7 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.utils.TablistParser;
@@ -38,11 +38,11 @@ public class EnchantingSolvers {
     private boolean clicked = false;
     static int roundUltraSequencerSolver = 1;
 
-    static class UltrasequencerSlot{
+    static class UltrasequencerSlot {
         public Slot slot;
         public int quantity;
 
-        public UltrasequencerSlot(Slot slot, int quantity){
+        public UltrasequencerSlot(Slot slot, int quantity) {
             this.slot = slot;
             this.quantity = quantity;
         }
@@ -82,13 +82,13 @@ public class EnchantingSolvers {
 
     @SubscribeEvent
     public void onGuiDrawn(GuiScreenEvent.BackgroundDrawnEvent event) {
-        if (NotEnoughFakepixel.feature.experimentation.experimentationUltraSequencerSolver && currentSolverType == SolverTypes.ULTRASEQUENCER) {
+        if (Config.feature.experimentation.experimentationUltraSequencerSolver && currentSolverType == SolverTypes.ULTRASEQUENCER) {
 
-            if(!(event.gui instanceof GuiChest)) return;
+            if (!(event.gui instanceof GuiChest)) return;
             GuiChest chest = (GuiChest) event.gui;
             Container container = chest.inventorySlots;
 
-            if(!(container instanceof ContainerChest)) return;
+            if (!(container instanceof ContainerChest)) return;
             String title = ((ContainerChest) container).getLowerChestInventory().getDisplayName().getUnformattedText();
             if (!title.startsWith("Ultrasequencer (")) return;
             ContainerChest containerChest = (ContainerChest) container;
@@ -99,11 +99,11 @@ public class EnchantingSolvers {
             boolean isClock = timerStack.getItem() == Items.clock;
 
             // if not clock, then remember the items
-            if (!isClock){
+            if (!isClock) {
                 if (roundUltraSequencerSolver == ultrasequencerSlots.size()) return;
                 if (resolving) ultrasequencerSlots.clear();
                 resolving = false;
-                for(Slot slot : containerChest.inventorySlots) {
+                for (Slot slot : containerChest.inventorySlots) {
                     // select only the items in the chest
                     if (slot.inventory == Minecraft.getMinecraft().thePlayer.inventory) continue;
                     ItemStack item = slot.getStack();
@@ -119,7 +119,7 @@ public class EnchantingSolvers {
             } else {
                 resolving = true;
                 // if its clock, draw the items in the list
-                for(UltrasequencerSlot slot : ultrasequencerSlots){
+                for (UltrasequencerSlot slot : ultrasequencerSlots) {
                     ItemStack itemInSlot = containerChest.inventorySlots.get(slot.slot.slotNumber).getStack();
                     if (itemInSlot == null) continue;
                     if (itemInSlot.getItem() == Items.dye) continue;
@@ -128,12 +128,12 @@ public class EnchantingSolvers {
                     RenderUtils.drawOnSlot(containerChest.inventorySlots.size(), slot.slot.xDisplayPosition, slot.slot.yDisplayPosition, color.getRGB(), slot.quantity);
                 }
             }
-        } else if (NotEnoughFakepixel.feature.experimentation.experimentationChronomatronSolver && currentSolverType == SolverTypes.CHRONOMATRON){
-            if(!(event.gui instanceof GuiChest)) return;
+        } else if (Config.feature.experimentation.experimentationChronomatronSolver && currentSolverType == SolverTypes.CHRONOMATRON) {
+            if (!(event.gui instanceof GuiChest)) return;
             GuiChest chest = (GuiChest) event.gui;
             Container container = chest.inventorySlots;
 
-            if(!(container instanceof ContainerChest)) return;
+            if (!(container instanceof ContainerChest)) return;
             String title = ((ContainerChest) container).getLowerChestInventory().getDisplayName().getUnformattedText();
             if (!title.startsWith("Chronomatron (")) return;
             ContainerChest containerChest = (ContainerChest) container;
@@ -202,11 +202,11 @@ public class EnchantingSolvers {
                             return;
                         }
                         Slot slot1 = containerChest.inventorySlots.get(resultIndex);
-                        Slot slot2 = containerChest.inventorySlots.get(resultIndex+9);
+                        Slot slot2 = containerChest.inventorySlots.get(resultIndex + 9);
                         RenderUtils.drawOnSlot(containerChest.inventorySlots.size(), slot1.xDisplayPosition, slot1.yDisplayPosition, green.getRGB());
                         RenderUtils.drawOnSlot(containerChest.inventorySlots.size(), slot2.xDisplayPosition, slot2.yDisplayPosition, green.getRGB());
                         if (!TablistParser.currentOpenChestName.contains("Transcendent") && !TablistParser.currentOpenChestName.contains("Metaphysical")) {
-                            Slot slot3 = containerChest.inventorySlots.get(resultIndex+18);
+                            Slot slot3 = containerChest.inventorySlots.get(resultIndex + 18);
                             RenderUtils.drawOnSlot(containerChest.inventorySlots.size(), slot3.xDisplayPosition, slot3.yDisplayPosition, green.getRGB());
                         }
                     } else if (Block.getBlockFromItem(resultItem) == Blocks.stained_hardened_clay && !resolved) {
@@ -217,8 +217,7 @@ public class EnchantingSolvers {
                 previousIndex = 0;
                 noteFinished = true;
             }
-        }
-        else if (currentSolverType == SolverTypes.NONE){
+        } else if (currentSolverType == SolverTypes.NONE) {
             if (chronomatronOrder.isEmpty() && ultrasequencerSlots.isEmpty()) return;
 
             ultrasequencerSlots = new ArrayList<>();

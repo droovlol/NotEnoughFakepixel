@@ -21,20 +21,20 @@ public class GuiUtils {
         return chest.inventorySlots.windowId;
     }
 
-    public static void drawHorizontalLine(int x,int x1,int y,int width,int color){
-        Gui.drawRect(x,y,x1,y+width,color);
+    public static void drawHorizontalLine(int x, int x1, int y, int width, int color) {
+        Gui.drawRect(x, y, x1, y + width, color);
     }
 
 
-    public static void drawVerticalLine(int y,int y1,int x,int width,int color){
-        Gui.drawRect(x,y,x+width,y1,color);
+    public static void drawVerticalLine(int y, int y1, int x, int width, int color) {
+        Gui.drawRect(x, y, x + width, y1, color);
     }
 
-    public static void drawOutlineRect(int x,int y,int width,int height, int lineWidth,int color){
-        drawHorizontalLine(x,x+width,y,lineWidth,color);
-        drawHorizontalLine(x,x+width,y+height,lineWidth,color);
-        drawVerticalLine(y,y+height,x,lineWidth,color);
-        drawVerticalLine(y,y+height,x+width,lineWidth,color);
+    public static void drawOutlineRect(int x, int y, int width, int height, int lineWidth, int color) {
+        drawHorizontalLine(x, x + width, y, lineWidth, color);
+        drawHorizontalLine(x, x + width, y + height, lineWidth, color);
+        drawVerticalLine(y, y + height, x, lineWidth, color);
+        drawVerticalLine(y, y + height, x + width, lineWidth, color);
     }
 
 
@@ -42,11 +42,11 @@ public class GuiUtils {
         Minecraft mc = Minecraft.getMinecraft();
         List<String> list = stack.getTooltip(mc.thePlayer, mc.gameSettings.advancedItemTooltips);
 
-        for(int i = 0; i < list.size(); ++i) {
+        for (int i = 0; i < list.size(); ++i) {
             if (i == 0) {
-                list.set(i, stack.getRarity().rarityColor + (String)list.get(i));
+                list.set(i, stack.getRarity().rarityColor + (String) list.get(i));
             } else {
-                list.set(i, EnumChatFormatting.GRAY + (String)list.get(i));
+                list.set(i, EnumChatFormatting.GRAY + (String) list.get(i));
             }
         }
 

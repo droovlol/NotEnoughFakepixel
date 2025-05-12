@@ -13,7 +13,6 @@ import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.Properties;
 
 public class CapeManager {
 
@@ -52,14 +51,15 @@ public class CapeManager {
             try {
                 URL url = new URL(CAPES_JSON_URL);
                 Reader reader = new InputStreamReader(url.openStream());
-                List<Map<String, Object>> data = new Gson().fromJson(reader, new TypeToken<List<Map<String, Object>>>(){}.getType());
+                List<Map<String, Object>> data = new Gson().fromJson(reader, new TypeToken<List<Map<String, Object>>>() {
+                }.getType());
 
                 for (Map<String, Object> entry : data) {
                     int id = Integer.parseInt((String) entry.get("capeID"));
                     String file = (String) entry.get("file");
                     int width = ((Double) entry.get("width")).intValue();
                     int height = ((Double) entry.get("height")).intValue();
-                    String name = (String)entry.get("name");
+                    String name = (String) entry.get("name");
 
                     Cape cape = new Cape(width, height, id, file, name);
                     allCapes.add(cape);

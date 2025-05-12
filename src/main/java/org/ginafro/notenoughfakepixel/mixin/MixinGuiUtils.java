@@ -12,7 +12,7 @@ import java.util.List;
 public class MixinGuiUtils {
 
     @ModifyVariable(at = @At("HEAD"), method = "drawHoveringText")
-    private static List<String> onDrawHoveringText( List<String> textLines ) {
+    private static List<String> onDrawHoveringText(List<String> textLines) {
         return ScrollableTooltips.handleTextLineRendering(textLines);
     }
 

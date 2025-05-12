@@ -1,9 +1,10 @@
 package org.ginafro.notenoughfakepixel.config.gui.core.config.struct;
 
+import com.google.gson.annotations.Expose;
 import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.*;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.gui.*;
-import com.google.gson.annotations.Expose;
+
 import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.List;

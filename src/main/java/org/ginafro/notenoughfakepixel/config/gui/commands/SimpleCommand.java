@@ -1,12 +1,13 @@
 package org.ginafro.notenoughfakepixel.config.gui.commands;
 
-import java.util.List;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.BlockPos;
 
+import java.util.List;
+
 /**
- @author Moulberry
+ * @author Moulberry
  **/
 public class SimpleCommand extends CommandBase {
 

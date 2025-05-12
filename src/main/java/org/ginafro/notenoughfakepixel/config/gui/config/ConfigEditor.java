@@ -1,8 +1,15 @@
 package org.ginafro.notenoughfakepixel.config.gui.config;
 
+import com.google.common.collect.Lists;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.ResourceLocation;
 import org.ginafro.notenoughfakepixel.Configuration;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.ginafro.notenoughfakepixel.config.gui.GuiTextures;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.config.gui.core.GlScissorStack;
 import org.ginafro.notenoughfakepixel.config.gui.core.GuiElement;
 import org.ginafro.notenoughfakepixel.config.gui.core.GuiElementTextField;
@@ -14,21 +21,14 @@ import org.ginafro.notenoughfakepixel.config.gui.core.util.lerp.LerpingInteger;
 import org.ginafro.notenoughfakepixel.config.gui.core.util.render.RenderUtils;
 import org.ginafro.notenoughfakepixel.config.gui.core.util.render.TextRenderUtils;
 import org.ginafro.notenoughfakepixel.utils.StringUtils;
-import com.google.common.collect.Lists;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
+
 import java.awt.*;
 import java.net.URI;
 import java.util.*;
 import java.util.List;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.ResourceLocation;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 
 import static org.ginafro.notenoughfakepixel.config.gui.GuiTextures.DISCORD;
 import static org.ginafro.notenoughfakepixel.config.gui.GuiTextures.GITHUB;
@@ -42,7 +42,7 @@ public class ConfigEditor extends GuiElement {
             "https://github.com/davidbelesp/NotEnoughFakepixel"
     };
     private static final ResourceLocation SEARCH_ICON = new ResourceLocation("notenoughfakepixel:search.png");
-    public static ConfigEditor editor = new ConfigEditor(NotEnoughFakepixel.feature);
+    public static ConfigEditor editor = new ConfigEditor(Config.feature);
     private final long openedMillis;
     private final LerpingInteger optionsScroll = new LerpingInteger(0, 150);
     private final LerpingInteger categoryScroll = new LerpingInteger(0, 150);

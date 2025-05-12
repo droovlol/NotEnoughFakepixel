@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.ItemUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
@@ -26,21 +26,21 @@ public class DrillFuelParsing {
     public static Matcher fuelMatcher = Pattern.compile("§7Fuel: §2([\\d,]+)§8/(\\d+)k").matcher("");
 
     @SubscribeEvent
-    public void onTick(TickEvent.ClientTickEvent e){
-        if(!NotEnoughFakepixel.feature.mining.miningDrillFuel) return;
-        if(lastRead < 20) {
+    public void onTick(TickEvent.ClientTickEvent e) {
+        if (!Config.feature.mining.miningDrillFuel) return;
+        if (lastRead < 20) {
             lastRead++;
             return;
         }
-        if(Minecraft.getMinecraft().thePlayer == null) return;
-        if(ScoreboardUtils.currentLocation != Location.DWARVEN) return;
+        if (Minecraft.getMinecraft().thePlayer == null) return;
+        if (ScoreboardUtils.currentLocation != Location.DWARVEN) return;
 
-        if(!ScoreboardUtils.currentGamemode.isSkyblock()) return;
+        if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
 
         ItemStack heldItem = Minecraft.getMinecraft().thePlayer.getHeldItem();
         if (heldItem == null) return;
 
-        if(!ItemUtils.getInternalName(heldItem).contains("_DRILL_")) return;
+        if (!ItemUtils.getInternalName(heldItem).contains("_DRILL_")) return;
 
         int fuelTemp = ItemUtils.getExtraAttributesIntTag(heldItem, "fuel");
         if (fuelTemp != -1) fuel = fuelTemp;

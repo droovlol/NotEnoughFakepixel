@@ -1,10 +1,11 @@
 package org.ginafro.notenoughfakepixel.config.gui.core.util.render;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TextRenderUtils {
 

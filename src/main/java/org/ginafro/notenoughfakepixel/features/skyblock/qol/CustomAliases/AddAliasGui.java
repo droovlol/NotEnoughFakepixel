@@ -7,7 +7,7 @@ import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
 
-public class AddAliasGui extends GuiScreen{
+public class AddAliasGui extends GuiScreen {
 
     private GuiScreen parentScreen;
     private GuiTextField messageField;
@@ -35,7 +35,7 @@ public class AddAliasGui extends GuiScreen{
 
         messageField = new GuiTextField(1, fontRendererObj, centerX - fieldWidth / 2, centerY - spacing - 10, fieldWidth, 20);
         alertField = new GuiTextField(2, fontRendererObj, centerX - fieldWidth / 2, centerY + 10, fieldWidth, 20);
-        locationButton = new GuiButton(4, centerX - buttonWidth/2, centerY + spacing + 20, buttonWidth, 20, "Location: " + locations[locationIndex]);
+        locationButton = new GuiButton(4, centerX - buttonWidth / 2, centerY + spacing + 20, buttonWidth, 20, "Location: " + locations[locationIndex]);
         GuiButton saveButton = new GuiButton(5, centerX - buttonWidth / 2, centerY + 2 * spacing + 30, buttonWidth, 20, "Save");
         buttonList.add(locationButton);
         buttonList.add(saveButton);
@@ -87,7 +87,7 @@ public class AddAliasGui extends GuiScreen{
         } else if (button.id == 5) {
             String location = locations[locationIndex];
             String command = messageField.getText();
-            if(!command.startsWith("/")){
+            if (!command.startsWith("/")) {
                 command = "/" + command;
             }
             String allias = alertField.getText();

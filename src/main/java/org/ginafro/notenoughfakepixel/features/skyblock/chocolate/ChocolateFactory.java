@@ -21,7 +21,7 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.*;
 import org.jetbrains.annotations.NotNull;
@@ -44,7 +44,7 @@ public class ChocolateFactory {
     private final String eggLime = "e3da4593-afbb-38df-bf1e-b57e27a2e0e1";
     private final String eggBlue = "15785089-b2b0-38ac-b379-8af3d6253c62";
     private final String eggCake = "9e39f2f4-8038-3aac-97fd-d7420cdf4601";
-    private final ArrayList <Waypoint> waypoints = new ArrayList<>();
+    private final ArrayList<Waypoint> waypoints = new ArrayList<>();
 
     public ChocolateFactory() {
         eggIDS.add(eggLime);
@@ -55,7 +55,7 @@ public class ChocolateFactory {
     @SubscribeEvent
     public void onRenderLast(RenderWorldLastEvent event) {
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
-        if (!NotEnoughFakepixel.feature.chocolateFactory.chocolateChocolateEggWaypoints) return;
+        if (!Config.feature.chocolateFactory.chocolateChocolateEggWaypoints) return;
         checkForEggs();
         drawWaypoints(event.partialTicks);
         drawTags(event.partialTicks);
@@ -63,7 +63,8 @@ public class ChocolateFactory {
 
     @SubscribeEvent()
     public void onGuiOpen(GuiScreenEvent.BackgroundDrawnEvent event) {
-        if (!NotEnoughFakepixel.feature.chocolateFactory.chocolateChocolateShowBestUpgrade || !(event.gui instanceof GuiChest)) return;
+        if (!Config.feature.chocolateFactory.chocolateChocolateShowBestUpgrade || !(event.gui instanceof GuiChest))
+            return;
 
         TreeMap<Float, Slot> upgradeCosts = new TreeMap<>();
         GuiChest chest = (GuiChest) event.gui;
@@ -95,14 +96,14 @@ public class ChocolateFactory {
     }
 
     @SubscribeEvent
-    public void onChat(@NotNull ClientChatReceivedEvent e){
-        if (!NotEnoughFakepixel.feature.chocolateFactory.chocolateChocolateEggWaypoints) return;
+    public void onChat(@NotNull ClientChatReceivedEvent e) {
+        if (!Config.feature.chocolateFactory.chocolateChocolateEggWaypoints) return;
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
         if (ChatUtils.middleBar.matcher(e.message.getFormattedText()).matches()) return;
         Matcher matcher = Pattern.compile("HOPPITY'S HUNT You found").matcher(e.message.getUnformattedText());
         Matcher matcher2 = Pattern.compile("HOPPITY'S HUNT A Chocolate .* Egg has appeared").matcher(e.message.getUnformattedText());
         Matcher matcher3 = Pattern.compile("You have already collected this Chocolate .* Egg! Try again when it respawns!").matcher(e.message.getUnformattedText());
-        int[] playerCoords = new int[] {Minecraft.getMinecraft().thePlayer.getPosition().getX(), Minecraft.getMinecraft().thePlayer.getPosition().getY(), Minecraft.getMinecraft().thePlayer.getPosition().getZ()};
+        int[] playerCoords = new int[]{Minecraft.getMinecraft().thePlayer.getPosition().getX(), Minecraft.getMinecraft().thePlayer.getPosition().getY(), Minecraft.getMinecraft().thePlayer.getPosition().getZ()};
         if (matcher.find()) {
             Waypoint w = Waypoint.getClosestWaypoint(waypoints, playerCoords);
             if (w == null) return;
@@ -111,19 +112,19 @@ public class ChocolateFactory {
         if (matcher2.find()) {
             ArrayList<Waypoint> waypointsToRemove = new ArrayList<>();
             for (Waypoint w : waypoints) {
-                if (w.isHidden() && Waypoint.distance(playerCoords,w.getCoordinates()) > 64) waypointsToRemove.add(w);
+                if (w.isHidden() && Waypoint.distance(playerCoords, w.getCoordinates()) > 64) waypointsToRemove.add(w);
             }
             waypoints.removeAll(waypointsToRemove);
         }
         if (matcher3.find()) {
             Waypoint w = Waypoint.getClosestWaypoint(waypoints, playerCoords);
-            if (w != null && Waypoint.distance(playerCoords,w.getCoordinates()) < 6) w.setHidden(true);
+            if (w != null && Waypoint.distance(playerCoords, w.getCoordinates()) < 6) w.setHidden(true);
         }
     }
 
     @SubscribeEvent()
     public void onWorldUnload(WorldEvent.Unload event) {
-        if (NotEnoughFakepixel.feature.chocolateFactory.chocolateChocolateEggWaypoints) waypoints.clear();
+        if (Config.feature.chocolateFactory.chocolateChocolateEggWaypoints) waypoints.clear();
     }
 
     private void checkForEggs() {
@@ -136,14 +137,14 @@ public class ChocolateFactory {
                 ItemStack it = ((EntityArmorStand) entity).getEquipmentInSlot(4);
                 if (it != null && it.getItem() == Items.skull) {
                     NBTTagCompound nbt = it.getTagCompound();
-                    if(nbt != null && nbt.hasKey("SkullOwner") && nbt.getCompoundTag("SkullOwner").hasKey("Id")) {
+                    if (nbt != null && nbt.hasKey("SkullOwner") && nbt.getCompoundTag("SkullOwner").hasKey("Id")) {
                         String id = nbt.getCompoundTag("SkullOwner").getString("Id");
                         if (isEgg(id)) {
                             int[] entityCoords = new int[]{entity.getPosition().getX(), entity.getPosition().getY(), entity.getPosition().getZ()};
                             Waypoint waypoint = new Waypoint("EGG", entityCoords);
                             if (checkIfAdded(waypoint)) continue;
                             waypoints.add(waypoint);
-                            SoundUtils.playSound(entityCoords,"random.pop", 4.0f, 2.5f);
+                            SoundUtils.playSound(entityCoords, "random.pop", 4.0f, 2.5f);
                         }
                     }
                 }
@@ -158,7 +159,7 @@ public class ChocolateFactory {
         double viewerZ = viewer.lastTickPosZ + (viewer.posZ - viewer.lastTickPosZ) * partialTicks;
         for (Waypoint waypoint : waypoints) {
             if (waypoint == null || waypoint.isHidden()) continue;
-            Color colorDrawWaypoint = ColorUtils.getColor(NotEnoughFakepixel.feature.chocolateFactory.chocolateChocolateEggWaypointsColor);
+            Color colorDrawWaypoint = ColorUtils.getColor(Config.feature.chocolateFactory.chocolateChocolateEggWaypointsColor);
             colorDrawWaypoint = new Color(colorDrawWaypoint.getRed(), colorDrawWaypoint.getGreen(), colorDrawWaypoint.getBlue(), 150);
             AxisAlignedBB bb = new AxisAlignedBB(
                     waypoint.getCoordinates()[0] - viewerX,
@@ -179,7 +180,7 @@ public class ChocolateFactory {
         for (Waypoint waypoint : waypoints) {
             if (waypoint == null || waypoint.isHidden()) continue;
             GlStateManager.disableCull();
-            RenderUtils.drawTag("Egg",new double[]{waypoint.getCoordinates()[0],waypoint.getCoordinates()[1],waypoint.getCoordinates()[2]},Color.WHITE, partialTicks);
+            RenderUtils.drawTag("Egg", new double[]{waypoint.getCoordinates()[0], waypoint.getCoordinates()[1], waypoint.getCoordinates()[2]}, Color.WHITE, partialTicks);
             GlStateManager.enableCull();
             GlStateManager.enableTexture2D();
         }

@@ -37,7 +37,7 @@ public class DungeonManager {
         return checkEssentials() && (ScoreboardUtils.currentFloor.name().equals("F7") || ScoreboardUtils.currentFloor.name().equals("M7"));
     }
 
-    public static  boolean isBossStage() {
+    public static boolean isBossStage() {
         return isBossStage;
     }
 

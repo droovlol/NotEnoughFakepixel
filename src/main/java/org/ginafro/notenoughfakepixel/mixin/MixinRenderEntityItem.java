@@ -1,8 +1,8 @@
 package org.ginafro.notenoughfakepixel.mixin;
 
-import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.ScaleDungeonSecrets;
 import net.minecraft.client.renderer.entity.RenderEntityItem;
 import net.minecraft.entity.item.EntityItem;
+import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.ScaleDungeonSecrets;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

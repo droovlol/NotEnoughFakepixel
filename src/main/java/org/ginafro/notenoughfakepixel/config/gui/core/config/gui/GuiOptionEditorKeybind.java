@@ -1,17 +1,17 @@
 package org.ginafro.notenoughfakepixel.config.gui.core.config.gui;
 
-import static org.ginafro.notenoughfakepixel.config.gui.GuiTextures.*;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.ResourceLocation;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.KeybindHelper;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.struct.ConfigProcessor;
 import org.ginafro.notenoughfakepixel.config.gui.core.util.render.RenderUtils;
 import org.ginafro.notenoughfakepixel.config.gui.core.util.render.TextRenderUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+
+import static org.ginafro.notenoughfakepixel.config.gui.GuiTextures.button_tex;
 
 public class GuiOptionEditorKeybind extends GuiOptionEditor {
 

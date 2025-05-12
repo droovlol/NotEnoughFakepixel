@@ -8,6 +8,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.events.GuiContainerBackgroundDrawnEvent;
 import org.ginafro.notenoughfakepixel.events.SlotClickEvent;
 import org.ginafro.notenoughfakepixel.features.skyblock.slotlocking.SlotLocking;
@@ -55,9 +56,9 @@ public class MixinGuiContainer {
         if (startColor == 0x80ffffff && endColor == 0x80ffffff &&
                 theSlot != null && SlotLocking.getInstance().isSlotLocked(theSlot)) {
             int col = 0x80ff8080;
-            drawGradientRect(100,left, top, right, bottom, col, col);
+            drawGradientRect(100, left, top, right, bottom, col, col);
         } else {
-            drawGradientRect(100,left, top, right, bottom, startColor, endColor);
+            drawGradientRect(100, left, top, right, bottom, startColor, endColor);
         }
     }
 
@@ -103,7 +104,7 @@ public class MixinGuiContainer {
             ordinal = 0), locals = LocalCapture.CAPTURE_FAILSOFT)
     private void drawSlot(Slot slotIn, CallbackInfo ci, int x, int y, ItemStack item, boolean flag, boolean flag1,
                           ItemStack itemstack1, String s) {
-        if (!NotEnoughFakepixel.feature.qol.qolReforgeHelper) return;
+        if (!Config.feature.qol.qolReforgeHelper) return;
 
         if (slotIn.inventory.getDisplayName().getUnformattedText().equals("Reforge Item") && slotIn.slotNumber == 13) {
             if (item != null && item.hasDisplayName()) {
@@ -121,7 +122,7 @@ public class MixinGuiContainer {
                     y += 22;
                     FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
                     float halfStringWidth = fr.getStringWidth(displayReforge) / 2;
-                    reforgeToRender = new ReforgePair(x-halfStringWidth, y, displayReforge);
+                    reforgeToRender = new ReforgePair(x - halfStringWidth, y, displayReforge);
                 }
             }
         }

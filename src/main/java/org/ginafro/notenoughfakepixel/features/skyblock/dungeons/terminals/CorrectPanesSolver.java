@@ -14,11 +14,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
 import org.ginafro.notenoughfakepixel.utils.ColorUtils;
-import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.utils.SoundUtils;
 import org.lwjgl.input.Mouse;
 
@@ -52,7 +51,7 @@ public class CorrectPanesSolver {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onDrawScreenPre(GuiScreenEvent.DrawScreenEvent.Pre event) {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalCorrectPanesSolver) return;
+        if (!Config.feature.dungeons.dungeonsTerminalCorrectPanesSolver) return;
         if (!(event.gui instanceof GuiChest)) return;
         if (!DungeonManager.checkEssentialsF7()) return;
 
@@ -65,14 +64,14 @@ public class CorrectPanesSolver {
                 .getDisplayName()
                 .getUnformattedText()
                 .trim();
-        if (NotEnoughFakepixel.feature.dungeons.dungeonsCustomGuiPanes && displayName.equals("Correct all the panes!")) {
+        if (Config.feature.dungeons.dungeonsCustomGuiPanes && displayName.equals("Correct all the panes!")) {
             event.setCanceled(true);
         }
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onDrawScreenPost(GuiScreenEvent.DrawScreenEvent.Post event) {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalCorrectPanesSolver) return;
+        if (!Config.feature.dungeons.dungeonsTerminalCorrectPanesSolver) return;
         if (!DungeonManager.checkEssentialsF7()) return;
         if (!(event.gui instanceof GuiChest)) return;
 
@@ -87,7 +86,7 @@ public class CorrectPanesSolver {
         lastCorrectSlots.clear();
         slotPositions.clear();
 
-        if (NotEnoughFakepixel.feature.dungeons.dungeonsCustomGuiPanes) {
+        if (Config.feature.dungeons.dungeonsCustomGuiPanes) {
             long currentTime = System.currentTimeMillis();
             if (currentTime - lastRecheckTime >= 1000) {
                 clickedSlots.clear();
@@ -120,7 +119,7 @@ public class CorrectPanesSolver {
 
             ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
             GlStateManager.pushMatrix();
-            float scale = NotEnoughFakepixel.feature.dungeons.dungeonsTerminalsScale;
+            float scale = Config.feature.dungeons.dungeonsTerminalsScale;
             int guiWidth = (int) (INNER_COLUMNS * SLOT_SIZE * scale);
             int guiHeight = (int) (INNER_ROWS * SLOT_SIZE * scale);
             int guiLeft = (sr.getScaledWidth() - guiWidth) / 2;
@@ -146,7 +145,7 @@ public class CorrectPanesSolver {
                     if (pos != null) {
                         drawRect(pos.x + 1, pos.y + 1,
                                 pos.x + SLOT_SIZE - 1, pos.y + SLOT_SIZE - 1,
-                                ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsCorrectColor).getRGB());
+                                ColorUtils.getColor(Config.feature.dungeons.dungeonsCorrectColor).getRGB());
                     }
                 }
             }
@@ -156,8 +155,8 @@ public class CorrectPanesSolver {
 
     @SubscribeEvent
     public void onMouseClick(GuiScreenEvent.MouseInputEvent.Pre event) {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsPreventMissclicks) return;
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalCorrectPanesSolver) return;
+        if (!Config.feature.dungeons.dungeonsPreventMissclicks) return;
+        if (!Config.feature.dungeons.dungeonsTerminalCorrectPanesSolver) return;
         if (!DungeonManager.checkEssentialsF7()) return;
         if (!Mouse.getEventButtonState()) return;
 
@@ -172,9 +171,9 @@ public class CorrectPanesSolver {
         String title = containerChest.getLowerChestInventory().getDisplayName().getUnformattedText();
         if (!title.equals("Correct all the panes!")) return;
 
-        if (NotEnoughFakepixel.feature.dungeons.dungeonsCustomGuiPanes) {
+        if (Config.feature.dungeons.dungeonsCustomGuiPanes) {
             ScaledResolution sr = new ScaledResolution(mc);
-            float scale = NotEnoughFakepixel.feature.dungeons.dungeonsTerminalsScale;
+            float scale = Config.feature.dungeons.dungeonsTerminalsScale;
 
             int mouseX = (Mouse.getEventX() * sr.getScaledWidth()) / mc.displayWidth;
             int mouseY = sr.getScaledHeight() - (Mouse.getEventY() * sr.getScaledHeight()) / mc.displayHeight - 1;

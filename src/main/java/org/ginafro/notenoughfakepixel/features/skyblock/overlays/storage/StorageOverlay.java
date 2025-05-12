@@ -13,7 +13,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.CustomConfigHandler;
@@ -67,8 +67,8 @@ public class StorageOverlay {
             enderChests = 0;
             ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
 
-            boxWidth = (int)(sr.getScaledWidth() * 0.8);
-            buttonListHeight = (int)(sr.getScaledHeight() * 0.6);
+            boxWidth = (int) (sr.getScaledWidth() * 0.8);
+            buttonListHeight = (int) (sr.getScaledHeight() * 0.6);
 
             buttonWidth = (boxWidth - 2 * PADDING - (BUTTONS_PER_ROW - 1) * COL_SPACING) / BUTTONS_PER_ROW;
             buttonHeight = (buttonListHeight - 2 * PADDING - (ROWS_VISIBLE - 1) * ROW_SPACING) / ROWS_VISIBLE;
@@ -76,7 +76,7 @@ public class StorageOverlay {
             xPos = (sr.getScaledWidth() - boxWidth) / 2;
             yPos = (sr.getScaledHeight() - buttonListHeight) / 2 - 20;
 
-            int searchBarWidth = (int)(boxWidth * 0.6);
+            int searchBarWidth = (int) (boxWidth * 0.6);
             searchBar = new GuiTextField(1001, Minecraft.getMinecraft().fontRendererObj,
                     xPos + (boxWidth - searchBarWidth) / 2, yPos - 45, searchBarWidth, 35);
             searchBar.setEnableBackgroundDrawing(true);
@@ -110,7 +110,7 @@ public class StorageOverlay {
 
         public void render(int mouseX, int mouseY, float partialTicks) {
             ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
-            int c = ColorUtils.getColor(NotEnoughFakepixel.feature.overlays.storageColor).getRGB();
+            int c = ColorUtils.getColor(Config.feature.overlays.storageColor).getRGB();
             drawRect(xPos, yPos, xPos + boxWidth, yPos + buttonListHeight, c);
             GL11.glEnable(GL11.GL_SCISSOR_TEST);
             GL11.glScissor(xPos * sr.getScaleFactor(),
@@ -124,7 +124,7 @@ public class StorageOverlay {
 
             for (GuiButton button : buttonList) {
                 if (button.visible) {
-                    button.drawButton(Minecraft.getMinecraft(), mouseX, (int)(mouseY + pixelOffset));
+                    button.drawButton(Minecraft.getMinecraft(), mouseX, (int) (mouseY + pixelOffset));
                 }
             }
 
@@ -168,7 +168,7 @@ public class StorageOverlay {
                 }
             }
 
-            if (!NotEnoughFakepixel.feature.overlays.storageSearch) {
+            if (!Config.feature.overlays.storageSearch) {
                 searchBar.setVisible(false);
                 searchBar.setFocused(false);
                 searchBar.setEnabled(false);
@@ -188,14 +188,14 @@ public class StorageOverlay {
             float maxScrollOffset = totalRows - ROWS_VISIBLE;
             float scrollProgress = scrollOffset / maxScrollOffset;
 
-            int scrollThumbY = yPos + (int)(scrollProgress * (scrollTrackHeight - scrollThumbHeight));
+            int scrollThumbY = yPos + (int) (scrollProgress * (scrollTrackHeight - scrollThumbHeight));
 
             drawRect(xPos + boxWidth - scrollBarWidth, yPos,
                     xPos + boxWidth, yPos + buttonListHeight,
                     new Color(30, 30, 30, 200).getRGB());
 
             drawRect(xPos + boxWidth - scrollBarWidth, scrollThumbY,
-                    xPos + boxWidth, scrollThumbY + (int)scrollThumbHeight,
+                    xPos + boxWidth, scrollThumbY + (int) scrollThumbHeight,
                     new Color(100, 100, 100, 200).getRGB());
         }
 
@@ -272,7 +272,7 @@ public class StorageOverlay {
 
                 for (int i = 0; i < textLines.size(); ++i) {
                     String line = textLines.get(i);
-                    font.drawStringWithShadow(line, (float)x, (float)y, -1);
+                    font.drawStringWithShadow(line, (float) x, (float) y, -1);
                     if (i == 0) {
                         y += 2;
                     }
@@ -323,7 +323,7 @@ public class StorageOverlay {
         public boolean handleMouseClick(int mouseX, int mouseY, int mouseButton) {
             if (mouseButton != 0) return false;
 
-            if (NotEnoughFakepixel.feature.overlays.storageSearch) {
+            if (Config.feature.overlays.storageSearch) {
                 int searchBarX = xPos + (boxWidth - searchBar.width) / 2;
                 int searchBarY = yPos - 45;
                 if (mouseX >= searchBarX && mouseX <= searchBarX + searchBar.width &&
@@ -352,7 +352,7 @@ public class StorageOverlay {
 
             float slotHeight = buttonHeight + ROW_SPACING;
             float pixelOffset = scrollOffset * slotHeight;
-            int adjustedMouseY = mouseY + (int)pixelOffset;
+            int adjustedMouseY = mouseY + (int) pixelOffset;
 
             for (GuiButton button : buttonList) {
                 if (button.visible && button.mousePressed(Minecraft.getMinecraft(), mouseX, adjustedMouseY)) {
@@ -420,7 +420,7 @@ public class StorageOverlay {
                 if (gc instanceof GuiInventory) return;
                 if (gc.inventorySlots.getSlot(4).getStack() != null) {
                     if (gc.inventorySlots.getSlot(4).getStack().getDisplayName().contains("Ender")) {
-                        if (NotEnoughFakepixel.feature.overlays.storageOverlay) {
+                        if (Config.feature.overlays.storageOverlay) {
                             overlayRenderer = new StorageOverlayRenderer(gc);
                         }
                     }

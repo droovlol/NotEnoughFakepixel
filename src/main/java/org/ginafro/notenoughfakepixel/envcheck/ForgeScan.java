@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class ForgeScan {
 
-    private ForgeScan(){
+    private ForgeScan() {
         // Prevent instantiation
     }
 

@@ -11,7 +11,7 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.utils.TablistParser;
@@ -31,7 +31,7 @@ public class AutoReadyDungeon {
     @SubscribeEvent()
     public void onGuiOpen(GuiScreenEvent.BackgroundDrawnEvent event) {
         if (clicked) return;
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsAutoReady) return;
+        if (!Config.feature.dungeons.dungeonsAutoReady) return;
         if (!ScoreboardUtils.currentLocation.isDungeon()) return;
         if (event.gui == null) return;
         if (!(event.gui instanceof GuiChest)) return;
@@ -49,7 +49,7 @@ public class AutoReadyDungeon {
             }
             ContainerChest containerChest = (ContainerChest) container;
             // Cheking all slots searching for a skull
-            for(Slot slot : containerChest.inventorySlots) {
+            for (Slot slot : containerChest.inventorySlots) {
                 // Skip player inventory
                 if (slot.inventory == Minecraft.getMinecraft().thePlayer.inventory) continue;
                 ItemStack item = slot.getStack();
@@ -60,7 +60,7 @@ public class AutoReadyDungeon {
                     String itemName = item.getDisplayName();
                     // Checking if the skull is the player's name / nicked name
                     if (itemName.contains(Minecraft.getMinecraft().thePlayer.getName()) ||
-                            itemName.contains(NotEnoughFakepixel.feature.dungeons.dungeonsAutoReadyName)) {
+                            itemName.contains(Config.feature.dungeons.dungeonsAutoReadyName)) {
 
                         // Checking if the glass pane below the skull exists
                         ItemStack itemReady = containerChest.getSlot(slot.getSlotIndex() + 9).getStack();
@@ -93,18 +93,18 @@ public class AutoReadyDungeon {
     }
 
     @SubscribeEvent
-    public void onChatRecieve(ClientChatReceivedEvent e){
-        if(Minecraft.getMinecraft().thePlayer == null) return;
+    public void onChatRecieve(ClientChatReceivedEvent e) {
+        if (Minecraft.getMinecraft().thePlayer == null) return;
         if (Minecraft.getMinecraft().theWorld == null) return;
         if (ScoreboardUtils.currentLocation != Location.NONE) return;
 
         Matcher matcher = nickedNamePattern.matcher(e.message.getFormattedText());
         if (matcher.matches()) {
-            NotEnoughFakepixel.feature.dungeons.dungeonsAutoReadyName = matcher.group("name");
+            Config.feature.dungeons.dungeonsAutoReadyName = matcher.group("name");
         }
 
-        if (e.message.getFormattedText().startsWith("§r§aYou have successfully reset your nickname!")){
-            NotEnoughFakepixel.feature.dungeons.dungeonsAutoReadyName = "example name";
+        if (e.message.getFormattedText().startsWith("§r§aYou have successfully reset your nickname!")) {
+            Config.feature.dungeons.dungeonsAutoReadyName = "example name";
         }
     }
 

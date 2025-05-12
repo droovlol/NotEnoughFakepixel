@@ -16,14 +16,14 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.events.PacketReadEvent;
 import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.utils.SoundUtils;
 import org.ginafro.notenoughfakepixel.utils.Waypoint;
-import org.ginafro.notenoughfakepixel.variables.*;
+import org.ginafro.notenoughfakepixel.variables.MobDisplayTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -57,24 +57,25 @@ public class AshfangHelper {
     private float lastHP = 50_000_000;
 
     public AshfangHelper() {
-        this.waypoints[0] = new Waypoint("ASHFANG",new int[]{-484, 141, -1015});
-        this.waypoints[1] = new Waypoint("GRAVITYORB",new int[]{-490, -200, -1015});
+        this.waypoints[0] = new Waypoint("ASHFANG", new int[]{-484, 141, -1015});
+        this.waypoints[1] = new Waypoint("GRAVITYORB", new int[]{-490, -200, -1015});
     }
 
     @SubscribeEvent
     public void onRenderLast(RenderWorldLastEvent event) {
         if (Crimson.checkEssentials()) return;
-        int[] position = new int[] {Minecraft.getMinecraft().thePlayer.getPosition().getX(), Minecraft.getMinecraft().thePlayer.getPosition().getY(), Minecraft.getMinecraft().thePlayer.getPosition().getZ()};
+        int[] position = new int[]{Minecraft.getMinecraft().thePlayer.getPosition().getX(), Minecraft.getMinecraft().thePlayer.getPosition().getY(), Minecraft.getMinecraft().thePlayer.getPosition().getZ()};
         if (!Crimson.checkAshfangArea(position)) return;
-        if (NotEnoughFakepixel.feature.crimson.crimsonAshfangWaypoint || NotEnoughFakepixel.feature.crimson.crimsonGravityOrbWaypoint) drawWaypoints(event.partialTicks);
+        if (Config.feature.crimson.crimsonAshfangWaypoint || Config.feature.crimson.crimsonGravityOrbWaypoint)
+            drawWaypoints(event.partialTicks);
         renderEntities(event.partialTicks);
         checkHPForSound();
     }
 
     @SubscribeEvent
-    public void onChat(@NotNull ClientChatReceivedEvent e){
+    public void onChat(@NotNull ClientChatReceivedEvent e) {
         if (Crimson.checkEssentials()) return;
-        if (NotEnoughFakepixel.feature.crimson.crimsonAshfangMuteChat) {
+        if (Config.feature.crimson.crimsonAshfangMuteChat) {
             Matcher matcher = Pattern.compile("can only be damaged by").matcher(e.message.getUnformattedText());
             Matcher matcher2 = Pattern.compile("hit you for").matcher(e.message.getUnformattedText());
             if (matcher.find() || matcher2.find()) {
@@ -82,11 +83,11 @@ public class AshfangHelper {
                 return;
             }
         }
-        if (NotEnoughFakepixel.feature.crimson.crimsonAshfangMuteChat) {
+        if (Config.feature.crimson.crimsonAshfangMuteChat) {
             Matcher matcher3 = Pattern.compile("The Blazing Soul dealt").matcher(e.message.getUnformattedText());
             if (matcher3.find()) {
                 int[] position = new int[]{Minecraft.getMinecraft().thePlayer.getPosition().getX(), Minecraft.getMinecraft().thePlayer.getPosition().getY(), Minecraft.getMinecraft().thePlayer.getPosition().getZ()};
-                if (NotEnoughFakepixel.feature.crimson.crimsonAshfangMuteChat) e.setCanceled(true);
+                if (Config.feature.crimson.crimsonAshfangMuteChat) e.setCanceled(true);
                 return;
             }
         }
@@ -95,7 +96,7 @@ public class AshfangHelper {
     @SubscribeEvent
     public void onSoundPacketReceive(PacketReadEvent event) {
         if (Crimson.checkEssentials()) return;
-        if (!NotEnoughFakepixel.feature.crimson.crimsonAshfangMuteSound) return;
+        if (!Config.feature.crimson.crimsonAshfangMuteSound) return;
         Packet packet = event.packet;
         if (packet instanceof S29PacketSoundEffect) {
             S29PacketSoundEffect soundEffect = (S29PacketSoundEffect) packet;
@@ -126,9 +127,9 @@ public class AshfangHelper {
                 ItemStack it = ((EntityArmorStand) entity).getEquipmentInSlot(4); // Head slot
                 String blazingSoul = "Blazing Soul";
                 if (it != null && it.getItem() == Items.skull) {
-                    if (!NotEnoughFakepixel.feature.crimson.crimsonGravityOrbWaypoint) continue;
+                    if (!Config.feature.crimson.crimsonGravityOrbWaypoint) continue;
                     NBTTagCompound nbt = it.getTagCompound();
-                    if(nbt != null && nbt.hasKey("SkullOwner") && nbt.getCompoundTag("SkullOwner").hasKey("Id")) {
+                    if (nbt != null && nbt.hasKey("SkullOwner") && nbt.getCompoundTag("SkullOwner").hasKey("Id")) {
                         String id = nbt.getCompoundTag("SkullOwner").getString("Id");
                         String gravityOrbID = "e0614291-7855-32a6-825a-2315725b4cfa";
                         if (id.equals(gravityOrbID)) {
@@ -144,14 +145,14 @@ public class AshfangHelper {
                     }
                 } else if (entityName.contains("Ashfang") && !isNameAshfangMinion(entityName) &&
                         (currentAshfang == null || currentAshfang.getUniqueID() != entity.getUniqueID())) {
-                    if (!NotEnoughFakepixel.feature.crimson.crimsonAshfangWaypoint) continue;
+                    if (!Config.feature.crimson.crimsonAshfangWaypoint) continue;
                     if (!Crimson.checkAshfangArea(position)) continue;
                     waypointAshfang = new Waypoint(ashfangName, position);
 
                     currentAshfang = entity;
                 } else if (isNameAshfangMinion(entityName)) {
 
-                    if (!NotEnoughFakepixel.feature.crimson.crimsonAshfangHitboxes) continue;
+                    if (!Config.feature.crimson.crimsonAshfangHitboxes) continue;
                     if (entityName.contains(underling)) {
                         newColor[0] = new Color(255, 0, 0, 150);
                     } else if (entityName.contains(acolyte)) {
@@ -168,7 +169,7 @@ public class AshfangHelper {
                     );
 
                 } else if (entityName.contains(blazingSoul)) {
-                    if (!NotEnoughFakepixel.feature.crimson.crimsonAshfangHitboxes) continue;
+                    if (!Config.feature.crimson.crimsonAshfangHitboxes) continue;
                     blazingSoulCounter.getAndIncrement();
                     newColor[0] = new Color(255, 255, 0, 255);
                     RenderUtils.renderEntityHitbox(
@@ -188,18 +189,19 @@ public class AshfangHelper {
         return name.contains(underling) || name.contains(acolyte) || name.contains(follower);
     }
 
-    private void drawWaypoint (Waypoint waypoint, float partialTicks) {
+    private void drawWaypoint(Waypoint waypoint, float partialTicks) {
         Entity viewer = Minecraft.getMinecraft().getRenderViewEntity();
         double viewerX = viewer.lastTickPosX + (viewer.posX - viewer.lastTickPosX) * partialTicks;
         double viewerY = viewer.lastTickPosY + (viewer.posY - viewer.lastTickPosY) * partialTicks;
         double viewerZ = viewer.lastTickPosZ + (viewer.posZ - viewer.lastTickPosZ) * partialTicks;
         if (waypoint == null) return;
-        Color colorDrawWaypoint = new Color(255,255,255);
+        Color colorDrawWaypoint = new Color(255, 255, 255);
         int offsetBossY = 0;
 
-        if (waypoint.getType().equals("GRAVITYORB")) colorDrawWaypoint = ColorUtils.getColor(NotEnoughFakepixel.feature.crimson.crimsonBlazingSoulWaypointColor);
+        if (waypoint.getType().equals("GRAVITYORB"))
+            colorDrawWaypoint = ColorUtils.getColor(Config.feature.crimson.crimsonBlazingSoulWaypointColor);
         if (waypoint.getType().equals(ashfangName)) {
-            colorDrawWaypoint = ColorUtils.getColor(NotEnoughFakepixel.feature.crimson.crimsonAshfangWaypointColor);
+            colorDrawWaypoint = ColorUtils.getColor(Config.feature.crimson.crimsonAshfangWaypointColor);
             offsetBossY = -6;
         }
 
@@ -222,10 +224,10 @@ public class AshfangHelper {
     }
 
     private void drawWaypoints(float partialTicks) {
-        if (NotEnoughFakepixel.feature.crimson.crimsonAshfangWaypoint && !BossNotifier.getAshfangScheduled()[0]) {
+        if (Config.feature.crimson.crimsonAshfangWaypoint && !BossNotifier.getAshfangScheduled()[0]) {
             drawWaypoint(waypointAshfang, partialTicks);
         }
-        if (NotEnoughFakepixel.feature.crimson.crimsonGravityOrbWaypoint) {
+        if (Config.feature.crimson.crimsonGravityOrbWaypoint) {
             drawWaypoint(waypointGravityOrb, partialTicks);
         }
     }
@@ -248,8 +250,8 @@ public class AshfangHelper {
             try {
                 float number = Float.parseFloat(numberString); // Convertir el número limpio
                 if (ordinalString == null) return number;
-                if (ordinalString.equals("M")) return number * (float)Math.pow(10, 6);
-                if (ordinalString.equals("k")) return number * (float)Math.pow(10, 3);
+                if (ordinalString.equals("M")) return number * (float) Math.pow(10, 6);
+                if (ordinalString.equals("k")) return number * (float) Math.pow(10, 3);
                 return number;
             } catch (NumberFormatException e) {
                 System.err.println("Error when converting " + numberString);

@@ -14,12 +14,12 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.*;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.variables.MobDisplayTypes;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
-import java.awt.Color;
+import java.awt.*;
 
 public class RenderUtils {
 
@@ -157,11 +157,11 @@ public class RenderUtils {
         worldrenderer.pos(x + 0.8D, y + bottomOffset, z + 0.2D).tex(0.0D, d12).color(r, g, b, alphaConst).endVertex();
         worldrenderer.pos(x + 0.8D, y + topOffset, z + 0.2D).tex(0.0D, d13).color(r, g, b, alphaConst * alphaMult).endVertex();
         worldrenderer.pos(x + 0.8D, y + topOffset, z + 0.8D).tex(1.0D, d13).color(r, g, b, alphaConst * alphaMult).endVertex();
-        worldrenderer.pos(x + 0.8D, y + bottomOffset, z + 0.8D).tex(1.0D, d12).color(r, g, b,alphaConst).endVertex();
-        worldrenderer.pos(x + 0.2D, y + bottomOffset, z + 0.8D).tex(0.0D, d12).color(r, g, b,alphaConst).endVertex();
+        worldrenderer.pos(x + 0.8D, y + bottomOffset, z + 0.8D).tex(1.0D, d12).color(r, g, b, alphaConst).endVertex();
+        worldrenderer.pos(x + 0.2D, y + bottomOffset, z + 0.8D).tex(0.0D, d12).color(r, g, b, alphaConst).endVertex();
         worldrenderer.pos(x + 0.2D, y + topOffset, z + 0.8D).tex(0.0D, d13).color(r, g, b, alphaConst * alphaMult).endVertex();
         worldrenderer.pos(x + 0.8D, y + topOffset, z + 0.2D).tex(1.0D, d13).color(r, g, b, alphaConst * alphaMult).endVertex();
-        worldrenderer.pos(x + 0.8D, y + bottomOffset, z + 0.2D).tex(1.0D, d12).color(r, g, b,alphaConst).endVertex();
+        worldrenderer.pos(x + 0.8D, y + bottomOffset, z + 0.2D).tex(1.0D, d12).color(r, g, b, alphaConst).endVertex();
         worldrenderer.pos(x + 0.8D, y + bottomOffset, z + 0.8D).tex(0.0D, d12).color(r, g, b, alphaConst).endVertex();
         worldrenderer.pos(x + 0.8D, y + topOffset, z + 0.8D).tex(0.0D, d13).color(r, g, b, alphaConst * alphaMult).endVertex();
         worldrenderer.pos(x + 0.2D, y + topOffset, z + 0.8D).tex(1.0D, d13).color(r, g, b, alphaConst * alphaMult).endVertex();
@@ -261,7 +261,7 @@ public class RenderUtils {
         AxisAlignedBB bb = entity.getEntityBoundingBox();
         if (bb == null) return;
 
-        double scale = NotEnoughFakepixel.feature.dungeons.dungeonsScaleItemDrop;
+        double scale = Config.feature.dungeons.dungeonsScaleItemDrop;
 
         Entity player = mc.getRenderViewEntity();
         double playerX = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks;
@@ -289,7 +289,7 @@ public class RenderUtils {
         z1 = centerZ + (z1 - centerZ) * scale;
         z2 = centerZ + (z2 - centerZ) * scale;
 
-        double yOffset = (NotEnoughFakepixel.feature.dungeons.dungeonsScaleItemDrop - 1f) * (entity.height/2f);
+        double yOffset = (Config.feature.dungeons.dungeonsScaleItemDrop - 1f) * (entity.height / 2f);
         y1 += yOffset;
         y2 += yOffset;
 
@@ -307,7 +307,6 @@ public class RenderUtils {
         GlStateManager.enableTexture2D();
         GlStateManager.popMatrix();
     }
-
 
 
     private static void drawHitbox(double x1, double x2, double y1, double y2, double z1, double z2, Color color, MobDisplayTypes type) {
@@ -488,7 +487,7 @@ public class RenderUtils {
         Vec3 pos1final = pos1;
         Vec3 pos2final = pos2;
         if (isLever && orientation != null) {
-            double midX = 0,midY=0,midZ=0;
+            double midX = 0, midY = 0, midZ = 0;
             switch (orientation) {
                 case UP_X:
                     midX = pos1final.xCoord + 0.5;
@@ -526,7 +525,7 @@ public class RenderUtils {
                     midZ = pos1final.zCoord - (1.25 + 1) / 2;
                     break;
             }
-            pos1final = new Vec3(midX,midY,midZ);
+            pos1final = new Vec3(midX, midY, midZ);
         }
         if (fromHead) {
             pos2final = new Vec3(0, 0, 1).rotatePitch(-(float) Math.toRadians(Minecraft.getMinecraft().thePlayer.rotationPitch)).rotateYaw(-(float) Math.toRadians(Minecraft.getMinecraft().thePlayer.rotationYaw));
@@ -551,7 +550,7 @@ public class RenderUtils {
     }
 
     public static void highlightBlock(BlockPos pos, Color color, boolean disableDepth, float partialTicks) {
-        highlightBlock(pos,color,disableDepth,false,partialTicks);
+        highlightBlock(pos, color, disableDepth, false, partialTicks);
     }
 
     public static void highlightBlock(BlockPos pos, Color color, boolean disableDepth, boolean isButton, float partialTicks) {
@@ -578,7 +577,7 @@ public class RenderUtils {
                 RenderUtils.drawFilledBoundingBox(new AxisAlignedBB(x - initialToAddX, y, z, x + 1 + initialToAddX, y + 1, z + 1), 1f, color);
             }
         } else {
-            RenderUtils.drawFilledBoundingBox(new AxisAlignedBB(x, y+0.5-0.13, z+0.5-0.191, x-.13, y+0.5+0.13, z+0.5+0.191), 1f, color);
+            RenderUtils.drawFilledBoundingBox(new AxisAlignedBB(x, y + 0.5 - 0.13, z + 0.5 - 0.191, x - .13, y + 0.5 + 0.13, z + 0.5 + 0.191), 1f, color);
         }
 
 
@@ -603,7 +602,7 @@ public class RenderUtils {
         AxisAlignedBB boundingBox;
         switch (facing) {
             case NORTH:
-                boundingBox = new AxisAlignedBB(x + 0.25, y + 0.1875, z + 0.75, x + 0.75, y + 0.8125, z+1);
+                boundingBox = new AxisAlignedBB(x + 0.25, y + 0.1875, z + 0.75, x + 0.75, y + 0.8125, z + 1);
                 break;
             case SOUTH:
                 boundingBox = new AxisAlignedBB(x + 0.25, y + 0.1875, z, x + 0.75, y + 0.8125, z + 0.25);
@@ -615,7 +614,7 @@ public class RenderUtils {
                 boundingBox = new AxisAlignedBB(x, y + 0.1875, z + 0.25, x + 0.25, y + 0.8125, z + 0.75);
                 break;
             default:
-                boundingBox = new AxisAlignedBB(x + 0.25, y + 0.1875, z - 1.25, x + 0.75, y + 0.8125, z-1);
+                boundingBox = new AxisAlignedBB(x + 0.25, y + 0.1875, z - 1.25, x + 0.75, y + 0.8125, z - 1);
                 break;
         }
 

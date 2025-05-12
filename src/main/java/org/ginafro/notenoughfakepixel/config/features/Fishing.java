@@ -4,9 +4,6 @@ import com.google.gson.annotations.Expose;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.ConfigEditorBoolean;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.ConfigOption;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class Fishing {
 
     @Expose

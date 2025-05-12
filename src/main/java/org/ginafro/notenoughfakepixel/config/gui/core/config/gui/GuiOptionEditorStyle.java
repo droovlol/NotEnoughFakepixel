@@ -2,13 +2,14 @@ package org.ginafro.notenoughfakepixel.config.gui.core.config.gui;
 
 import org.ginafro.notenoughfakepixel.config.gui.core.config.struct.ConfigProcessor;
 import org.ginafro.notenoughfakepixel.config.gui.textures.Textures;
-import java.util.stream.Collectors;
 import org.lwjgl.input.Mouse;
+
+import java.util.stream.Collectors;
 
 public class GuiOptionEditorStyle extends GuiOptionEditorDropdown {
 
     public GuiOptionEditorStyle(ConfigProcessor.ProcessedOption option, int selected) {
-        super(option, Textures.styles.stream().map(t -> t.displayName).collect(Collectors.toList()).toArray(new String[] {}), selected, true);
+        super(option, Textures.styles.stream().map(t -> t.displayName).collect(Collectors.toList()).toArray(new String[]{}), selected, true);
     }
 
     @Override

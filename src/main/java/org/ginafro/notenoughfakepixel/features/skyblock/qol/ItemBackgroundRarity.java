@@ -9,9 +9,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.lwjgl.opengl.GL11;
-
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -83,20 +82,29 @@ public class ItemBackgroundRarity {
         float g = ((rgb >> 8) & 0xFF) / 255f;
         float b = (rgb & 0xFF) / 255f;
 
-        GlStateManager.color(r, g, b, NotEnoughFakepixel.feature.qol.qolItemRarityOpacity);
+        GlStateManager.color(r, g, b, Config.feature.qol.qolItemRarityOpacity);
     }
 
     private static int getColorValue(EnumChatFormatting format) {
         switch (format) {
-            case GREEN: return 0x55FF55;
-            case BLUE: return 0x5555FF;
-            case DARK_PURPLE: return 0xAA00AA;
-            case GOLD: return 0xFFAA00;
-            case LIGHT_PURPLE: return 0xFF55FF;
-            case AQUA: return 0x55FFFF;
-            case DARK_RED: return 0xAA0000;
-            case RED: return 0xFF5555;
-            default: return 0xFFFFFF;
+            case GREEN:
+                return 0x55FF55;
+            case BLUE:
+                return 0x5555FF;
+            case DARK_PURPLE:
+                return 0xAA00AA;
+            case GOLD:
+                return 0xFFAA00;
+            case LIGHT_PURPLE:
+                return 0xFF55FF;
+            case AQUA:
+                return 0x55FFFF;
+            case DARK_RED:
+                return 0xAA0000;
+            case RED:
+                return 0xFF5555;
+            default:
+                return 0xFFFFFF;
         }
     }
 

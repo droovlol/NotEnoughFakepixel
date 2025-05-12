@@ -5,9 +5,6 @@ import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.ConfigE
 import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.ConfigEditorColour;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.ConfigOption;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class ChocolateFactory {
 
     @Expose

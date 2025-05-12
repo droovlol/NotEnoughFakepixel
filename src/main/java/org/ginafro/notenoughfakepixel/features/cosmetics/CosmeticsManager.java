@@ -1,7 +1,5 @@
 package org.ginafro.notenoughfakepixel.features.cosmetics;
 
-import net.minecraft.util.ResourceLocation;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

@@ -20,8 +20,10 @@ public class MixinInventoryPlayer {
         SlotLocking.getInstance().changedSlot($this.currentItem);
     }
 
-    @Shadow public ItemStack[] mainInventory;
-    @Shadow public ItemStack[] armorInventory;
+    @Shadow
+    public ItemStack[] mainInventory;
+    @Shadow
+    public ItemStack[] armorInventory;
 
     @Inject(method = "getStackInSlot", at = @At("HEAD"), cancellable = true)
     public void on(int index, CallbackInfoReturnable<ItemStack> cir) {

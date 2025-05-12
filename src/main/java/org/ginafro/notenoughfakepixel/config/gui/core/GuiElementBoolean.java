@@ -1,13 +1,14 @@
 package org.ginafro.notenoughfakepixel.config.gui.core;
 
-import org.ginafro.notenoughfakepixel.config.gui.GuiTextures;
-import org.ginafro.notenoughfakepixel.config.gui.core.util.lerp.LerpUtils;
-import org.ginafro.notenoughfakepixel.config.gui.core.util.render.RenderUtils;
-import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
+import org.ginafro.notenoughfakepixel.config.gui.GuiTextures;
+import org.ginafro.notenoughfakepixel.config.gui.core.util.lerp.LerpUtils;
+import org.ginafro.notenoughfakepixel.config.gui.core.util.render.RenderUtils;
 import org.lwjgl.input.Mouse;
+
+import java.util.function.Consumer;
 
 public class GuiElementBoolean extends GuiElement {
 

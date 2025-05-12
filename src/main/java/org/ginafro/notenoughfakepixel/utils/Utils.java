@@ -1,20 +1,9 @@
 package org.ginafro.notenoughfakepixel.utils;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.opengl.GL11;
 
-import java.util.List;
 import java.util.regex.Pattern;
-
-import static net.minecraft.client.gui.Gui.*;
 
 public class Utils {
 
@@ -24,18 +13,18 @@ public class Utils {
         return (x - inputStart) / (inputEnd - inputStart) * (outputEnd - outputStart) + outputStart;
     }
 
-    public static float getScale(){
+    public static float getScale() {
         int sc = Minecraft.getMinecraft().gameSettings.guiScale;
-        if(sc == 0){
+        if (sc == 0) {
             return 1.0f;
         }
-        switch(sc){
+        switch (sc) {
             case 2:
-                return 1f/2.0f;
+                return 1f / 2.0f;
             case 3:
-                return 1f/3.0f;
+                return 1f / 3.0f;
             case 4:
-                return 1f/4.0f;
+                return 1f / 4.0f;
             default:
                 return 1.0f;
         }
@@ -58,7 +47,6 @@ public class Utils {
     }
 
 
-
     public static @NotNull String commaFormat(double n) {
         // This function will only apply commas to a number.
         return String.format("%,d", (long) n);
@@ -78,7 +66,8 @@ public class Utils {
         this.lockedEnchantment = lockedEnchantment;
     }
 
-    private final Pattern STRIP_COLOR_PATTERN = Pattern.compile( "(?i)" + '\u00A7' + "[0-9A-FK-OR]" );
+    private final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + '\u00A7' + "[0-9A-FK-OR]");
+
     public String stripColor(final String input) {
         return STRIP_COLOR_PATTERN.matcher(input).replaceAll("");
     }

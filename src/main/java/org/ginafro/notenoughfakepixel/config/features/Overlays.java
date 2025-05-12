@@ -23,31 +23,31 @@ public class Overlays {
     public boolean storageSearch = true;
 
     @Expose
-    @ConfigOption(name = "Background Color",desc = "Color of the storage overlay")
+    @ConfigOption(name = "Background Color", desc = "Color of the storage overlay")
     @ConfigEditorColour
     @ConfigAccordionId(id = 0)
     public String storageColor = "0:102:32:32:32";
 
     @Expose
-    @ConfigOption(name = "Chest Color",desc = "Color of the storage Chest Background")
+    @ConfigOption(name = "Chest Color", desc = "Color of the storage Chest Background")
     @ConfigEditorColour
     @ConfigAccordionId(id = 0)
     public String chestColor = "0:102:32:32:32";
 
     @Expose
-    @ConfigOption(name = "Search Highlight Color",desc = "Color to highlight search item with")
+    @ConfigOption(name = "Search Highlight Color", desc = "Color to highlight search item with")
     @ConfigEditorColour
     @ConfigAccordionId(id = 0)
     public String searchColor = "0:255:0:255:0";
 
     @Expose
-    @ConfigOption(name = "Equipment Overlay",desc = "Shows what equipment u are wearing")
+    @ConfigOption(name = "Equipment Overlay", desc = "Shows what equipment u are wearing")
     @ConfigEditorBoolean
     public boolean equipment = true;
 
 
     @Expose
-    @ConfigOption(name = "Stats Overlay",desc = "Changes how the game shows your stats to bars")
+    @ConfigOption(name = "Stats Overlay", desc = "Changes how the game shows your stats to bars")
     @ConfigEditorBoolean
     public boolean statOverlay = true;
 

@@ -1,14 +1,9 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.qol;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +35,7 @@ public class SlotLocking {
     }
 
     @SubscribeEvent
-    public void onOpen(GuiScreenEvent.DrawScreenEvent e){
+    public void onOpen(GuiScreenEvent.DrawScreenEvent e) {
 //        if(e.gui instanceof GuiContainer){
 //            GuiContainer container = (GuiContainer) e.gui;
 //            for(Slot s : container.inventorySlots.inventorySlots){
@@ -55,10 +50,10 @@ public class SlotLocking {
     }
 
     @SubscribeEvent
-    public void onDrop(ItemTossEvent e){
-        for(Slot s : lockedSlots){
-            if(s.getStack() == e.entityItem.getEntityItem()){
-                if(e.isCancelable()){
+    public void onDrop(ItemTossEvent e) {
+        for (Slot s : lockedSlots) {
+            if (s.getStack() == e.entityItem.getEntityItem()) {
+                if (e.isCancelable()) {
                     e.setCanceled(true);
                 }
             }

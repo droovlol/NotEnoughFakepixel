@@ -7,7 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -15,7 +15,7 @@ import java.util.UUID;
 
 public class ScaleDungeonSecrets {
     public static void scaleItemDrop(EntityItem entity, double x, double y, double z, float entityYaw, float partialTicks, CallbackInfo ci) {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsItemSecretsBig) return;
+        if (!Config.feature.dungeons.dungeonsItemSecretsBig) return;
         if (!ScoreboardUtils.currentLocation.isDungeon()) return;
 
         ItemStack stack = entity.getEntityItem();
@@ -26,9 +26,7 @@ public class ScaleDungeonSecrets {
 
         if (item instanceof ItemShears) {
             shouldScale = true;
-        }
-
-        else if (item == Items.skull && stack.getItemDamage() == 3) {
+        } else if (item == Items.skull && stack.getItemDamage() == 3) {
             NBTTagCompound tag = stack.getTagCompound();
             if (tag != null && tag.hasKey("SkullOwner", 10)) {
                 NBTTagCompound skullOwner = tag.getCompoundTag("SkullOwner");
@@ -40,11 +38,10 @@ public class ScaleDungeonSecrets {
                     if (uuid.equals(trainingWeightsUUID) || uuid.equals(treasureTalismanUUID)) {
                         shouldScale = true;
                     }
-                } catch (IllegalArgumentException ignored) {}
+                } catch (IllegalArgumentException ignored) {
+                }
             }
-        }
-
-        else if (item == Items.spawn_egg) {
+        } else if (item == Items.spawn_egg) {
             String displayName = stack.getDisplayName();
             if (displayName.contains("Decoy") || displayName.contains("Inflatable Jerry")) {
                 shouldScale = true;
@@ -52,9 +49,9 @@ public class ScaleDungeonSecrets {
         }
 
         if (shouldScale) {
-            float scale = NotEnoughFakepixel.feature.dungeons.dungeonsScaleItemDrop;
+            float scale = Config.feature.dungeons.dungeonsScaleItemDrop;
             GlStateManager.scale(scale, scale, scale);
-            GlStateManager.translate(0,(NotEnoughFakepixel.feature.dungeons.dungeonsScaleItemDrop - 1f) * (entity.height/2f - 1.125f/16f),0);
+            GlStateManager.translate(0, (Config.feature.dungeons.dungeonsScaleItemDrop - 1f) * (entity.height / 2f - 1.125f / 16f), 0);
         }
     }
 }

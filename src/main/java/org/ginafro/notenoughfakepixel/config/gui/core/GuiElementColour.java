@@ -1,20 +1,20 @@
 package org.ginafro.notenoughfakepixel.config.gui.core;
 
-import org.ginafro.notenoughfakepixel.config.gui.core.util.render.RenderUtils;
-import org.ginafro.notenoughfakepixel.config.gui.core.util.render.TextRenderUtils;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
+import org.ginafro.notenoughfakepixel.config.gui.core.util.render.RenderUtils;
+import org.ginafro.notenoughfakepixel.config.gui.core.util.render.TextRenderUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.function.Consumer;
 
 public class GuiElementColour extends GuiElement {
 
@@ -180,8 +180,10 @@ public class GuiElementColour extends GuiElement {
             RenderUtils.drawTexturedRect(x + 5 + 64 + valueOffset + opacityOffset + 5, y + 5 + 27, 10, 10, GL11.GL_NEAREST);
         }
 
-        if (valueSlider) drawRect(x + 5 + 64 + 5, y + 5 + 64 - (int) (64 * hsv[2]), x + 5 + 64 + valueOffset, y + 5 + 64 - (int) (64 * hsv[2]) + 1, 0xFF000000);
-        if (opacitySlider) drawRect(x + 5 + 64 + 5 + valueOffset, y + 5 + 64 - c.getAlpha() / 4, x + 5 + 64 + valueOffset + opacityOffset, y + 5 + 64 - c.getAlpha() / 4 - 1, 0xFF000000);
+        if (valueSlider)
+            drawRect(x + 5 + 64 + 5, y + 5 + 64 - (int) (64 * hsv[2]), x + 5 + 64 + valueOffset, y + 5 + 64 - (int) (64 * hsv[2]) + 1, 0xFF000000);
+        if (opacitySlider)
+            drawRect(x + 5 + 64 + 5 + valueOffset, y + 5 + 64 - c.getAlpha() / 4, x + 5 + 64 + valueOffset + opacityOffset, y + 5 + 64 - c.getAlpha() / 4 - 1, 0xFF000000);
         if (chromaSpeed > 0) {
             drawRect(x + 5 + 64 + valueOffset + opacityOffset + 5, y + 5 + 64 - (int) (chromaSpeed / 255f * 64), x + 5 + 64 + valueOffset + opacityOffset + 5 + 10, y + 5 + 64 - (int) (chromaSpeed / 255f * 64) + 1, 0xFF000000);
         }
@@ -360,7 +362,8 @@ public class GuiElementColour extends GuiElement {
                     Color c = new Color(rgb);
                     float[] hsv = Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), null);
                     updateAngleAndRadius(hsv);
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
             }
 
             return true;

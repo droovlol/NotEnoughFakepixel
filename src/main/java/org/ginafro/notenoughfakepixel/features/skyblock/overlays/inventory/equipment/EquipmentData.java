@@ -1,6 +1,5 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.overlays.inventory.equipment;
 
-import net.minecraft.inventory.ContainerChest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,7 +11,7 @@ public class EquipmentData {
 
     public Map<Integer, String> items;
 
-    public EquipmentData(Map<Integer,ItemStack> map) {
+    public EquipmentData(Map<Integer, ItemStack> map) {
         this.items = new HashMap<>();
         int in = 0;
         for (Integer i : map.keySet()) {

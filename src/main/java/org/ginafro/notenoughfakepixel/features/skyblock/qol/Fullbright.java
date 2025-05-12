@@ -3,7 +3,7 @@ package org.ginafro.notenoughfakepixel.features.skyblock.qol;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 
 @RegisterEvents
@@ -16,7 +16,7 @@ public class Fullbright {
 
     @SubscribeEvent
     public void onRender(RenderHandEvent event) {
-        if(NotEnoughFakepixel.feature.qol.qolFullbright) changeBrightness(FULLBRIGHT);
+        if (Config.feature.qol.qolFullbright) changeBrightness(FULLBRIGHT);
         else changeBrightness(BRIGHTEST);
     }
 

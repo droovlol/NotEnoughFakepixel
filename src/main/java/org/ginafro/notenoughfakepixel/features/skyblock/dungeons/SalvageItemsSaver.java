@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.*;
 import org.ginafro.notenoughfakepixel.variables.Location;
@@ -22,20 +22,20 @@ public class SalvageItemsSaver {
 
     String legendaryPattern = "LEGENDARY";
     String mythicPattern = "MYTHIC";
-    String[] starredItems = new String[] {"Wither Cloak Sword",
-                                            "Jerry-chine Gun",
-                                            "Bonzo's Staff",
-                                            "Bonzo's Mask",
-                                            "Spirit Mask",
-                                            "Juju Shortbow",
-                                            "Shadow Assassin",
-                                            "Tarantula"};
+    String[] starredItems = new String[]{"Wither Cloak Sword",
+            "Jerry-chine Gun",
+            "Bonzo's Staff",
+            "Bonzo's Mask",
+            "Spirit Mask",
+            "Juju Shortbow",
+            "Shadow Assassin",
+            "Tarantula"};
 
     @SubscribeEvent
     public void onGuiRender(GuiScreenEvent.BackgroundDrawnEvent event) {
         if (ScoreboardUtils.currentLocation != Location.DUNGEON_HUB) return;
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsSalvageItemsPrevention) return;
-        if(event.gui instanceof GuiChest) {
+        if (!Config.feature.dungeons.dungeonsSalvageItemsPrevention) return;
+        if (event.gui instanceof GuiChest) {
             GuiChest chest = (GuiChest) event.gui;
             Container container = chest.inventorySlots;
             if (container instanceof ContainerChest) {
@@ -54,16 +54,18 @@ public class SalvageItemsSaver {
     @SubscribeEvent
     public void onMouseClick(GuiScreenEvent.MouseInputEvent.Pre event) {
         if (ScoreboardUtils.currentLocation != Location.DUNGEON_HUB) return;
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsSalvageItemsPrevention) return;
+        if (!Config.feature.dungeons.dungeonsSalvageItemsPrevention) return;
         if (!Mouse.getEventButtonState()) return;
-        if (!(Minecraft.getMinecraft().currentScreen instanceof GuiChest)) return; // Check if the current screen is a chest GUI
+        if (!(Minecraft.getMinecraft().currentScreen instanceof GuiChest))
+            return; // Check if the current screen is a chest GUI
         GuiChest chestGui = (GuiChest) Minecraft.getMinecraft().currentScreen;
         Container container = chestGui.inventorySlots;
         if (container instanceof ContainerChest) {
             String title = ((ContainerChest) container).getLowerChestInventory().getDisplayName().getUnformattedText();
             if (!title.equals("Salvage Item")) return;
             Slot slot = chestGui.getSlotUnderMouse();
-            if (slot == null || slot.getStack() == null || slot.inventory == Minecraft.getMinecraft().thePlayer.inventory) return;
+            if (slot == null || slot.getStack() == null || slot.inventory == Minecraft.getMinecraft().thePlayer.inventory)
+                return;
             if (Block.getBlockFromItem(slot.getStack().getItem()) == Blocks.beacon) {
                 ItemStack itemToSavage = container.getSlot(22).getStack();
                 if (itemToSavage == null) return;
@@ -73,9 +75,9 @@ public class SalvageItemsSaver {
                 boolean starredItem = StringUtils.containsSubstring(starredItems, itemToSavage.getDisplayName());
                 if (loreLegendary != null || loreMythic != null || stars > 0 || starredItem) {
                     event.setCanceled(true);
-                    int[] cords = new int[] {Minecraft.getMinecraft().thePlayer.getPosition().getX(), Minecraft.getMinecraft().thePlayer.getPosition().getY(), Minecraft.getMinecraft().thePlayer.getPosition().getZ()};
+                    int[] cords = new int[]{Minecraft.getMinecraft().thePlayer.getPosition().getX(), Minecraft.getMinecraft().thePlayer.getPosition().getY(), Minecraft.getMinecraft().thePlayer.getPosition().getZ()};
                     SoundUtils.playSound(cords, "mob.villager.no", 2.0f, 1.0f);
-                    ChatUtils.notifyChat(EnumChatFormatting.BLUE + "[NEF] "+EnumChatFormatting.RED+"Saved you from salvaging an important item (legendary+ or starred one). You can disable this feature in Dungeons QOL section.");
+                    ChatUtils.notifyChat(EnumChatFormatting.BLUE + "[NEF] " + EnumChatFormatting.RED + "Saved you from salvaging an important item (legendary+ or starred one). You can disable this feature in Dungeons QOL section.");
                 }
             }
         }

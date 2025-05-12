@@ -2,6 +2,7 @@ package org.ginafro.notenoughfakepixel.alerts;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+
 import java.io.IOException;
 
 public class AlertManagementGui extends GuiScreen {

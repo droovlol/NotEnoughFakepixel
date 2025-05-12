@@ -5,9 +5,9 @@ import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 
 public class Crimson {
 
-    private static final int[][] ashfangArea = new int[][]{{-510,100,-1040}, {-450,200,-990}};
+    private static final int[][] ashfangArea = new int[][]{{-510, 100, -1040}, {-450, 200, -990}};
 
-    public static boolean checkEssentials(){
+    public static boolean checkEssentials() {
         return (Minecraft.getMinecraft().thePlayer == null) ||
                 (!ScoreboardUtils.currentGamemode.isSkyblock()) ||
                 (!ScoreboardUtils.currentLocation.isCrimson());

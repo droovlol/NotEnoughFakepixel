@@ -1,8 +1,8 @@
 package org.ginafro.notenoughfakepixel.config.gui.core.config.gui;
 
+import net.minecraft.client.Minecraft;
 import org.ginafro.notenoughfakepixel.config.gui.core.GuiElementTextField;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.struct.ConfigProcessor;
-import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 

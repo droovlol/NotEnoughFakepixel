@@ -4,8 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.ginafro.notenoughfakepixel.config.features.QualityOfLife;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.input.Keyboard;
@@ -20,13 +19,13 @@ public class WarpsShortcut {
 
     @SubscribeEvent
     public void onKeyPress(InputEvent.KeyInputEvent event) {
-        if (!NotEnoughFakepixel.feature.qol.qolShortcutWarps) return;
+        if (!Config.feature.qol.qolShortcutWarps) return;
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
         EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
 
-        checkWarp(player, NotEnoughFakepixel.feature.qol.qolShortcutWarpIs, "/warp is");
-        checkWarp(player, NotEnoughFakepixel.feature.qol.qolShortcutWarpHub, "/warp hub");
-        checkWarp(player, NotEnoughFakepixel.feature.qol.qolShortcutWarpDh, "/warp dh");
+        checkWarp(player, Config.feature.qol.qolShortcutWarpIs, "/warp is");
+        checkWarp(player, Config.feature.qol.qolShortcutWarpHub, "/warp hub");
+        checkWarp(player, Config.feature.qol.qolShortcutWarpDh, "/warp dh");
     }
 
     private void checkWarp(EntityPlayerSP player, int keyBind, String command) {

@@ -11,7 +11,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
 import org.ginafro.notenoughfakepixel.utils.ChatUtils;
@@ -36,14 +36,14 @@ public class ScoreOverlay {
         ScaledResolution sr = new ScaledResolution(mc);
         int overlayWidth = getWidth(1.0f); // Base width, scaled later
         int overlayHeight = getHeight(1.0f); // Base height, scaled later
-        float x = NotEnoughFakepixel.feature.dungeons.scoreOverlayPos.getAbsX(sr, overlayWidth);
-        float y = NotEnoughFakepixel.feature.dungeons.scoreOverlayPos.getAbsY(sr, overlayHeight);
-        draw(x, y, NotEnoughFakepixel.feature.dungeons.scoreOverlayScale, false);
+        float x = Config.feature.dungeons.scoreOverlayPos.getAbsX(sr, overlayWidth);
+        float y = Config.feature.dungeons.scoreOverlayPos.getAbsY(sr, overlayHeight);
+        draw(x, y, Config.feature.dungeons.scoreOverlayScale, false);
     }
 
     private boolean shouldShow() {
         if (!DungeonManager.checkEssentials()) return false;
-        return NotEnoughFakepixel.feature.dungeons.dungeonsScoreOverlay;
+        return Config.feature.dungeons.dungeonsScoreOverlay;
     }
 
     private void draw(float x, float y, float scale, boolean example) {
@@ -55,7 +55,7 @@ public class ScoreOverlay {
         getLines(lines, example);
 
         // Parse background color
-        String[] colorParts = NotEnoughFakepixel.feature.dungeons.scoreOverlayBackgroundColor.split(":");
+        String[] colorParts = Config.feature.dungeons.scoreOverlayBackgroundColor.split(":");
         int alpha = Integer.parseInt(colorParts[1]);
         int red = Integer.parseInt(colorParts[2]);
         int green = Integer.parseInt(colorParts[3]);
@@ -86,9 +86,9 @@ public class ScoreOverlay {
         ScaledResolution sr = new ScaledResolution(mc);
         int overlayWidth = getWidth(1.0f);
         int overlayHeight = getHeight(1.0f);
-        float x = NotEnoughFakepixel.feature.dungeons.scoreOverlayPos.getAbsX(sr, overlayWidth);
-        float y = NotEnoughFakepixel.feature.dungeons.scoreOverlayPos.getAbsY(sr, overlayHeight);
-        draw(x, y, NotEnoughFakepixel.feature.dungeons.scoreOverlayScale, true);
+        float x = Config.feature.dungeons.scoreOverlayPos.getAbsX(sr, overlayWidth);
+        float y = Config.feature.dungeons.scoreOverlayPos.getAbsY(sr, overlayHeight);
+        draw(x, y, Config.feature.dungeons.scoreOverlayScale, true);
     }
 
     public int getWidth(float scale) {
@@ -126,13 +126,19 @@ public class ScoreOverlay {
 
     private String getRankingDisplay() {
         int totalScore = ScoreManager.getTotalScore();
-        if (DungeonManager.isFinalStage() && ScoreManager.getExplorationClearScore() != 60) return EnumChatFormatting.RED + "UNKNOWN SCORE";
+        if (DungeonManager.isFinalStage() && ScoreManager.getExplorationClearScore() != 60)
+            return EnumChatFormatting.RED + "UNKNOWN SCORE";
         String returnString = "\u00a77Total score: ";
-        if (totalScore < 100) returnString = returnString + EnumChatFormatting.RED + totalScore + EnumChatFormatting.RED + " (D)";
-        else if (totalScore < 160) returnString = returnString + EnumChatFormatting.RED + totalScore + EnumChatFormatting.BLUE + " (C)";
-        else if (totalScore < 230) returnString = returnString + EnumChatFormatting.RED + totalScore + EnumChatFormatting.GREEN + " (B)";
-        else if (totalScore < 269.5f) returnString = returnString + EnumChatFormatting.YELLOW + totalScore + EnumChatFormatting.LIGHT_PURPLE + " (A)";
-        else if (totalScore < 300) returnString = returnString + EnumChatFormatting.YELLOW + totalScore + EnumChatFormatting.GOLD + " (S)";
+        if (totalScore < 100)
+            returnString = returnString + EnumChatFormatting.RED + totalScore + EnumChatFormatting.RED + " (D)";
+        else if (totalScore < 160)
+            returnString = returnString + EnumChatFormatting.RED + totalScore + EnumChatFormatting.BLUE + " (C)";
+        else if (totalScore < 230)
+            returnString = returnString + EnumChatFormatting.RED + totalScore + EnumChatFormatting.GREEN + " (B)";
+        else if (totalScore < 269.5f)
+            returnString = returnString + EnumChatFormatting.YELLOW + totalScore + EnumChatFormatting.LIGHT_PURPLE + " (A)";
+        else if (totalScore < 300)
+            returnString = returnString + EnumChatFormatting.YELLOW + totalScore + EnumChatFormatting.GOLD + " (S)";
         else returnString = returnString + EnumChatFormatting.GREEN + totalScore + EnumChatFormatting.GOLD + " (S+)";
         return returnString;
     }
@@ -142,18 +148,24 @@ public class ScoreOverlay {
         if (DungeonManager.isFinalStage() && ScoreManager.getExplorationClearScore() != 60) return "";
         if (ScoreManager.getExplorationClearScore() == 60) return "";
         String returnString = "\u00a77Virtual score: ";
-        if (virtualScore < 100) returnString = returnString + EnumChatFormatting.RED + virtualScore + EnumChatFormatting.RED + " (D)";
-        else if (virtualScore < 160) returnString = returnString + EnumChatFormatting.RED + virtualScore + EnumChatFormatting.BLUE + " (C)";
-        else if (virtualScore < 230) returnString = returnString + EnumChatFormatting.RED + virtualScore + EnumChatFormatting.GREEN + " (B)";
-        else if (virtualScore < 269.5f) returnString = returnString + EnumChatFormatting.YELLOW + virtualScore + EnumChatFormatting.LIGHT_PURPLE + " (A)";
-        else if (virtualScore < 300) returnString = returnString + EnumChatFormatting.YELLOW + virtualScore + EnumChatFormatting.GOLD + " (S)";
+        if (virtualScore < 100)
+            returnString = returnString + EnumChatFormatting.RED + virtualScore + EnumChatFormatting.RED + " (D)";
+        else if (virtualScore < 160)
+            returnString = returnString + EnumChatFormatting.RED + virtualScore + EnumChatFormatting.BLUE + " (C)";
+        else if (virtualScore < 230)
+            returnString = returnString + EnumChatFormatting.RED + virtualScore + EnumChatFormatting.GREEN + " (B)";
+        else if (virtualScore < 269.5f)
+            returnString = returnString + EnumChatFormatting.YELLOW + virtualScore + EnumChatFormatting.LIGHT_PURPLE + " (A)";
+        else if (virtualScore < 300)
+            returnString = returnString + EnumChatFormatting.YELLOW + virtualScore + EnumChatFormatting.GOLD + " (S)";
         else returnString = returnString + EnumChatFormatting.GREEN + virtualScore + EnumChatFormatting.GOLD + " (S+)";
         return returnString;
     }
 
     private String getSkillDisplay() {
         EnumChatFormatting enumChatFormatting;
-        if (DungeonManager.isFinalStage() && ScoreManager.getExplorationClearScore() != 60) return "\u00a77Exploration: " + EnumChatFormatting.RED + "Not all puzzles done";
+        if (DungeonManager.isFinalStage() && ScoreManager.getExplorationClearScore() != 60)
+            return "\u00a77Exploration: " + EnumChatFormatting.RED + "Not all puzzles done";
         int skillScore = ScoreManager.getSkillScore();
         if (skillScore == 100) enumChatFormatting = EnumChatFormatting.GREEN;
         else if (skillScore >= 94) enumChatFormatting = EnumChatFormatting.YELLOW;
@@ -180,11 +192,12 @@ public class ScoreOverlay {
     }
 
     private String getBonusDisplay() {
-        int threshold = NotEnoughFakepixel.feature.dungeons.dungeonsIsPaul ? 15 : 5;
+        int threshold = Config.feature.dungeons.dungeonsIsPaul ? 15 : 5;
         EnumChatFormatting enumChatFormatting;
         int bonusScore = ScoreManager.getBonusScore();
         if (bonusScore >= threshold) enumChatFormatting = EnumChatFormatting.GREEN;
-        else if ((threshold == 15 && bonusScore >= 10) || (threshold == 5 && bonusScore > 0)) enumChatFormatting = EnumChatFormatting.YELLOW;
+        else if ((threshold == 15 && bonusScore >= 10) || (threshold == 5 && bonusScore > 0))
+            enumChatFormatting = EnumChatFormatting.YELLOW;
         else enumChatFormatting = EnumChatFormatting.RED;
         return "\u00a77Bonus: " + enumChatFormatting + bonusScore;
     }

@@ -6,9 +6,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class Aliases {
 
     public Aliases() {

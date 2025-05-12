@@ -3,9 +3,7 @@ package org.ginafro.notenoughfakepixel.features.skyblock.mining;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.Configuration;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.ginafro.notenoughfakepixel.config.features.Mining;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.variables.Location;
@@ -28,8 +26,8 @@ public class EventsMsgSupressor {
 
 
     @SubscribeEvent
-    public void onChatRecieve(ClientChatReceivedEvent e){
-        if(Minecraft.getMinecraft().thePlayer == null) return;
+    public void onChatRecieve(ClientChatReceivedEvent e) {
+        if (Minecraft.getMinecraft().thePlayer == null) return;
         checkMessageMatches(e);
     }
 
@@ -38,14 +36,13 @@ public class EventsMsgSupressor {
     }
 
     private void checkDonEspressoMessage(ClientChatReceivedEvent e) {
-        if (!NotEnoughFakepixel.feature.mining.miningDisableDonEspresso) return;
+        if (!Config.feature.mining.miningDisableDonEspresso) return;
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
         if (ScoreboardUtils.currentLocation != Location.DWARVEN) return;
         if (donEspressoPattern.matcher(e.message.getFormattedText()).find()) {
             e.setCanceled(true);
         }
     }
-
 
 
 }

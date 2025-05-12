@@ -1,12 +1,12 @@
 package org.ginafro.notenoughfakepixel.features.cosmetics.loader;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.lwjgl.opengl.GL11.GL_FLAT;
 import static org.lwjgl.opengl.GL11.GL_SMOOTH;

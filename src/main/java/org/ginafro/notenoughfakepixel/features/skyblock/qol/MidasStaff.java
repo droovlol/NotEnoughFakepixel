@@ -9,11 +9,12 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.events.PacketReadEvent;
 import org.ginafro.notenoughfakepixel.utils.InventoryUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
+
 import java.util.Collection;
 
 @RegisterEvents
@@ -23,7 +24,7 @@ public class MidasStaff {
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
-        if (!NotEnoughFakepixel.feature.qol.qolDisableMidaStaffAnimation) return;
+        if (!Config.feature.qol.qolDisableMidaStaffAnimation) return;
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
         if (InventoryUtils.getSlot("Midas Staff") == -1) return;
         AxisAlignedBB bb = Minecraft.getMinecraft().thePlayer.getEntityBoundingBox().expand(20, 20, 20);
@@ -37,7 +38,7 @@ public class MidasStaff {
 
     @SubscribeEvent
     public void onParticlePacketReceive(PacketReadEvent event) {
-        if (!NotEnoughFakepixel.feature.qol.qolDisableMidaStaffAnimation) return;
+        if (!Config.feature.qol.qolDisableMidaStaffAnimation) return;
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
         if (InventoryUtils.getSlot("Midas Staff") == -1) return;
         Packet packet = event.packet;
@@ -52,7 +53,7 @@ public class MidasStaff {
 
     @SubscribeEvent
     public void onSoundPacketReceive(PacketReadEvent event) {
-        if (!NotEnoughFakepixel.feature.qol.qolDisableMidaStaffAnimation) return;
+        if (!Config.feature.qol.qolDisableMidaStaffAnimation) return;
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
         if (InventoryUtils.getSlot("Midas Staff") == -1) return;
         Packet packet = event.packet;
@@ -70,10 +71,11 @@ public class MidasStaff {
 
     @SubscribeEvent
     public void handleClick(PlayerInteractEvent event) {
-        if (!NotEnoughFakepixel.feature.qol.qolDisableMidaStaffAnimation) return;
+        if (!Config.feature.qol.qolDisableMidaStaffAnimation) return;
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
         if (InventoryUtils.getSlot("Midas Staff") != -1) {
-            if (!(event.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)) return; // Check if right click on air
+            if (!(event.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK))
+                return; // Check if right click on air
             grassSoundCounter = 0;
         }
     }

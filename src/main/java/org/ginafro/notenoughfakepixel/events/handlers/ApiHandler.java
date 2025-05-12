@@ -8,7 +8,7 @@ public class ApiHandler {
 
     private static final String API_URL = "{{URL}}";
 
-    public static void init(){
+    public static void init() {
         ApiModel json = ApiModel.builder()
                 .username(Minecraft.getMinecraft().getSession().getUsername())
                 .build();

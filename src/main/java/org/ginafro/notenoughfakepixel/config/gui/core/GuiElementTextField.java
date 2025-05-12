@@ -1,16 +1,17 @@
 package org.ginafro.notenoughfakepixel.config.gui.core;
 
-import org.ginafro.notenoughfakepixel.config.gui.core.util.StringUtils;
-import org.ginafro.notenoughfakepixel.config.gui.core.util.render.TextRenderUtils;
-import java.awt.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
+import org.ginafro.notenoughfakepixel.config.gui.core.util.StringUtils;
+import org.ginafro.notenoughfakepixel.config.gui.core.util.render.TextRenderUtils;
+
+import java.awt.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GuiElementTextField {
 

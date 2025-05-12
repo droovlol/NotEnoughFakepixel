@@ -14,15 +14,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(AbstractClientPlayer.class)
 public abstract class MixinAbstractClientPlayer {
 
-    @Shadow protected abstract NetworkPlayerInfo getPlayerInfo();
+    @Shadow
+    protected abstract NetworkPlayerInfo getPlayerInfo();
 
-    @Shadow private NetworkPlayerInfo playerInfo;
+    @Shadow
+    private NetworkPlayerInfo playerInfo;
 
     @Inject(method = "getLocationCape", at = @At("HEAD"), cancellable = true)
     public void onGetCape(CallbackInfoReturnable<ResourceLocation> cir) {
 
-        if(CapeManager.hasCape() && playerInfo != null) {
-            if(Minecraft.getMinecraft().thePlayer.getGameProfile().getName().equals(playerInfo.getGameProfile().getName())){
+        if (CapeManager.hasCape() && playerInfo != null) {
+            if (Minecraft.getMinecraft().thePlayer.getGameProfile().getName().equals(playerInfo.getGameProfile().getName())) {
                 cir.setReturnValue(CapeManager.getCapeTexture(CapeManager.getCape()));
             }
         }

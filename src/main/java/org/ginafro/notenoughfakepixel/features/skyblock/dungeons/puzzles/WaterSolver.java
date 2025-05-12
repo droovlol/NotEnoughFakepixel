@@ -17,7 +17,7 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
 import org.ginafro.notenoughfakepixel.utils.Logger;
@@ -48,7 +48,7 @@ public class WaterSolver {
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsWaterSolver) return;
+        if (!Config.feature.dungeons.dungeonsWaterSolver) return;
         if (!DungeonManager.checkEssentials()) return;
         if (event.phase != TickEvent.Phase.START) return;
 
@@ -61,13 +61,14 @@ public class WaterSolver {
         if (player == null || world == null) return;
 
         boolean waterLeverPowered = false;
-        if (waterLeverPos != null && world.getBlockState(waterLeverPos).getBlock() == Blocks.lever) waterLeverPowered = world.getBlockState(waterLeverPos).getValue(BlockLever.POWERED);
+        if (waterLeverPos != null && world.getBlockState(waterLeverPos).getBlock() == Blocks.lever)
+            waterLeverPowered = world.getBlockState(waterLeverPos).getValue(BlockLever.POWERED);
         new Thread(this::detectWaterRoom).start();
     }
 
     @SubscribeEvent
     public void onWorldRender(RenderWorldLastEvent event) {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsWaterSolver) return;
+        if (!Config.feature.dungeons.dungeonsWaterSolver) return;
         if (!DungeonManager.checkEssentials()) return;
         if (!inWaterRoom || woolBlocks == null || woolBlocks.isEmpty()) return;
         if (!woolBlocks.iterator().hasNext()) return;
@@ -79,21 +80,33 @@ public class WaterSolver {
         }
     }
 
-    private void drawFeatures (int[] colorSolutions, float offsetY, float partialTicks) {
+    private void drawFeatures(int[] colorSolutions, float offsetY, float partialTicks) {
         if (correctLevers == null || correctLevers.isEmpty()) return;
-        int solutionNumber = (int)(offsetY);
+        int solutionNumber = (int) (offsetY);
         List<BlockPos> boundingBoxPositions = new ArrayList<>();
         for (int i = 0; i < colorSolutions.length; i++) {
             int solution = colorSolutions[i];
             correctLevers.get(solutionNumber)[i] = true;
             BlockPos position = null;
             switch (i) {
-                case 0: position = leversPositions.get("minecraft:quartz_block"); break;
-                case 1: position = leversPositions.get("minecraft:diamond_block"); break;
-                case 2: position = leversPositions.get("minecraft:gold_block"); break;
-                case 3: position = leversPositions.get("minecraft:emerald_block"); break;
-                case 4: position = leversPositions.get("minecraft:coal_block"); break;
-                case 5: position = leversPositions.get("minecraft:hardened_clay"); break;
+                case 0:
+                    position = leversPositions.get("minecraft:quartz_block");
+                    break;
+                case 1:
+                    position = leversPositions.get("minecraft:diamond_block");
+                    break;
+                case 2:
+                    position = leversPositions.get("minecraft:gold_block");
+                    break;
+                case 3:
+                    position = leversPositions.get("minecraft:emerald_block");
+                    break;
+                case 4:
+                    position = leversPositions.get("minecraft:coal_block");
+                    break;
+                case 5:
+                    position = leversPositions.get("minecraft:hardened_clay");
+                    break;
             }
             if (position == null) continue;
             if (world.getBlockState(position).getBlock() != Blocks.lever) continue;
@@ -141,7 +154,7 @@ public class WaterSolver {
         for (BlockPos position : boundingBoxPositions) {
             if (world.getBlockState(position).getBlock() != Blocks.lever) continue;
             RenderUtils.drawLeverBoundingBox(
-                    new BlockPos(position.getX(), position.getY()+offsetY, position.getZ()),
+                    new BlockPos(position.getX(), position.getY() + offsetY, position.getZ()),
                     world.getBlockState(position).getValue(BlockLever.FACING).getFacing(),
                     color,
                     partialTicks
@@ -151,7 +164,7 @@ public class WaterSolver {
 
     @SubscribeEvent()
     public void onWorldUnload(WorldEvent.Load event) {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsWaterSolver) return;
+        if (!Config.feature.dungeons.dungeonsWaterSolver) return;
         if (!DungeonManager.checkEssentials()) return;
         waterLeverPos = null;
         //correctLevers = new boolean[]{true,true,true,true,true,true};
@@ -171,9 +184,9 @@ public class WaterSolver {
             inWaterRoom = true;
             woolBlocks = detectWoolBlocks(foundPistonHead);
             for (int i = 0; i < woolBlocks.size(); i++) {
-                correctLevers.add(new boolean[]{true,true,true,true,true,true});
+                correctLevers.add(new boolean[]{true, true, true, true, true, true});
             }
-            leversPositions = detectLeverPositions(new BlockPos(foundPistonHead.getX(), foundPistonHead.getY()+4, foundPistonHead.getZ()));
+            leversPositions = detectLeverPositions(new BlockPos(foundPistonHead.getX(), foundPistonHead.getY() + 4, foundPistonHead.getZ()));
         }
     }
 
@@ -208,7 +221,7 @@ public class WaterSolver {
         Map<String, BlockPos> leversPositions = new HashMap<>();
 
         BlockPos scan1 = new BlockPos(posOrigin.getX() + 16, posOrigin.getY(), posOrigin.getZ() + 16);
-        BlockPos scan2 = new BlockPos(posOrigin.getX() - 16, posOrigin.getY()-1, posOrigin.getZ() - 16);
+        BlockPos scan2 = new BlockPos(posOrigin.getX() - 16, posOrigin.getY() - 1, posOrigin.getZ() - 16);
 
         for (BlockPos pos : BlockPos.getAllInBox(scan1, scan2)) {
             IBlockState blockState = world.getBlockState(pos);
@@ -271,9 +284,9 @@ public class WaterSolver {
             case WEST:
                 return new BlockPos(pos.getX() + 1, pos.getY(), pos.getZ());
             case UP:
-                return new BlockPos(pos.getX(), pos.getY()-1, pos.getZ());
+                return new BlockPos(pos.getX(), pos.getY() - 1, pos.getZ());
             case DOWN:
-                return new BlockPos(pos.getX(), pos.getY()+1, pos.getZ());
+                return new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ());
             default:
                 return null;
         }
@@ -299,11 +312,11 @@ public class WaterSolver {
     }
 
     public enum WOOL_SOLUTIONS {
-        LIME("lime",0,0,0,0,0,0),
-        BLUE("blue",0,0,0,0,-1,1),
-        RED("red",0,0,1,-1,1,-1),
-        PURPLE("purple",1,1,1,0,-1,-1),
-        ORANGE("orange",1,1,0,1,-1,-1);
+        LIME("lime", 0, 0, 0, 0, 0, 0),
+        BLUE("blue", 0, 0, 0, 0, -1, 1),
+        RED("red", 0, 0, 1, -1, 1, -1),
+        PURPLE("purple", 1, 1, 1, 0, -1, -1),
+        ORANGE("orange", 1, 1, 0, 1, -1, -1);
 
         private final String color;
         private final int quartzBlock;
@@ -325,12 +338,12 @@ public class WaterSolver {
         }
 
         public static int[] getArraySolutions(String color) {
-            for (WOOL_SOLUTIONS solution : WOOL_SOLUTIONS.values()){
-                if (solution.color.equals(color)){
-                    return new int[] {solution.quartzBlock, solution.diamondBlock, solution.goldBlock, solution.emeraldBlock, solution.coalBlock, solution.hardenedClay};
+            for (WOOL_SOLUTIONS solution : WOOL_SOLUTIONS.values()) {
+                if (solution.color.equals(color)) {
+                    return new int[]{solution.quartzBlock, solution.diamondBlock, solution.goldBlock, solution.emeraldBlock, solution.coalBlock, solution.hardenedClay};
                 }
             }
-            return new int[]{-1,-1,-1,-1,-1,-1};
+            return new int[]{-1, -1, -1, -1, -1, -1};
         }
     }
 

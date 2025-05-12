@@ -8,7 +8,7 @@ import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.Position;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.events.handlers.ScoreboardHandler;
@@ -24,7 +24,7 @@ public class SlayerHealthDisplay {
     private final Position position; // Added position field
 
     public SlayerHealthDisplay() {
-        this.position = NotEnoughFakepixel.feature.slayer.slayerBossHPPos; // Initialize position
+        this.position = Config.feature.slayer.slayerBossHPPos; // Initialize position
     }
 
     public static final String[] SLAYER_BOSSES = {
@@ -41,7 +41,7 @@ public class SlayerHealthDisplay {
         if (event.side != net.minecraftforge.fml.relauncher.Side.CLIENT || mc.theWorld == null) {
             return;
         }
-        if (NotEnoughFakepixel.feature.slayer.slayerBossHP) {
+        if (Config.feature.slayer.slayerBossHP) {
             List<String> sidebarLines = ScoreboardHandler.getSidebarLines();
             isBoss = false;
             for (String line : sidebarLines) {
@@ -97,8 +97,8 @@ public class SlayerHealthDisplay {
         int textWidth = fr.getStringWidth(displayText);
         int textHeight = fr.FONT_HEIGHT;
 
-        int x = position.getAbsX(resolution, textWidth) / (int)scale;
-        int y = position.getAbsY(resolution, textHeight) / (int)scale;
+        int x = position.getAbsX(resolution, textWidth) / (int) scale;
+        int y = position.getAbsY(resolution, textHeight) / (int) scale;
 
         fr.drawStringWithShadow(displayText, x, y, 0xFF5555);
 

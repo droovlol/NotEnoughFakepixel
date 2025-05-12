@@ -1,9 +1,10 @@
 package org.ginafro.notenoughfakepixel.config.gui.core;
 
-import java.io.IOException;
 import net.minecraft.client.gui.GuiScreen;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.lwjgl.input.Mouse;
+
+import java.io.IOException;
 
 public class GuiScreenElementWrapper extends GuiScreen {
 
@@ -35,6 +36,6 @@ public class GuiScreenElementWrapper extends GuiScreen {
 
     @Override
     public void onGuiClosed() {
-        NotEnoughFakepixel.instance.saveConfig();
+        Config.saveConfig();
     }
 }

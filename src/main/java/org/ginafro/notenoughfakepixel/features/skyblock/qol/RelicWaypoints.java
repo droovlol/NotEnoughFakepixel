@@ -8,18 +8,15 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientDisconnectionFromServerEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.variables.Location;
 
-import java.awt.Color;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
+import java.awt.*;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 
 @RegisterEvents
 public class RelicWaypoints {
@@ -58,7 +55,7 @@ public class RelicWaypoints {
 
     @SubscribeEvent
     public void onRenderWorldLast(RenderWorldLastEvent event) {
-        if (!NotEnoughFakepixel.feature.qol.qolRelicWaypoints || ScoreboardUtils.currentLocation != Location.SPIDERS_DEN) {
+        if (!Config.feature.qol.qolRelicWaypoints || ScoreboardUtils.currentLocation != Location.SPIDERS_DEN) {
             return;
         }
 
@@ -85,7 +82,7 @@ public class RelicWaypoints {
 
     @SubscribeEvent
     public void onChatReceived(ClientChatReceivedEvent event) {
-        if (!NotEnoughFakepixel.feature.qol.qolRelicWaypoints || ScoreboardUtils.currentLocation != Location.SPIDERS_DEN) {
+        if (!Config.feature.qol.qolRelicWaypoints || ScoreboardUtils.currentLocation != Location.SPIDERS_DEN) {
             return;
         }
 

@@ -5,7 +5,7 @@ import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.input.Mouse;
@@ -27,7 +27,7 @@ public class MiddleClickEvent {
     @SubscribeEvent
     public void onMouseClick(GuiScreenEvent.MouseInputEvent.Pre event) {
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
-        if (!NotEnoughFakepixel.feature.qol.qolMiddleClickChests) return;
+        if (!Config.feature.qol.qolMiddleClickChests) return;
         if (Mouse.getEventButton() != 0 || !Mouse.getEventButtonState()) return;
         if (!(mc.currentScreen instanceof GuiChest)) return;
 
@@ -37,7 +37,8 @@ public class MiddleClickEvent {
 
         // Exclusion checks
         if (excludedNames.contains(chestName)) return;
-        if (chestName.startsWith("Wardrobe") || chestName.startsWith("Ender Chest") || chestName.contains("Backpack")) return;
+        if (chestName.startsWith("Wardrobe") || chestName.startsWith("Ender Chest") || chestName.contains("Backpack"))
+            return;
 
         event.setCanceled(true);
 

@@ -1,7 +1,8 @@
 package org.ginafro.notenoughfakepixel.config.features;
 
 import com.google.gson.annotations.Expose;
-import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.*;
+import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.ConfigEditorBoolean;
+import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.ConfigOption;
 
 
 public class Debug {

@@ -1,11 +1,10 @@
 package org.ginafro.notenoughfakepixel.features.duels;
-import com.google.gson.annotations.Expose;
-import org.ginafro.notenoughfakepixel.config.features.ChocolateFactory;
-import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.*;
 
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
+import com.google.gson.annotations.Expose;
+import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.ConfigEditorBoolean;
+import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.ConfigEditorButton;
+import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.ConfigEditorSlider;
+import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.ConfigOption;
 
 public class Duels {
 

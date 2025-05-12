@@ -9,7 +9,7 @@ public class FairySoulData {
     int soulCount;
     Map<String, List<String>> locations;
 
-    public FairySoulData(String desc, int souls, Map<String,List<String>> locs){
+    public FairySoulData(String desc, int souls, Map<String, List<String>> locs) {
         description = desc;
         soulCount = souls;
         locations = locs;

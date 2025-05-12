@@ -1,6 +1,5 @@
 package org.ginafro.notenoughfakepixel.utils;
 
-import org.ginafro.notenoughfakepixel.events.RenderEntityModelEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
@@ -8,6 +7,7 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import org.ginafro.notenoughfakepixel.events.RenderEntityModelEvent;
 import org.lwjgl.opengl.EXTFramebufferObject;
 import org.lwjgl.opengl.EXTPackedDepthStencil;
 import org.lwjgl.opengl.GL11;
@@ -18,7 +18,8 @@ public final class OutlineUtils {
 
     private static final Minecraft mc = Minecraft.getMinecraft();
 
-    private OutlineUtils() {}
+    private OutlineUtils() {
+    }
 
     private static void outlineEntity(
             ModelBase model,

@@ -1,14 +1,15 @@
 package org.ginafro.notenoughfakepixel.config.gui.core.config.gui;
 
-import org.ginafro.notenoughfakepixel.config.gui.core.config.Position;
-import org.ginafro.notenoughfakepixel.config.gui.utils.Utils;
-import java.io.IOException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import org.ginafro.notenoughfakepixel.config.gui.core.config.Position;
+import org.ginafro.notenoughfakepixel.config.gui.utils.Utils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+
+import java.io.IOException;
 
 public class GuiPositionEditor extends GuiScreen {
 

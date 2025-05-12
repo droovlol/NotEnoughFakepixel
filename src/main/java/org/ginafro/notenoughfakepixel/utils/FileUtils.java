@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.features.skyblock.qol.FairySoulData;
 
 import java.io.*;
@@ -16,22 +16,23 @@ import java.util.Map;
 
 public class FileUtils {
 
-    public static File SOULS_FILE = new File(NotEnoughFakepixel.configDirectory,"gainedsouls.json");
-    public static ResourceLocation ALL_SOULS = new ResourceLocation("notenoughfakepixel","fairysouls.json");
+    public static File SOULS_FILE = new File(Config.configDirectory, "gainedsouls.json");
+    public static ResourceLocation ALL_SOULS = new ResourceLocation("notenoughfakepixel", "fairysouls.json");
     public static Gson gson = new GsonBuilder().setPrettyPrinting().create();
     public static Map<String, List<String>> templateMap = new HashMap<>();
+
     public static FairySoulData getSoulData() {
         try {
             if (!Files.exists(SOULS_FILE.toPath())) {
-                templateMap.put("hub",new ArrayList<>());
-                templateMap.put("spider",new ArrayList<>());
-                templateMap.put("crimson",new ArrayList<>());
-                templateMap.put("end",new ArrayList<>());
-                templateMap.put("park",new ArrayList<>());
-                templateMap.put("farming",new ArrayList<>());
-                templateMap.put("gold",new ArrayList<>());
-                templateMap.put("dungeon_hub",new ArrayList<>());
-                templateMap.put("winter",new ArrayList<>());
+                templateMap.put("hub", new ArrayList<>());
+                templateMap.put("spider", new ArrayList<>());
+                templateMap.put("crimson", new ArrayList<>());
+                templateMap.put("end", new ArrayList<>());
+                templateMap.put("park", new ArrayList<>());
+                templateMap.put("farming", new ArrayList<>());
+                templateMap.put("gold", new ArrayList<>());
+                templateMap.put("dungeon_hub", new ArrayList<>());
+                templateMap.put("winter", new ArrayList<>());
                 FairySoulData data = new FairySoulData(
                         "Do Not Manually Change This File, It will lead to errors",
                         0,
@@ -61,7 +62,7 @@ public class FileUtils {
             InputStream is = Minecraft.getMinecraft().getResourceManager().getResource(ALL_SOULS).getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
             return gson.fromJson(reader, FairySoulData.class);
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return new FairySoulData("Could not load file", 247, new HashMap<>());
         }

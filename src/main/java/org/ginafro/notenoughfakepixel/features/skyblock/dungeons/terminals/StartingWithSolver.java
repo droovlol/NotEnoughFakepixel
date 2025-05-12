@@ -15,7 +15,7 @@ import net.minecraft.util.StringUtils;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
 import org.ginafro.notenoughfakepixel.utils.ColorUtils;
@@ -52,7 +52,7 @@ public class StartingWithSolver {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onDrawScreenPre(GuiScreenEvent.DrawScreenEvent.Pre event) {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalStartsWithSolver) return;
+        if (!Config.feature.dungeons.dungeonsTerminalStartsWithSolver) return;
         if (!(event.gui instanceof GuiChest)) return;
         if (!DungeonManager.checkEssentialsF7()) return;
 
@@ -67,14 +67,14 @@ public class StartingWithSolver {
                 .getUnformattedText()
                 .trim();
 
-        if (NotEnoughFakepixel.feature.dungeons.dungeonsCustomGuiStartsWith && displayName.contains("What starts with")) {
+        if (Config.feature.dungeons.dungeonsCustomGuiStartsWith && displayName.contains("What starts with")) {
             event.setCanceled(true);
         }
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onDrawScreenPost(GuiScreenEvent.DrawScreenEvent.Post event) {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalStartsWithSolver) return;
+        if (!Config.feature.dungeons.dungeonsTerminalStartsWithSolver) return;
         if (!DungeonManager.checkEssentialsF7()) return;
         if (!(event.gui instanceof GuiChest)) return;
 
@@ -95,7 +95,7 @@ public class StartingWithSolver {
         int screenWidth = sr.getScaledWidth();
         int screenHeight = sr.getScaledHeight();
 
-        if (NotEnoughFakepixel.feature.dungeons.dungeonsCustomGuiStartsWith) {
+        if (Config.feature.dungeons.dungeonsCustomGuiStartsWith) {
             final int INNER_COLUMNS = 7;
             final int INNER_ROWS = 4;
 
@@ -129,7 +129,7 @@ public class StartingWithSolver {
             }
 
             GlStateManager.pushMatrix();
-            float scale = NotEnoughFakepixel.feature.dungeons.dungeonsTerminalsScale;
+            float scale = Config.feature.dungeons.dungeonsTerminalsScale;
             int guiWidth = (int) (INNER_COLUMNS * SLOT_SIZE * scale);
             int guiHeight = (int) (INNER_ROWS * SLOT_SIZE * scale);
 
@@ -167,7 +167,7 @@ public class StartingWithSolver {
                     drawRect(x + 1, y + 1,
                             x + SLOT_SIZE - 1,
                             y + SLOT_SIZE - 1,
-                            ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsCorrectColor).getRGB()
+                            ColorUtils.getColor(Config.feature.dungeons.dungeonsCorrectColor).getRGB()
                     );
                 }
             }
@@ -177,7 +177,7 @@ public class StartingWithSolver {
 
     @SubscribeEvent
     public void onGuiRender(GuiScreenEvent.BackgroundDrawnEvent e) {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalStartsWithSolver) return;
+        if (!Config.feature.dungeons.dungeonsTerminalStartsWithSolver) return;
         if (!DungeonManager.checkEssentialsF7()) return;
         if (!(e.gui instanceof GuiChest)) return;
 
@@ -201,23 +201,23 @@ public class StartingWithSolver {
                 if (item == null) continue;
 
                 if (containerChest.inventorySlots.indexOf(slot) == 49) {
-                    if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalHideIncorrect) continue;
+                    if (!Config.feature.dungeons.dungeonsTerminalHideIncorrect) continue;
                     item.setItem(containerChest.inventorySlots.get(0).getStack().getItem());
                     item.getItem().setDamage(item, 15);
                     continue;
                 }
 
                 if (item.isItemEnchanted()) {
-                    if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalHideIncorrect) continue;
+                    if (!Config.feature.dungeons.dungeonsTerminalHideIncorrect) continue;
                     slot.getStack().setItem(containerChest.inventorySlots.get(0).getStack().getItem());
                     slot.getStack().getItem().setDamage(slot.getStack(), 15);
                     continue;
                 }
 
                 if (StringUtils.stripControlCodes(item.getDisplayName()).charAt(0) == letter) {
-                    RenderUtils.drawOnSlot(chest.inventorySlots.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsCorrectColor).getRGB());
+                    RenderUtils.drawOnSlot(chest.inventorySlots.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, ColorUtils.getColor(Config.feature.dungeons.dungeonsCorrectColor).getRGB());
                 } else {
-                    if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalHideIncorrect) continue;
+                    if (!Config.feature.dungeons.dungeonsTerminalHideIncorrect) continue;
                     if (Block.getBlockFromItem(slot.getStack().getItem()) instanceof BlockStainedGlassPane) {
                         if (slot.getStack().getMetadata() != 15) {
                             slot.getStack().getItem().setDamage(slot.getStack(), 15);
@@ -234,8 +234,8 @@ public class StartingWithSolver {
     @SubscribeEvent
     public void onMouseClick(GuiScreenEvent.MouseInputEvent.Pre event) {
         if (!DungeonManager.checkEssentialsF7()) return;
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsPreventMissclicks) return;
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalStartsWithSolver) return;
+        if (!Config.feature.dungeons.dungeonsPreventMissclicks) return;
+        if (!Config.feature.dungeons.dungeonsTerminalStartsWithSolver) return;
         if (!Mouse.getEventButtonState()) return;
 
         Minecraft mc = Minecraft.getMinecraft();
@@ -250,14 +250,14 @@ public class StartingWithSolver {
         String title = containerChest.getLowerChestInventory().getDisplayName().getUnformattedText();
         if (!title.contains("What starts with")) return;
 
-        if (NotEnoughFakepixel.feature.dungeons.dungeonsCustomGuiStartsWith) {
+        if (Config.feature.dungeons.dungeonsCustomGuiStartsWith) {
             ScaledResolution sr = new ScaledResolution(mc);
-            float scale = NotEnoughFakepixel.feature.dungeons.dungeonsTerminalsScale;
+            float scale = Config.feature.dungeons.dungeonsTerminalsScale;
             int mouseX = (Mouse.getEventX() * sr.getScaledWidth()) / mc.displayWidth;
             int mouseY = sr.getScaledHeight() - (Mouse.getEventY() * sr.getScaledHeight()) / mc.displayHeight - 1;
 
-            int guiWidth = (int)(COLUMNS * SLOT_SIZE * scale);
-            int guiHeight = (int)(ROWS * SLOT_SIZE * scale);
+            int guiWidth = (int) (COLUMNS * SLOT_SIZE * scale);
+            int guiHeight = (int) (ROWS * SLOT_SIZE * scale);
             int guiLeft = (sr.getScaledWidth() - guiWidth) / 2;
             int guiTop = (sr.getScaledHeight() - guiHeight) / 2;
 

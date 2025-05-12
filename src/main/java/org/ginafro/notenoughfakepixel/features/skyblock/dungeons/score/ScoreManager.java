@@ -9,7 +9,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
@@ -59,7 +59,7 @@ public class ScoreManager {
                 DungeonFloor.getFloor(ScoreboardUtils.currentFloor.name()).getSecretPercentage());
         int virtualTotalScore = currentScore + virtualSecretScore;
 
-        if (virtualTotalScore >= 270 && !hasNotified270 & NotEnoughFakepixel.feature.dungeons.dungeonsSNotifier) {
+        if (virtualTotalScore >= 270 && !hasNotified270 & Config.feature.dungeons.dungeonsSNotifier) {
             Minecraft.getMinecraft().thePlayer.sendChatMessage("/pc 270 Score!");
             SoundUtils.playSound(mc.thePlayer.getPosition(), "note.pling", 2.0F, 2.0F);
             showCustomOverlay(EnumChatFormatting.RED + "270 Score!", 2000);
@@ -104,18 +104,18 @@ public class ScoreManager {
 
     public static int getSkillScore() {
         int deaths = TablistParser.deaths;
-        return Math.max(Math.min(100 - (deaths-reducedPenalty) * 2 - failedPuzzles * 14, 100), 0);
+        return Math.max(Math.min(100 - (deaths - reducedPenalty) * 2 - failedPuzzles * 14, 100), 0);
     }
 
     public static int getExplorationClearScore() {
         int clearedPercentage = ScoreboardUtils.clearedPercentage;
-        return (int) Math.max(Math.min(Math.floor(60f * clearedPercentage / 100f),60),0);
+        return (int) Math.max(Math.min(Math.floor(60f * clearedPercentage / 100f), 60), 0);
     }
 
     public static int getExplorationSecretScore() {
         int secretPercentage = getSecretPercentage();
         int secretNeeded = DungeonFloor.getFloor(ScoreboardUtils.currentFloor.name()).getSecretPercentage();
-        return (int) Math.max(Math.min(Math.floor(40f * secretPercentage / secretNeeded), 40f),0);
+        return (int) Math.max(Math.min(Math.floor(40f * secretPercentage / secretNeeded), 40f), 0);
     }
 
     public static int getExplorationScore() {
@@ -139,7 +139,7 @@ public class ScoreManager {
 
     public static int getBonusScore() {
         int crypts = TablistParser.crypts;
-        return (NotEnoughFakepixel.feature.dungeons.dungeonsIsPaul ? 10 : 0) + Math.min(5, crypts);
+        return (Config.feature.dungeons.dungeonsIsPaul ? 10 : 0) + Math.min(5, crypts);
     }
 
     public static int getSecretPercentage() {
@@ -147,7 +147,7 @@ public class ScoreManager {
     }
 
     public static int getRequiredSecretNeeded() {
-        int secretScoreNeeded = 300-60-getSkillScore()-getSpeedScore()-getBonusScore();
+        int secretScoreNeeded = 300 - 60 - getSkillScore() - getSpeedScore() - getBonusScore();
         if (secretScoreNeeded > 40) {
             // cannot reach
             return -1;

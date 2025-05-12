@@ -6,7 +6,6 @@ import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 
 import java.awt.*;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -21,11 +20,11 @@ public class InventoryUtils {
     public static void goToSlot(int targetSlot) {
         int currentSlot = Minecraft.getMinecraft().thePlayer.inventory.currentItem;
         if (targetSlot > currentSlot) {
-            for (int i = 0; i < targetSlot-currentSlot; i++) {
+            for (int i = 0; i < targetSlot - currentSlot; i++) {
                 Minecraft.getMinecraft().thePlayer.inventory.changeCurrentItem(-1);
             }
         } else {
-            for (int i = 0; i < currentSlot-targetSlot; i++) {
+            for (int i = 0; i < currentSlot - targetSlot; i++) {
                 Minecraft.getMinecraft().thePlayer.inventory.changeCurrentItem(1);
             }
         }
@@ -70,7 +69,8 @@ public class InventoryUtils {
     public static void highlightSlotRed(Slot slot, GuiChest chest) {
         highlightSlot(slot, chest, new Color(255, 55, 55));
     }
-    public static void highlightSlot(Slot slot, GuiContainer container, Color color){
-        RenderUtils.drawOnSlot(container.inventorySlots.inventorySlots.size(),slot.xDisplayPosition,slot.yDisplayPosition,color.getRGB());
+
+    public static void highlightSlot(Slot slot, GuiContainer container, Color color) {
+        RenderUtils.drawOnSlot(container.inventorySlots.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, color.getRGB());
     }
 }

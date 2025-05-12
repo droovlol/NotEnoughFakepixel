@@ -1,14 +1,12 @@
 package org.ginafro.notenoughfakepixel.features.capes;
 
-import net.minecraft.util.ResourceLocation;
-
 public class Cape {
 
     public int width, height;
     public int capeID;
-    public String capeFile,capeName;
+    public String capeFile, capeName;
 
-    public Cape(int w, int h, int id, String file,String name) {
+    public Cape(int w, int h, int id, String file, String name) {
         width = w;
         height = h;
         capeID = id;

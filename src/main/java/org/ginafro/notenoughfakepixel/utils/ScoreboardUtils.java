@@ -15,9 +15,9 @@ import net.minecraft.util.StringUtils;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
+import org.ginafro.notenoughfakepixel.variables.Area;
 import org.ginafro.notenoughfakepixel.variables.DungeonFloor;
 import org.ginafro.notenoughfakepixel.variables.Gamemode;
-import org.ginafro.notenoughfakepixel.variables.Area;
 import org.ginafro.notenoughfakepixel.variables.Location;
 
 import java.util.ArrayList;
@@ -71,7 +71,7 @@ public class ScoreboardUtils {
                     }
 
 
-                    if (playerName.startsWith("§fDungeon Cleared: ")){
+                    if (playerName.startsWith("§fDungeon Cleared: ")) {
                         String cleanString = StringUtils.stripControlCodes(playerName);
 
                         String percentage = cleanString
@@ -144,7 +144,7 @@ public class ScoreboardUtils {
         for (String line : scoreboard) {
             line = cleanSB(line);
             line = Utils.removeFormatting(line);
-            if(line.contains(string)) {
+            if (line.contains(string)) {
                 result = true;
                 break;
             }
@@ -172,9 +172,9 @@ public class ScoreboardUtils {
                     }
                 }
             }
-        } return -1;
+        }
+        return -1;
     }
-
 
 
     public static String cleanSB(String scoreboard) {

@@ -63,7 +63,7 @@ public class WelcomeMessage {
         if (!notified && event.message.getUnformattedText().equals("+10 Magic Find Bonus!")) {
             notified = true;
             EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-            String welcomeMessage = "Welcome "+player.getName()+"! ";
+            String welcomeMessage = "Welcome " + player.getName() + "! ";
             String randomMessage = arrayWelcomeMessages.get(random.nextInt(arrayWelcomeMessages.size()));
             int numberSpecial = random.nextInt(1001);
             if (numberSpecial == 1000) {
@@ -79,9 +79,9 @@ public class WelcomeMessage {
                 ChatUtils.notifyChat(EnumChatFormatting.BOLD.toString() + EnumChatFormatting.BLUE + initialString + finalWelcomeMessage + finalRandomMessage);
                 SoundUtils.playSound(new int[]{player.getPosition().getX(),
                         player.getPosition().getY(),
-                        player.getPosition().getZ()},"note.pling",2.0f,1.0f);
+                        player.getPosition().getZ()}, "note.pling", 2.0f, 1.0f);
             }, 1000, TimeUnit.MILLISECONDS);
-            exec.schedule(() -> SoundUtils.playSound(player.getPosition(),"note.pling",2.0f,1.6f), 1300, TimeUnit.MILLISECONDS);
+            exec.schedule(() -> SoundUtils.playSound(player.getPosition(), "note.pling", 2.0f, 1.6f), 1300, TimeUnit.MILLISECONDS);
         }
     }
 }

@@ -1,15 +1,16 @@
 package org.ginafro.notenoughfakepixel.config.gui.core.util;
 
-import static org.ginafro.notenoughfakepixel.config.gui.GuiTextures.*;
-
-import org.ginafro.notenoughfakepixel.config.gui.core.GuiElement;
-import org.ginafro.notenoughfakepixel.config.gui.utils.Utils;
-import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
+import org.ginafro.notenoughfakepixel.config.gui.core.GuiElement;
+import org.ginafro.notenoughfakepixel.config.gui.utils.Utils;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+
+import java.util.function.Consumer;
+
+import static org.ginafro.notenoughfakepixel.config.gui.GuiTextures.*;
 
 public class GuiElementSlider extends GuiElement {
 

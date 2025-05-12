@@ -3,10 +3,6 @@ package org.ginafro.notenoughfakepixel.features.mlf;
 import com.google.gson.annotations.Expose;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.*;
 
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-
 public class Info {
 
     @Expose

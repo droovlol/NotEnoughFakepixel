@@ -8,6 +8,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.utils.SoundUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -19,7 +20,8 @@ public abstract class MixinGuiChest extends GuiContainer {
     private Boolean inInventory = false;
     private GuiTextField textField = null;
 
-    @Shadow private IInventory lowerChestInventory;
+    @Shadow
+    private IInventory lowerChestInventory;
 
     public MixinGuiChest(Container inventorySlotsIn) {
         super(inventorySlotsIn);
@@ -37,7 +39,7 @@ public abstract class MixinGuiChest extends GuiContainer {
     public void initGui() {
         super.initGui();
         String guiName = lowerChestInventory.getDisplayName().getUnformattedText();
-        if (guiName.equals("Reforge Item") && NotEnoughFakepixel.feature.qol.qolReforgeHelper) {
+        if (guiName.equals("Reforge Item") && Config.feature.qol.qolReforgeHelper) {
             inInventory = true;
             int xPos = guiLeft - 140;
             int yPos = guiTop + 80;

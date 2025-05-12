@@ -21,7 +21,7 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.opengl.GL11;
@@ -51,7 +51,7 @@ public class SilverFishSolver {
         if (event.phase != TickEvent.Phase.START || !ScoreboardUtils.currentLocation.isDungeon() || mc.thePlayer == null || mc.theWorld == null)
             return;
 
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsSilverfishSolver) return;
+        if (!Config.feature.dungeons.dungeonsSilverfishSolver) return;
 
         List<EntitySilverfish> silverfishes = mc.theWorld.getEntities(EntitySilverfish.class, s -> mc.thePlayer.getDistanceToEntity(s) < 20);
         if (!silverfishes.isEmpty()) {
@@ -121,7 +121,7 @@ public class SilverFishSolver {
 
     @SubscribeEvent
     public void onWorldRender(RenderWorldLastEvent event) {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsSilverfishSolver) return;
+        if (!Config.feature.dungeons.dungeonsSilverfishSolver) return;
 
         if (silverfishChestPos != null && roomFacing != null && grid != null && SilverFishSolver.silverfish.isEntityAlive()) {
             for (int i = 0; i < steps.size() - 1; i++) {

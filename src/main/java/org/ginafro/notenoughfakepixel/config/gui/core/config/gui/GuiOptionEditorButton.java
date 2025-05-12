@@ -1,14 +1,14 @@
 package org.ginafro.notenoughfakepixel.config.gui.core.config.gui;
 
-import static org.ginafro.notenoughfakepixel.config.gui.GuiTextures.button_tex;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.struct.ConfigProcessor;
 import org.ginafro.notenoughfakepixel.config.gui.core.util.render.RenderUtils;
 import org.ginafro.notenoughfakepixel.config.gui.core.util.render.TextRenderUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.input.Mouse;
+
+import static org.ginafro.notenoughfakepixel.config.gui.GuiTextures.button_tex;
 
 public class GuiOptionEditorButton extends GuiOptionEditor {
 

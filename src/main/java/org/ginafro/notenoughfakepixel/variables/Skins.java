@@ -11,7 +11,7 @@ public enum Skins {
         this.s = value;
     }
 
-    public String getSkin(){
+    public String getSkin() {
         return this.s;
     }
 

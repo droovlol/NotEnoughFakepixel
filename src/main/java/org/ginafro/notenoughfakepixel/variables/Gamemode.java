@@ -12,24 +12,25 @@ public enum Gamemode {
     CATACOMBS("CATACOMB");
 
     private String s;
-    Gamemode(String s){
+
+    Gamemode(String s) {
         this.s = s;
     }
 
-    public String getScoreboardMessage(){
+    public String getScoreboardMessage() {
         return s;
     }
 
-    public static Gamemode getGamemode(String s){
-        for(Gamemode gm : Gamemode.values()){
-            if(s.contains(gm.s)){
+    public static Gamemode getGamemode(String s) {
+        for (Gamemode gm : Gamemode.values()) {
+            if (s.contains(gm.s)) {
                 return gm;
             }
         }
         return LOBBY;
     }
 
-    public boolean isSkyblock(){
+    public boolean isSkyblock() {
 
         return this.equals(SKYBLOCK);
     }

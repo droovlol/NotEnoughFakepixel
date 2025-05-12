@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
@@ -27,18 +27,18 @@ public class ItemSecretsDisplay {
 
     @SubscribeEvent
     public void onRenderLast(RenderWorldLastEvent event) {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsItemSecretsDisplay) return;
+        if (!Config.feature.dungeons.dungeonsItemSecretsDisplay) return;
         if (Minecraft.getMinecraft().thePlayer == null) return;
         if (Minecraft.getMinecraft().theWorld == null) return;
         if (!ScoreboardUtils.currentLocation.isDungeon()) return;
 
         WorldClient world = Minecraft.getMinecraft().theWorld;
 
-        Color color = ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsItemSecretsColor);
+        Color color = ColorUtils.getColor(Config.feature.dungeons.dungeonsItemSecretsColor);
 
 
         MobDisplayTypes hitboxType;
-        if (NotEnoughFakepixel.feature.dungeons.dungeonsItemSecretsBig) hitboxType = MobDisplayTypes.ITEMBIG;
+        if (Config.feature.dungeons.dungeonsItemSecretsBig) hitboxType = MobDisplayTypes.ITEMBIG;
         else {
             hitboxType = MobDisplayTypes.ITEM;
         }
@@ -46,7 +46,7 @@ public class ItemSecretsDisplay {
         world.loadedEntityList.forEach(entity -> {
             if (entity == null) return;
             if (entity.getName() == null) return;
-            if (entity.getName().equals("item.item.skull.char")){
+            if (entity.getName().equals("item.item.skull.char")) {
                 NBTTagCompound nbt = entity.serializeNBT();
                 if (nbt.hasKey("Item") && nbt.getCompoundTag("Item").hasKey("tag") && nbt.getCompoundTag("Item").getCompoundTag("tag").hasKey("SkullOwner") && nbt.getCompoundTag("Item").getCompoundTag("tag").getCompoundTag("SkullOwner").hasKey("Id")) {
                     String id = nbt.getCompoundTag("Item").getCompoundTag("tag").getCompoundTag("SkullOwner").getString("Id");
@@ -73,7 +73,7 @@ public class ItemSecretsDisplay {
                 ItemStack it = ((EntityArmorStand) entity).getEquipmentInSlot(4); // Head slot
                 if (it != null && it.getItem() == Items.skull) {
                     NBTTagCompound nbt = it.getTagCompound();
-                    if(nbt != null && nbt.hasKey("SkullOwner") && nbt.getCompoundTag("SkullOwner").hasKey("Id")) {
+                    if (nbt != null && nbt.hasKey("SkullOwner") && nbt.getCompoundTag("SkullOwner").hasKey("Id")) {
                         String id = nbt.getCompoundTag("SkullOwner").getString("Id");
                         if (id.equals(idWitherEssence)) {
                             GlStateManager.disableDepth();

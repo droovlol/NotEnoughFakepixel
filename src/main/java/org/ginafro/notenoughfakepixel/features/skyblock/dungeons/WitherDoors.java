@@ -15,18 +15,15 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 
 @RegisterEvents
 public class WitherDoors {
@@ -80,7 +77,7 @@ public class WitherDoors {
     }
 
     private void updateDoors() {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsWitherDoors) return;
+        if (!Config.feature.dungeons.dungeonsWitherDoors) return;
         if (!ScoreboardUtils.currentLocation.isDungeon()) {
             return;
         }
@@ -89,20 +86,20 @@ public class WitherDoors {
 
     @SubscribeEvent
     public void onWorldLoad(WorldEvent.Load event) {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsWitherDoors) return;
+        if (!Config.feature.dungeons.dungeonsWitherDoors) return;
         updateDoors();
     }
 
     @SubscribeEvent
     public void onWorldUnload(WorldEvent.Unload event) {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsWitherDoors) return;
+        if (!Config.feature.dungeons.dungeonsWitherDoors) return;
         allDoors.clear();
         activeDoors.clear();
     }
 
     @SubscribeEvent
     public void onClientChatReceived(ClientChatReceivedEvent event) {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsWitherDoors) return;
+        if (!Config.feature.dungeons.dungeonsWitherDoors) return;
         if (!ScoreboardUtils.currentLocation.isDungeon()) {
             return;
         }
@@ -140,7 +137,7 @@ public class WitherDoors {
 
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsWitherDoors) return;
+        if (!Config.feature.dungeons.dungeonsWitherDoors) return;
         if (event.phase == TickEvent.Phase.END) {
             if (System.currentTimeMillis() - lastUpdateTime > UPDATE_INTERVAL) {
                 updateDoors();
@@ -151,7 +148,7 @@ public class WitherDoors {
 
     @SubscribeEvent
     public void onRenderWorldLast(RenderWorldLastEvent event) {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsWitherDoors) return;
+        if (!Config.feature.dungeons.dungeonsWitherDoors) return;
         if (!ScoreboardUtils.currentLocation.isDungeon() || allDoors.isEmpty()) {
             return;
         }
@@ -193,8 +190,8 @@ public class WitherDoors {
         double maxZ = minZ + 3;
 
         Color color = isActive ?
-                ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsWitherDoorsActive) :
-                ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsWitherDoorsInactive);
+                ColorUtils.getColor(Config.feature.dungeons.dungeonsWitherDoorsActive) :
+                ColorUtils.getColor(Config.feature.dungeons.dungeonsWitherDoorsInactive);
         float r = color.getRed() / 255.0f;
         float g = color.getGreen() / 255.0f;
         float b = color.getBlue() / 255.0f;

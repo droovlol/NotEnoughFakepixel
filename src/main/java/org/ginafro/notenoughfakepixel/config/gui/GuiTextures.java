@@ -4,7 +4,8 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiTextures {
 
-    private GuiTextures() {}
+    private GuiTextures() {
+    }
 
     public static final ResourceLocation DISCORD = new ResourceLocation("notenoughfakepixel:discord.png");
     public static final ResourceLocation GITHUB = new ResourceLocation("notenoughfakepixel:github.png");

@@ -6,7 +6,10 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,18 +20,18 @@ public class StorageData {
 
     public StorageData(ContainerChest chest) {
         String s = chest.getLowerChestInventory().getDisplayName().getUnformattedText();
-        if(s.contains("Backpack")){
+        if (s.contains("Backpack")) {
             String[] a = s.split(" ");
             String bagNumber = a[a.length - 1].split("/")[0];
             chestName = "Backpack" + bagNumber;
-        }else {
+        } else {
             chestName = s;
         }
         this.items = new HashMap<>();
         for (int i = 9; i < chest.getLowerChestInventory().getSizeInventory(); i++) {
             ItemStack stack = chest.getLowerChestInventory().getStackInSlot(i);
             if (stack != null) {
-                items.put((i-9), itemStackToJson(stack)); // Convert ItemStack to JSON
+                items.put((i - 9), itemStackToJson(stack)); // Convert ItemStack to JSON
             }
         }
     }

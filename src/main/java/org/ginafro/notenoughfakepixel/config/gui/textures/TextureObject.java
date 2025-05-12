@@ -1,8 +1,9 @@
 package org.ginafro.notenoughfakepixel.config.gui.textures;
 
 import com.google.gson.JsonObject;
-import java.util.Arrays;
 import net.minecraft.util.ResourceLocation;
+
+import java.util.Arrays;
 
 public class TextureObject {
 
@@ -15,13 +16,14 @@ public class TextureObject {
     public static TextureObject decode(JsonObject json) {
         TextureObject textureObject = new TextureObject(json.get("displayName").getAsString());
         Arrays
-            .stream(textureObject.getClass().getDeclaredFields())
-            .filter(field -> field.getType().equals(ResourceLocation.class))
-            .forEach(field -> {
-                try {
-                    field.set(textureObject, new ResourceLocation(json.get(field.getName()).getAsString()));
-                } catch (Exception ignored) {}
-            });
+                .stream(textureObject.getClass().getDeclaredFields())
+                .filter(field -> field.getType().equals(ResourceLocation.class))
+                .forEach(field -> {
+                    try {
+                        field.set(textureObject, new ResourceLocation(json.get(field.getName()).getAsString()));
+                    } catch (Exception ignored) {
+                    }
+                });
         return textureObject;
     }
 

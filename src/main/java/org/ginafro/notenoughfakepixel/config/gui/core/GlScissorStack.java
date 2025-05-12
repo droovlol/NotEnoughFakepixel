@@ -1,9 +1,10 @@
 package org.ginafro.notenoughfakepixel.config.gui.core;
 
-import java.util.LinkedList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import org.lwjgl.opengl.GL11;
+
+import java.util.LinkedList;
 
 public class GlScissorStack {
 

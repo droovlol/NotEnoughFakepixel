@@ -7,11 +7,11 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTException;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.CustomConfigHandler;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.Map;
 
 public class StorageButton extends GuiButton {
@@ -36,7 +36,7 @@ public class StorageButton extends GuiButton {
         GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 
         drawRect(xPosition, yPosition, xPosition + width, yPosition + height,
-                ColorUtils.getColor(NotEnoughFakepixel.feature.overlays.chestColor).getRGB());
+                ColorUtils.getColor(Config.feature.overlays.chestColor).getRGB());
 
         boolean isEnderChest = id == n;
         String type = isEnderChest ? "Ender Chest(Page" + (n + 1) + ")" : "Backpack" + (n + 1);
@@ -67,9 +67,9 @@ public class StorageButton extends GuiButton {
 
         // Draw title
         String title = (isEnderChest ? "Ender Chest" : "Backpack") + " " + (n + 1);
-        float textScale = Math.min(1.0f, (float)width / 150.0f);
+        float textScale = Math.min(1.0f, (float) width / 150.0f);
         int titleWidth = mc.fontRendererObj.getStringWidth(title);
-        int titleX = xPosition + (width - (int)(titleWidth * textScale)) / 2;
+        int titleX = xPosition + (width - (int) (titleWidth * textScale)) / 2;
         int titleY = yPosition + 5;
 
         GlStateManager.pushMatrix();
@@ -104,10 +104,10 @@ public class StorageButton extends GuiButton {
             // Draw item
             ItemStack stack = entry.getValue();
             if (!searchText.isEmpty() && stack.getDisplayName().toLowerCase().contains(searchText)) {
-                drawRect((int)slotX, (int)slotY,
-                        (int)(slotX + slotSize),
-                        (int)(slotY + slotSize),
-                        ColorUtils.getColor(NotEnoughFakepixel.feature.overlays.searchColor).getRGB());
+                drawRect((int) slotX, (int) slotY,
+                        (int) (slotX + slotSize),
+                        (int) (slotY + slotSize),
+                        ColorUtils.getColor(Config.feature.overlays.searchColor).getRGB());
             }
             renderItemScaled(mc, stack, slotX, slotY, slotScale);
         }

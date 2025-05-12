@@ -9,7 +9,7 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
 import org.ginafro.notenoughfakepixel.utils.ColorUtils;
@@ -56,7 +56,7 @@ public class TerminalTracker {
 
     @SubscribeEvent
     public void onChatReceived(ClientChatReceivedEvent event) {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalTracker) {
+        if (!Config.feature.dungeons.dungeonsTerminalTracker) {
             return;
         }
         if (!DungeonManager.checkEssentialsF7()) return;
@@ -121,7 +121,7 @@ public class TerminalTracker {
 
     @SubscribeEvent
     public void onRenderGameOverlay(RenderGameOverlayEvent.Text event) {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsTerminalTracker) {
+        if (!Config.feature.dungeons.dungeonsTerminalTracker) {
             return;
         }
         if (!DungeonManager.checkEssentialsF7()) return;
@@ -139,10 +139,10 @@ public class TerminalTracker {
         ScaledResolution sr = new ScaledResolution(mc);
         int overlayWidth = 1;
         int overlayHeight = 1;
-        float scale = NotEnoughFakepixel.feature.dungeons.dungeonsTerminalTrackerScale;
-        int x = NotEnoughFakepixel.feature.dungeons.terminalTrackerPos.getAbsX(sr, overlayWidth);
-        int y = NotEnoughFakepixel.feature.dungeons.terminalTrackerPos.getAbsY(sr, overlayHeight);
-        int lineHeight = (int)(10 * scale) + 4;
+        float scale = Config.feature.dungeons.dungeonsTerminalTrackerScale;
+        int x = Config.feature.dungeons.terminalTrackerPos.getAbsX(sr, overlayWidth);
+        int y = Config.feature.dungeons.terminalTrackerPos.getAbsY(sr, overlayHeight);
+        int lineHeight = (int) (10 * scale) + 4;
 
         String phaseLine = String.format("Phase %d", currentPhase);
         String terminalLine = String.format("Terminals: %d/%d", terminalCounts.get(currentPhase), TERMINAL_MAX.get(currentPhase));
@@ -155,10 +155,10 @@ public class TerminalTracker {
         float scaledX = x / scale;
         float scaledY = y / scale;
 
-        mc.fontRendererObj.drawStringWithShadow(phaseLine, scaledX, scaledY, ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsTerminalTrackerColor).getRGB());
-        mc.fontRendererObj.drawStringWithShadow(terminalLine, scaledX, scaledY + lineHeight / scale, ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsTerminalTrackerColor).getRGB());
-        mc.fontRendererObj.drawStringWithShadow(deviceLine, scaledX, scaledY + 2 * lineHeight / scale, ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsTerminalTrackerColor).getRGB());
-        mc.fontRendererObj.drawStringWithShadow(leverLine, scaledX, scaledY + 3 * lineHeight / scale, ColorUtils.getColor(NotEnoughFakepixel.feature.dungeons.dungeonsTerminalTrackerColor).getRGB());
+        mc.fontRendererObj.drawStringWithShadow(phaseLine, scaledX, scaledY, ColorUtils.getColor(Config.feature.dungeons.dungeonsTerminalTrackerColor).getRGB());
+        mc.fontRendererObj.drawStringWithShadow(terminalLine, scaledX, scaledY + lineHeight / scale, ColorUtils.getColor(Config.feature.dungeons.dungeonsTerminalTrackerColor).getRGB());
+        mc.fontRendererObj.drawStringWithShadow(deviceLine, scaledX, scaledY + 2 * lineHeight / scale, ColorUtils.getColor(Config.feature.dungeons.dungeonsTerminalTrackerColor).getRGB());
+        mc.fontRendererObj.drawStringWithShadow(leverLine, scaledX, scaledY + 3 * lineHeight / scale, ColorUtils.getColor(Config.feature.dungeons.dungeonsTerminalTrackerColor).getRGB());
 
         GlStateManager.popMatrix();
     }

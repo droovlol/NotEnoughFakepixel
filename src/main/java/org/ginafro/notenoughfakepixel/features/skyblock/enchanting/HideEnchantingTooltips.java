@@ -11,7 +11,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 
 @RegisterEvents
@@ -19,7 +19,7 @@ public class HideEnchantingTooltips {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onTooltipLow(ItemTooltipEvent event) {
-        if (!NotEnoughFakepixel.feature.experimentation.experimentationHideTooltips) return;
+        if (!Config.feature.experimentation.experimentationHideTooltips) return;
         if (event.toolTip == null) return;
 
         Minecraft mc = Minecraft.getMinecraft();

@@ -31,7 +31,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ModelBiped.class)
 public abstract class MixinModelBiped extends ModelBase {
-    @Shadow public ModelRenderer bipedHeadwear;
+    @Shadow
+    public ModelRenderer bipedHeadwear;
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GlStateManager;popMatrix()V", ordinal = 0))
     private void renderChildHeadPost(Entity entityIn, float f, float g, float h, float i, float j, float scale, CallbackInfo ci) {

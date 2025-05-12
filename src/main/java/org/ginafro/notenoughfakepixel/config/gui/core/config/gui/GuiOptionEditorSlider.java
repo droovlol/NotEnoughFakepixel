@@ -1,9 +1,9 @@
 package org.ginafro.notenoughfakepixel.config.gui.core.config.gui;
 
+import net.minecraft.client.Minecraft;
 import org.ginafro.notenoughfakepixel.config.gui.core.GuiElementTextField;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.struct.ConfigProcessor;
 import org.ginafro.notenoughfakepixel.config.gui.core.util.GuiElementSlider;
-import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -28,28 +28,28 @@ public class GuiOptionEditorSlider extends GuiOptionEditor {
         }
 
         slider =
-            new GuiElementSlider(
-                0,
-                0,
-                80,
-                minValue,
-                maxValue,
-                minStep,
-                floatVal,
-                val -> {
-                    option.set(val);
+                new GuiElementSlider(
+                        0,
+                        0,
+                        80,
+                        minValue,
+                        maxValue,
+                        minStep,
+                        floatVal,
+                        val -> {
+                            option.set(val);
 
-                    String strVal;
-                    if (val % 1 == 0) {
-                        strVal = Integer.toString(val.intValue());
-                    } else {
-                        strVal = Float.toString(val);
-                        strVal = strVal.replaceAll("(\\.\\d\\d\\d)(?:\\d)+", "$1");
-                        strVal = strVal.replaceAll("0+$", "");
-                    }
-                    textField.setText(strVal);
-                }
-            );
+                            String strVal;
+                            if (val % 1 == 0) {
+                                strVal = Integer.toString(val.intValue());
+                            } else {
+                                strVal = Float.toString(val);
+                                strVal = strVal.replaceAll("(\\.\\d\\d\\d)(?:\\d)+", "$1");
+                                strVal = strVal.replaceAll("0+$", "");
+                            }
+                            textField.setText(strVal);
+                        }
+                );
     }
 
     @Override

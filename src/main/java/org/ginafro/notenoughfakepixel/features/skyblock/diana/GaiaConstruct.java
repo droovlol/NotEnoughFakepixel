@@ -16,7 +16,7 @@ public class GaiaConstruct {
         this.state = 0;
         this.canBeHit = false;
         this.hits = 0;
-        this.hitsNeeded = new int[] {6,7,8};
+        this.hitsNeeded = new int[]{6, 7, 8};
         EntityLivingBase entityLivingBase = (EntityLivingBase) entity;
         float hp = entityLivingBase.getHealth();
         float hpGaiaConstruct140 = 300000;
@@ -46,13 +46,13 @@ public class GaiaConstruct {
         int previousState = this.state;
         if (entityLivingBase.getHealth() / maxHp >= 0.66) {
             this.state = 0;
-        } else if (0.33 <= entityLivingBase.getHealth()/maxHp && entityLivingBase.getHealth()/maxHp < 0.66) {
+        } else if (0.33 <= entityLivingBase.getHealth() / maxHp && entityLivingBase.getHealth() / maxHp < 0.66) {
             this.state = 1;
-        } else if (entityLivingBase.getHealth()/maxHp < 0.33) {
+        } else if (entityLivingBase.getHealth() / maxHp < 0.33) {
             this.state = 2;
         }
         //if (previousState != this.state) {
-            //System.out.println("State changed to " + this.state);
+        //System.out.println("State changed to " + this.state);
         //}
     }
 
@@ -63,9 +63,9 @@ public class GaiaConstruct {
     public void addHit() {
         setStateFromHp();
         hits++;
-        if (hits < hitsNeeded[state]-1) {
+        if (hits < hitsNeeded[state] - 1) {
             canBeHit = false;
-        } else if (hits == hitsNeeded[state]-1) {
+        } else if (hits == hitsNeeded[state] - 1) {
             canBeHit = true;
         } else if (hits >= hitsNeeded[state]) {
             canBeHit = false;

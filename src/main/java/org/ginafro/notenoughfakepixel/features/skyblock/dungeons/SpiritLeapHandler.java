@@ -1,10 +1,5 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.dungeons;
 
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
@@ -24,16 +19,24 @@ import net.minecraft.util.StringUtils;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 @RegisterEvents
 public class SpiritLeapHandler {
 
     private static final Pattern PLAYER_PATTERN = Pattern.compile("(?:\\[.+?] )?(\\w+)");
+
     public static class PlayerData {
         public final String playerName;
         public final String colorCode;
@@ -99,12 +102,18 @@ public class SpiritLeapHandler {
 
         private String getClassFromLetter(String letter) {
             switch (letter) {
-                case "B": return "Berserk";
-                case "A": return "Archer";
-                case "T": return "Tank";
-                case "H": return "Healer";
-                case "M": return "Mage";
-                default: return "Unknown";
+                case "B":
+                    return "Berserk";
+                case "A":
+                    return "Archer";
+                case "T":
+                    return "Tank";
+                case "H":
+                    return "Healer";
+                case "M":
+                    return "Mage";
+                default:
+                    return "Unknown";
             }
         }
 
@@ -119,7 +128,7 @@ public class SpiritLeapHandler {
                         .getUnformattedText()
                         .trim();
 
-                if (NotEnoughFakepixel.feature.dungeons.dungeonsSpiritLeapGUI && ScoreboardUtils.currentLocation.isDungeon() && "Spirit Leap".equals(displayName)) {
+                if (Config.feature.dungeons.dungeonsSpiritLeapGUI && ScoreboardUtils.currentLocation.isDungeon() && "Spirit Leap".equals(displayName)) {
                     playerDataList.clear();
                 }
             }
@@ -136,7 +145,7 @@ public class SpiritLeapHandler {
                         .getUnformattedText()
                         .trim();
 
-                if (NotEnoughFakepixel.feature.dungeons.dungeonsSpiritLeapGUI && ScoreboardUtils.currentLocation.isDungeon() && "Spirit Leap".equals(displayName)) {
+                if (Config.feature.dungeons.dungeonsSpiritLeapGUI && ScoreboardUtils.currentLocation.isDungeon() && "Spirit Leap".equals(displayName)) {
                     event.setCanceled(true);
 
                     if (playerDataList.isEmpty()) {
@@ -247,22 +256,38 @@ public class SpiritLeapHandler {
 
         public static int getColorFromString(String colorCode) {
             switch (colorCode) {
-                case "§0": return 0xFF000000;
-                case "§1": return 0xFF0000AA;
-                case "§2": return 0xFF00AA00;
-                case "§3": return 0xFF00AAAA;
-                case "§4": return 0xFFAA0000;
-                case "§5": return 0xFFAA00AA;
-                case "§6": return 0xFFFFAA00;
-                case "§7": return 0xFFAAAAAA;
-                case "§8": return 0xFF555555;
-                case "§9": return 0xFF5555FF;
-                case "§a": return 0xFF55FF55;
-                case "§b": return 0xFF55FFFF;
-                case "§c": return 0xFFFF5555;
-                case "§d": return 0xFFFF55FF;
-                case "§e": return 0xFFFFFF55;
-                default: return 0xFFFFFFFF;
+                case "§0":
+                    return 0xFF000000;
+                case "§1":
+                    return 0xFF0000AA;
+                case "§2":
+                    return 0xFF00AA00;
+                case "§3":
+                    return 0xFF00AAAA;
+                case "§4":
+                    return 0xFFAA0000;
+                case "§5":
+                    return 0xFFAA00AA;
+                case "§6":
+                    return 0xFFFFAA00;
+                case "§7":
+                    return 0xFFAAAAAA;
+                case "§8":
+                    return 0xFF555555;
+                case "§9":
+                    return 0xFF5555FF;
+                case "§a":
+                    return 0xFF55FF55;
+                case "§b":
+                    return 0xFF55FFFF;
+                case "§c":
+                    return 0xFFFF5555;
+                case "§d":
+                    return 0xFFFF55FF;
+                case "§e":
+                    return 0xFFFFFF55;
+                default:
+                    return 0xFFFFFFFF;
             }
         }
 
@@ -277,7 +302,7 @@ public class SpiritLeapHandler {
                         .getUnformattedText()
                         .trim();
 
-                if (NotEnoughFakepixel.feature.dungeons.dungeonsSpiritLeapGUI && ScoreboardUtils.currentLocation.isDungeon() && "Spirit Leap".equals(displayName)) {
+                if (Config.feature.dungeons.dungeonsSpiritLeapGUI && ScoreboardUtils.currentLocation.isDungeon() && "Spirit Leap".equals(displayName)) {
                     int button = Mouse.getEventButton();
                     boolean pressed = Mouse.getEventButtonState();
 
@@ -296,7 +321,7 @@ public class SpiritLeapHandler {
                                         0,
                                         0,
                                         mc.thePlayer);
-                                if (NotEnoughFakepixel.feature.dungeons.dungeonsLeapAnnounce) {
+                                if (Config.feature.dungeons.dungeonsLeapAnnounce) {
                                     String command = String.format("/pc Leaped to %s!", pd.playerName);
                                     mc.thePlayer.sendChatMessage(command);
                                 }

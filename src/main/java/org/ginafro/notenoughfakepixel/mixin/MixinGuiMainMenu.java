@@ -14,6 +14,6 @@ public class MixinGuiMainMenu {
     @Inject(method = "drawScreen", at = @At("RETURN"))
     public void onInitGui(CallbackInfo ci) {
         FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
-        fr.drawString(Minecraft.getMinecraft().getSession().getUsername() , 15 , 15 , -1);
+        fr.drawString(Minecraft.getMinecraft().getSession().getUsername(), 15, 15, -1);
     }
 }

@@ -9,24 +9,22 @@ import java.util.NavigableMap;
 
 public class StringUtils {
 
-    public static int romanToNumerical(String s){
+    public static int romanToNumerical(String s) {
         int total = 0;
-        for(int i =0;i < s.length();i++){
+        for (int i = 0; i < s.length(); i++) {
             char r = s.charAt(i);
             int s1 = value(r);
-            if (i+1 <s.length()) {
-                int s2 = value(s.charAt(i+1));
+            if (i + 1 < s.length()) {
+                int s2 = value(s.charAt(i + 1));
                 //comparing the current character from its right character
                 if (s1 >= s2) {
                     //if the value of current character is greater or equal to the next symbol
                     total = total + s1;
-                }
-                else {
+                } else {
                     //if the value of the current character is less than the next symbol
                     total = total - s1;
                 }
-            }
-            else {
+            } else {
                 total = total + s1;
             }
         }

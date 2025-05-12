@@ -1,13 +1,13 @@
 package org.ginafro.notenoughfakepixel.config.gui.core.config.gui;
 
-import org.ginafro.notenoughfakepixel.config.gui.core.config.struct.ConfigProcessor;
-import org.ginafro.notenoughfakepixel.config.gui.core.util.render.RenderUtils;
-import org.ginafro.notenoughfakepixel.config.gui.core.util.render.TextRenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import org.ginafro.notenoughfakepixel.config.gui.core.config.struct.ConfigProcessor;
+import org.ginafro.notenoughfakepixel.config.gui.core.util.render.RenderUtils;
+import org.ginafro.notenoughfakepixel.config.gui.core.util.render.TextRenderUtils;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 

@@ -17,9 +17,8 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
-import org.ginafro.notenoughfakepixel.utils.ChatUtils;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.opengl.GL11;
@@ -63,14 +62,15 @@ public class LividDisplay {
         if (event.phase != TickEvent.Phase.START) return;
 
         // Run only every 20 ticks
-        if (Minecraft.getMinecraft().theWorld == null || Minecraft.getMinecraft().theWorld.getTotalWorldTime() % 20 != 0) return;
+        if (Minecraft.getMinecraft().theWorld == null || Minecraft.getMinecraft().theWorld.getTotalWorldTime() % 20 != 0)
+            return;
 
         if (ScoreboardUtils.currentLocation.isDungeon()) {
             Minecraft mc = Minecraft.getMinecraft();
             World world = mc.theWorld;
             if (world == null) return;
 
-            if (!NotEnoughFakepixel.feature.dungeons.dungeonsLividFinder) return;
+            if (!Config.feature.dungeons.dungeonsLividFinder) return;
 
             if (world.getBlockState(pos).getBlock() == Blocks.wool) {
                 int woolColor = world.getBlockState(pos).getBlock().getDamageValue(world, pos);
@@ -100,7 +100,7 @@ public class LividDisplay {
 
     @SubscribeEvent
     public void onRenderEntity(RenderLivingEvent.Pre<EntityLivingBase> event) {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsLividFinder || livid == null) return;
+        if (!Config.feature.dungeons.dungeonsLividFinder || livid == null) return;
 
         Entity entity = event.entity;
         if (entity instanceof EntityArmorStand && entity.hasCustomName()) {
@@ -113,10 +113,10 @@ public class LividDisplay {
 
     @SubscribeEvent
     public void onWorldRender(RenderWorldLastEvent event) {
-        if (NotEnoughFakepixel.feature.dungeons.dungeonsLividFinder && livid != null) {
+        if (Config.feature.dungeons.dungeonsLividFinder && livid != null) {
             AxisAlignedBB aabb = new AxisAlignedBB(livid.posX - 0.5, livid.posY - 2, livid.posZ - 0.5, livid.posX + 0.5, livid.posY, livid.posZ + 0.5);
             draw3DBox(aabb, LIVID_COLOUR, event.partialTicks);
-            RenderUtils.draw3DLine(new Vec3(livid.posX,livid.posY,livid.posZ),
+            RenderUtils.draw3DLine(new Vec3(livid.posX, livid.posY, livid.posZ),
                     Minecraft.getMinecraft().thePlayer.getPositionEyes(event.partialTicks),
                     new Color(LIVID_COLOUR),
                     8,
@@ -154,16 +154,26 @@ public class LividDisplay {
 
     private static int getWoolColorFromChatColor(EnumChatFormatting color) {
         switch (color) {
-            case WHITE: return 0;
-            case LIGHT_PURPLE: return 6;
-            case YELLOW: return 4;
-            case GREEN: return 5;
-            case GRAY: return 8;
-            case DARK_PURPLE: return 10;
-            case BLUE: return 11;
-            case DARK_GREEN: return 13;
-            case RED: return 14;
-            default: return -1;
+            case WHITE:
+                return 0;
+            case LIGHT_PURPLE:
+                return 6;
+            case YELLOW:
+                return 4;
+            case GREEN:
+                return 5;
+            case GRAY:
+                return 8;
+            case DARK_PURPLE:
+                return 10;
+            case BLUE:
+                return 11;
+            case DARK_GREEN:
+                return 13;
+            case RED:
+                return 14;
+            default:
+                return -1;
         }
     }
 

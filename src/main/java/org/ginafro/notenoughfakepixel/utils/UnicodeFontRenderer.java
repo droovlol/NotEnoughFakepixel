@@ -1,17 +1,16 @@
 package org.ginafro.notenoughfakepixel.utils;
 
-import java.awt.Font;
-import java.awt.FontFormatException;
-import java.io.IOException;
-import java.util.*;
-
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.StringUtils;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
+
+import java.awt.*;
+import java.io.IOException;
+import java.util.*;
+import java.util.List;
 
 /*
  * Created by Eric Golde 7/10/2019
@@ -47,7 +46,7 @@ public class UnicodeFontRenderer {
         return getFontFromAssets(name, size, fontType, kerning, 3.0f);
     }
 
-    public static UnicodeFontRenderer getFontFromAssets(String name, int size, int fontType,  float kerning, float antiAliasingFactor) {
+    public static UnicodeFontRenderer getFontFromAssets(String name, int size, int fontType, float kerning, float antiAliasingFactor) {
         return new UnicodeFontRenderer(name, fontType, size, kerning, antiAliasingFactor);
     }
 

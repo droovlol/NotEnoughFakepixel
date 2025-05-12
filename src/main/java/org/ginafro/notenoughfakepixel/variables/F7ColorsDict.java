@@ -4,7 +4,7 @@ public enum F7ColorsDict {
 
     NONE("none", -1, -1),
     WHITE("white", 0, 15),
-    ORANGE("orange" , 1, 14),
+    ORANGE("orange", 1, 14),
     MAGENTA("magenta", 2, 13),
     LIGHT_BLUE("light blue", 3, 12),
     YELLOW("yellow", 4, 11),
@@ -24,31 +24,31 @@ public enum F7ColorsDict {
     int main;
     int dye;
 
-    F7ColorsDict(String color, int main, int dye){
+    F7ColorsDict(String color, int main, int dye) {
         this.color = color;
         this.main = main;
         this.dye = dye;
     }
 
-    public static F7ColorsDict getColorFromMain(int main){
-        for (F7ColorsDict color : F7ColorsDict.values()){
-            if (color.main == main){
+    public static F7ColorsDict getColorFromMain(int main) {
+        for (F7ColorsDict color : F7ColorsDict.values()) {
+            if (color.main == main) {
                 return color;
             }
         }
         return NONE;
     }
 
-    public static F7ColorsDict getColorFromDye(int dye){
-        for (F7ColorsDict color : F7ColorsDict.values()){
-            if (color.dye == dye){
+    public static F7ColorsDict getColorFromDye(int dye) {
+        for (F7ColorsDict color : F7ColorsDict.values()) {
+            if (color.dye == dye) {
                 return color;
             }
         }
         return NONE;
     }
 
-    public String toString(){
+    public String toString() {
         return this.color;
     }
 

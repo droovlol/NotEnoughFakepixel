@@ -1,10 +1,9 @@
 package org.ginafro.notenoughfakepixel.utils;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 
 public class SoundUtils {
 
@@ -21,7 +20,7 @@ public class SoundUtils {
     }
 
     public static void playGlobalSound(String sound, float volume, float pitch) {
-        if (!NotEnoughFakepixel.feature.misc.enableSounds) return;
+        if (!Config.feature.misc.enableSounds) return;
 
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.theWorld == null || mc.thePlayer == null) return;

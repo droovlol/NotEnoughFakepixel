@@ -11,7 +11,7 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.utils.SoundUtils;
@@ -31,7 +31,7 @@ public class Alerts {
 
     public static List<Alert> alerts = new ArrayList<>();
     public static HashMap<Alert, Pattern> patterns = new HashMap<>();
-    public static String configFile = NotEnoughFakepixel.configDirectory + "/nefalerts.json";
+    public static String configFile = Config.configDirectory + "/nefalerts.json";
 
     private static String displayText = "";
     private static final Minecraft mc = Minecraft.getMinecraft();
@@ -165,7 +165,8 @@ public class Alerts {
             try (FileReader reader = new FileReader(file)) {
                 List<Alert> loadedAlerts = new GsonBuilder().create().fromJson(
                         reader,
-                        new TypeToken<List<Alert>>(){}.getType()
+                        new TypeToken<List<Alert>>() {
+                        }.getType()
                 );
                 if (loadedAlerts != null) {
                     alerts.clear(); // Clear existing alerts

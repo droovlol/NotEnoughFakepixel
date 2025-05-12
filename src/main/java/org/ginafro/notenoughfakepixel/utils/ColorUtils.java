@@ -36,7 +36,7 @@ public class ColorUtils {
     /**
      * Converts a Color object to a hexadecimal string.
      *
-     * @param color The Color object to convert
+     * @param color        The Color object to convert
      * @param includeAlpha Whether to include the alpha channel in the hex string
      * @return A hex string (e.g., "#FF0000" or "#FF0000FF")
      */

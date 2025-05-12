@@ -1,7 +1,6 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.dungeons.puzzles;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -11,12 +10,11 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.utils.SoundUtils;
@@ -50,7 +48,7 @@ public class ThreeWeirdos {
 
     @SubscribeEvent
     public void onChatReceive(ClientChatReceivedEvent e) {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsThreeWeirdos) return;
+        if (!Config.feature.dungeons.dungeonsThreeWeirdos) return;
         if (mc.thePlayer == null) return;
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
         if (!ScoreboardUtils.currentLocation.isDungeon()) return;
@@ -110,7 +108,7 @@ public class ThreeWeirdos {
 
     @SubscribeEvent
     public void onRenderLast(RenderWorldLastEvent event) {
-        if (!NotEnoughFakepixel.feature.dungeons.dungeonsThreeWeirdos) return;
+        if (!Config.feature.dungeons.dungeonsThreeWeirdos) return;
         if (mc.theWorld == null) return;
         if (!foundResponse) return;
         if (correctName.isEmpty()) return;

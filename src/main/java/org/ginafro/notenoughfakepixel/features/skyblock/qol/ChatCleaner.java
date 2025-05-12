@@ -3,7 +3,7 @@ package org.ginafro.notenoughfakepixel.features.skyblock.qol;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.ChatUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
@@ -22,31 +22,31 @@ public class ChatCleaner {
     private final Pattern carrotDropPattern = Pattern.compile("§r§6§lRARE DROP! §r§fCarrot§r§b");
 
     @SubscribeEvent
-    public void onChatRecieve(ClientChatReceivedEvent event){
+    public void onChatRecieve(ClientChatReceivedEvent event) {
         if (Minecraft.getMinecraft().thePlayer == null) return;
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
         if (ChatUtils.middleBar.matcher(event.message.getFormattedText()).matches()) return;
-        cancelMessage(NotEnoughFakepixel.feature.qol.qolDisableSellingRanks, event, sellingRankPattern);
-        cancelMessage(NotEnoughFakepixel.feature.qol.qolDisableWatchdogInfo, event, watchdogPattern, true);
-        cancelMessage(NotEnoughFakepixel.feature.qol.qolDisableWatchdogInfo, event, infoPattern, true);
-        cancelMessage(NotEnoughFakepixel.feature.qol.qolDisableFriendJoin, event, friendJoinPattern, true);
-        cancelMessage(NotEnoughFakepixel.feature.qol.qolDisableZombieRareDrops, event, potatoDropPattern, true);
-        cancelMessage(NotEnoughFakepixel.feature.qol.qolDisableZombieRareDrops, event, poisonousPotatoDropPattern, true);
-        cancelMessage(NotEnoughFakepixel.feature.qol.qolDisableZombieRareDrops, event, carrotDropPattern, true);
+        cancelMessage(Config.feature.qol.qolDisableSellingRanks, event, sellingRankPattern);
+        cancelMessage(Config.feature.qol.qolDisableWatchdogInfo, event, watchdogPattern, true);
+        cancelMessage(Config.feature.qol.qolDisableWatchdogInfo, event, infoPattern, true);
+        cancelMessage(Config.feature.qol.qolDisableFriendJoin, event, friendJoinPattern, true);
+        cancelMessage(Config.feature.qol.qolDisableZombieRareDrops, event, potatoDropPattern, true);
+        cancelMessage(Config.feature.qol.qolDisableZombieRareDrops, event, poisonousPotatoDropPattern, true);
+        cancelMessage(Config.feature.qol.qolDisableZombieRareDrops, event, carrotDropPattern, true);
     }
 
-    private void cancelMessage(boolean option, ClientChatReceivedEvent e, Pattern pattern, boolean formatted){
+    private void cancelMessage(boolean option, ClientChatReceivedEvent e, Pattern pattern, boolean formatted) {
         if (!option) return;
         String message = e.message.getUnformattedText();
         if (formatted) message = e.message.getFormattedText();
         //System.out.println(message);
 
-        if (pattern.matcher(message).find() || pattern.matcher(message).matches()){
+        if (pattern.matcher(message).find() || pattern.matcher(message).matches()) {
             e.setCanceled(true);
         }
     }
 
-    private void cancelMessage(boolean option, ClientChatReceivedEvent e, Pattern pattern){
+    private void cancelMessage(boolean option, ClientChatReceivedEvent e, Pattern pattern) {
         cancelMessage(option, e, pattern, false);
     }
 

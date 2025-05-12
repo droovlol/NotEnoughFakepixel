@@ -14,20 +14,23 @@ import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.network.play.server.S29PacketSoundEffect;
 import net.minecraft.network.play.server.S2APacketParticles;
-import net.minecraft.util.*;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.Vec3;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.events.PacketReadEvent;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -206,7 +209,7 @@ public class GuessBurrow {
             }
         }
 
-        if (guessPoint != null && NotEnoughFakepixel.feature.diana.dianaWarpHelper
+        if (guessPoint != null && Config.feature.diana.dianaWarpHelper
                 && ScoreboardUtils.currentLocation.isHub()
                 && mc.theWorld != null
                 && mc.thePlayer != null) {
@@ -219,13 +222,13 @@ public class GuessBurrow {
             for (WarpLocation warp : WARP_LOCATIONS) {
                 boolean isEnabled = true;
                 if (warp.command.equals("/warp da")) {
-                    isEnabled = NotEnoughFakepixel.feature.diana.dianaWarpDa;
+                    isEnabled = Config.feature.diana.dianaWarpDa;
                 } else if (warp.command.equals("/warp museum")) {
-                    isEnabled = NotEnoughFakepixel.feature.diana.dianaWarpMuseum;
+                    isEnabled = Config.feature.diana.dianaWarpMuseum;
                 } else if (warp.command.equals("/warp crypts")) {
-                    isEnabled = NotEnoughFakepixel.feature.diana.dianaWarpCrypts;
+                    isEnabled = Config.feature.diana.dianaWarpCrypts;
                 } else if (warp.command.equals("/warp castle")) {
-                    isEnabled = NotEnoughFakepixel.feature.diana.dianaWarpCastle;
+                    isEnabled = Config.feature.diana.dianaWarpCastle;
                 }
 
                 if (!isEnabled) continue;
@@ -238,7 +241,7 @@ public class GuessBurrow {
             }
 
             if (bestWarp != null && minWarpDist < playerDist) {
-                String keyName = Keyboard.getKeyName(NotEnoughFakepixel.feature.diana.warpKeybind);
+                String keyName = Keyboard.getKeyName(Config.feature.diana.warpKeybind);
                 displayText = "Warp to " + bestWarp.name + " (" + (keyName != null ? keyName : "None") + ")";
                 warpCommand = bestWarp.command;
             } else {
@@ -250,8 +253,8 @@ public class GuessBurrow {
             warpCommand = null;
         }
 
-        if (NotEnoughFakepixel.feature.diana.dianaWarpHelper && warpCommand != null) {
-            boolean keyPressed = Keyboard.isKeyDown(NotEnoughFakepixel.feature.diana.warpKeybind);
+        if (Config.feature.diana.dianaWarpHelper && warpCommand != null) {
+            boolean keyPressed = Keyboard.isKeyDown(Config.feature.diana.warpKeybind);
             if (keyPressed && !wasKeyPressed && System.currentTimeMillis() > cooldownEndTime) {
                 mc.thePlayer.sendChatMessage(warpCommand);
                 cooldownEndTime = System.currentTimeMillis() + 5000;
@@ -310,7 +313,7 @@ public class GuessBurrow {
 
     @SubscribeEvent
     public void onRenderWorld(RenderWorldLastEvent event) {
-        if (guessPoint != null && NotEnoughFakepixel.feature.diana.dianaBurrowGuess) {
+        if (guessPoint != null && Config.feature.diana.dianaBurrowGuess) {
             BlockPos loc = new BlockPos(guessPoint.xCoord, guessPoint.yCoord + 1, guessPoint.zCoord);
             AxisAlignedBB aabb = new AxisAlignedBB(
                     loc.getX(), loc.getY(), loc.getZ(),
@@ -447,13 +450,13 @@ public class GuessBurrow {
         int textWidth = mc.fontRendererObj.getStringWidth(displayText);
         int textHeight = mc.fontRendererObj.FONT_HEIGHT;
 
-        int x = NotEnoughFakepixel.feature.diana.warpHelperPos.getAbsX(sr, textWidth);
-        int y = NotEnoughFakepixel.feature.diana.warpHelperPos.getAbsY(sr, textHeight);
+        int x = Config.feature.diana.warpHelperPos.getAbsX(sr, textWidth);
+        int y = Config.feature.diana.warpHelperPos.getAbsY(sr, textHeight);
 
         GL11.glPushMatrix();
         GL11.glTranslatef(x, y, 0);
-        GL11.glScalef(NotEnoughFakepixel.feature.diana.warpHelperScale,
-                NotEnoughFakepixel.feature.diana.warpHelperScale, 1f);
+        GL11.glScalef(Config.feature.diana.warpHelperScale,
+                Config.feature.diana.warpHelperScale, 1f);
         mc.fontRendererObj.drawStringWithShadow(displayText, 0, 0, 0xFFFFFF);
         GL11.glPopMatrix();
     }
@@ -468,6 +471,7 @@ public class GuessBurrow {
         public String name;
         public Vec3 pos;
         public String command;
+
         public WarpLocation(String name, Vec3 pos, String command) {
             this.name = name;
             this.pos = pos;

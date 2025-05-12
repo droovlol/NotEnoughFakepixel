@@ -1,11 +1,11 @@
 package org.ginafro.notenoughfakepixel.config.gui.core.config.gui;
 
-import org.ginafro.notenoughfakepixel.config.gui.core.config.struct.ConfigProcessor;
-import org.ginafro.notenoughfakepixel.config.gui.core.util.render.RenderUtils;
-import org.ginafro.notenoughfakepixel.config.gui.core.util.render.TextRenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import org.ginafro.notenoughfakepixel.config.gui.core.config.struct.ConfigProcessor;
+import org.ginafro.notenoughfakepixel.config.gui.core.util.render.RenderUtils;
+import org.ginafro.notenoughfakepixel.config.gui.core.util.render.TextRenderUtils;
 
 public abstract class GuiOptionEditor {
 
@@ -58,5 +58,6 @@ public abstract class GuiOptionEditor {
         return false;
     }
 
-    public void renderOverlay(int x, int y, int width) {}
+    public void renderOverlay(int x, int y, int width) {
+    }
 }

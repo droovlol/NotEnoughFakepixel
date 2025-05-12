@@ -4,24 +4,27 @@ import com.google.gson.annotations.Expose;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import org.ginafro.notenoughfakepixel.alerts.AlertManagementGui;
-import org.ginafro.notenoughfakepixel.features.capes.gui.CapeGui;
-import org.ginafro.notenoughfakepixel.features.skyblock.qol.CustomAliases.AliasManagementGui;
 import org.ginafro.notenoughfakepixel.config.features.*;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.config.gui.config.ConfigEditor;
 import org.ginafro.notenoughfakepixel.config.gui.core.GuiElement;
 import org.ginafro.notenoughfakepixel.config.gui.core.GuiScreenElementWrapper;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.Position;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.Category;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.gui.GuiPositionEditor;
+import org.ginafro.notenoughfakepixel.features.capes.gui.CapeGui;
 import org.ginafro.notenoughfakepixel.features.duels.Duels;
 import org.ginafro.notenoughfakepixel.features.duels.KDCounter;
 import org.ginafro.notenoughfakepixel.features.mlf.Info;
 import org.ginafro.notenoughfakepixel.features.mlf.Map;
+import org.ginafro.notenoughfakepixel.features.skyblock.qol.CustomAliases.AliasManagementGui;
 
 public class Configuration {
 
     private void editOverlay(String activeConfig, int width, int height, Position position) {
-        Minecraft.getMinecraft().displayGuiScreen(new GuiPositionEditor(position, width, height, () -> {}, () -> {}, () -> NotEnoughFakepixel.screenToOpen = new GuiScreenElementWrapper(new ConfigEditor(NotEnoughFakepixel.feature, activeConfig))));
+        Minecraft.getMinecraft().displayGuiScreen(new GuiPositionEditor(position, width, height, () -> {
+        }, () -> {
+        }, () -> Config.screenToOpen = new GuiScreenElementWrapper(new ConfigEditor(Config.feature, activeConfig))));
     }
 
     public void executeRunnable(String runnableId) {
@@ -34,13 +37,13 @@ public class Configuration {
             }
         }
         if ("editAshfangPosition".equals(runnableId)) {
-            editOverlay(activeConfigCategory, 100, 20, NotEnoughFakepixel.feature.crimson.ashfangOverlayPos);
+            editOverlay(activeConfigCategory, 100, 20, Config.feature.crimson.ashfangOverlayPos);
         }
         if ("editDungeonsMapPosition".equals(runnableId)) {
-            editOverlay(activeConfigCategory, 128, 128, NotEnoughFakepixel.feature.dungeons.dungeonsMapPos);
+            editOverlay(activeConfigCategory, 128, 128, Config.feature.dungeons.dungeonsMapPos);
         }
         if ("editMlfInfoPosition".equals(runnableId)) {
-            Position tempPosition = new Position((int) NotEnoughFakepixel.feature.mlf.mlfInfoOffsetX, (int) NotEnoughFakepixel.feature.mlf.mlfInfoOffsetY);
+            Position tempPosition = new Position((int) Config.feature.mlf.mlfInfoOffsetX, (int) Config.feature.mlf.mlfInfoOffsetY);
             Minecraft.getMinecraft().displayGuiScreen(
                     new GuiPositionEditor(
                             tempPosition,
@@ -48,15 +51,16 @@ public class Configuration {
                             () -> new Map().renderDummy(),
                             () -> {
                                 ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
-                                NotEnoughFakepixel.feature.mlf.mlfInfoOffsetX = tempPosition.getAbsX(sr, 35);
-                                NotEnoughFakepixel.feature.mlf.mlfInfoOffsetY = tempPosition.getAbsY(sr, 60);
+                                Config.feature.mlf.mlfInfoOffsetX = tempPosition.getAbsX(sr, 35);
+                                Config.feature.mlf.mlfInfoOffsetY = tempPosition.getAbsY(sr, 60);
                             },
-                            () -> {}
+                            () -> {
+                            }
                     )
             );
         }
         if ("editKdCounterPosition".equals(runnableId)) {
-            Position tempPosition = new Position((int) NotEnoughFakepixel.feature.duels.kdCounterOffsetX, (int) NotEnoughFakepixel.feature.duels.kdCounterOffsetY);
+            Position tempPosition = new Position((int) Config.feature.duels.kdCounterOffsetX, (int) Config.feature.duels.kdCounterOffsetY);
             KDCounter kdCounter = new KDCounter();
             Minecraft.getMinecraft().displayGuiScreen(
                     new GuiPositionEditor(
@@ -65,39 +69,40 @@ public class Configuration {
                             kdCounter::renderDummy,
                             () -> {
                                 ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
-                                NotEnoughFakepixel.feature.duels.kdCounterOffsetX = tempPosition.getAbsX(sr, (int) kdCounter.getWidth());
-                                NotEnoughFakepixel.feature.duels.kdCounterOffsetY = tempPosition.getAbsY(sr, (int) kdCounter.getHeight());
+                                Config.feature.duels.kdCounterOffsetX = tempPosition.getAbsX(sr, (int) kdCounter.getWidth());
+                                Config.feature.duels.kdCounterOffsetY = tempPosition.getAbsY(sr, (int) kdCounter.getHeight());
                             },
-                            () -> {}
+                            () -> {
+                            }
                     )
             );
         }
         if ("editScoreOverlayPosition".equals(runnableId)) {
-            editOverlay(activeConfigCategory, 150, 115, NotEnoughFakepixel.feature.dungeons.scoreOverlayPos);
+            editOverlay(activeConfigCategory, 150, 115, Config.feature.dungeons.scoreOverlayPos);
         }
         if ("resetItemValues".equals(runnableId)) {
-            NotEnoughFakepixel.feature.qol.resetItemValues();
+            Config.feature.qol.resetItemValues();
         }
         if ("editSlayerOverlayPosition".equals(runnableId)) {
-            editOverlay(activeConfigCategory, 100, 20, NotEnoughFakepixel.feature.slayer.slayerBossHPPos);
+            editOverlay(activeConfigCategory, 100, 20, Config.feature.slayer.slayerBossHPPos);
         }
         if ("nefAlerts".equals(runnableId)) {
             Minecraft.getMinecraft().displayGuiScreen(new AlertManagementGui());
         }
-        if("nefAlias".equals(runnableId)){
+        if ("nefAlias".equals(runnableId)) {
             Minecraft.getMinecraft().displayGuiScreen(new AliasManagementGui());
         }
-        if("slotReset".equals(runnableId)){
+        if ("slotReset".equals(runnableId)) {
             NotEnoughFakepixel.resetLockedSlots();
         }
-        if("nefCapes".equals(runnableId)){
+        if ("nefCapes".equals(runnableId)) {
             Minecraft.getMinecraft().displayGuiScreen(new CapeGui());
         }
         if ("editTerminalTrackerPosition".equals(runnableId)) {
-            editOverlay(activeConfigCategory, 150, 60, NotEnoughFakepixel.feature.dungeons.terminalTrackerPos);
+            editOverlay(activeConfigCategory, 150, 60, Config.feature.dungeons.terminalTrackerPos);
         }
         if ("editWarpHelperPosition".equals(runnableId)) {
-            editOverlay(activeConfigCategory, 100, 30, NotEnoughFakepixel.feature.diana.warpHelperPos);
+            editOverlay(activeConfigCategory, 100, 30, Config.feature.diana.warpHelperPos);
         }
     }
 
@@ -162,6 +167,6 @@ public class Configuration {
     public Debug debug = new Debug();
 
     public static boolean isPojav() {
-        return NotEnoughFakepixel.feature.debug.forcePojav || (System.getProperty("os.name").contains("Android") || System.getProperty("os.name").contains("Linux"));
+        return Config.feature.debug.forcePojav || (System.getProperty("os.name").contains("Android") || System.getProperty("os.name").contains("Linux"));
     }
 }

@@ -66,7 +66,7 @@ public class SlotLocking {
     @Expose
     @ConfigOption(
             name = "Item Swap drop delay",
-            desc = "Set the delay between swapping to another item and being able to drop it.\n"+
+            desc = "Set the delay between swapping to another item and being able to drop it.\n" +
                     "This is to fix a bug that allowed you to drop slot locked items."
     )
     @ConfigEditorSlider(

@@ -9,7 +9,6 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,27 +20,27 @@ public class CustomConfigHandler {
     public static Gson gson = new GsonBuilder().setPrettyPrinting().create();
     public Map<String, List<String>> fairySoulsTemplate = new HashMap<>();
 
-    public static <T> @Nullable T loadConfig(Class<T> config, File file){
-        try{
-            if(!file.exists()) {
+    public static <T> @Nullable T loadConfig(Class<T> config, File file) {
+        try {
+            if (!file.exists()) {
                 file.createNewFile();
                 return null;
             }
             BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(file.toPath()), StandardCharsets.UTF_8));
-                return gson.fromJson(reader,config);
-        }catch(IOException e){
+            return gson.fromJson(reader, config);
+        } catch (IOException e) {
             new RuntimeException(
                     "Invalid config file '" + file + "'. This will reset the config to default",
                     e
             ).printStackTrace();
-            makeBackup(file,".corrupted");
+            makeBackup(file, ".corrupted");
             return null;
         }
     }
 
-    public static StorageData loadStorageData(String chestName){
-        if(!new File(STORAGE_FOLDER.path).exists()) return null;
-        File file = new File(STORAGE_FOLDER.path, chestName.replace(" ","") + ".json");
+    public static StorageData loadStorageData(String chestName) {
+        if (!new File(STORAGE_FOLDER.path).exists()) return null;
+        File file = new File(STORAGE_FOLDER.path, chestName.replace(" ", "") + ".json");
         if (!file.exists()) return null;
 
         try (FileReader reader = new FileReader(file)) {
@@ -54,10 +53,10 @@ public class CustomConfigHandler {
 
     public static void saveStorageData(StorageData data) {
         File folder = new File(STORAGE_FOLDER.path);
-        if(folder.exists()){
+        if (folder.exists()) {
             folder.mkdirs();
         }
-        File file = new File(folder, data.chestName.replace(" ","") + ".json");
+        File file = new File(folder, data.chestName.replace(" ", "") + ".json");
         try (FileWriter writer = new FileWriter(file)) {
             String json = gson.toJson(data); // Convert StorageData to JSON
             writer.write(json);
@@ -107,8 +106,7 @@ public class CustomConfigHandler {
             } catch (Exception __) {
                 System.out.println("neu config gone");
             }
-        }
-        finally {
+        } finally {
             file.delete();
         }
     }

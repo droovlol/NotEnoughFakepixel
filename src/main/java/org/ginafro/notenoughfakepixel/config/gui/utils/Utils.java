@@ -1,13 +1,5 @@
 package org.ginafro.notenoughfakepixel.config.gui.utils;
 
-import java.awt.*;
-import java.awt.datatransfer.StringSelection;
-import java.math.RoundingMode;
-import java.nio.FloatBuffer;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.LinkedList;
-import java.util.Locale;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
@@ -25,6 +17,15 @@ import net.minecraftforge.fml.common.Loader;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
+
+import java.awt.*;
+import java.awt.datatransfer.StringSelection;
+import java.math.RoundingMode;
+import java.nio.FloatBuffer;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.LinkedList;
+import java.util.Locale;
 
 public class Utils {
 
@@ -366,6 +367,7 @@ public class Utils {
         if (!stack.getTagCompound().getCompoundTag("ExtraAttributes").hasKey("id")) return null;
         return stack.getTagCompound().getCompoundTag("ExtraAttributes").getString("id");
     }
+
     public static void copyToClipboard(String str) {
         Toolkit.getDefaultToolkit().getSystemClipboard()
                 .setContents(new StringSelection(str), null);

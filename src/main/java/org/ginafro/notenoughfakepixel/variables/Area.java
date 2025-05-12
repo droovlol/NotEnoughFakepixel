@@ -60,6 +60,7 @@ public enum Area {
     BIRCH_PARK("Birch Park");
 
     private String s;
+
     Area(String s) {
         this.s = s;
     }
@@ -69,8 +70,8 @@ public enum Area {
     }
 
     public static Area getArea(String s) {
-        for(Area l : Area.values()) {
-            if(l.getArea().toLowerCase().contains(s.toLowerCase())){
+        for (Area l : Area.values()) {
+            if (l.getArea().toLowerCase().contains(s.toLowerCase())) {
                 return l;
             }
         }
@@ -78,8 +79,8 @@ public enum Area {
     }
 
     public static boolean locationExists(String s) {
-        for(Area l : Area.values()) {
-            if(s.equals(l.getArea())) {
+        for (Area l : Area.values()) {
+            if (s.equals(l.getArea())) {
                 return true;
             }
         }

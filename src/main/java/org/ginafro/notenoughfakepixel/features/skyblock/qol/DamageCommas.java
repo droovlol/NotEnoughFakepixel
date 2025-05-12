@@ -4,7 +4,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.utils.StringUtils;
 import org.ginafro.notenoughfakepixel.utils.Utils;
@@ -38,9 +38,9 @@ public class DamageCommas {
         IChatComponent name = entity.getDisplayName();
 
         if (!entity.hasCustomName()) return name;
-        if(ScoreboardUtils.currentGamemode != Gamemode.SKYBLOCK) return name;
+        if (ScoreboardUtils.currentGamemode != Gamemode.SKYBLOCK) return name;
 
-        if(NotEnoughFakepixel.feature.qol.qolDmgCommas) return replaceForCommas(entity, name);
+        if (Config.feature.qol.qolDmgCommas) return replaceForCommas(entity, name);
         else return name;
     }
 
@@ -121,7 +121,7 @@ public class DamageCommas {
     }
 
     private static String formatNumber(int number) {
-        if(NotEnoughFakepixel.feature.qol.qolDmgFormatter){
+        if (Config.feature.qol.qolDmgFormatter) {
             return Utils.shortNumberFormat(number, 0);
         } else {
             return Utils.commaFormat(number);
