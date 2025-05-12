@@ -2,8 +2,9 @@ package org.ginafro.notenoughfakepixel.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import jline.internal.Nullable;
+import com.google.gson.JsonSyntaxException;
 import org.ginafro.notenoughfakepixel.features.skyblock.overlays.storage.StorageData;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -22,29 +23,43 @@ public class CustomConfigHandler {
 
     public static <T> @Nullable T loadConfig(Class<T> config, File file) {
         try {
-            if (!file.exists()) {
-                file.createNewFile();
+            if (!file.exists() || file.length() == 0) {
+                if (!file.createNewFile()) {
+                    throw new IOException("Failed to create new config file: " + file);
+                }
                 return null;
             }
-            BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(file.toPath()), StandardCharsets.UTF_8));
-            return gson.fromJson(reader, config);
+
+            return readJson(config, file);
         } catch (IOException e) {
-            new RuntimeException(
-                    "Invalid config file '" + file + "'. This will reset the config to default",
-                    e
-            ).printStackTrace();
+            throw new RuntimeException("Could not read config file '" + file + "'", e);
+        }
+    }
+
+    private static <T> @Nullable T readJson(Class<T> config, File file) throws IOException {
+        try (InputStreamReader inputStreamReader = new InputStreamReader(Files.newInputStream(file.toPath()), StandardCharsets.UTF_8);
+             BufferedReader reader = new BufferedReader(inputStreamReader)) {
+
+            return gson.fromJson(reader, config);
+
+        } catch (JsonSyntaxException | IllegalStateException e) {
+            Logger.logErrorConsole("Invalid JSON in config: " + file.getName());
+            e.printStackTrace();
             makeBackup(file, ".corrupted");
             return null;
         }
     }
 
+
     public static StorageData loadStorageData(String chestName) {
-        if (!new File(STORAGE_FOLDER.path).exists()) return null;
-        File file = new File(STORAGE_FOLDER.path, chestName.replace(" ", "") + ".json");
+        File storageFolder = new File(STORAGE_FOLDER.path);
+        if (!storageFolder.exists()) return null;
+
+        File file = new File(storageFolder, chestName.replace(" ", "") + ".json");
         if (!file.exists()) return null;
 
-        try (FileReader reader = new FileReader(file)) {
-            return gson.fromJson(reader, StorageData.class); // Convert JSON back to StorageData
+        try (Reader reader = new FileReader(file)) {
+            return gson.fromJson(reader, StorageData.class);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -53,13 +68,11 @@ public class CustomConfigHandler {
 
     public static void saveStorageData(StorageData data) {
         File folder = new File(STORAGE_FOLDER.path);
-        if (folder.exists()) {
-            folder.mkdirs();
-        }
+        if (!folder.exists() && !folder.mkdirs()) return;
+
         File file = new File(folder, data.chestName.replace(" ", "") + ".json");
-        try (FileWriter writer = new FileWriter(file)) {
-            String json = gson.toJson(data); // Convert StorageData to JSON
-            writer.write(json);
+        try (Writer writer = new FileWriter(file)) {
+            gson.toJson(data, writer);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -96,7 +109,7 @@ public class CustomConfigHandler {
 
     private static void makeBackup(File file, String suffix) {
         File backupFile = new File(file.getParent(), file.getName() + "-" + System.currentTimeMillis() + suffix);
-        System.out.println("trying to make backup: " + backupFile.getName());
+        Logger.logConsole("trying to make backup: " + backupFile.getName());
 
         try {
             Files.move(file.toPath(), backupFile.toPath(), StandardCopyOption.ATOMIC_MOVE);
@@ -104,7 +117,7 @@ public class CustomConfigHandler {
             try {
                 Files.move(file.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             } catch (Exception __) {
-                System.out.println("neu config gone");
+                Logger.logErrorConsole("neu config gone");
             }
         } finally {
             file.delete();
