@@ -9,6 +9,8 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
+
+
 //Constants:
 
 val baseGroup: String by project
@@ -86,7 +88,7 @@ dependencies {
 
     // If you don't want mixins, remove these lines
     implementation("org.slick2d:slick2d-core:1.0.1")
-    implementation("org.reflections:reflections:0.9.12")
+    shadowImpl("org.reflections:reflections:0.9.12")
     implementation(kotlin("stdlib"))
     shadowImpl("org.spongepowered:mixin:0.7.11-SNAPSHOT") {
         isTransitive = false
@@ -136,6 +138,10 @@ val remapJar by tasks.named<net.fabricmc.loom.task.RemapJarTask>("remapJar") {
     input.set(tasks.shadowJar.get().archiveFile)
 }
 
+tasks.build {
+    dependsOn(tasks.shadowJar)
+}
+
 tasks.jar {
     archiveClassifier.set("without-deps")
     destinationDirectory.set(layout.buildDirectory.dir("intermediates"))
@@ -150,6 +156,9 @@ tasks.shadowJar {
     destinationDirectory.set(layout.buildDirectory.dir("intermediates"))
     archiveClassifier.set("non-obfuscated-with-deps")
     configurations = listOf(shadowImpl)
+
+    relocate("org.reflections", "$baseGroup.deps.org.reflections")
+
     doLast {
         configurations.forEach {
             println("Copying dependencies into mod: ${it.files}")
