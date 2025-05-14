@@ -51,7 +51,7 @@ public class Logger {
      */
     public static void logConsole(String message) {
         if (!Config.feature.debug.debug) return;
-        LOGGER.log(Level.INFO, Constants.PREFIX + message);
+        LOGGER.log(Level.INFO, message);
     }
 
     /**
@@ -61,7 +61,7 @@ public class Logger {
      */
     public static void logErrorConsole(String error) {
         if (!Config.feature.debug.debug) return;
-        LOGGER.log(Level.WARNING, Constants.PREFIX + error);
+        LOGGER.log(Level.WARNING, error);
     }
 
     /**

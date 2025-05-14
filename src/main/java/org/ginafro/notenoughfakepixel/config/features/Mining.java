@@ -89,4 +89,28 @@ public class Mining {
     @ConfigEditorButton(runnableId = "editMiningOverlayPosition", buttonText = "Edit Position")
     @ConfigAccordionId(id = 0)
     public String editMiningOverlayPositionButton = "";
+
+    // Waypoints Subcategory
+    @Expose
+    @ConfigOption(name = "Dwarven Waypoints Settings", desc = "Settings for dwarven waypoints.")
+    @ConfigEditorAccordion(id = 1)
+    public boolean waypointsSubcategory = false;
+
+    @Expose
+    @ConfigOption(name = "Enable Dwarven Waypoints", desc = "Enable Area Waypoints in the Dwarven Mines.")
+    @ConfigEditorBoolean
+    @ConfigAccordionId(id = 1)
+    public boolean miningDwarvenWaypoints = true;
+
+    @Expose
+    @ConfigOption(name = "Enable Dwarven Waypoint beacons", desc = "Enable beacons on every waypoint (waypoint must be enabled).")
+    @ConfigEditorBoolean
+    @ConfigAccordionId(id = 1)
+    public boolean miningDwarvenBeacons = true;
+
+    @Expose
+    @ConfigOption(name = "Beacons Color", desc = "Color of waypoint beacons.")
+    @ConfigEditorColour
+    public String miningDwarvenBeaconsColor = "0:190:0:255:0";
+
 }

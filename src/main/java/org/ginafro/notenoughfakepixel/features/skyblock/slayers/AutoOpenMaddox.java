@@ -24,6 +24,7 @@ public class AutoOpenMaddox {
 
     static String maddoxCommand = "/openmaddox";
     static long lastMaddoxTime = 0;
+    static boolean opened = false;
 
     @SubscribeEvent
     public void onChatRecieve(ClientChatReceivedEvent e) {
@@ -33,6 +34,7 @@ public class AutoOpenMaddox {
         for (IChatComponent sibling : siblings) {
             if (sibling.getUnformattedText().contains("[OPEN MENU]")) {
                 lastMaddoxTime = System.currentTimeMillis() / 1000;
+                opened = false;
                 if (Config.feature.slayer.slayerMaddoxCalling == 0)
                     Minecraft.getMinecraft().thePlayer.sendChatMessage(maddoxCommand);
                 else if (Config.feature.slayer.slayerMaddoxCalling == 1)
@@ -43,7 +45,7 @@ public class AutoOpenMaddox {
 
     @SubscribeEvent
     public void onDraw(GuiScreenEvent.DrawScreenEvent e) {
-        if (System.currentTimeMillis() / 1000 - lastMaddoxTime < 10) {
+        if (System.currentTimeMillis() / 1000 - lastMaddoxTime < 10 && (!opened)) {
             GuiScreen.drawRect(0, 0, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, new Color(0, 0, 0, 56).getRGB());
             String m = "Click to Open Maddox Batphone";
             FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
@@ -54,10 +56,12 @@ public class AutoOpenMaddox {
 
     @SubscribeEvent
     public void onMouseInputPost(GuiScreenEvent.MouseInputEvent.Post event) {
+        if (opened) return;
         if (ScoreboardUtils.currentGamemode != Gamemode.SKYBLOCK) return;
         if (Mouse.getEventButton() == 0 && event.gui instanceof GuiChat) {
             if (Config.feature.slayer.slayerMaddoxCalling == 1 && System.currentTimeMillis() / 1000 - lastMaddoxTime < 10) {
                 Minecraft.getMinecraft().thePlayer.sendChatMessage(maddoxCommand);
+                opened = true;
             }
         }
     }

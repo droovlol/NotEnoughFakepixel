@@ -177,32 +177,6 @@ public class RenderUtils {
         }
     }
 
-    public static void drawOutlinedBoundingBox(AxisAlignedBB aabb, Color color, float width, float partialTicks) {
-        Entity render = Minecraft.getMinecraft().getRenderViewEntity();
-
-        double coordX = render.lastTickPosX + (render.posX - render.lastTickPosX) * partialTicks;
-        double coordY = render.lastTickPosY + (render.posY - render.lastTickPosY) * partialTicks;
-        double coordZ = render.lastTickPosZ + (render.posZ - render.lastTickPosZ) * partialTicks;
-
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(-coordX, -coordY, -coordZ);
-        GlStateManager.disableTexture2D();
-        GlStateManager.enableBlend();
-        GlStateManager.disableLighting();
-        GlStateManager.disableAlpha();
-        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-        GL11.glLineWidth(width);
-
-        RenderGlobal.drawOutlinedBoundingBox(aabb, color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-
-        GlStateManager.translate(coordX, coordY, coordZ);
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlpha();
-        GlStateManager.enableTexture2D();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        GlStateManager.popMatrix();
-    }
-
     public static void renderEntityHitbox(Entity entity, float partialTicks, Color color, MobDisplayTypes type) {
         if (type == MobDisplayTypes.ITEMBIG) {
             renderItemBigHitbox(entity, partialTicks, color);
@@ -346,207 +320,259 @@ public class RenderUtils {
         tessellator.draw();
     }
 
-
+    /**
+     * Renders a floating name tag in 3D space at the specified position, facing the player.
+     * Includes a semi-transparent background and dynamically scales with distance.
+     *
+     * @param str          The string to render as the tag.
+     * @param pos          The world position as {x, y, z}.
+     * @param color        The color of the tag text.
+     * @param partialTicks The render partial ticks used for smooth interpolation.
+     */
     public static void drawTag(String str, double[] pos, Color color, float partialTicks) {
-        FontRenderer fontrenderer = Minecraft.getMinecraft().fontRendererObj;
-        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-        double viewerX = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks;
-        double viewerY = player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks;
-        double viewerZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks;
-        double x = ((pos[0] - viewerX) + 0.5);
-        double y = ((pos[1] - viewerY) + 0.5);
-        double z = ((pos[2] - viewerZ) + 0.5);
+        Minecraft mc = Minecraft.getMinecraft();
+        FontRenderer font = mc.fontRendererObj;
+        EntityPlayerSP player = mc.thePlayer;
+        RenderManager renderManager = mc.getRenderManager();
 
-        RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
+        Vec3 viewerPos = getInterpolatedPos(player, partialTicks);
+        Vec3 tagPos = new Vec3(pos[0] - viewerPos.xCoord + 0.5, pos[1] - viewerPos.yCoord + 0.5, pos[2] - viewerPos.zCoord + 0.5);
+
         double distance = player.getDistance(pos[0], pos[1], pos[2]);
-        float scale = Math.max(2.0F, (float) (distance / 5.0)); // Dynamic scaling
-        float f1 = 0.016666668F * scale;
+        float scale = Math.max(2.0F, (float) distance / 5.0F) * 0.016666668F;
 
-        // Save the current OpenGL state
         GlStateManager.pushMatrix();
         GlStateManager.pushAttrib();
 
-        GlStateManager.translate((float) x, (float) y + 2.5, (float) z);
-        GL11.glNormal3f(0.0F, 1.0F, 0.0F);
+        GlStateManager.translate(tagPos.xCoord, tagPos.yCoord + 2.5, tagPos.zCoord);
         GlStateManager.rotate(-renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
-        GlStateManager.scale(-f1, -f1, f1);
+        GlStateManager.scale(-scale, -scale, scale);
 
-        // Set up rendering state
+        setupRenderStateForText();
+
+        drawTagBackground(font, str);
+        font.drawString(str, -font.getStringWidth(str) / 2, 0, colorToInt(color));
+
+        restoreRenderState();
+        GlStateManager.popAttrib();
+        GlStateManager.popMatrix();
+    }
+
+    /**
+     * Calculates an interpolated position for the given entity based on partial ticks.
+     * This creates smooth transitions between render frames.
+     *
+     * @param entity       The entity whose position to interpolate.
+     * @param partialTicks The partial tick value for interpolation.
+     * @return A {@link Vec3} representing the smoothly interpolated world position.
+     */
+    private static Vec3 getInterpolatedPos(Entity entity, float partialTicks) {
+        double x = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTicks;
+        double y = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks;
+        double z = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks;
+        return new Vec3(x, y, z);
+    }
+
+    /**
+     * Configures OpenGL state for rendering floating text in the world.
+     * Disables lighting, depth testing, and enables blending for transparency.
+     */
+    private static void setupRenderStateForText() {
         GlStateManager.disableLighting();
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
         GlStateManager.depthMask(false);
         GlStateManager.disableDepth();
+    }
 
-        // Draw background box
-        Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        int j = fontrenderer.getStringWidth(str) / 2;
-        GlStateManager.disableTexture2D();
-
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        worldrenderer.pos(-j - 1, -1, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-        worldrenderer.pos(-j - 1, 8, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-        worldrenderer.pos(j + 1, 8, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-        worldrenderer.pos(j + 1, -1, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-        tessellator.draw();
-
-        GlStateManager.enableTexture2D();
-        fontrenderer.drawString(str, -fontrenderer.getStringWidth(str) / 2, 0, colorToInt(color));
-
-        // Restore state
+    /**
+     * Restores OpenGL state after rendering a 3D floating label.
+     * Re-enables depth testing, lighting, and disables blending to prevent side effects.
+     */
+    private static void restoreRenderState() {
         GlStateManager.enableDepth();
         GlStateManager.depthMask(true);
         GlStateManager.enableLighting();
         GlStateManager.disableBlend();
-        GlStateManager.resetColor(); // Reset color state to prevent rendering issues
-
-        // Restore the OpenGL state
-        GlStateManager.popAttrib();
-        GlStateManager.popMatrix();
+        GlStateManager.resetColor();
     }
 
-    public static void drawTracer(int[] targetPos, Color color) {
-        if (targetPos.length != 3) {
-            throw new IllegalArgumentException("Target position must be an array of exactly 3 integers (x, y, z).");
-        }
+    /**
+     * Draws a semi-transparent black background behind the name tag text.
+     *
+     * @param font The {@link FontRenderer} used to measure the string width.
+     * @param str  The text string being rendered (used to size the box).
+     */
+    private static void drawTagBackground(FontRenderer font, String str) {
+        int width = font.getStringWidth(str) / 2;
 
-        // Save and disable view bobbing
-        boolean userViewBobbing = Minecraft.getMinecraft().gameSettings.viewBobbing;
-        Minecraft.getMinecraft().gameSettings.viewBobbing = false;
+        Tessellator tess = Tessellator.getInstance();
+        WorldRenderer wr = tess.getWorldRenderer();
 
-        // Restore view bobbing
-        Minecraft.getMinecraft().gameSettings.viewBobbing = userViewBobbing;
-
-        // Configure OpenGL state
-        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
-        GlStateManager.disableDepth();
-        GlStateManager.depthMask(false);
-
-        // Set color
-        GlStateManager.color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-
-        // Calculate player's eye position
-        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-        double eyeX = 0;
-        double eyeY = player.getEyeHeight();
-        double eyeZ = 1;
-
-        // Rotate based on player's pitch and yaw
-        double pitchRadians = Math.toRadians(-player.rotationPitch);
-        double yawRadians = Math.toRadians(-player.rotationYaw);
-
-        double rotatedX = eyeX * Math.cos(yawRadians) - eyeZ * Math.sin(yawRadians);
-        double rotatedZ = eyeX * Math.sin(yawRadians) + eyeZ * Math.cos(yawRadians);
-
-        double finalEyeX = rotatedX;
-        double finalEyeY = eyeY + eyeX * Math.sin(pitchRadians);
-        double finalEyeZ = rotatedZ;
-
-        // Draw the line
-        GL11.glBegin(GL11.GL_LINES);
-        GL11.glVertex3d(finalEyeX, finalEyeY, finalEyeZ); // Start at the player's eye position
-        GL11.glVertex3d(targetPos[0] + 0.5, targetPos[1] + 0.5, targetPos[2] + 0.5); // End at target position (center of the block)
-        GL11.glEnd();
-
-        // Restore OpenGL state
+        wr.begin(7, DefaultVertexFormats.POSITION_COLOR);
+        wr.pos(-width - 1, -1, 0.0D).color(0, 0, 0, 64).endVertex();
+        wr.pos(-width - 1, 8, 0.0D).color(0, 0, 0, 64).endVertex();
+        wr.pos(width + 1, 8, 0.0D).color(0, 0, 0, 64).endVertex();
+        wr.pos(width + 1, -1, 0.0D).color(0, 0, 0, 64).endVertex();
+        tess.draw();
         GlStateManager.enableTexture2D();
-        GlStateManager.enableDepth();
-        GlStateManager.depthMask(true);
-        GlStateManager.disableBlend();
     }
 
     public static void draw3DLine(Vec3 pos1, Vec3 pos2, Color color, int lineWidth, boolean depth, float partialTicks) {
         draw3DLine(pos1, pos2, color, lineWidth, depth, partialTicks, false, false, null);
     }
 
-    public static void draw3DLine(Vec3 pos1, Vec3 pos2, Color color, int lineWidth, boolean depth, float partialTicks, boolean fromHead, boolean isLever, BlockLever.EnumOrientation orientation) {
-        Entity render = Minecraft.getMinecraft().getRenderViewEntity();
-        WorldRenderer worldRenderer = Tessellator.getInstance().getWorldRenderer();
+    /**
+     * Draws a 3D line between two world-space positions using OpenGL line rendering.
+     * <p>
+     * This version supports advanced customization, including drawing from the player's head direction
+     * and offsetting the starting point when targeting levers with specific orientations.
+     *
+     * @param pos1         The starting {@link Vec3} world position.
+     * @param pos2         The ending {@link Vec3} world position.
+     * @param color        The color of the line, including alpha.
+     * @param lineWidth    The width of the line in pixels (OpenGL units).
+     * @param depth        If {@code true}, respects depth testing; if {@code false}, renders on top of everything.
+     * @param partialTicks The partial tick value used for interpolating the render position.
+     * @param fromHead     If {@code true}, overrides {@code pos2} with a vector in the player's look direction.
+     * @param isLever      If {@code true}, adjusts {@code pos1} to align with the center of a lever's hitbox.
+     * @param orientation  The lever's orientation (used only if {@code isLever} is {@code true}).
+     */
+    public static void draw3DLine(Vec3 pos1, Vec3 pos2, Color color, int lineWidth, boolean depth,
+                                  float partialTicks, boolean fromHead, boolean isLever, BlockLever.EnumOrientation orientation) {
 
-        double coordX = render.lastTickPosX + (render.posX - render.lastTickPosX) * partialTicks;
-        double coordY = render.lastTickPosY + (render.posY - render.lastTickPosY) * partialTicks;
-        double coordZ = render.lastTickPosZ + (render.posZ - render.lastTickPosZ) * partialTicks;
+        Entity viewer = Minecraft.getMinecraft().getRenderViewEntity();
+        Vec3 interp = getInterpolatedPosition(viewer, partialTicks);
 
+        Vec3 start = isLever ? getLeverCenter(pos1, orientation) : pos1;
+        Vec3 end = fromHead ? getPlayerLookVec() : pos2;
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(-coordX, -coordY, -coordZ);
+        GlStateManager.translate(-interp.xCoord, -interp.yCoord, -interp.zCoord);
+        setupRenderState(depth, lineWidth);
+
+        renderLine(start, end, color);
+
+        cleanupRenderState(depth);
+        GlStateManager.translate(interp.xCoord, interp.yCoord, interp.zCoord);
+        GlStateManager.popMatrix();
+    }
+
+    /**
+     * Calculates the interpolated position of an entity based on the current partial ticks.
+     * This allows for smooth rendering between ticks.
+     *
+     * @param entity       The entity to interpolate (e.g., the render view entity).
+     * @param partialTicks The current render partial ticks.
+     * @return The interpolated {@link Vec3} position.
+     */
+    private static Vec3 getInterpolatedPosition(Entity entity, float partialTicks) {
+        double x = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTicks;
+        double y = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks;
+        double z = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks;
+        return new Vec3(x, y, z);
+    }
+
+    /**
+     * Calculates the central position of a lever based on its orientation.
+     * This adjusts the start point of the line so it appears to originate from the correct part of the lever.
+     *
+     * @param pos         The base {@link Vec3} block position of the lever.
+     * @param orientation The orientation of the lever.
+     * @return A {@link Vec3} representing the center of the lever face.
+     */
+    private static Vec3 getLeverCenter(Vec3 pos, BlockLever.EnumOrientation orientation) {
+        double x = pos.xCoord, y = pos.yCoord, z = pos.zCoord;
+
+        switch (orientation) {
+            case UP_X:
+            case UP_Z:
+                return new Vec3(x + 0.5, y + 0.1, z + 0.5);
+            case NORTH:
+                return new Vec3(x + 0.5, y + 0.5, z + 0.875);
+            case SOUTH:
+                return new Vec3(x + 0.5, y + 0.5, z + 0.125);
+            case WEST:
+                return new Vec3(x + 0.875, y + 0.5, z + 0.5);
+            case EAST:
+                return new Vec3(x + 0.125, y + 0.5, z + 0.5);
+            default:
+                return new Vec3(x + 0.5, y + 0.5, z - 1.125);
+        }
+    }
+
+    /**
+     * Gets a direction vector based on the player's current yaw and pitch, simulating a "look" direction.
+     * Used when drawing lines from the player's head or eye position.
+     *
+     * @return A normalized {@link Vec3} representing the player's look direction.
+     */
+    private static Vec3 getPlayerLookVec() {
+        Minecraft mc = Minecraft.getMinecraft();
+        float yaw = -mc.thePlayer.rotationYaw;
+        float pitch = -mc.thePlayer.rotationPitch;
+        return new Vec3(0, 0, 1)
+                .rotatePitch((float) Math.toRadians(pitch))
+                .rotateYaw((float) Math.toRadians(yaw));
+    }
+
+    /**
+     * Configures the OpenGL state for line rendering.
+     * Disables textures, lighting, and depth as needed, and sets blend modes.
+     *
+     * @param depth      If false, disables depth testing and depth writes.
+     * @param lineWidth  The width of the OpenGL line to draw.
+     */
+    private static void setupRenderState(boolean depth, int lineWidth) {
         GlStateManager.disableTexture2D();
         GlStateManager.enableBlend();
         GlStateManager.disableLighting();
         GlStateManager.disableAlpha();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
         GL11.glLineWidth(lineWidth);
+
         if (!depth) {
             GlStateManager.disableDepth();
             GlStateManager.depthMask(false);
         }
-        Vec3 pos1final = pos1;
-        Vec3 pos2final = pos2;
-        if (isLever && orientation != null) {
-            double midX = 0, midY = 0, midZ = 0;
-            switch (orientation) {
-                case UP_X:
-                    midX = pos1final.xCoord + 0.5;
-                    midY = pos1final.yCoord + 0.1;
-                    midZ = pos1final.zCoord + 0.5;
-                    break;
-                case UP_Z:
-                    midX = pos1final.xCoord + 0.5;
-                    midY = pos1final.yCoord + 0.1;
-                    midZ = pos1final.zCoord + 0.5;
-                    break;
-                case NORTH:
-                    midX = pos1final.xCoord + (0.25 + 0.75) / 2;
-                    midY = pos1final.yCoord + (0.1875 + 0.8125) / 2;
-                    midZ = pos1final.zCoord + (0.75 + 1) / 2;
-                    break;
-                case SOUTH:
-                    midX = pos1final.xCoord + (0.25 + 0.75) / 2;
-                    midY = pos1final.yCoord + (0.1875 + 0.8125) / 2;
-                    midZ = pos1final.zCoord + (0 + 0.25) / 2;
-                    break;
-                case WEST:
-                    midX = pos1final.xCoord + (0.75 + 1) / 2;
-                    midY = pos1final.yCoord + (0.1875 + 0.8125) / 2;
-                    midZ = pos1final.zCoord + (0.25 + 0.75) / 2;
-                    break;
-                case EAST:
-                    midX = pos1final.xCoord + (0 + 0.25) / 2;
-                    midY = pos1final.yCoord + (0.1875 + 0.8125) / 2;
-                    midZ = pos1final.zCoord + (0.25 + 0.75) / 2;
-                    break;
-                default:
-                    midX = pos1final.xCoord + (0.25 + 0.75) / 2;
-                    midY = pos1final.yCoord + (0.1875 + 0.8125) / 2;
-                    midZ = pos1final.zCoord - (1.25 + 1) / 2;
-                    break;
-            }
-            pos1final = new Vec3(midX, midY, midZ);
-        }
-        if (fromHead) {
-            pos2final = new Vec3(0, 0, 1).rotatePitch(-(float) Math.toRadians(Minecraft.getMinecraft().thePlayer.rotationPitch)).rotateYaw(-(float) Math.toRadians(Minecraft.getMinecraft().thePlayer.rotationYaw));
-        }
-        GlStateManager.color(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
-        worldRenderer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION);
-        worldRenderer.pos(pos1final.xCoord, pos1final.yCoord, pos1final.zCoord).endVertex();
-        worldRenderer.pos(pos2final.xCoord, pos2final.yCoord, pos2final.zCoord).endVertex();
-        Tessellator.getInstance().draw();
+    }
 
-        GlStateManager.translate(coordX, coordY, coordZ);
+    /**
+     * Restores OpenGL state after rendering to avoid interfering with other game rendering operations.
+     * Re-enables depth testing, texture, lighting, and alpha.
+     *
+     * @param depth If false, re-enables depth testing and depth mask.
+     */
+    private static void cleanupRenderState(boolean depth) {
         if (!depth) {
             GlStateManager.enableDepth();
             GlStateManager.depthMask(true);
         }
+
         GlStateManager.disableBlend();
         GlStateManager.enableLighting();
         GlStateManager.enableAlpha();
         GlStateManager.enableTexture2D();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        GlStateManager.popMatrix();
+    }
+
+    /**
+     * Renders a single 3D line between two points in the world.
+     *
+     * @param start The starting {@link Vec3} position.
+     * @param end   The ending {@link Vec3} position.
+     * @param color The line color, including alpha transparency.
+     */
+    private static void renderLine(Vec3 start, Vec3 end, Color color) {
+        WorldRenderer wr = Tessellator.getInstance().getWorldRenderer();
+        GlStateManager.color(color.getRed() / 255f, color.getGreen() / 255f,
+                color.getBlue() / 255f, color.getAlpha() / 255f);
+        wr.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION);
+        wr.pos(start.xCoord, start.yCoord, start.zCoord).endVertex();
+        wr.pos(end.xCoord, end.yCoord, end.zCoord).endVertex();
+        Tessellator.getInstance().draw();
     }
 
     public static void highlightBlock(BlockPos pos, Color color, boolean disableDepth, float partialTicks) {
@@ -631,15 +657,10 @@ public class RenderUtils {
     }
 
     public static void drawFilledBoundingBox(AxisAlignedBB box, float alpha, Color color) {
-        GlStateManager.pushMatrix(); // Save the current state
-        GlStateManager.pushAttrib(); // Save OpenGL attributes
+        GlStateManager.pushMatrix();
+        GlStateManager.pushAttrib();
 
-        GlStateManager.disableCull();
-        GlStateManager.enableBlend();
-        GlStateManager.disableLighting();
-        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-        GlStateManager.disableTexture2D();
-        GlStateManager.depthMask(false); // Disable depth mask for transparency
+        setupGlStateForBox();
 
         float r = color.getRed() / 255f;
         float g = color.getGreen() / 255f;
@@ -647,66 +668,91 @@ public class RenderUtils {
         float a = MathHelper.clamp_float(color.getAlpha() / 255f * alpha, 0.0f, 1.0f);
 
         Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        WorldRenderer wr = tessellator.getWorldRenderer();
 
-        // Bottom Face
-        GlStateManager.color(r, g, b, a);
-        worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-        worldrenderer.pos(box.minX, box.minY, box.minZ).endVertex();
-        worldrenderer.pos(box.maxX, box.minY, box.minZ).endVertex();
-        worldrenderer.pos(box.maxX, box.minY, box.maxZ).endVertex();
-        worldrenderer.pos(box.minX, box.minY, box.maxZ).endVertex();
-        tessellator.draw();
+        // Top & Bottom
+        drawFace(wr, tessellator, box.minX, box.minY, box.minZ, box.maxX, box.minY, box.maxZ, r, g, b, a); // Bottom
+        drawFace(wr, tessellator, box.minX, box.maxY, box.maxZ, box.maxX, box.maxY, box.minZ, r, g, b, a); // Top
 
-        // Top Face
-        worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-        worldrenderer.pos(box.minX, box.maxY, box.maxZ).endVertex();
-        worldrenderer.pos(box.maxX, box.maxY, box.maxZ).endVertex();
-        worldrenderer.pos(box.maxX, box.maxY, box.minZ).endVertex();
-        worldrenderer.pos(box.minX, box.maxY, box.minZ).endVertex();
-        tessellator.draw();
+        // Sides (slightly darker)
+        drawFace(wr, tessellator, box.minX, box.minY, box.maxZ, box.minX, box.maxY, box.minZ, r * 0.8f, g * 0.8f, b * 0.8f, a); // West
+        drawFace(wr, tessellator, box.maxX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ, r * 0.8f, g * 0.8f, b * 0.8f, a); // East
 
-        // Side Faces
-        GlStateManager.color(r * 0.8f, g * 0.8f, b * 0.8f, a);
-        worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-        worldrenderer.pos(box.minX, box.minY, box.maxZ).endVertex();
-        worldrenderer.pos(box.minX, box.maxY, box.maxZ).endVertex();
-        worldrenderer.pos(box.minX, box.maxY, box.minZ).endVertex();
-        worldrenderer.pos(box.minX, box.minY, box.minZ).endVertex();
-        tessellator.draw();
+        // Front & Back (slightly different shade)
+        drawFace(wr, tessellator, box.minX, box.maxY, box.minZ, box.maxX, box.minY, box.minZ, r * 0.9f, g * 0.9f, b * 0.9f, a); // North
+        drawFace(wr, tessellator, box.minX, box.minY, box.maxZ, box.maxX, box.maxY, box.maxZ, r * 0.9f, g * 0.9f, b * 0.9f, a); // South
 
-        worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-        worldrenderer.pos(box.maxX, box.minY, box.minZ).endVertex();
-        worldrenderer.pos(box.maxX, box.maxY, box.minZ).endVertex();
-        worldrenderer.pos(box.maxX, box.maxY, box.maxZ).endVertex();
-        worldrenderer.pos(box.maxX, box.minY, box.maxZ).endVertex();
-        tessellator.draw();
+        restoreGlState();
+        GlStateManager.popAttrib();
+        GlStateManager.popMatrix();
+    }
 
-        GlStateManager.color(r * 0.9f, g * 0.9f, b * 0.9f, a);
-        worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-        worldrenderer.pos(box.minX, box.maxY, box.minZ).endVertex();
-        worldrenderer.pos(box.maxX, box.maxY, box.minZ).endVertex();
-        worldrenderer.pos(box.maxX, box.minY, box.minZ).endVertex();
-        worldrenderer.pos(box.minX, box.minY, box.minZ).endVertex();
-        tessellator.draw();
+    /**
+     * Prepares the OpenGL state for rendering a filled bounding box.
+     * Disables lighting, textures, and depth writing, and enables blending.
+     * Call this before drawing faces.
+     */
+    private static void setupGlStateForBox() {
+        GlStateManager.disableCull();
+        GlStateManager.enableBlend();
+        GlStateManager.disableLighting();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager.disableTexture2D();
+        GlStateManager.depthMask(false);
+    }
 
-        worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-        worldrenderer.pos(box.minX, box.minY, box.maxZ).endVertex();
-        worldrenderer.pos(box.maxX, box.minY, box.maxZ).endVertex();
-        worldrenderer.pos(box.maxX, box.maxY, box.maxZ).endVertex();
-        worldrenderer.pos(box.minX, box.maxY, box.maxZ).endVertex();
-        tessellator.draw();
-
-        // Reset OpenGL state
-        GlStateManager.depthMask(true); // Re-enable depth mask
+    /**
+     * Restores the OpenGL state after rendering a filled bounding box.
+     * Re-enables depth writing, textures, lighting, and disables blending.
+     * Call this after finishing all drawing operations.
+     */
+    private static void restoreGlState() {
+        GlStateManager.depthMask(true);
         GlStateManager.enableTexture2D();
         GlStateManager.enableLighting();
         GlStateManager.disableBlend();
         GlStateManager.enableCull();
-        GlStateManager.popAttrib(); // Restore attributes
-        GlStateManager.popMatrix(); // Restore previous state
     }
 
+    /**
+     * Draws a single face (quad) of a bounding box using the specified vertex coordinates and color.
+     *
+     * @param wr   The WorldRenderer instance used for buffering vertex data.
+     * @param tess The Tessellator instance used to draw the buffered data.
+     * @param x1   The x-coordinate of the first corner.
+     * @param y1   The y-coordinate of the first corner.
+     * @param z1   The z-coordinate of the first corner.
+     * @param x2   The x-coordinate of the opposite corner.
+     * @param y2   The y-coordinate of the opposite corner.
+     * @param z2   The z-coordinate of the opposite corner.
+     * @param r    Red color component (0.0–1.0).
+     * @param g    Green color component (0.0–1.0).
+     * @param b    Blue color component (0.0–1.0).
+     * @param a    Alpha (transparency) component (0.0–1.0).
+     */
+    private static void drawFace(WorldRenderer wr, Tessellator tess, double x1, double y1, double z1, double x2, double y2, double z2, float r, float g, float b, float a) {
+        GlStateManager.color(r, g, b, a);
+        wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+        wr.pos(x1, y1, z1).endVertex();
+        wr.pos(x2, y1, z1).endVertex();
+        wr.pos(x2, y2, z2).endVertex();
+        wr.pos(x1, y2, z2).endVertex();
+        tess.draw();
+    }
+
+    /**
+     * Converts a {@link Color} object to a single 24-bit RGB integer.
+     * <p>
+     * The resulting integer uses the format <code>0xRRGGBB</code> where:
+     * <ul>
+     *   <li><b>RR</b> is the red component (8 bits)</li>
+     *   <li><b>GG</b> is the green component (8 bits)</li>
+     *   <li><b>BB</b> is the blue component (8 bits)</li>
+     * </ul>
+     *
+     * @param color The {@link Color} to convert. Alpha is ignored.
+     * @return An integer representation of the color in 0xRRGGBB format.
+     */
     public static int colorToInt(Color color) {
         return (color.getRed() << 16) | (color.getGreen() << 8) | color.getBlue();
     }

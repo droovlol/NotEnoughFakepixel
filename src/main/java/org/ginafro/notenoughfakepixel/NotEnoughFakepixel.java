@@ -4,14 +4,12 @@ import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.alerts.Alerts;
-import org.ginafro.notenoughfakepixel.commands.CopyCommand;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.config.gui.commands.Commands;
 import org.ginafro.notenoughfakepixel.envcheck.registers.ModEventRegistrar;
@@ -35,7 +33,7 @@ public class NotEnoughFakepixel {
     public static final File nefFolder = new File(Minecraft.getMinecraft().mcDataDir, "NotEnoughFakepixel");
 
     @Getter
-    private Utils utils = new Utils();
+    private final Utils utils = new Utils();
     public static File storageDirectory = new File("config/Notenoughfakepixel/storage");
 
     @Getter
