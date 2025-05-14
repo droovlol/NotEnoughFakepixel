@@ -86,9 +86,12 @@ public class AutoDiscoveryMixinPlugin implements IMixinConfigPlugin {
      * @param className the name or path of a class to be registered as a mixin.
      */
     public void tryAddMixinClass(String className) {
-        String norm = (className.endsWith(".class") ? className.substring(0, className.length() - ".class".length()) : className)
+        if (!className.endsWith(".class")) return; // 💥 skip directories and non-class files
+
+        String norm = className.substring(0, className.length() - ".class".length())
                 .replace("\\", "/")
                 .replace("/", ".");
+
         if (norm.startsWith(getMixinPackage() + ".") && !norm.endsWith(".")) {
             mixins.add(norm.substring(getMixinPackage().length() + 1));
         }
