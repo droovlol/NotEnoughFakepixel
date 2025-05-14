@@ -3,24 +3,36 @@ package org.ginafro.notenoughfakepixel.features.skyblock.qol.CustomAliases;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import org.ginafro.notenoughfakepixel.utils.Utils;
 import org.lwjgl.input.Keyboard;
 
+import java.awt.*;
 import java.io.IOException;
+import java.util.Objects;
 
 public class AddAliasGui extends GuiScreen {
 
     private GuiScreen parentScreen;
     private GuiTextField messageField;
-    private GuiTextField alertField;
+    private GuiTextField aliasField;
     private int modeIndex = 0;
     private int locationIndex = 0;
-    private final String[] modes = {"Starts With", "Contains", "Ends With"};
     private final String[] locations = {"Anywhere", "Skyblock", "Dungeons"};
-    private GuiButton modeButton;
     private GuiButton locationButton;
+    private GuiButton keybindButton;
+    private boolean isFocused = false;
+    private CustomAliases.Alias alias;
+    private int keyBinding;
+    private boolean displayError = false;
+    private String errorMessage = "";
 
     public AddAliasGui(GuiScreen parentScreen) {
         this.parentScreen = parentScreen;
+    }
+
+    public AddAliasGui(GuiScreen parentScreen, CustomAliases.Alias alias) {
+        this.parentScreen = parentScreen;
+        this.alias = alias;
     }
 
     @Override
@@ -34,11 +46,25 @@ public class AddAliasGui extends GuiScreen {
         int spacing = 25;
 
         messageField = new GuiTextField(1, fontRendererObj, centerX - fieldWidth / 2, centerY - spacing - 10, fieldWidth, 20);
-        alertField = new GuiTextField(2, fontRendererObj, centerX - fieldWidth / 2, centerY + 10, fieldWidth, 20);
-        locationButton = new GuiButton(4, centerX - buttonWidth / 2, centerY + spacing + 20, buttonWidth, 20, "Location: " + locations[locationIndex]);
+        aliasField = new GuiTextField(2, fontRendererObj, centerX - fieldWidth / 2, centerY + 10, fieldWidth, 20);
+        keyBinding = 0;
+        if(alias != null){
+            messageField.setText(alias.command);
+            aliasField.setText(alias.alias);
+            keyBinding=alias.key;
+            for(int i =0; i < locations.length;i++){
+                if(locations[i].equals(alias.location)){
+                    locationIndex = i;
+                }
+            }
+        }
+        locationButton = new GuiButton(4, centerX - (buttonWidth + spacing), centerY + spacing + 20, buttonWidth, 20, "Location: " + locations[locationIndex]);
         GuiButton saveButton = new GuiButton(5, centerX - buttonWidth / 2, centerY + 2 * spacing + 30, buttonWidth, 20, "Save");
+        keybindButton = new GuiButton(6,centerX + spacing,centerY + spacing + 20,buttonWidth,20,"Keybind: " + Utils.getKeyDesc(keyBinding));
         buttonList.add(locationButton);
         buttonList.add(saveButton);
+        buttonList.add(keybindButton);
+
     }
 
     @Override
@@ -53,14 +79,13 @@ public class AddAliasGui extends GuiScreen {
         fontRendererObj.drawString(command, centerX - fontRendererObj.getStringWidth(command) / 2, centerY - spacing - 20, 0xFFFFFF);
         messageField.drawTextBox();
 
-        String alias = "Alias:";
-        fontRendererObj.drawString(alias, centerX - fontRendererObj.getStringWidth(alias) / 2, centerY, 0xFFFFFF);
-        alertField.drawTextBox();
+        String allias = "Alias:";
+        fontRendererObj.drawString(allias, centerX - fontRendererObj.getStringWidth(allias) / 2, centerY, 0xFFFFFF);
+        aliasField.drawTextBox();
 
-//        String instruction = "To use Color codes use '&' it will replace the default color code symbol since we cant type it";
-//        int saveButtonY = centerY + 2 * spacing + 30;
-//        int instructionY = saveButtonY + 20 + 10;
-//        fontRendererObj.drawString(instruction, centerX - fontRendererObj.getStringWidth(instruction) / 2, instructionY, 0xFFFFFF);
+        if(displayError && !errorMessage.isEmpty()){
+            mc.fontRendererObj.drawString(errorMessage,centerX - fontRendererObj.getStringWidth(errorMessage) / 2,centerY - spacing - 40, Color.red.getRGB());
+        }
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
@@ -68,31 +93,53 @@ public class AddAliasGui extends GuiScreen {
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         super.keyTyped(typedChar, keyCode);
+        if(isFocused){
+        keyBinding = keyCode;
+        keybindButton.displayString = "Keybind: " + Utils.getKeyDesc(keyBinding);
+        isFocused= false;
+        }
         messageField.textboxKeyTyped(typedChar, keyCode);
-        alertField.textboxKeyTyped(typedChar, keyCode);
+        aliasField.textboxKeyTyped(typedChar, keyCode);
     }
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
         messageField.mouseClicked(mouseX, mouseY, mouseButton);
-        alertField.mouseClicked(mouseX, mouseY, mouseButton);
+        aliasField.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
+        if(button.id == 6){
+            if(!isFocused){
+                keybindButton.displayString = "Listening";
+                isFocused = true;
+            }
+        }
         if (button.id == 4) {
             locationIndex = (locationIndex + 1) % locations.length;
             locationButton.displayString = "Location: " + locations[locationIndex];
         } else if (button.id == 5) {
             String location = locations[locationIndex];
             String command = messageField.getText();
+            if(messageField.getText().isEmpty() || aliasField.getText().isEmpty()){
+                displayError = true;
+                errorMessage = "Please Fill out all fields";
+                return;
+            }
             if (!command.startsWith("/")) {
                 command = "/" + command;
             }
-            String allias = alertField.getText();
-            CustomAliases.Alias alias = new CustomAliases.Alias(location, command, allias, true);
-            CustomAliases.aliases.add(alias);
+            String allias = aliasField.getText();
+            CustomAliases.Alias alias1 = new CustomAliases.Alias(location, command, allias, true);
+            if(keyBinding != 0){
+                alias1.key = keyBinding;
+            }
+            if(alias != null){
+                CustomAliases.aliases.remove(alias);
+            }
+            CustomAliases.aliases.add(alias1);
             CustomAliases.save();
             CustomAliases.registerAliases();
             if (parentScreen instanceof AliasManagementGui) {

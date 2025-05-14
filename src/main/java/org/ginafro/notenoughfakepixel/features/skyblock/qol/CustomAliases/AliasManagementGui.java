@@ -2,6 +2,8 @@ package org.ginafro.notenoughfakepixel.features.skyblock.qol.CustomAliases;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import org.ginafro.notenoughfakepixel.utils.Utils;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
@@ -36,6 +38,7 @@ public class AliasManagementGui extends GuiScreen {
             int buttonY = y + 5;
             buttonList.add(new GuiButton(2 * i + 1, buttonX, buttonY, 50, 20, "Toggle"));
             buttonList.add(new GuiButton(2 * i + 2, buttonX + 60, buttonY, 50, 20, "Remove"));
+            buttonList.add(new EditButton(2 * i + 3, buttonX - 60, buttonY, 50, 20, "Edit"));
             y += ENTRY_HEIGHT;
         }
     }
@@ -55,7 +58,7 @@ public class AliasManagementGui extends GuiScreen {
 
         for (CustomAliases.Alias alias : displayedAliases) {
             String display = "Alias: " + alias.alias + " | Command: " + alias.command + " "
-                    + (alias.toggled ? "[Enabled]" : "[Disabled]") + " | Location: " + alias.location;
+                    + (alias.toggled ? "[Enabled]" : "[Disabled]") + " | Location: " + alias.location + " | Key: " + Utils.getKeyDesc(alias.key) ;
 
             drawRect(textX - 5, y, buttonX + 110, y + ENTRY_HEIGHT - 5, 0xFF333333);
             fontRendererObj.drawString(display, textX, y + 10, 0xFFFFFF);
@@ -127,25 +130,30 @@ public class AliasManagementGui extends GuiScreen {
     protected void actionPerformed(GuiButton button) throws IOException {
         if (button.id == 0) {
             mc.displayGuiScreen(new AddAliasGui(this));
-        } else {
-            int index = (button.id - 1) / 2 + scrollOffset;
-            if (index >= 0 && index < CustomAliases.aliases.size()) {
-                CustomAliases.Alias alias = CustomAliases.aliases.get(index);
-                if (button.id % 2 == 1) {
-                    alias.toggle();
-                    if (alias.toggled) {
-                        CustomAliases.registerAliases();
-                    } else {
-                        CustomAliases.unregisterAlias(alias);
-                    }
-                    CustomAliases.save();
-                } else {
-                    CustomAliases.aliases.remove(index);
-                    CustomAliases.unregisterAlias(alias);
-                    CustomAliases.save();
-                    updateButtons();
-                }
+            return;
+        }
+
+        int aliasIndex = (button.id - 1) / 3 + scrollOffset;
+        if (aliasIndex < 0 || aliasIndex >= CustomAliases.aliases.size()) return;
+
+        CustomAliases.Alias alias = CustomAliases.aliases.get(aliasIndex);
+
+        int buttonType = (button.id - 1) % 3;
+        if (buttonType == 0) { // Toggle
+            alias.toggle();
+            if (alias.toggled) {
+                CustomAliases.registerAliases();
+            } else {
+                CustomAliases.unregisterAlias(alias);
             }
+            CustomAliases.save();
+        } else if (buttonType == 1) { // Remove
+            CustomAliases.aliases.remove(aliasIndex);
+            CustomAliases.unregisterAlias(alias);
+            CustomAliases.save();
+            updateButtons();
+        } else if (buttonType == 2 && button instanceof EditButton) { // Edit
+            mc.displayGuiScreen(new AddAliasGui(this, alias));
         }
     }
 }
