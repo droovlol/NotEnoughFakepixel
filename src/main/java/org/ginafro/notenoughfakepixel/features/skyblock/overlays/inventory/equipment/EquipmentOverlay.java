@@ -48,10 +48,10 @@ public class EquipmentOverlay {
     public static final int ARMOR_OVERLAY_OVERHAND_WIDTH = 24;
     public static final int ARMOR_OVERLAY_HEIGHT = 86;
     public static final int ARMOR_OVERLAY_WIDTH = 31;
-    public boolean mouseClick = false;
-    public long lastClick = 0;
-    public static Map<Integer, ItemStack> equipments = new HashMap<>();
-    public static EquipmentData data;
+    protected boolean mouseClick = false;
+    protected long lastClick = 0;
+    protected static Map<Integer, ItemStack> equipments = new HashMap<>();
+    protected static EquipmentData data;
     Minecraft mc;
 
     @SubscribeEvent
@@ -152,7 +152,6 @@ public class EquipmentOverlay {
             data = gson.fromJson(reader, EquipmentData.class); // Convert JSON back to StorageData
         } catch (IOException e) {
             e.printStackTrace();
-            return;
         }
     }
 

@@ -657,8 +657,6 @@ public class RenderUtils {
     }
 
     public static void drawFilledBoundingBox(AxisAlignedBB box, float alpha, Color color) {
-        GlStateManager.pushMatrix();
-        GlStateManager.pushAttrib();
 
         setupGlStateForBox();
 
@@ -667,24 +665,46 @@ public class RenderUtils {
         float b = color.getBlue() / 255f;
         float a = MathHelper.clamp_float(color.getAlpha() / 255f * alpha, 0.0f, 1.0f);
 
-        Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer wr = tessellator.getWorldRenderer();
+        Tessellator tess = Tessellator.getInstance();
+        WorldRenderer wr = tess.getWorldRenderer();
 
-        // Top & Bottom
-        drawFace(wr, tessellator, box.minX, box.minY, box.minZ, box.maxX, box.minY, box.maxZ, r, g, b, a); // Bottom
-        drawFace(wr, tessellator, box.minX, box.maxY, box.maxZ, box.maxX, box.maxY, box.minZ, r, g, b, a); // Top
+        // Bottom
+        drawFace(wr, tess,
+                box.minX, box.minY, box.minZ,
+                box.maxX, box.minY, box.maxZ,
+                r, g, b, a);
 
-        // Sides (slightly darker)
-        drawFace(wr, tessellator, box.minX, box.minY, box.maxZ, box.minX, box.maxY, box.minZ, r * 0.8f, g * 0.8f, b * 0.8f, a); // West
-        drawFace(wr, tessellator, box.maxX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ, r * 0.8f, g * 0.8f, b * 0.8f, a); // East
+        // Top
+        drawFace(wr, tess,
+                box.minX, box.maxY, box.minZ,
+                box.maxX, box.maxY, box.maxZ,
+                r, g, b, a);
 
-        // Front & Back (slightly different shade)
-        drawFace(wr, tessellator, box.minX, box.maxY, box.minZ, box.maxX, box.minY, box.minZ, r * 0.9f, g * 0.9f, b * 0.9f, a); // North
-        drawFace(wr, tessellator, box.minX, box.minY, box.maxZ, box.maxX, box.maxY, box.maxZ, r * 0.9f, g * 0.9f, b * 0.9f, a); // South
+        // North
+        drawFace(wr, tess,
+                box.minX, box.minY, box.minZ,
+                box.maxX, box.maxY, box.minZ,
+                r, g, b, a);
+
+        // South
+        drawFace(wr, tess,
+                box.minX, box.minY, box.maxZ,
+                box.maxX, box.maxY, box.maxZ,
+                r, g, b, a);
+
+        // West
+        drawFace(wr, tess,
+                box.minX, box.minY, box.minZ,
+                box.minX, box.maxY, box.maxZ,
+                r, g, b, a);
+
+        // East
+        drawFace(wr, tess,
+                box.maxX, box.minY, box.minZ,
+                box.maxX, box.maxY, box.maxZ,
+                r, g, b, a);
 
         restoreGlState();
-        GlStateManager.popAttrib();
-        GlStateManager.popMatrix();
     }
 
     /**
@@ -693,12 +713,10 @@ public class RenderUtils {
      * Call this before drawing faces.
      */
     private static void setupGlStateForBox() {
-        GlStateManager.disableCull();
-        GlStateManager.enableBlend();
-        GlStateManager.disableLighting();
-        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
         GlStateManager.disableTexture2D();
-        GlStateManager.depthMask(false);
+        GlStateManager.enableBlend();
+        GlStateManager.disableCull(); // So we can see all faces
+        GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
     }
 
     /**
@@ -707,36 +725,68 @@ public class RenderUtils {
      * Call this after finishing all drawing operations.
      */
     private static void restoreGlState() {
-        GlStateManager.depthMask(true);
-        GlStateManager.enableTexture2D();
-        GlStateManager.enableLighting();
-        GlStateManager.disableBlend();
         GlStateManager.enableCull();
+        GlStateManager.disableBlend();
+        GlStateManager.enableTexture2D();
+        GlStateManager.popAttrib();
     }
 
     /**
-     * Draws a single face (quad) of a bounding box using the specified vertex coordinates and color.
+     * Draws a single axis-aligned rectangular face (quad) between two opposing corners.
+     * <p>
+     * The face is automatically determined to lie on one of the three axis-aligned planes (XY, XZ, YZ)
+     * based on which coordinate is constant (i.e., the same in both corners). The function handles
+     * sorting the coordinates and drawing the quad with proper vertex ordering and color.
+     * </p>
      *
-     * @param wr   The WorldRenderer instance used for buffering vertex data.
-     * @param tess The Tessellator instance used to draw the buffered data.
-     * @param x1   The x-coordinate of the first corner.
-     * @param y1   The y-coordinate of the first corner.
-     * @param z1   The z-coordinate of the first corner.
-     * @param x2   The x-coordinate of the opposite corner.
-     * @param y2   The y-coordinate of the opposite corner.
-     * @param z2   The z-coordinate of the opposite corner.
-     * @param r    Red color component (0.0–1.0).
-     * @param g    Green color component (0.0–1.0).
-     * @param b    Blue color component (0.0–1.0).
-     * @param a    Alpha (transparency) component (0.0–1.0).
+     * @param wr    The {@link WorldRenderer} instance used for buffering vertex data.
+     * @param tess  The {@link Tessellator} instance used to execute the buffered draw call.
+     * @param x1    The x-coordinate of the first corner.
+     * @param y1    The y-coordinate of the first corner.
+     * @param z1    The z-coordinate of the first corner.
+     * @param x2    The x-coordinate of the opposite corner.
+     * @param y2    The y-coordinate of the opposite corner.
+     * @param z2    The z-coordinate of the opposite corner.
+     * @param r     The red color component (0.0 to 1.0).
+     * @param g     The green color component (0.0 to 1.0).
+     * @param b     The blue color component (0.0 to 1.0).
+     * @param a     The alpha (transparency) component (0.0 to 1.0).
      */
-    private static void drawFace(WorldRenderer wr, Tessellator tess, double x1, double y1, double z1, double x2, double y2, double z2, float r, float g, float b, float a) {
-        GlStateManager.color(r, g, b, a);
-        wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-        wr.pos(x1, y1, z1).endVertex();
-        wr.pos(x2, y1, z1).endVertex();
-        wr.pos(x2, y2, z2).endVertex();
-        wr.pos(x1, y2, z2).endVertex();
+    private static void drawFace(WorldRenderer wr, Tessellator tess,
+                                 double x1, double y1, double z1,
+                                 double x2, double y2, double z2,
+                                 float r, float g, float b, float a) {
+        wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+
+        // Sort coordinates
+        double minX = Math.min(x1, x2);
+        double maxX = Math.max(x1, x2);
+        double minY = Math.min(y1, y2);
+        double maxY = Math.max(y1, y2);
+        double minZ = Math.min(z1, z2);
+        double maxZ = Math.max(z1, z2);
+
+        // Determine the face orientation and assign vertices accordingly
+        if (minX == maxX) {
+            // X-face (YZ plane)
+            wr.pos(minX, minY, minZ).color(r, g, b, a).endVertex();
+            wr.pos(minX, maxY, minZ).color(r, g, b, a).endVertex();
+            wr.pos(minX, maxY, maxZ).color(r, g, b, a).endVertex();
+            wr.pos(minX, minY, maxZ).color(r, g, b, a).endVertex();
+        } else if (minY == maxY) {
+            // Y-face (XZ plane)
+            wr.pos(minX, minY, minZ).color(r, g, b, a).endVertex();
+            wr.pos(maxX, minY, minZ).color(r, g, b, a).endVertex();
+            wr.pos(maxX, minY, maxZ).color(r, g, b, a).endVertex();
+            wr.pos(minX, minY, maxZ).color(r, g, b, a).endVertex();
+        } else if (minZ == maxZ) {
+            // Z-face (XY plane)
+            wr.pos(minX, minY, minZ).color(r, g, b, a).endVertex();
+            wr.pos(maxX, minY, minZ).color(r, g, b, a).endVertex();
+            wr.pos(maxX, maxY, minZ).color(r, g, b, a).endVertex();
+            wr.pos(minX, maxY, minZ).color(r, g, b, a).endVertex();
+        }
+
         tess.draw();
     }
 

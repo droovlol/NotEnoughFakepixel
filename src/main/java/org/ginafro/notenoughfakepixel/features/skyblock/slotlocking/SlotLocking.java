@@ -2,6 +2,8 @@ package org.ginafro.notenoughfakepixel.features.skyblock.slotlocking;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSound;
@@ -91,15 +93,9 @@ public class SlotLocking {
     private boolean lockKeyHeld = false;
     private Slot pairingSlot = null;
 
+    @Setter
+    @Getter
     private Slot realSlot = null;
-
-    public void setRealSlot(Slot slot) {
-        realSlot = slot;
-    }
-
-    public Slot getRealSlot() {
-        return realSlot;
-    }
 
     public void loadConfig() {
         config = CustomConfigHandler.loadConfig(SlotLockingConfig.class, new File(CustomConfigFiles.SLOT_LOCKING.path));

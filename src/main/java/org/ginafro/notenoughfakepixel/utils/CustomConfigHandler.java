@@ -3,6 +3,7 @@ package org.ginafro.notenoughfakepixel.utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.features.skyblock.overlays.storage.StorageData;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,6 +24,9 @@ public class CustomConfigHandler {
 
     public static <T> @Nullable T loadConfig(Class<T> config, File file) {
         try {
+            if (!Config.configDirectory.exists() && !Config.configDirectory.mkdirs()) {
+                throw new IOException("Failed to create config directory: " + Config.configDirectory);
+            }
             if (!file.exists() || file.length() == 0) {
                 if (!file.createNewFile()) {
                     throw new IOException("Failed to create new config file: " + file);
