@@ -17,6 +17,7 @@ import org.ginafro.notenoughfakepixel.features.duels.Duels;
 import org.ginafro.notenoughfakepixel.features.duels.KDCounter;
 import org.ginafro.notenoughfakepixel.features.mlf.Info;
 import org.ginafro.notenoughfakepixel.features.mlf.Map;
+import org.ginafro.notenoughfakepixel.features.skyblock.overlays.inventory.invbuttons.InventoryEditor;
 import org.ginafro.notenoughfakepixel.features.skyblock.qol.CustomAliases.AliasManagementGui;
 
 public class Configuration {
@@ -103,6 +104,9 @@ public class Configuration {
         }
         if ("editWarpHelperPosition".equals(runnableId)) {
             editOverlay(activeConfigCategory, 100, 30, Config.feature.diana.warpHelperPos);
+        }
+        if("nefButtons".equals(runnableId)){
+            Minecraft.getMinecraft().displayGuiScreen(new InventoryEditor());
         }
     }
 

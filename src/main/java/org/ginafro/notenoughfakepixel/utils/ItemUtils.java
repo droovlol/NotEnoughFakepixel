@@ -1,11 +1,16 @@
 package org.ginafro.notenoughfakepixel.utils;
 
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.NBTUtil;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class ItemUtils {
@@ -37,6 +42,44 @@ public class ItemUtils {
         NBTTagCompound extraAttributes = getExtraAttributes(item);
         if (!extraAttributes.hasKey(tag)) return "";
         return extraAttributes.getString(tag);
+    }
+
+    public static List<ItemStack> getAllCustomSkulls(Map<String, String> skullIcons) {
+        List<ItemStack> skulls = new ArrayList<>();
+        for (Map.Entry<String, String> entry : skullIcons.entrySet()) {
+            String name = entry.getKey();
+            String value = entry.getValue().replace("skull:", "").trim();
+            skulls.add(createSkullWithTexture(name, value));
+        }
+        return skulls;
+    }
+
+    public static ItemStack createSkullWithTexture(String name ,String textureHash) {
+        ItemStack skull = new ItemStack(Items.skull, 1, 3); // 3 = player head
+
+        NBTTagCompound skullTag = new NBTTagCompound();
+        NBTTagCompound skullOwner = new NBTTagCompound();
+
+        skullOwner.setString("Id", UUID.randomUUID().toString());
+
+        // Create texture compound
+        NBTTagCompound textures = new NBTTagCompound();
+        NBTTagList texturesList = new NBTTagList();
+        NBTTagCompound valueTag = new NBTTagCompound();
+
+        String fullTexture = "eyJ0aW1lc3RhbXAiOjAsInByb2ZpbGVJZCI6IiIsInByb2ZpbGVOYW1lIjoiIiwidGV4dHVyZXMiOns" +
+                "iU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL" +
+                "y" + textureHash + "\"}}}";
+
+        valueTag.setString("Value", Base64.getEncoder().encodeToString(fullTexture.getBytes()));
+        texturesList.appendTag(valueTag);
+        textures.setTag("textures", texturesList);
+
+        skullOwner.setTag("Properties", textures);
+        skullTag.setTag("SkullOwner", skullOwner);
+        skull.setTagCompound(skullTag);
+        skull.setStackDisplayName(name);
+        return skull;
     }
 
     public static NBTTagCompound getOrCreateTag(ItemStack is) {

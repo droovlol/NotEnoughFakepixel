@@ -3,6 +3,8 @@ package org.ginafro.notenoughfakepixel;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -17,6 +19,7 @@ import org.ginafro.notenoughfakepixel.features.cosmetics.CosmeticsManager;
 import org.ginafro.notenoughfakepixel.features.cosmetics.impl.Bandana;
 import org.ginafro.notenoughfakepixel.features.cosmetics.loader.OBJLoader;
 import org.ginafro.notenoughfakepixel.features.skyblock.overlays.inventory.equipment.EquipmentOverlay;
+import org.ginafro.notenoughfakepixel.features.skyblock.overlays.inventory.invbuttons.InvManager;
 import org.ginafro.notenoughfakepixel.features.skyblock.qol.Aliases;
 import org.ginafro.notenoughfakepixel.features.skyblock.qol.CustomAliases.CustomAliases;
 import org.ginafro.notenoughfakepixel.features.skyblock.slotlocking.SlotLocking;
@@ -47,7 +50,6 @@ public class NotEnoughFakepixel {
     public void init(FMLInitializationEvent event) {
         instance = this;
         MinecraftForge.EVENT_BUS.register(this);
-        SlotLocking.getInstance().loadConfig();
         objLoader = new OBJLoader();
 
         //registerCosmetics();
@@ -56,6 +58,7 @@ public class NotEnoughFakepixel {
         createDirectoryIfNotExists(nefFolder);
         createDirectoryIfNotExists(Config.configDirectory);
         createDirectoryIfNotExists(storageDirectory);
+        SlotLocking.getInstance().loadConfig();
 
         Config.init();
         Runtime.getRuntime().addShutdownHook(new Thread(Config::saveConfig));
@@ -71,6 +74,8 @@ public class NotEnoughFakepixel {
         ModEventRegistrar.registerModEvents();
         ModEventRegistrar.registerKeybinds();
         ModEventRegistrar.registerCommands();
+        InvManager.save();
+        InvManager.load();
 
         SlotLocking.getInstance().saveConfig();
     }
