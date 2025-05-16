@@ -3,28 +3,44 @@ package org.ginafro.notenoughfakepixel.features.skyblock.qol.CustomAliases;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
+import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.features.skyblock.qol.Aliases;
+import org.lwjgl.input.Keyboard;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
+@RegisterEvents
 public class CustomAliases {
 
     public static List<CustomAliases.Alias> aliases = new ArrayList<>();
     public static HashMap<CustomAliases.Alias, Pattern> patterns = new HashMap<>();
     public static String configFile = Config.configDirectory + "/nefalias.json";
     private static final Minecraft mc = Minecraft.getMinecraft();
+
+    @SubscribeEvent
+    public void onInput(InputEvent.KeyInputEvent e){
+        for(Alias alias : aliases){
+            if(alias.key == 0) continue;
+            if(Keyboard.isKeyDown(alias.key) && alias.key != 1){
+                Minecraft.getMinecraft().thePlayer.sendChatMessage(alias.command);
+            }
+        }
+    }
 
     public CustomAliases() {
         MinecraftForge.EVENT_BUS.register(this);
@@ -96,6 +112,7 @@ public class CustomAliases {
         public String location;
         public String command;
         public String alias;
+        public int key;
         public boolean toggled;
 
         public Alias(String location, String command, String a, boolean toggled) {
@@ -103,6 +120,15 @@ public class CustomAliases {
             this.command = command;
             this.alias = a;
             this.toggled = toggled;
+            key = 0;
+        }
+
+        public Alias(String location, String command, String a, boolean toggled,int key) {
+            this.location = location;
+            this.command = command;
+            this.alias = a;
+            this.toggled = toggled;
+            this.key = key;
         }
 
         public void toggle() {
