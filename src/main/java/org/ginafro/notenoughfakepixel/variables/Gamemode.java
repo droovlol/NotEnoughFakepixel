@@ -11,28 +11,20 @@ public enum Gamemode {
     DUELS("DUELS"),
     CATACOMBS("CATACOMB");
 
-    private String s;
+    private final String name;
 
-    Gamemode(String s) {
-        this.s = s;
+    Gamemode(String name) {
+        this.name = name;
     }
 
-    public String getScoreboardMessage() {
-        return s;
-    }
-
-    public static Gamemode getGamemode(String s) {
-        for (Gamemode gm : Gamemode.values()) {
-            if (s.contains(gm.s)) {
-                return gm;
-            }
-        }
-        return LOBBY;
+    public static Gamemode getGamemode(String input) {
+        return java.util.Arrays.stream(values())
+                .filter(gm -> input.contains(gm.name))
+                .findFirst()
+                .orElse(LOBBY);
     }
 
     public boolean isSkyblock() {
-
-        return this.equals(SKYBLOCK);
+        return this == SKYBLOCK;
     }
-
 }

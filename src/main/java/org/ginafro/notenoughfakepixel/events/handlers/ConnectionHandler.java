@@ -2,6 +2,7 @@ package org.ginafro.notenoughfakepixel.events.handlers;
 
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.events.NEFClientConnectedToServerEvent;
 import org.ginafro.notenoughfakepixel.utils.Logger;
@@ -26,7 +27,7 @@ public class ConnectionHandler {
             String hostName = inetAddress.getHostName();
             int port = inetAddress.getPort();
 
-            if (hostName.contains(TARGET_SERVER)) {
+            if (hostName.contains(TARGET_SERVER) || Config.feature.debug.enableOutOfFakepixel) {
                 ApiHandler.init();
                 Logger.logConsole("Connected to " + TARGET_SERVER + ":" + port);
             } else {

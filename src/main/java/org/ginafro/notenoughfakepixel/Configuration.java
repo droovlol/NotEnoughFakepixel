@@ -19,6 +19,8 @@ import org.ginafro.notenoughfakepixel.features.mlf.Info;
 import org.ginafro.notenoughfakepixel.features.mlf.Map;
 import org.ginafro.notenoughfakepixel.features.skyblock.overlays.inventory.invbuttons.InventoryEditor;
 import org.ginafro.notenoughfakepixel.features.skyblock.qol.CustomAliases.AliasManagementGui;
+import org.ginafro.notenoughfakepixel.utils.Logger;
+import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 
 public class Configuration {
 
@@ -107,6 +109,13 @@ public class Configuration {
         }
         if("nefButtons".equals(runnableId)){
             Minecraft.getMinecraft().displayGuiScreen(new InventoryEditor());
+        }
+        // Debug runnables
+        if ("logLocation".equals(runnableId)) {
+            Logger.log(ScoreboardUtils.currentLocation);
+        }
+        if ("logScoreboard".equals(runnableId)) {
+            ScoreboardUtils.getScoreboardLines().forEach(Logger::log);
         }
     }
 

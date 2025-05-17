@@ -55,15 +55,12 @@ public class SpiritLeapHandler {
     private static final List<PlayerData> playerDataList = new ArrayList<>();
 
     private static String cleanSB(String scoreboard) {
-        char[] nvString = StringUtils.stripControlCodes(scoreboard).toCharArray();
-        StringBuilder cleaned = new StringBuilder();
-        for (char c : nvString) {
-            if ((int) c > 20 && (int) c < 127) {
-                cleaned.append(c);
-            }
-        }
-        return cleaned.toString();
+        return StringUtils.stripControlCodes(scoreboard).chars()
+                .filter(c -> c > 20 && c < 127)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
     }
+
 
     private static List<String> getSidebarLines() {
         List<String> lines = new ArrayList<>();

@@ -8,7 +8,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
-import org.ginafro.notenoughfakepixel.events.handlers.ScoreboardHandler;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 
 import java.util.List;
@@ -23,7 +22,7 @@ public class SlayerTimer {
     public void onClientTick(TickEvent.ClientTickEvent event) {
         if (Config.feature.slayer.slayerBossTimer && ScoreboardUtils.currentGamemode.isSkyblock()) {
             if (event.side == net.minecraftforge.fml.relauncher.Side.CLIENT) {
-                List<String> sidebarLines = ScoreboardHandler.getSidebarLines();
+                List<String> sidebarLines = ScoreboardUtils.getScoreboardLines();
 
                 for (String line : sidebarLines) {
                     if (line.contains("Slay the boss!")) {

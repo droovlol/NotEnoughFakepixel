@@ -39,7 +39,7 @@ public class Map {
         int bgColor = (alpha << 24) | (red << 16) | (green << 8) | blue;
 
         // Update text lines from scoreboard
-        List<String> sideBarLines = ScoreboardUtils.getSidebarLines();
+        List<String> sideBarLines = ScoreboardUtils.getScoreboardLines();
         updateLines(sideBarLines);
 
         // Prepare text lines

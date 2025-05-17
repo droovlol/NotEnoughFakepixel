@@ -1,44 +1,36 @@
 package org.ginafro.notenoughfakepixel.variables;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum Location {
 
-    DWARVEN("sbm-", "sbm_sandbox-"),
-    HUB("skyblock-", "skyblock_sandbox-"),
-    PRIVATE_HUB("skyblock_private-", "none"),
-    DUNGEON_HUB("sbdh-", "sbdh_sandbox-"),
-    BARN("sbfarms-", "sbfarms_sandbox-"),
-    PARK("sbpark-", "sbpark_sandbox-"),
-    GOLD_MINE("sbmines-", "sbmines_sandbox-"),
-    PRIVATE_ISLAND("sbi-", "sbi_sandbox-"),
-    JERRY("sbj-", "sbj_sandbox-"),
-    SPIDERS_DEN("sbspiders-", "sbspiders_sandbox-"),
-    THE_END("sbend-", "sbend_sandbox-"),
-    CRIMSON_ISLE("sbcris-", "sbcris_sandbox-"),
-    DUNGEON("sbdungeon-", "sbdungeon_sandbox-"),
-    NONE("", "");
+    DWARVEN("sbm-", "sbm_sandbox-", "sbm_test-"),
+    HUB("skyblock-", "skyblock_sandbox-", "skyblocktest-"),
+    PRIVATE_HUB("skyblock_private-", "none", "none"),
+    DUNGEON_HUB("sbdh-", "sbdh_sandbox-", "sbdh_test-"),
+    BARN("sbfarms-", "sbfarms_sandbox-", "sbfarms_test"),
+    PARK("sbpark-", "sbpark_sandbox-", "sbpark_test-"),
+    GOLD_MINE("sbmines-", "sbmines_sandbox-", "sbmines_test-"),
+    PRIVATE_ISLAND("sbi-", "sbi_sandbox-", "sbi_test-"),
+    JERRY("sbj-", "sbj_sandbox-", "sbj_test-"),
+    SPIDERS_DEN("sbspiders-", "sbspiders_sandbox-", "sbspiders_test-"),
+    THE_END("sbend-", "sbend_sandbox-", "sbend_test-"),
+    CRIMSON_ISLE("sbcris-", "sbcris_sandbox-", "sbcris_test-"),
+    DUNGEON("sbdungeon-", "sbdungeon_sandbox-", "sbdungeon_test-"),
+    NONE("", "", "");
 
-    private String location;
-    private String sandbox;
-
-    Location(String location, String sandbox) {
-        this.location = location;
-        this.sandbox = sandbox;
-
-    }
-
-    public String getLocation() {
-        return this.location;
-    }
-
-    public String getSandbox() {
-        return this.sandbox;
-    }
+    private final String main;
+    private final String sandbox;
+    private final String alpha;
 
     public static Location getLocation(String s) {
-        for (Location l : Location.values()) {
-            if (l.getLocation().equals(s) || l.getSandbox().equals(s)) return l;
-        }
-        return NONE;
+        return java.util.Arrays.stream(Location.values())
+                .filter(l -> l.getMain().equals(s) || l.getSandbox().equals(s) || l.getAlpha().equals(s))
+                .findFirst()
+                .orElse(NONE);
     }
 
     public boolean isDungeon() {

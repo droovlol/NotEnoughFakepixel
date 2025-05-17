@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.Position;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
-import org.ginafro.notenoughfakepixel.events.handlers.ScoreboardHandler;
+import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
@@ -42,7 +42,7 @@ public class SlayerHealthDisplay {
             return;
         }
         if (Config.feature.slayer.slayerBossHP) {
-            List<String> sidebarLines = ScoreboardHandler.getSidebarLines();
+            List<String> sidebarLines = ScoreboardUtils.getScoreboardLines();
             isBoss = false;
             for (String line : sidebarLines) {
                 if (line.contains("Slay the boss!")) {

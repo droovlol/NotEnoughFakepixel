@@ -20,7 +20,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.events.PacketReadEvent;
-import org.ginafro.notenoughfakepixel.events.handlers.ScoreboardHandler;
 import org.ginafro.notenoughfakepixel.utils.*;
 
 import java.awt.*;
@@ -42,7 +41,7 @@ public class VoidgloomSeraph {
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.side == net.minecraftforge.fml.relauncher.Side.CLIENT) {
-            List<String> sidebarLines = ScoreboardHandler.getSidebarLines();
+            List<String> sidebarLines = ScoreboardUtils.getScoreboardLines();
             for (String line : sidebarLines) {
                 if (line.contains("Slay the boss!")) {
                     isBoss = true;

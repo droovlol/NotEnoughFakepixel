@@ -2,13 +2,14 @@ package org.ginafro.notenoughfakepixel.config.features;
 
 import com.google.gson.annotations.Expose;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.ConfigEditorBoolean;
+import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.ConfigEditorButton;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.ConfigOption;
 
 
 public class Debug {
 
     @Expose
-    @ConfigOption(name = "Debug", desc = "Enable debug mode.")
+    @ConfigOption(name = "Debug Logs", desc = "Enable debug mode for logging.")
     @ConfigEditorBoolean
     public boolean debug = false;
 
@@ -22,4 +23,18 @@ public class Debug {
     @ConfigEditorBoolean
     public boolean forcePojav = false;
 
+    @Expose
+    @ConfigOption(name = "Enable out of fakepixel", desc = "Enables mod out of fakepixel server.")
+    @ConfigEditorBoolean
+    public boolean enableOutOfFakepixel = false;
+
+    @Expose
+    @ConfigOption(name = "Log location", desc = "Log current location.")
+    @ConfigEditorButton(buttonText = "Log", runnableId = "logLocation")
+    public String logLocationButton = "";
+
+    @Expose
+    @ConfigOption(name = "Log Scoreboard", desc = "Log current scoreboard data.")
+    @ConfigEditorButton(buttonText = "Log", runnableId = "logScoreboard")
+    public String logScoreboardButton = "";
 }
