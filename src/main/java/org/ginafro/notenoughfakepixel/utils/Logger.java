@@ -31,6 +31,20 @@ public class Logger {
     }
 
     /**
+     * Logs an error message to the chat.
+     *
+     * @param message The String message to log.
+     */
+    public static void logError(String message) {
+        if (!Config.feature.debug.debug) return;
+        if (Minecraft.getMinecraft().thePlayer != null) {
+            Minecraft.getMinecraft().thePlayer.addChatMessage(
+                    new ChatComponentText(Constants.ERROR_PREFIX + message)
+            );
+        }
+    }
+
+    /**
      * Logs an object to the chat.
      *
      * @param object The object to log.

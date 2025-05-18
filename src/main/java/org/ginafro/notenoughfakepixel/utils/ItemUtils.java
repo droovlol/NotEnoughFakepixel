@@ -2,7 +2,9 @@ package org.ginafro.notenoughfakepixel.utils;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -147,5 +149,17 @@ public class ItemUtils {
             if (texture.hasKey("Value") && texture.getString("Value").equals(value)) return true;
         }
         return false;
+    }
+
+    public static boolean isSkyblockItem(ItemStack item) {
+        if (item == null) return false;
+        if (!item.hasTagCompound()) return false;
+        if (!item.getTagCompound().hasKey("ExtraAttributes")) return false;
+        NBTTagCompound extraAttributes = item.getTagCompound().getCompoundTag("ExtraAttributes");
+        return extraAttributes.hasKey("id");
+    }
+
+    public static boolean isMenuItem(ItemStack item) {
+        return item.getDisplayName().trim().isEmpty() && Item.getItemFromBlock(Blocks.stained_glass_pane) == item.getItem() && item.getItemDamage() == 15;
     }
 }

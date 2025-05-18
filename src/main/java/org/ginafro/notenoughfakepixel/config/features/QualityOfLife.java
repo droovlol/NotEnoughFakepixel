@@ -301,8 +301,8 @@ public class QualityOfLife {
     public boolean qolDisablePotionEffects = true;
 
     @Expose
-    //@ConfigOption(name = "Middle Click on skyblock GUIs", desc = "Enable middle click on skyblock GUIs.")
-    //@ConfigEditorBoolean
+    @ConfigOption(name = "Middle Click on skyblock GUIs", desc = "Enable middle click on skyblock GUIs.")
+    @ConfigEditorBoolean
     public boolean qolMiddleClickChests = false;
 
     @Expose
