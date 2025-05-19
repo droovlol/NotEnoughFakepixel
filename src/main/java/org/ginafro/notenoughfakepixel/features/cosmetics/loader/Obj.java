@@ -11,7 +11,7 @@ import java.util.List;
 import static org.lwjgl.opengl.GL11.GL_FLAT;
 import static org.lwjgl.opengl.GL11.GL_SMOOTH;
 
-public class Obj extends Object {
+public class Obj {
 
     private final List<Vector3f> vertices;
     private final List<Vector2f> textureCoords;
@@ -75,7 +75,7 @@ public class Obj extends Object {
         this.enableSmoothShading = isSmoothShadingEnabled;
     }
 
-    public static class Face extends Object {
+    public static class Face {
 
         private final int[] vertexIndices;
         private final int[] normalIndices;

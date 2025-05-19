@@ -44,12 +44,15 @@ public class DwarvenWaypoints {
             double distanceMeters = Minecraft.getMinecraft().thePlayer.getDistance(waypoint.x, waypoint.y, waypoint.z);
 
             int distanceMetersInt = (int) Math.round(distanceMeters);
-            if (renderBeacon) RenderUtils.renderBeaconBeam(new BlockPos(waypoint.x, waypoint.y, waypoint.z), ColorUtils.getColor(Config.feature.mining.miningDwarvenBeaconsColor).getRGB() ,1, event.partialTicks);
+            if (renderBeacon)
+                RenderUtils.renderBeaconBeam(new BlockPos(waypoint.x, waypoint.y, waypoint.z), ColorUtils.getColor(Config.feature.mining.miningDwarvenBeaconsColor).getRGB(), 1, event.partialTicks);
             RenderUtils.drawTag(waypoint.getName() + " (" + distanceMetersInt + "m)", new double[]{waypoint.getX(), waypoint.getY(), waypoint.getZ()}, new Color(255, 255, 255, 255), event.partialTicks);
         }
     }
 
-    @AllArgsConstructor @Data private static class DwarvenWaypoint {
+    @AllArgsConstructor
+    @Data
+    private static class DwarvenWaypoint {
         private final String name;
         private final double x;
         private final double y;

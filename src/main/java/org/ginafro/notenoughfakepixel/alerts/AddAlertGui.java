@@ -8,7 +8,7 @@ import org.lwjgl.input.Keyboard;
 import java.io.IOException;
 
 public class AddAlertGui extends GuiScreen {
-    private GuiScreen parentScreen;
+    private final GuiScreen parentScreen;
     private GuiTextField messageField;
     private GuiTextField alertField;
     private int modeIndex = 0;
@@ -98,7 +98,7 @@ public class AddAlertGui extends GuiScreen {
             Alerts.alerts.add(newAlert);
             Alerts.save();
             if (parentScreen instanceof AlertManagementGui) {
-                ((AlertManagementGui) parentScreen).initGui();
+                parentScreen.initGui();
             }
             mc.displayGuiScreen(parentScreen);
         }

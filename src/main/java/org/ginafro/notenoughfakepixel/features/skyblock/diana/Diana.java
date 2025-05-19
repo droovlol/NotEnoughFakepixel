@@ -522,8 +522,8 @@ public class Diana {
         float distance = Float.MAX_VALUE;
         for (GaiaConstruct gaia : listGaiaAlive) {
             int[] coordsGaia = new int[]{gaia.getEntity().getPosition().getX(), gaia.getEntity().getPosition().getY(), gaia.getEntity().getPosition().getZ()};
-            if (processor.getDistance(coords, coordsGaia) < distance) {
-                distance = processor.getDistance(coords, coordsGaia);
+            if (ParticleProcessor.getDistance(coords, coordsGaia) < distance) {
+                distance = ParticleProcessor.getDistance(coords, coordsGaia);
                 returnedGaia = gaia;
             }
         }
@@ -536,15 +536,15 @@ public class Diana {
         for (SiameseLynx siamese : listSiameseAlive) {
             if (siamese.getEntity1() != null) {
                 int[] coordsSiamese1 = new int[]{siamese.getEntity1().getPosition().getX(), siamese.getEntity1().getPosition().getY(), siamese.getEntity1().getPosition().getZ()};
-                if (processor.getDistance(coords, coordsSiamese1) < distance) {
-                    distance = processor.getDistance(coords, coordsSiamese1);
+                if (ParticleProcessor.getDistance(coords, coordsSiamese1) < distance) {
+                    distance = ParticleProcessor.getDistance(coords, coordsSiamese1);
                     returnedSiamese = siamese.getEntity1();
                 }
             }
             if (siamese.getEntity2() != null) {
                 int[] coordsSiamese2 = new int[]{siamese.getEntity2().getPosition().getX(), siamese.getEntity2().getPosition().getY(), siamese.getEntity2().getPosition().getZ()};
-                if (processor.getDistance(coords, coordsSiamese2) < distance) {
-                    distance = processor.getDistance(coords, coordsSiamese2);
+                if (ParticleProcessor.getDistance(coords, coordsSiamese2) < distance) {
+                    distance = ParticleProcessor.getDistance(coords, coordsSiamese2);
                     returnedSiamese = siamese.getEntity2();
                 }
             }

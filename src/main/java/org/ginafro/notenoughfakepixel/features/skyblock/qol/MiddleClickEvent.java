@@ -2,16 +2,13 @@ package org.ginafro.notenoughfakepixel.features.skyblock.qol;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiChest;
-import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ContainerChest;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.ItemUtils;
-import org.ginafro.notenoughfakepixel.utils.Logger;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.input.Mouse;
 
@@ -61,13 +58,12 @@ public class MiddleClickEvent {
         }
     }
 
-    private boolean isValidClick(GuiChest chestGui){
+    private boolean isValidClick(GuiChest chestGui) {
         ContainerChest container = (ContainerChest) chestGui.inventorySlots;
-        if (chestGui.getSlotUnderMouse() == null || container == null || container.getSlot(chestGui.getSlotUnderMouse().slotNumber).getStack() == null) return false;
+        if (chestGui.getSlotUnderMouse() == null || container == null || container.getSlot(chestGui.getSlotUnderMouse().slotNumber).getStack() == null)
+            return false;
         return container.getSlot(chestGui.getSlotUnderMouse().slotNumber).getStack().getDisplayName() != null;
     }
-
-
 
 
     private void registerMiddleClickEvent(GuiScreenEvent.MouseInputEvent.Pre event, GuiChest chestGui) {

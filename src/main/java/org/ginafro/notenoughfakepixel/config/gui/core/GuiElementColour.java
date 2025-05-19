@@ -197,9 +197,9 @@ public class GuiElementColour extends GuiElement {
         GlStateManager.color(1, 1, 1, 1);
         RenderUtils.drawTexturedRect(x + 5 + 32 + selx - 4, y + 5 + 32 + sely - 4, 8, 8, GL11.GL_NEAREST);
 
-        TextRenderUtils.drawStringCenteredScaledMaxWidth(EnumChatFormatting.GRAY.toString() + Math.round(hsv[2] * 100) + "", Minecraft.getMinecraft().fontRendererObj, x + 5 + 64 + 5 + 5 - (Math.round(hsv[2] * 100) == 100 ? 1 : 0), y + 5 + 64 + 5 + 5, true, 13, -1);
+        TextRenderUtils.drawStringCenteredScaledMaxWidth(EnumChatFormatting.GRAY.toString() + Math.round(hsv[2] * 100), Minecraft.getMinecraft().fontRendererObj, x + 5 + 64 + 5 + 5 - (Math.round(hsv[2] * 100) == 100 ? 1 : 0), y + 5 + 64 + 5 + 5, true, 13, -1);
         if (opacitySlider) {
-            TextRenderUtils.drawStringCenteredScaledMaxWidth(EnumChatFormatting.GRAY.toString() + Math.round(c.getAlpha() / 255f * 100) + "", Minecraft.getMinecraft().fontRendererObj, x + 5 + 64 + 5 + valueOffset + 5, y + 5 + 64 + 5 + 5, true, 13, -1);
+            TextRenderUtils.drawStringCenteredScaledMaxWidth(EnumChatFormatting.GRAY.toString() + Math.round(c.getAlpha() / 255f * 100), Minecraft.getMinecraft().fontRendererObj, x + 5 + 64 + 5 + valueOffset + 5, y + 5 + 64 + 5 + 5, true, 13, -1);
         }
         if (chromaSpeed > 0) {
             TextRenderUtils.drawStringCenteredScaledMaxWidth(EnumChatFormatting.GRAY.toString() + (int) ChromaColour.getSecondsForSpeed(chromaSpeed) + "s", Minecraft.getMinecraft().fontRendererObj, x + 5 + 64 + 5 + valueOffset + opacityOffset + 6, y + 5 + 64 + 5 + 5, true, 13, -1);

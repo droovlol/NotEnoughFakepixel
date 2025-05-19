@@ -17,7 +17,7 @@ public class NEFClientConnectedToServerEvent extends FMLNetworkEvent.ClientConne
     public String toString() {
         return "NEFClientConnectedToServerEvent{" +
                 "manager.remoteAddress=" + manager.getRemoteAddress().toString() +
-                ", connectionType='" + connectionType.toString() + '\'' +
+                ", connectionType='" + connectionType + '\'' +
                 '}';
     }
 }

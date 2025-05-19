@@ -78,8 +78,8 @@ public class ClickOnColorsSolver {
 
         if (Config.feature.dungeons.dungeonsCustomGuiColors) {
             List<Slot> correctSlots = new ArrayList<>();
-            for (Slot slot : ((ContainerChest) container).inventorySlots) {
-                int slotId = ((ContainerChest) container).inventorySlots.indexOf(slot);
+            for (Slot slot : container.inventorySlots) {
+                int slotId = container.inventorySlots.indexOf(slot);
                 if (slot.inventory == Minecraft.getMinecraft().thePlayer.inventory || slotId == 49) continue;
 
                 int row = slotId / COLUMNS;
@@ -124,7 +124,7 @@ public class ClickOnColorsSolver {
 
         for (Slot slot : correctSlots) {
             if (!clickedSlots.contains(slot.slotNumber)) {
-                int slotId = ((ContainerChest) chest.inventorySlots).inventorySlots.indexOf(slot);
+                int slotId = chest.inventorySlots.inventorySlots.indexOf(slot);
                 int row = slotId / COLUMNS;
                 int col = slotId % COLUMNS;
 

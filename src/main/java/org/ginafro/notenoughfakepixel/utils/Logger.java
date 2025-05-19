@@ -9,7 +9,7 @@ import java.util.logging.Level;
 
 public class Logger {
 
-    private Logger(){
+    private Logger() {
         // Prevent instantiation
     }
 

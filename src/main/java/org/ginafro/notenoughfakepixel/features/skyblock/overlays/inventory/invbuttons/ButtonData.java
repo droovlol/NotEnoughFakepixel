@@ -1,17 +1,17 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.overlays.inventory.invbuttons;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTException;
 import org.ginafro.notenoughfakepixel.features.skyblock.overlays.storage.StorageData;
 
 public class ButtonData {
 
-    public int x,y,id;
+    public int x, y, id;
     public int width;
     public String logo;
     public InvStyle style;
     public String cmd;
-    public ButtonData(InventoryButton b){
+
+    public ButtonData(InventoryButton b) {
         this.x = b.x;
         this.y = b.y;
         this.width = b.width;
@@ -22,7 +22,7 @@ public class ButtonData {
     }
 
     public InventoryButton getInventoryButton() throws NBTException {
-        return new InventoryButton(id,x,y,width,cmd,StorageData.jsonToItemStack(logo),style);
+        return new InventoryButton(id, x, y, width, cmd, StorageData.jsonToItemStack(logo), style);
     }
 
 }

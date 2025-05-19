@@ -43,7 +43,7 @@ public final class OutlineUtils {
             livingBase.hurtTime = 0;
         }
 
-        Entity entity = livingBase instanceof Entity ? (Entity) livingBase : null;
+        Entity entity = livingBase instanceof Entity ? livingBase : null;
         GlStateManager.resetColor();
         setColor(color);
         renderOne(thickness);

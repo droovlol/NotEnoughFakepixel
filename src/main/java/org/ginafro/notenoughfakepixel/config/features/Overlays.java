@@ -41,25 +41,25 @@ public class Overlays {
     public String searchColor = "0:255:0:255:0";
 
     @Expose
-    @ConfigOption(name ="Inventory Buttons",desc="Settings related to inv buttons")
+    @ConfigOption(name = "Inventory Buttons", desc = "Settings related to inv buttons")
     @ConfigEditorAccordion(id = 1)
     public boolean invbutton = true;
 
     @Expose
-    @ConfigOption(name = "Inventory Buttons",desc = "Enable/Disable ")
+    @ConfigOption(name = "Inventory Buttons", desc = "Enable/Disable ")
     @ConfigEditorBoolean
     @ConfigAccordionId(id = 1)
     public boolean invButtons = true;
 
     @Expose
-    @ConfigOption(name = "Snap to Grid",desc = "Whether or not inv buttons will be snapped to a grid")
+    @ConfigOption(name = "Snap to Grid", desc = "Whether or not inv buttons will be snapped to a grid")
     @ConfigEditorBoolean
     @ConfigAccordionId(id = 1)
     public boolean snapGrid = true;
 
     @Expose
-    @ConfigOption(name = "Button Editor",desc = "Change Position or edit/add any inventory button")
-    @ConfigEditorButton(buttonText = "EDIT",runnableId = "nefButtons")
+    @ConfigOption(name = "Button Editor", desc = "Change Position or edit/add any inventory button")
+    @ConfigEditorButton(buttonText = "EDIT", runnableId = "nefButtons")
     @ConfigAccordionId(id = 1)
     public String editor = "";
 

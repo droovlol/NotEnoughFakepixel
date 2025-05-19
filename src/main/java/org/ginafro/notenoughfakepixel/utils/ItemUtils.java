@@ -1,7 +1,5 @@
 package org.ginafro.notenoughfakepixel.utils;
 
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -9,7 +7,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.nbt.NBTUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -56,7 +53,7 @@ public class ItemUtils {
         return skulls;
     }
 
-    public static ItemStack createSkullWithTexture(String name ,String textureHash) {
+    public static ItemStack createSkullWithTexture(String name, String textureHash) {
         ItemStack skull = new ItemStack(Items.skull, 1, 3); // 3 = player head
 
         NBTTagCompound skullTag = new NBTTagCompound();

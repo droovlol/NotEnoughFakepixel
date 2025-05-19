@@ -45,6 +45,7 @@ public class VoidgloomSeraph {
             for (String line : sidebarLines) {
                 if (line.contains("Slay the boss!")) {
                     isBoss = true;
+                    break;
                 }
             }
         }

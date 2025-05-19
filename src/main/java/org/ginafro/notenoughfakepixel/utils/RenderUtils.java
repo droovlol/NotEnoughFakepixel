@@ -7,7 +7,6 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -522,8 +521,8 @@ public class RenderUtils {
      * Configures the OpenGL state for line rendering.
      * Disables textures, lighting, and depth as needed, and sets blend modes.
      *
-     * @param depth      If false, disables depth testing and depth writes.
-     * @param lineWidth  The width of the OpenGL line to draw.
+     * @param depth     If false, disables depth testing and depth writes.
+     * @param lineWidth The width of the OpenGL line to draw.
      */
     private static void setupRenderState(boolean depth, int lineWidth) {
         GlStateManager.disableTexture2D();
@@ -739,18 +738,18 @@ public class RenderUtils {
      * sorting the coordinates and drawing the quad with proper vertex ordering and color.
      * </p>
      *
-     * @param wr    The {@link WorldRenderer} instance used for buffering vertex data.
-     * @param tess  The {@link Tessellator} instance used to execute the buffered draw call.
-     * @param x1    The x-coordinate of the first corner.
-     * @param y1    The y-coordinate of the first corner.
-     * @param z1    The z-coordinate of the first corner.
-     * @param x2    The x-coordinate of the opposite corner.
-     * @param y2    The y-coordinate of the opposite corner.
-     * @param z2    The z-coordinate of the opposite corner.
-     * @param r     The red color component (0.0 to 1.0).
-     * @param g     The green color component (0.0 to 1.0).
-     * @param b     The blue color component (0.0 to 1.0).
-     * @param a     The alpha (transparency) component (0.0 to 1.0).
+     * @param wr   The {@link WorldRenderer} instance used for buffering vertex data.
+     * @param tess The {@link Tessellator} instance used to execute the buffered draw call.
+     * @param x1   The x-coordinate of the first corner.
+     * @param y1   The y-coordinate of the first corner.
+     * @param z1   The z-coordinate of the first corner.
+     * @param x2   The x-coordinate of the opposite corner.
+     * @param y2   The y-coordinate of the opposite corner.
+     * @param z2   The z-coordinate of the opposite corner.
+     * @param r    The red color component (0.0 to 1.0).
+     * @param g    The green color component (0.0 to 1.0).
+     * @param b    The blue color component (0.0 to 1.0).
+     * @param a    The alpha (transparency) component (0.0 to 1.0).
      */
     private static void drawFace(WorldRenderer wr, Tessellator tess,
                                  double x1, double y1, double z1,

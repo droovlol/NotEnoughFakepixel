@@ -59,7 +59,7 @@ public enum Area {
     SPIDER("Spider's Den"),
     BIRCH_PARK("Birch Park");
 
-    private String s;
+    private final String s;
 
     Area(String s) {
         this.s = s;

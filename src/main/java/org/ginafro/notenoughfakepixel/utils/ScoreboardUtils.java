@@ -41,7 +41,8 @@ public class ScoreboardUtils {
     public static void parseScoreboard() {
         Minecraft mc = Minecraft.getMinecraft();
 
-        if (!Config.feature.debug.enableOutOfFakepixel && !mc.getCurrentServerData().serverIP.contains("fakepixel")) return;
+        if (!Config.feature.debug.enableOutOfFakepixel && !mc.getCurrentServerData().serverIP.contains("fakepixel"))
+            return;
 
         if (!mc.isSingleplayer()) {
             Scoreboard scoreboard = mc.theWorld.getScoreboard();

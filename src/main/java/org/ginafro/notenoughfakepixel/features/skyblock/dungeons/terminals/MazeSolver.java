@@ -39,8 +39,8 @@ public class MazeSolver {
     private final List<Slot> targetSlots = new ArrayList<>();
     private final List<Slot> alternativeSlots = new ArrayList<>();
     private final Map<Integer, SlotPosition> slotPositions = new HashMap<>();
-    private long lastScanTime = 0;
-    private ContainerChest lastContainer = null;
+    private final long lastScanTime = 0;
+    private final ContainerChest lastContainer = null;
 
     private static class SlotPosition {
         final int x;

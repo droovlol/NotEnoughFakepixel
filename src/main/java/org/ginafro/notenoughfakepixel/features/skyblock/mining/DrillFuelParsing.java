@@ -63,7 +63,7 @@ public class DrillFuelParsing {
         // RED when fuel is below 25%
         Colors color = fuel > fuelMax * 0.5 ? Colors.GREEN : fuel > fuelMax * 0.25 ? Colors.YELLOW : Colors.RED;
         return Colors.GRAY + "Drill Fuel: "
-                + color + String.valueOf(fuel) +
-                Colors.GRAY + "/" + String.valueOf(fuelMax);
+                + color + fuel +
+                Colors.GRAY + "/" + fuelMax;
     }
 }

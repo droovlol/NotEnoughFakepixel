@@ -27,9 +27,9 @@ import java.util.List;
 
 @RegisterEvents
 public class WitherDoors {
-    private Minecraft mc = Minecraft.getMinecraft();
-    private List<BlockPos> allDoors = new ArrayList<>();
-    private Set<BlockPos> activeDoors = new HashSet<>();
+    private final Minecraft mc = Minecraft.getMinecraft();
+    private final List<BlockPos> allDoors = new ArrayList<>();
+    private final Set<BlockPos> activeDoors = new HashSet<>();
     private long lastUpdateTime = 0;
     private static final long UPDATE_INTERVAL = 1000;
 

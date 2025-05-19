@@ -31,12 +31,6 @@ public class StorageDataHandler {
         }
     }
 
-    public static boolean isItemSearched(ItemStack stack) {
-
-
-        return false;
-    }
-
     @SubscribeEvent
     public void onSlot(SlotClickEvent e) {
         if (e.guiContainer.inventorySlots instanceof ContainerChest) {

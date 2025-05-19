@@ -8,7 +8,7 @@ import java.util.List;
 // set
 
 public class SiameseLynx {
-    private List<Entity> entities;
+    private final List<Entity> entities;
     private Entity entity1;
     private Entity entity2;
     private int siameseHit;
@@ -61,10 +61,7 @@ public class SiameseLynx {
     }
 
     public boolean isAnyDead() {
-        if (entity1 == null || entity2 == null) {
-            return true;
-        }
-        return false;
+        return entity1 == null || entity2 == null;
     }
 
     public void setHittable(Entity hittable) {

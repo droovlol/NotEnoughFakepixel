@@ -3,7 +3,6 @@ package org.ginafro.notenoughfakepixel.features.skyblock.qol.CustomAliases;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import org.ginafro.notenoughfakepixel.utils.Utils;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
@@ -58,7 +57,7 @@ public class AliasManagementGui extends GuiScreen {
 
         for (CustomAliases.Alias alias : displayedAliases) {
             String display = "Alias: " + alias.alias + " | Command: " + alias.command + " "
-                    + (alias.toggled ? "[Enabled]" : "[Disabled]") + " | Location: " + alias.location + " | Key: " + Utils.getKeyDesc(alias.key) ;
+                    + (alias.toggled ? "[Enabled]" : "[Disabled]") + " | Location: " + alias.location + " | Key: " + Utils.getKeyDesc(alias.key);
 
             drawRect(textX - 5, y, buttonX + 110, y + ENTRY_HEIGHT - 5, 0xFF333333);
             fontRendererObj.drawString(display, textX, y + 10, 0xFFFFFF);

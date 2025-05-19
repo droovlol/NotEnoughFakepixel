@@ -2,9 +2,9 @@ package org.ginafro.notenoughfakepixel
 
 class KotlinTest {
 
-    companion object{
+    companion object {
         @JvmStatic
-        fun testKotlin(){
+        fun testKotlin() {
             print("Kotlin Test Success")
         }
     }

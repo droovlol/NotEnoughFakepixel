@@ -115,13 +115,12 @@ public class GuessBurrow {
             distance = slope == 0f ? 0f : (float) (Math.E / slope / 2.8);
 
             if (pitch > 0) {
-                distance *= Math.max(0.1f, 2.0f - 1.0f * pitch);
+                distance *= Math.max(0.1f, 2.0f - pitch);
             }
 
             if (distance < 0) {
                 distance = 0f;
                 guessPoint = null;
-                return;
             }
         } else if (event.packet instanceof S2APacketParticles) {
             S2APacketParticles particlePacket = (S2APacketParticles) event.packet;

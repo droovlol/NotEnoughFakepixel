@@ -2,9 +2,9 @@ package org.ginafro.notenoughfakepixel.utils;
 
 public class ReforgePair {
 
-    private float x;
-    private float y;
-    private String displayReforge;
+    private final float x;
+    private final float y;
+    private final String displayReforge;
 
 
     public ReforgePair(float x, float y, String displayReforge) {

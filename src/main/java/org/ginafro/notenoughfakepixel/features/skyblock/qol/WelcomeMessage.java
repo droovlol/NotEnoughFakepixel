@@ -20,8 +20,8 @@ import java.util.concurrent.TimeUnit;
 public class WelcomeMessage {
 
     private boolean notified = false;
-    private Random random = new Random();
-    private String initialString = "[NEF] ";
+    private final Random random = new Random();
+    private final String initialString = "[NEF] ";
 
     List<String> arrayWelcomeMessages = new ArrayList<>(Arrays.asList(
             "Did you know that, 9 out of 10 experts recommend NEF? Number 10 plays hypixel (shame)",

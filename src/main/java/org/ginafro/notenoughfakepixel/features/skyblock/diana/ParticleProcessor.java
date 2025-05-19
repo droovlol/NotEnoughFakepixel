@@ -2,11 +2,9 @@ package org.ginafro.notenoughfakepixel.features.skyblock.diana;
 
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.network.play.server.S2APacketParticles;
 import net.minecraft.util.BlockPos;
-import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.utils.SoundUtils;
 import org.ginafro.notenoughfakepixel.utils.Waypoint;

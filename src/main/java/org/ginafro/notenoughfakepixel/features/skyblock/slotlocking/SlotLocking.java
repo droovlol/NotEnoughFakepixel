@@ -732,9 +732,7 @@ public class SlotLocking {
                 pairingSlot.slotNumber
         )))
             return false;
-        if (!setTopHalfBarrier)
-            return false;
-        return true;
+        return setTopHalfBarrier;
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
@@ -779,8 +777,7 @@ public class SlotLocking {
         if (eventSlotNumber == 39 && pairingSlotNumber == 5) return true;
         if (eventSlotNumber == 38 && pairingSlotNumber == 6) return true;
         if (eventSlotNumber == 37 && pairingSlotNumber == 7) return true;
-        if (eventSlotNumber == 36 && pairingSlotNumber == 8) return true;
-        return false;
+        return eventSlotNumber == 36 && pairingSlotNumber == 8;
     }
 
     public void resetSlotLocking() {

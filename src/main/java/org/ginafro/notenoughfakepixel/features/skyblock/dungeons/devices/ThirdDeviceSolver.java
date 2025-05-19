@@ -70,7 +70,7 @@ public class ThirdDeviceSolver {
                 if (item != null && item.getItem() == Items.arrow) {
                     BlockPos posItemFrame = new BlockPos(entityHit.getPosition());
                     if (itemFramesRotations.containsKey(posItemFrame)) {
-                        String packetId = posItemFrame.toString() + ":" + tickCounter;
+                        String packetId = posItemFrame + ":" + tickCounter;
                         if (processedPackets.contains(packetId)) {
                             event.setCanceled(true);
                             return;

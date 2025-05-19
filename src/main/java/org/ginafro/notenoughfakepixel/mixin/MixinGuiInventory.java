@@ -10,9 +10,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(GuiInventory.class)
 public class MixinGuiInventory {
 
-    @Inject(method = "drawScreen",at = @At("RETURN"))
-    public void drawScreen(int mouseX, int mouseY, float partialTicks, CallbackInfo ci){
-        if(!InvManager.isEditor) {
+    @Inject(method = "drawScreen", at = @At("RETURN"))
+    public void drawScreen(int mouseX, int mouseY, float partialTicks, CallbackInfo ci) {
+        if (!InvManager.isEditor) {
             InvManager.drawButtons();
         }
     }
