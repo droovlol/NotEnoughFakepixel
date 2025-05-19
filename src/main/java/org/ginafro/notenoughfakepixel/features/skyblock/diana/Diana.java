@@ -22,6 +22,7 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.events.PacketReadEvent;
@@ -142,9 +143,10 @@ public class Diana {
         }
         if (Config.feature.diana.dianaMinosInquisitorOutline) {
             clearCache();
+            if (Configuration.isPojav()) return;
             WorldClient world = Minecraft.getMinecraft().theWorld;
             for (Entity entity : world.loadedEntityList) {
-                if (entity instanceof EntityArmorStand) { // Check type before casting
+                if (entity instanceof EntityArmorStand) {
                     EntityArmorStand armorStand = (EntityArmorStand) entity;
                     if (armorStand.getName().contains("Minos Inquisitor")) {
                         EntityLivingBase inq = findAssociatedMob(armorStand);

@@ -118,6 +118,52 @@ public class QualityOfLife {
     public int qolWardrobeKey = Keyboard.KEY_R;
 
     @Expose
+    @ConfigOption(name = "Wardrobe Slot 1 Key", desc = "Keybind for wardrobe slot 1.")
+    @ConfigEditorKeybind(defaultKey = Keyboard.KEY_1)
+    @ConfigAccordionId(id = 4)
+    public int qolWardrobeKey1 = Keyboard.KEY_1;
+    @Expose
+    @ConfigOption(name = "Wardrobe Slot 2 Key", desc = "Keybind for wardrobe slot 2.")
+    @ConfigEditorKeybind(defaultKey = Keyboard.KEY_2)
+    @ConfigAccordionId(id = 4)
+    public int qolWardrobeKey2 = Keyboard.KEY_2;
+    @Expose
+    @ConfigOption(name = "Wardrobe Slot 3 Key", desc = "Keybind for wardrobe slot 3.")
+    @ConfigEditorKeybind(defaultKey = Keyboard.KEY_3)
+    @ConfigAccordionId(id = 4)
+    public int qolWardrobeKey3 = Keyboard.KEY_3;
+    @Expose
+    @ConfigOption(name = "Wardrobe Slot 4 Key", desc = "Keybind for wardrobe slot 4.")
+    @ConfigEditorKeybind(defaultKey = Keyboard.KEY_4)
+    @ConfigAccordionId(id = 4)
+    public int qolWardrobeKey4 = Keyboard.KEY_4;
+    @Expose
+    @ConfigOption(name = "Wardrobe Slot 5 Key", desc = "Keybind for wardrobe slot 5.")
+    @ConfigEditorKeybind(defaultKey = Keyboard.KEY_5)
+    @ConfigAccordionId(id = 4)
+    public int qolWardrobeKey5 = Keyboard.KEY_5;
+    @Expose
+    @ConfigOption(name = "Wardrobe Slot 6 Key", desc = "Keybind for wardrobe slot 6.")
+    @ConfigEditorKeybind(defaultKey = Keyboard.KEY_6)
+    @ConfigAccordionId(id = 4)
+    public int qolWardrobeKey6 = Keyboard.KEY_6;
+    @Expose
+    @ConfigOption(name = "Wardrobe Slot 7 Key", desc = "Keybind for wardrobe slot 7.")
+    @ConfigEditorKeybind(defaultKey = Keyboard.KEY_7)
+    @ConfigAccordionId(id = 4)
+    public int qolWardrobeKey7 = Keyboard.KEY_7;
+    @Expose
+    @ConfigOption(name = "Wardrobe Slot 8 Key", desc = "Keybind for wardrobe slot 8.")
+    @ConfigEditorKeybind(defaultKey = Keyboard.KEY_8)
+    @ConfigAccordionId(id = 4)
+    public int qolWardrobeKey8 = Keyboard.KEY_8;
+    @Expose
+    @ConfigOption(name = "Wardrobe Slot 9 Key", desc = "Keybind for wardrobe slot 9.")
+    @ConfigEditorKeybind(defaultKey = Keyboard.KEY_9)
+    @ConfigAccordionId(id = 4)
+    public int qolWardrobeKey9 = Keyboard.KEY_9;
+
+    @Expose
     @ConfigOption(name = "Pets Shortcut", desc = "Enable pets shortcut.")
     @ConfigEditorBoolean
     @ConfigAccordionId(id = 4)
