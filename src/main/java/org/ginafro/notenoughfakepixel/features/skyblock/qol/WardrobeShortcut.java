@@ -5,26 +5,16 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerChest;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.StringUtils;
-import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
-import org.ginafro.notenoughfakepixel.utils.Logger;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.input.Keyboard;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @RegisterEvents
 public class WardrobeShortcut {
@@ -77,69 +67,67 @@ public class WardrobeShortcut {
         }
     }
 
-    private static final int[] SLOTS = {
-            36, 37, 38, 39, 40, 41, 42, 43, 44
-    };
-
-    private boolean isWardrobeOpen = false;
+    private static final int[] WARDROBE_SLOTS = {36, 37, 38, 39, 40, 41, 42, 43, 44};
     private int currentWindowId = -1;
-    private final boolean[] keyPressedState = new boolean[9];
+    private final boolean[] keyStates = new boolean[9];
+    private long lastClickTime = 0;
 
     @SubscribeEvent
-    public void onGuiOpen(GuiOpenEvent event) {
+    public void onGuiOpen(GuiScreenEvent.BackgroundDrawnEvent event) {
         if (!(event.gui instanceof GuiChest)) {
-            reset();
+            resetState();
             return;
         }
 
-        ContainerChest container = (ContainerChest) ((GuiChest) event.gui).inventorySlots;
-        IInventory chest = container.getLowerChestInventory();
-        String chestName = chest.getDisplayName().getUnformattedText();
-
+        GuiChest chestGui = (GuiChest) event.gui;
+        ContainerChest container = (ContainerChest) chestGui.inventorySlots;
+        String chestName = container.getLowerChestInventory().getDisplayName().getUnformattedText();
 
         if (chestName.startsWith("Wardrobe")) {
-            isWardrobeOpen = true;
             currentWindowId = container.windowId;
+            handleWardrobeInput(chestGui);
         } else {
-            reset();
+            resetState();
         }
     }
 
-    @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) return;
-        if (!isWardrobeOpen) return;
+    private void handleWardrobeInput(GuiChest chestGui) {
+        if (!ScoreboardUtils.currentGamemode.isSkyblock() ||
+                !Config.feature.qol.qolShortcutWardrobe) {
+            return;
+        }
 
         Minecraft mc = Minecraft.getMinecraft();
+        long now = System.currentTimeMillis();
 
-        if (!ScoreboardUtils.currentGamemode.isSkyblock()) {
-            return;
-        }
+        for (int slot = 0; slot < 9; slot++) {
+            int keyCode = getKeyCode(slot + 1);
+            boolean keyDown = Keyboard.isKeyDown(keyCode);
 
-        if (!Config.feature.qol.qolShortcutWardrobe) {
-            return;
-        }
-
-        if (mc.currentScreen == null || !(mc.currentScreen instanceof GuiChest)) {
-            reset();
-            return;
-        }
-
-        for (int slot = 1; slot <= 9; slot++) {
-            int keyCode = getKeyCodeForSlot(slot);
-            boolean isKeyPressed = Keyboard.isKeyDown(keyCode);
-            int slotIndex = slot - 1;
-
-            if (isKeyPressed && !keyPressedState[slotIndex]) {
-                clickWardrobeSlot(slotIndex);
-                keyPressedState[slotIndex] = true;
-            } else if (!isKeyPressed) {
-                keyPressedState[slotIndex] = false;
+            if (keyDown && !keyStates[slot] && (now - lastClickTime) > 100) {
+                clickSlot(chestGui, slot);
+                lastClickTime = now;
+                keyStates[slot] = true;
+            } else if (!keyDown) {
+                keyStates[slot] = false;
             }
         }
     }
 
-    private int getKeyCodeForSlot(int slot) {
+    private void clickSlot(GuiChest chestGui, int slotIndex) {
+        Minecraft mc = Minecraft.getMinecraft();
+        if (mc.thePlayer == null || mc.playerController == null) return;
+
+        mc.playerController.windowClick(
+                currentWindowId,
+                WARDROBE_SLOTS[slotIndex],
+                0,
+                0,
+                mc.thePlayer
+        );
+    }
+
+    private int getKeyCode(int slot) {
         switch (slot) {
             case 1: return Config.feature.qol.qolWardrobeKey1;
             case 2: return Config.feature.qol.qolWardrobeKey2;
@@ -150,44 +138,14 @@ public class WardrobeShortcut {
             case 7: return Config.feature.qol.qolWardrobeKey7;
             case 8: return Config.feature.qol.qolWardrobeKey8;
             case 9: return Config.feature.qol.qolWardrobeKey9;
-            default:
-                return Keyboard.KEY_NONE;
+            default: return Keyboard.KEY_NONE;
         }
     }
 
-    private void clickWardrobeSlot(int slotIndex) {
-        if (slotIndex < 0 || slotIndex >= SLOTS.length) {
-            return;
-        }
-
-        Minecraft mc = Minecraft.getMinecraft();
-        if (mc.playerController == null || mc.thePlayer == null) {
-            return;
-        }
-
-        int targetSlot = SLOTS[slotIndex];
-
-        mc.playerController.windowClick(
-                currentWindowId,
-                targetSlot,
-                0,
-                0,
-                mc.thePlayer
-        );
-        mc.playerController.windowClick(
-                currentWindowId,
-                targetSlot,
-                0,
-                0,
-                mc.thePlayer
-        );
-    }
-
-    private void reset() {
-        isWardrobeOpen = false;
+    private void resetState() {
         currentWindowId = -1;
-        for (int i = 0; i < keyPressedState.length; i++) {
-            keyPressedState[i] = false;
+        for (int i = 0; i < keyStates.length; i++) {
+            keyStates[i] = false;
         }
     }
 }
