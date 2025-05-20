@@ -406,6 +406,12 @@ public class Dungeons {
     public boolean dungeonsScoreOverlay = true;
 
     @Expose
+    @ConfigOption(name = "Simple Score Overlay", desc = "Enable the dungeon simple score overlay.")
+    @ConfigEditorBoolean
+    @ConfigAccordionId(id = 5)
+    public boolean dungeonsScoreSimple = true;
+
+    @Expose
     @ConfigOption(name = "Score Overlay Scale", desc = "Scale of the score overlay text.")
     @ConfigEditorSlider(minValue = 0.5f, maxValue = 5.0f, minStep = 0.1f)
     @ConfigAccordionId(id = 5)

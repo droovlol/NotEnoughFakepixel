@@ -102,25 +102,39 @@ public class ScoreOverlay {
 
     private void getLines(List<String> lines, boolean example) {
         if (example) {
-            lines.add("\u00a77Total score: \u00a7a300\u00a76 (S+)");
-            lines.add("\u00a77Virtual score: \u00a7a310\u00a76 (S+)");
-            lines.add("");
-            lines.add("\u00a77Skill: \u00a7a100");
-            lines.add("\u00a77Exploration: \u00a7a100");
-            lines.add("\u00a77Speed: \u00a7a100");
-            lines.add("\u00a77Bonus: \u00a7a5");
-            lines.add("");
-            lines.add("\u00a77Secrets: \u00a7a100% \u00a7a/ 80% \u00a7a/ 100%");
+            if (Config.feature.dungeons.dungeonsScoreSimple) {
+                lines.add("\u00a77Total score: \u00a7a300\u00a76 (S+)");
+                lines.add("\u00a77Virtual score: \u00a7a310\u00a76 (S+)");
+                lines.add("");
+                lines.add("\u00a77Secrets: \u00a7a100% \u00a7a/ 80% \u00a7a/ 100%");
+            } else {
+                lines.add("\u00a77Total score: \u00a7a300\u00a76 (S+)");
+                lines.add("\u00a77Virtual score: \u00a7a310\u00a76 (S+)");
+                lines.add("");
+                lines.add("\u00a77Skill: \u00a7a100");
+                lines.add("\u00a77Exploration: \u00a7a100");
+                lines.add("\u00a77Speed: \u00a7a100");
+                lines.add("\u00a77Bonus: \u00a7a5");
+                lines.add("");
+                lines.add("\u00a77Secrets: \u00a7a100% \u00a7a/ 80% \u00a7a/ 100%");
+            }
         } else {
-            lines.add(getRankingDisplay());
-            lines.add(getVirtualRankingDisplay());
-            lines.add("");
-            lines.add(getSkillDisplay());
-            lines.add(getExplorationDisplay());
-            lines.add(getSpeedDisplay());
-            lines.add(getBonusDisplay());
-            lines.add("");
-            lines.add(getSecretDisplay());
+            if (Config.feature.dungeons.dungeonsScoreSimple) {
+                lines.add(getRankingDisplay());
+                lines.add(getVirtualRankingDisplay());
+                lines.add("");
+                lines.add(getSecretDisplay());
+            } else {
+                lines.add(getRankingDisplay());
+                lines.add(getVirtualRankingDisplay());
+                lines.add("");
+                lines.add(getSkillDisplay());
+                lines.add(getExplorationDisplay());
+                lines.add(getSpeedDisplay());
+                lines.add(getBonusDisplay());
+                lines.add("");
+                lines.add(getSecretDisplay());
+            }
         }
     }
 
