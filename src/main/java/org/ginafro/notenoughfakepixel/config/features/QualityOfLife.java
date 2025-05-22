@@ -387,6 +387,11 @@ public class QualityOfLife {
     public boolean qolShowJacobRewards = true;
 
     @Expose
+    @ConfigOption(name = "Show Active Wardrobe slot", desc = "Show active wardrobe slot.")
+    @ConfigEditorBoolean
+    public boolean qolShowWardrobeSlot = true;
+
+    @Expose
     @ConfigOption(name = "Disable Watchdog & Info Messages", desc = "Disable watchdog and info messages.")
     @ConfigEditorBoolean
     public boolean qolDisableWatchdogInfo = true;

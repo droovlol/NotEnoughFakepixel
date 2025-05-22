@@ -62,13 +62,7 @@ public class InventoryUtils {
         }
     }
 
-    public static void highlightSlotGreen(Slot slot, GuiChest chest) {
-        highlightSlot(slot, chest, new Color(55, 255, 55));
-    }
 
-    public static void highlightSlotRed(Slot slot, GuiChest chest) {
-        highlightSlot(slot, chest, new Color(255, 55, 55));
-    }
 
     public static void highlightSlot(Slot slot, GuiContainer container, Color color) {
         RenderUtils.drawOnSlot(container.inventorySlots.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, color.getRGB());

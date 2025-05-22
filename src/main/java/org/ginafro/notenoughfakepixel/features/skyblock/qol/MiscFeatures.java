@@ -536,33 +536,4 @@ public class MiscFeatures {
         }
     }
 
-    @SubscribeEvent
-    public void onOpen(GuiScreenEvent.BackgroundDrawnEvent e) {
-        if (!Config.feature.qol.qolShowJacobRewards) return;
-        if (ScoreboardUtils.currentGamemode != Gamemode.SKYBLOCK) return;
-        if (!(e.gui instanceof GuiChest)) return;
-
-        GuiChest chest = (GuiChest) e.gui;
-        Container container = chest.inventorySlots;
-
-        if (!(container instanceof ContainerChest)) return;
-        String title = ((ContainerChest) container).getLowerChestInventory().getDisplayName().getUnformattedText();
-        if (!title.startsWith("Your contests")) return;
-
-        ContainerChest containerChest = (ContainerChest) container;
-        for (Slot slot : containerChest.inventorySlots) {
-            // Skip player inventory
-            if (slot.inventory == Minecraft.getMinecraft().thePlayer.inventory) continue;
-            ItemStack item = slot.getStack();
-            // Skip empty slots
-            if (item == null) continue;
-
-            if (ItemUtils.getLoreLine(item, "Click to claim reward!") != null) {
-                InventoryUtils.highlightSlotGreen(slot, chest);
-            } else if (ItemUtils.getLoreLine(item, "Rewards claimed!") != null) {
-                InventoryUtils.highlightSlotRed(slot, chest);
-            }
-        }
-    }
-
 }
