@@ -1,5 +1,10 @@
 package org.ginafro.notenoughfakepixel.variables;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
 public enum Colors {
 
     // This is a list of colors that are used in minecraft
@@ -30,17 +35,10 @@ public enum Colors {
 
     private final String code;
 
-    Colors(String code) {
-        this.code = code;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
     @Override
     public String toString() {
         return code;
     }
 
 }
+

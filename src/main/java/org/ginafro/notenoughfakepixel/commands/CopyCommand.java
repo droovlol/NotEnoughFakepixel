@@ -1,15 +1,9 @@
 package org.ginafro.notenoughfakepixel.commands;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
+import org.ginafro.notenoughfakepixel.config.gui.utils.Utils;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterCommand;
-
-import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 
 @RegisterCommand
 public class CopyCommand extends CommandBase {
@@ -28,7 +22,7 @@ public class CopyCommand extends CommandBase {
         if (args.length == 0) return;
 
         String text = String.join(" ", args);
-        copyToClipboard(text);
+        Utils.copyToClipboard(text);
     }
 
     @Override
@@ -36,11 +30,5 @@ public class CopyCommand extends CommandBase {
         return 0;
     }
 
-    private void copyToClipboard(String text) {
-        StringSelection stringSelection = new StringSelection(text);
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clipboard.setContents(stringSelection, null);
-        Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "[NEF] Copied to clipboard!"));
-    }
 }
 

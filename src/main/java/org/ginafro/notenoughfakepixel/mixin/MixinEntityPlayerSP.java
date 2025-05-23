@@ -19,7 +19,7 @@ public class MixinEntityPlayerSP {
         int slot = Minecraft.getMinecraft().thePlayer.inventory.currentItem;
         if (SlotLocking.getInstance().isSlotIndexLocked(slot) || SlotLocking.getInstance().isSwapedSlotLocked()) {
             ci.cancel();
-            ChatUtils.notifyChat(EnumChatFormatting.RED + "NotEnoughFakepixel has prevented you from dropping that locked item!");
+            ChatUtils.notifyChat(EnumChatFormatting.RED + "NotEnoughFakepixel prevented you from dropping an item in a locked slot.");
         }
     }
 }

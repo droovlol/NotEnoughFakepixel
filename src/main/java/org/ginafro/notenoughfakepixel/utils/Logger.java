@@ -9,6 +9,8 @@ import java.util.logging.Level;
 
 public class Logger {
 
+    private static long lastLogTime = 0;
+
     private Logger() {
         // Prevent instantiation
     }
@@ -27,6 +29,23 @@ public class Logger {
             Minecraft.getMinecraft().thePlayer.addChatMessage(
                     new ChatComponentText(Constants.PREFIX + message)
             );
+        }
+    }
+
+    /**
+     * Logs a message to the chat only once every second.
+     *
+     * @param message The String message to log.
+     */
+    public static void logOnlyOnce(String message) {
+        if (Minecraft.getMinecraft().thePlayer != null) {
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastLogTime > 1000) {
+                Minecraft.getMinecraft().thePlayer.addChatMessage(
+                        new ChatComponentText(message)
+                );
+                lastLogTime = currentTime;
+            }
         }
     }
 

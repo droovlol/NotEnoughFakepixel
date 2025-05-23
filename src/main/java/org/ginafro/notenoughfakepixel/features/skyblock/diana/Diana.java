@@ -331,7 +331,7 @@ public class Diana {
                         displayName = result.getType();
                 }
                 BlockPos pos = new BlockPos(result.getCoordinates()[0], result.getCoordinates()[1] + 1, result.getCoordinates()[2]);
-                GuessBurrow.renderWaypointText(displayName, pos, partialTicks);
+                RenderUtils.renderWaypointText(displayName, pos, partialTicks);
             }
         } catch (Exception ignored) {
         }

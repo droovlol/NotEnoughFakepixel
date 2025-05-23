@@ -45,7 +45,9 @@ public class ScoreboardUtils {
             return;
 
         if (!mc.isSingleplayer()) {
+            if (mc.theWorld == null) return;
             Scoreboard scoreboard = mc.theWorld.getScoreboard();
+            if (scoreboard == null) return;
             ScoreObjective objective = scoreboard.getObjectiveInDisplaySlot(1);
 
             if (objective != null) {

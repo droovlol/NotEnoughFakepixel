@@ -2,6 +2,7 @@ package org.ginafro.notenoughfakepixel.variables;
 
 public class Constants {
 
+    public static final String PREFIX_INFO = "\u00a7f[\u00a79NEF\u00a7f] \u00a7a";
     public static final String PREFIX = "\u00a7f[\u00a79NEF DEBUG\u00a7f] \u00a7a";
     public static final String ERROR_PREFIX = "\u00a7f[\u00a79NEF DEBUG\u00a7f] \u00a7c";
 

@@ -1,8 +1,12 @@
 package org.ginafro.notenoughfakepixel.utils;
 
+import lombok.Getter;
+
 public class ReforgePair {
 
+    @Getter
     private final float x;
+    @Getter
     private final float y;
     private final String displayReforge;
 
@@ -11,14 +15,6 @@ public class ReforgePair {
         this.x = x;
         this.y = y;
         this.displayReforge = displayReforge;
-    }
-
-    public float getX() {
-        return x;
-    }
-
-    public float getY() {
-        return y;
     }
 
     public String getEnchant() {

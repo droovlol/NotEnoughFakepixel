@@ -319,6 +319,25 @@ public class QualityOfLife {
     @ConfigAccordionId(id = 6)
     public String resetItemValuesButton = "";
 
+    // Item Salvaging Subcategory
+
+    @Expose
+    @ConfigOption(name = "Item Salvaging", desc = "Settings for item salvaging.")
+    @ConfigEditorAccordion(id = 8)
+    public boolean itemSalvagingAccordion = false;
+
+    @Expose
+    @ConfigOption(name = "Legendary Prevention", desc = "Prevent salvaging LEGENDARY items.")
+    @ConfigEditorBoolean
+    @ConfigAccordionId(id = 8)
+    public boolean salvageLegendaryPrevention = true;
+
+    @Expose
+    @ConfigOption(name = "Epic Prevention", desc = "Prevent salvaging EPIC items.")
+    @ConfigEditorBoolean
+    @ConfigAccordionId(id = 8)
+    public boolean salvageEpicPrevention = false;
+
     // Player Size Subcategory
 
     @Expose
@@ -436,14 +455,14 @@ public class QualityOfLife {
     @ConfigEditorBoolean
     public boolean qolReforgeHelper = true;
 
-    @Expose
-    @ConfigOption(name = "Damage Commas", desc = "Add commas to damage numbers.")
-    @ConfigEditorBoolean
+//    @Expose
+//    @ConfigOption(name = "Damage Commas", desc = "Add commas to damage numbers.")
+//    @ConfigEditorBoolean
     public boolean qolDmgCommas = false;
 
-    @Expose
-    @ConfigOption(name = "Damage Formatter", desc = "Format damage numbers (e.g., 167k instead of 167000).")
-    @ConfigEditorBoolean
+//    @Expose
+//    @ConfigOption(name = "Damage Formatter", desc = "Format damage numbers (e.g., 167k instead of 167000).")
+//    @ConfigEditorBoolean
     public boolean qolDmgFormatter = false;
 
     // Method to handle the reset button functionality

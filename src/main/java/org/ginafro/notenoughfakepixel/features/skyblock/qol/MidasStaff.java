@@ -44,7 +44,6 @@ public class MidasStaff {
         Packet packet = event.packet;
         if (packet instanceof S2APacketParticles) {
             S2APacketParticles particle = (S2APacketParticles) packet;
-            //System.out.println(particle.getParticleType().getParticleName());
             if (particle.getParticleType().getParticleName().equals("lava")) {
                 event.setCanceled(true);
             }

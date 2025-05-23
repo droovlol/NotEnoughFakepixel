@@ -12,41 +12,32 @@ public class StringUtils {
     public static int romanToNumerical(String s) {
         int total = 0;
         for (int i = 0; i < s.length(); i++) {
-            char r = s.charAt(i);
-            int s1 = value(r);
-            if (i + 1 < s.length()) {
-                int s2 = value(s.charAt(i + 1));
-                //comparing the current character from its right character
-                if (s1 >= s2) {
-                    //if the value of current character is greater or equal to the next symbol
-                    total = total + s1;
-                } else {
-                    //if the value of the current character is less than the next symbol
-                    total = total - s1;
-                }
-            } else {
-                total = total + s1;
-            }
+            int current = value(s.charAt(i));
+            int next = (i + 1 < s.length()) ? value(s.charAt(i + 1)) : 0;
+            total += (current >= next) ? current : -current;
         }
         return total;
     }
 
     private static int value(char r) {
-        if (r == 'I')
-            return 1;
-        if (r == 'V')
-            return 5;
-        if (r == 'X')
-            return 10;
-        if (r == 'L')
-            return 50;
-        if (r == 'C')
-            return 100;
-        if (r == 'D')
-            return 500;
-        if (r == 'M')
-            return 1000;
-        return -1;
+        switch (r) {
+            case 'I':
+                return 1;
+            case 'V':
+                return 5;
+            case 'X':
+                return 10;
+            case 'L':
+                return 50;
+            case 'C':
+                return 100;
+            case 'D':
+                return 500;
+            case 'M':
+                return 1000;
+            default:
+                return -1;
+        }
     }
 
     private final static DecimalFormat TENTHS_DECIMAL_FORMAT = new DecimalFormat("#.#");
@@ -77,13 +68,13 @@ public class StringUtils {
     private static final char[] sizeSuffix = new char[]{'k', 'm', 'b', 't'};
 
     public static String shortNumberFormat(BigInteger bigInteger) {
-        BigInteger THOUSAND = BigInteger.valueOf(1000);
-        int i = -1;
-        while (bigInteger.compareTo(THOUSAND) > 0 && i < sizeSuffix.length) {
-            bigInteger = bigInteger.divide(THOUSAND);
-            i++;
+        BigInteger thousand = BigInteger.valueOf(1000);
+        int index = -1;
+        while (bigInteger.compareTo(thousand) > 0 && index < sizeSuffix.length) {
+            bigInteger = bigInteger.divide(thousand);
+            index++;
         }
-        return bigInteger.toString() + (i == -1 ? "" : sizeSuffix[i]);
+        return bigInteger + (index == -1 ? "" : String.valueOf(sizeSuffix[index]));
     }
 
     public static String cleanColor(String in) {
@@ -108,19 +99,15 @@ public class StringUtils {
     }
 
     public static String removeLastWord(String string, String splitString) {
-        try {
-            String[] split = string.split(splitString);
-            String rawTier = split[split.length - 1];
-            return string.substring(0, string.length() - rawTier.length() - 1);
-        } catch (StringIndexOutOfBoundsException e) {
-            throw new RuntimeException("removeLastWord: '" + string + "'", e);
-        }
+        String[] split = string.split(splitString);
+        if (split.length == 0) return string;
+        String rawTier = split[split.length - 1];
+        return string.substring(0, string.length() - rawTier.length() - 1);
     }
 
     public static String firstUpperLetter(String text) {
         if (text.isEmpty()) return text;
-        String firstLetter = ("" + text.charAt(0)).toUpperCase(Locale.ROOT);
-        return firstLetter + text.substring(1);
+        return text.substring(0, 1).toUpperCase(Locale.ROOT) + text.substring(1);
     }
 
     public static boolean isNumeric(String string) {

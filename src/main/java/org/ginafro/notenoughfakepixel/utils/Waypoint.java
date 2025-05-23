@@ -19,16 +19,12 @@ public class Waypoint {
 
     public static Waypoint getClosestWaypoint(ArrayList<Waypoint> waypoints, int[] coords) {
         if (waypoints.isEmpty()) return null;
-        // Variables to keep track of the closest waypoint and shortest distance
+
         Waypoint closestWaypoint = null;
         double shortestDistance = Double.MAX_VALUE;
 
-        // Iterate through all waypoints
         for (Waypoint waypoint : waypoints) {
-            int[] waypointCoordinates = waypoint.getCoordinates();
-            // Calculate the Euclidean distance
-            double distance = distance(coords, waypointCoordinates);
-            // Check if this waypoint is closer than the current closest
+            double distance = distance(coords, waypoint.getCoordinates());
             if (distance < shortestDistance) {
                 shortestDistance = distance;
                 closestWaypoint = waypoint;

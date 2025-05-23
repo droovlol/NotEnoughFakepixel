@@ -2,7 +2,6 @@ package org.ginafro.notenoughfakepixel.features.skyblock.mining;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -12,8 +11,6 @@ import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.variables.Location;
-
-import java.awt.*;
 
 @RegisterEvents
 public class DwarvenWaypoints {
@@ -41,12 +38,10 @@ public class DwarvenWaypoints {
         if (!Config.feature.mining.miningDwarvenWaypoints) return;
         boolean renderBeacon = Config.feature.mining.miningDwarvenBeacons;
         for (DwarvenWaypoint waypoint : WAYPOINTS) {
-            double distanceMeters = Minecraft.getMinecraft().thePlayer.getDistance(waypoint.x, waypoint.y, waypoint.z);
-
-            int distanceMetersInt = (int) Math.round(distanceMeters);
-            if (renderBeacon)
+            if (renderBeacon){
                 RenderUtils.renderBeaconBeam(new BlockPos(waypoint.x, waypoint.y, waypoint.z), ColorUtils.getColor(Config.feature.mining.miningDwarvenBeaconsColor).getRGB(), 1, event.partialTicks);
-            RenderUtils.drawTag(waypoint.getName() + " (" + distanceMetersInt + "m)", new double[]{waypoint.getX(), waypoint.getY(), waypoint.getZ()}, new Color(255, 255, 255, 255), event.partialTicks);
+            }
+            RenderUtils.renderWaypointText(waypoint.getName() ,new BlockPos(waypoint.x, waypoint.y + 3, waypoint.z), event.partialTicks);
         }
     }
 
