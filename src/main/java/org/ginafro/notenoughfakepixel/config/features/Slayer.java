@@ -93,6 +93,18 @@ public class Slayer {
     @ConfigAccordionId(id = 2)
     public String slayerBeaconColor = "0:128:0:128:255";
 
+    @Expose
+    @ConfigOption(name = "Show Beacon Tracer", desc = "Traces a line to the beacon.")
+    @ConfigEditorBoolean
+    @ConfigAccordionId(id = 2)
+    public boolean showTracerToBeacon = true;
+
+    @Expose
+    @ConfigOption(name = "Beacon notifier", desc = "Shows a message middle screen when beacon is detected.")
+    @ConfigEditorBoolean
+    @ConfigAccordionId(id = 2)
+    public boolean notifyBeaconInScreen = true;
+
     // Top-Level Options
     @Expose
     @ConfigOption(name = "Faster Maddox Calling", desc = "Method for faster Maddox calling.")

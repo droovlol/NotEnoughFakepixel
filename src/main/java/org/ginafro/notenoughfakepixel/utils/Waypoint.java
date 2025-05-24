@@ -2,8 +2,10 @@ package org.ginafro.notenoughfakepixel.utils;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.util.BlockPos;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 public class Waypoint {
@@ -17,7 +19,7 @@ public class Waypoint {
         this.coordinates = coordinates;
     }
 
-    public static Waypoint getClosestWaypoint(ArrayList<Waypoint> waypoints, int[] coords) {
+    public static Waypoint getClosestWaypoint(List<Waypoint> waypoints, int[] coords) {
         if (waypoints.isEmpty()) return null;
 
         Waypoint closestWaypoint = null;
@@ -39,6 +41,10 @@ public class Waypoint {
                         Math.pow(coords1[1] - coords2[1], 2) +
                         Math.pow(coords1[2] - coords2[2], 2)
         );
+    }
+
+    public BlockPos getBlockPos() {
+        return new BlockPos(coordinates[0], coordinates[1], coordinates[2]);
     }
 
     @Override
