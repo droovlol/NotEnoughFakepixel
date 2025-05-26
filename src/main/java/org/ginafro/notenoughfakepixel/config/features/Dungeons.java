@@ -472,6 +472,26 @@ public class Dungeons {
     public float dungeonsScaleItemDrop = 3.5f;
 
     @Expose
+    @ConfigOption(name = "Master Mode 7",desc = "Featuers related to M7")
+    @ConfigEditorAccordion(id = 6)
+    public String mm7 = "";
+
+    @Expose
+    @ConfigOption(name = "Distance Box", desc = "Render an outline which shows how far the dragon can be to be near the status")
+    @ConfigAccordionId(id = 6)
+    public boolean distBox = true;
+
+    @Expose
+    @ConfigOption(name = "Dragon Outline", desc = "Outlines each dragon with their respective colors for better visiblity")
+    @ConfigAccordionId(id = 6)
+    public boolean dragOutline = true;
+
+    @Expose
+    @ConfigOption(name = "Close Alert", desc = "Shows an alert when a dragon goes near his statue")
+    @ConfigAccordionId(id = 6)
+    public boolean dragAlert = true;
+
+    @Expose
     @ConfigOption(name = "Highlight WitherDoors", desc = "Box wither doors.")
     @ConfigEditorBoolean
     public boolean dungeonsWitherDoors = true;

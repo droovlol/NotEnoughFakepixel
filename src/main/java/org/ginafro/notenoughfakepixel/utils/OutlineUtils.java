@@ -4,9 +4,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import org.ginafro.notenoughfakepixel.events.RenderEntityModelEvent;
 import org.lwjgl.opengl.EXTFramebufferObject;
 import org.lwjgl.opengl.EXTPackedDepthStencil;
@@ -19,6 +24,94 @@ public final class OutlineUtils {
     private static final Minecraft mc = Minecraft.getMinecraft();
 
     private OutlineUtils() {
+    }
+
+    public static void renderBlockOutline(BlockPos pos1, BlockPos pos2, float partialTicks, Color color, float lineWidth) {
+        Minecraft mc = Minecraft.getMinecraft();
+        Entity camera = mc.getRenderViewEntity();
+
+        double x = camera.lastTickPosX + (camera.posX - camera.lastTickPosX) * partialTicks;
+        double y = camera.lastTickPosY + (camera.posY - camera.lastTickPosY) * partialTicks;
+        double z = camera.lastTickPosZ + (camera.posZ - camera.lastTickPosZ) * partialTicks;
+
+        // Calculate the bounding box from both positions
+        AxisAlignedBB bb = new AxisAlignedBB(pos1, pos2).expand(1, 1, 1).offset(-x, -y, -z);
+
+        GlStateManager.pushAttrib();
+        GlStateManager.pushMatrix();
+        GlStateManager.disableTexture2D();
+        GlStateManager.enableBlend();
+        GlStateManager.disableDepth();
+        GlStateManager.disableLighting();
+        GlStateManager.depthMask(false);
+        GlStateManager.color(
+                color.getRed() / 255f,
+                color.getGreen() / 255f,
+                color.getBlue() / 255f,
+                color.getAlpha() / 255f
+        );
+
+        GL11.glLineWidth(lineWidth);
+        GL11.glEnable(GL11.GL_LINE_SMOOTH);
+        GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
+
+        drawSelectionBoundingBox(bb);
+
+
+        GlStateManager.depthMask(true);
+        GlStateManager.enableDepth();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+        GlStateManager.popMatrix();
+        GlStateManager.popAttrib();
+    }
+
+    private static void drawSelectionBoundingBox(AxisAlignedBB box) {
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer buffer = tessellator.getWorldRenderer();
+
+        buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION);
+
+        // Bottom face
+        buffer.pos(box.minX, box.minY, box.minZ).endVertex();
+        buffer.pos(box.maxX, box.minY, box.minZ).endVertex();
+
+        buffer.pos(box.maxX, box.minY, box.minZ).endVertex();
+        buffer.pos(box.maxX, box.minY, box.maxZ).endVertex();
+
+        buffer.pos(box.maxX, box.minY, box.maxZ).endVertex();
+        buffer.pos(box.minX, box.minY, box.maxZ).endVertex();
+
+        buffer.pos(box.minX, box.minY, box.maxZ).endVertex();
+        buffer.pos(box.minX, box.minY, box.minZ).endVertex();
+
+        // Top face
+        buffer.pos(box.minX, box.maxY, box.minZ).endVertex();
+        buffer.pos(box.maxX, box.maxY, box.minZ).endVertex();
+
+        buffer.pos(box.maxX, box.maxY, box.minZ).endVertex();
+        buffer.pos(box.maxX, box.maxY, box.maxZ).endVertex();
+
+        buffer.pos(box.maxX, box.maxY, box.maxZ).endVertex();
+        buffer.pos(box.minX, box.maxY, box.maxZ).endVertex();
+
+        buffer.pos(box.minX, box.maxY, box.maxZ).endVertex();
+        buffer.pos(box.minX, box.maxY, box.minZ).endVertex();
+
+        // Vertical lines
+        buffer.pos(box.minX, box.minY, box.minZ).endVertex();
+        buffer.pos(box.minX, box.maxY, box.minZ).endVertex();
+
+        buffer.pos(box.maxX, box.minY, box.minZ).endVertex();
+        buffer.pos(box.maxX, box.maxY, box.minZ).endVertex();
+
+        buffer.pos(box.maxX, box.minY, box.maxZ).endVertex();
+        buffer.pos(box.maxX, box.maxY, box.maxZ).endVertex();
+
+        buffer.pos(box.minX, box.minY, box.maxZ).endVertex();
+        buffer.pos(box.minX, box.maxY, box.maxZ).endVertex();
+
+        tessellator.draw();
     }
 
     private static void outlineEntity(
