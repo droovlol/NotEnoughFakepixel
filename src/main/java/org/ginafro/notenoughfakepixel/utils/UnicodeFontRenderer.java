@@ -57,7 +57,7 @@ public class UnicodeFontRenderer {
     private final int[] colorCodes = new int[32];
     private final float kerning;
     private final Map<String, Float> cachedStringWidth = new HashMap<>();
-    private float antiAliasingFactor;
+    private final float antiAliasingFactor;
     private UnicodeFont unicodeFont;
 
     private UnicodeFontRenderer(String fontName, int fontType, float fontSize, float kerning, float antiAliasingFactor) {

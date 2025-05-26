@@ -43,7 +43,7 @@ public class CapeGui extends GuiScreen {
         wW = (int) (749 * scale);
         wH = (int) (472 * scale);
         bH = (int) (300 * scale);
-        bList = (int) (wY + bH);
+        bList = wY + bH;
         bW = (wH - (int) (30 * scale)) / 3;
         for (int i = 0; i < CapeManager.getAllCapes().size(); i++) {
             Cape c = CapeManager.getAllCapes().get(i);

@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 public class EventsMsgSupressor {
 
     // message start example §r§e[NPC] §r§bDon Espresso§r§f:
-    private Pattern donEspressoPattern = Pattern.compile("§r§e\\[NPC] §r§bDon Espresso§r§f:");
+    private final Pattern donEspressoPattern = Pattern.compile("§r§e\\[NPC] §r§bDon Espresso§r§f:");
     //info message
     /*
         §b[PLAYER INFORMATION]

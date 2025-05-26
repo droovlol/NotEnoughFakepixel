@@ -59,7 +59,7 @@ public class Utils {
     private String lockedEnchantment = "";
 
     public static String getKeyDesc(int keycode) {
-        switch (keycode){
+        switch (keycode) {
             case 2:
                 return "1";
             case 3:

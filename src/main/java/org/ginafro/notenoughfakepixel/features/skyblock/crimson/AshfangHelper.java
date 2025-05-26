@@ -88,7 +88,6 @@ public class AshfangHelper {
             if (matcher3.find()) {
                 int[] position = new int[]{Minecraft.getMinecraft().thePlayer.getPosition().getX(), Minecraft.getMinecraft().thePlayer.getPosition().getY(), Minecraft.getMinecraft().thePlayer.getPosition().getZ()};
                 if (Config.feature.crimson.crimsonAshfangMuteChat) e.setCanceled(true);
-                return;
             }
         }
     }

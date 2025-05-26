@@ -16,7 +16,7 @@ import static org.lwjgl.opengl.GL11.*;
  *
  * @author Matthew Van der Bijl
  */
-public class OBJLoader extends Object {
+public class OBJLoader {
 
     /**
      * Constructs a new <code>OBJLoader</code>.

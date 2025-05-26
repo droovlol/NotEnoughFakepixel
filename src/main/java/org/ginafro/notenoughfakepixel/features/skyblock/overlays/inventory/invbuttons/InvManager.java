@@ -65,17 +65,17 @@ public class InvManager {
     }};
 
     public static void drawButtons() {
-        if(!Config.feature.overlays.invButtons) return;
-        for(InventoryButton b : buttons){
+        if (!Config.feature.overlays.invButtons) return;
+        for (InventoryButton b : buttons) {
             b.render();
         }
     }
 
-    public static void save(){
+    public static void save() {
         InventoryData data = new InventoryData(buttons);
-        File file = new File(NotEnoughFakepixel.nefFolder,"invbuttons.json");
-        try{
-            if(!file.exists()){
+        File file = new File(NotEnoughFakepixel.nefFolder, "invbuttons.json");
+        try {
+            if (!file.exists()) {
                 file.createNewFile();
             }
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -83,24 +83,24 @@ public class InvManager {
             writer.write(gson.toJson(data));
             writer.flush();
             writer.close();
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void load(){
-        File file = new File(NotEnoughFakepixel.nefFolder,"invbuttons.json");
-        try{
-            if(!file.exists()){
+    public static void load() {
+        File file = new File(NotEnoughFakepixel.nefFolder, "invbuttons.json");
+        try {
+            if (!file.exists()) {
                 file.createNewFile();
                 return;
             }
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             FileReader reader = new FileReader(file);
-            InventoryData data = gson.fromJson(reader,InventoryData.class);
-            if(data == null) return;
+            InventoryData data = gson.fromJson(reader, InventoryData.class);
+            if (data == null) return;
             buttons = data.getButtons();
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         } catch (NBTException e) {
             e.printStackTrace();
@@ -108,10 +108,10 @@ public class InvManager {
     }
 
     public static void click(int mouseX, int mouseY) {
-        if(!Config.feature.overlays.invButtons) return;
-        for(InventoryButton b : buttons){
-            if(b.isHovered(mouseX,mouseY)){
-                if(isEditor){
+        if (!Config.feature.overlays.invButtons) return;
+        for (InventoryButton b : buttons) {
+            if (b.isHovered(mouseX, mouseY)) {
+                if (isEditor) {
                     selected = b;
                     break;
                 }
@@ -121,33 +121,33 @@ public class InvManager {
         }
     }
 
-    public static void addButton(InventoryButton b){
+    public static void addButton(InventoryButton b) {
         buttons.add(b);
     }
 
-    public static void addButtons(InventoryButton... b){
+    public static void addButtons(InventoryButton... b) {
         buttons.addAll(Arrays.asList(b));
     }
 
 
-    public static void removeButton(InventoryButton b){
+    public static void removeButton(InventoryButton b) {
         buttons.removeIf(button -> button.equals(b));
     }
 
     public static void loadItemStacks() {
         itemMap.clear();
-            for(ResourceLocation rl : Item.itemRegistry.getKeys()){
-                Item item = Item.itemRegistry.getObject(rl);
-                try{
-                    ItemStack stack = new ItemStack(item);
-                    if(!itemMap.contains(stack)) {
-                        itemMap.add(new ItemStack(item));
-                    }
-                }catch(Exception e){
-                    e.printStackTrace();
+        for (ResourceLocation rl : Item.itemRegistry.getKeys()) {
+            Item item = Item.itemRegistry.getObject(rl);
+            try {
+                ItemStack stack = new ItemStack(item);
+                if (!itemMap.contains(stack)) {
+                    itemMap.add(new ItemStack(item));
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+        }
         itemMap.addAll(ItemUtils.getAllCustomSkulls(skullIcons));
         itemMap.sort(Comparator.comparing(s -> s.getDisplayName().toLowerCase()));
-        }
+    }
 }

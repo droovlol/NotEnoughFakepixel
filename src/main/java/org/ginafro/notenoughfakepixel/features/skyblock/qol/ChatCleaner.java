@@ -39,7 +39,6 @@ public class ChatCleaner {
         if (!option) return;
         String message = e.message.getUnformattedText();
         if (formatted) message = e.message.getFormattedText();
-        //System.out.println(message);
 
         if (pattern.matcher(message).find() || pattern.matcher(message).matches()) {
             e.setCanceled(true);

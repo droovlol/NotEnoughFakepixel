@@ -22,6 +22,7 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.events.PacketReadEvent;
@@ -49,9 +50,7 @@ public class Diana {
     private final Queue<GaiaConstruct> listGaiaAlive = new ConcurrentLinkedQueue<>();
     private final Queue<SiameseLynx> listSiameseAlive = new ConcurrentLinkedQueue<>();
     private final Pattern cooldownPattern = Pattern.compile("§r§cThis ability is on cooldown for [0-9] " + "more seconds.§r");
-    private final Pattern minosInquisitor = Pattern.compile("§r§c§lUh oh! §r§eYou dug out §r§2Minos Inquisitor§r");
     private final Pattern minosInquisitorPartyChat = Pattern.compile("§9Party §8> (?:§[0-9a-f])*\\[?(?:(?:§[0-9a-f])?[A-Z](?:§[0-9a-f])?\\+*(?:§[0-9a-f])?)*\\]?(?:§[0-9a-f])*.*?: Minos Inquisitor found at .*,? ?x:(-?\\d+), y:(-?\\d+), z:(-?\\d+) in HUB-(1[0-9]|[1-9])");
-    private final int counterTeleports = 0;
     private final String inquisitorSound = "mob.enderdragon.growl";
     Instant lastCaptureTime = Instant.now();
     private final Map<String, int[]> locations = new HashMap<>();
@@ -61,6 +60,7 @@ public class Diana {
         if (!Config.feature.diana.dianaShowWaypointsBurrows) return; // Check if the feature is enabled
         if (!ScoreboardUtils.currentLocation.isHub()) return; // Check if the player is in a hub
         //if (InventoryUtils.getSlot("Ancestral Spade") == -1) return;
+
         Packet packet = event.packet;
         if (packet instanceof S2APacketParticles) {
             S2APacketParticles particles = (S2APacketParticles) packet;
@@ -100,7 +100,6 @@ public class Diana {
     @SubscribeEvent
     public void onRenderLast(RenderWorldLastEvent event) {
         if (!ScoreboardUtils.currentLocation.isHub()) return; // Check if the player is in a hub
-        //if (InventoryUtils.getSlot("Ancestral Spade") == -1) return;
         if (Config.feature.diana.dianaShowWaypointsBurrows) drawWaypoints(event.partialTicks);
         if (Config.feature.diana.dianaShowTracersWaypoints) drawTracers(event.partialTicks);
         if (Config.feature.diana.dianaShowLabelsWaypoints) drawLabels(event.partialTicks);
@@ -133,13 +132,10 @@ public class Diana {
                 double x = Math.floor(event.entity.posX);
                 double y = Math.floor(event.entity.posY);
                 double z = Math.floor(event.entity.posZ);
-                //Minecraft.getMinecraft().thePlayer.sendChatMessage("/pc Minos Inquisitor found at x:"+event.entity.getPosition().getX()+", y:"+event.entity.getPosition().getY()+", z:"+event.entity.getPosition().getZ() + " in HUB-"+getHubNumber());
                 String locationName = findNearestLocation((int) x, (int) y, (int) z);
                 if (locationName != null) {
-                    //System.out.println("/pc Minos Inquisitor found at " + locationName + ", x:"+event.entity.getPosition().getX()+", y:"+(event.entity.getPosition().getY()-2)+", z:"+event.entity.getPosition().getZ() + " in HUB-"+getHubNumber());
                     Minecraft.getMinecraft().thePlayer.sendChatMessage("/pc Minos Inquisitor found at " + locationName + ", x:" + event.entity.getPosition().getX() + ", y:" + (event.entity.getPosition().getY() - 2) + ", z:" + event.entity.getPosition().getZ() + " in HUB-" + getHubNumber());
                 } else {
-                    //System.out.println("/pc Minos Inquisitor found at x:"+event.entity.getPosition().getX()+", y:"+(event.entity.getPosition().getY()-2)+", z:"+event.entity.getPosition().getZ() + " in HUB-"+getHubNumber());
                     Minecraft.getMinecraft().thePlayer.sendChatMessage("/pc Minos Inquisitor found at x:" + event.entity.getPosition().getX() + ", y:" + (event.entity.getPosition().getY() - 2) + ", z:" + event.entity.getPosition().getZ() + " in HUB-" + getHubNumber());
                 }
                 lastCaptureTime = now;
@@ -147,9 +143,10 @@ public class Diana {
         }
         if (Config.feature.diana.dianaMinosInquisitorOutline) {
             clearCache();
+            if (Configuration.isPojav()) return;
             WorldClient world = Minecraft.getMinecraft().theWorld;
             for (Entity entity : world.loadedEntityList) {
-                if (entity instanceof EntityArmorStand) { // Check type before casting
+                if (entity instanceof EntityArmorStand) {
                     EntityArmorStand armorStand = (EntityArmorStand) entity;
                     if (armorStand.getName().contains("Minos Inquisitor")) {
                         EntityLivingBase inq = findAssociatedMob(armorStand);
@@ -218,7 +215,7 @@ public class Diana {
         locations.put("Farm", new int[]{60, 72, -173});
         locations.put("Above Coal mine", new int[]{-40, 85, -196});
         locations.put("Farm", new int[]{81, 72, -140});
-        locations.put("Koban4ik NPC", new int[]{83, 72, -102});
+        locations.put("2pb NPC", new int[]{83, 72, -102});
         locations.put("Colosseum left side", new int[]{101, 72, -73});
         locations.put("Wizard tower", new int[]{53, 72, 66});
         locations.put("Spider den portal", new int[]{-120, 76, -177});
@@ -236,41 +233,41 @@ public class Diana {
     }
 
     private void drawWaypoints(float partialTicks) {
-        List<Waypoint> safeResults = new ArrayList<>();
+        List<Waypoint> safeResults;
         synchronized (processor.getWaypoints()) {
-            try {
-                safeResults = new ArrayList<>(processor.getWaypoints());
-            } catch (Exception ignored) {
-            }
+            safeResults = new ArrayList<>(processor.getWaypoints());
         }
-        try {
-            if (safeResults.isEmpty()) return;
 
-            for (Waypoint result : safeResults) {
-                if (result.isHidden()) continue;
+        if (safeResults.isEmpty()) return;
 
-                Color newColor = white;
-                if (result.getType().equals("EMPTY"))
+        for (Waypoint result : safeResults) {
+            if (result.isHidden()) continue;
+
+            Color newColor;
+            switch (result.getType()) {
+                case "EMPTY":
                     newColor = ColorUtils.getColor(Config.feature.diana.dianaEmptyBurrowColor);
-                if (result.getType().equals("MOB"))
+                    break;
+                case "MOB":
                     newColor = ColorUtils.getColor(Config.feature.diana.dianaMobBurrowColor);
-                if (result.getType().equals("TREASURE"))
+                    break;
+                case "TREASURE":
                     newColor = ColorUtils.getColor(Config.feature.diana.dianaTreasureBurrowColor);
-                if (result.getType().equals("MINOS"))
+                    break;
+                case "MINOS":
                     newColor = new Color(243, 225, 107);
-                newColor = new Color(newColor.getRed(), newColor.getGreen(), newColor.getBlue(), 100);
-
-                int x = result.getCoordinates()[0];
-                int y = result.getCoordinates()[1];
-                int z = result.getCoordinates()[2];
-
-                BlockPos posAbsolute = new BlockPos(x, y - 1, z);
-
-                RenderUtils.highlightBlock(posAbsolute, newColor, true, partialTicks);
-                RenderUtils.renderBeaconBeam(posAbsolute, newColor.getRGB(), 1.0f, partialTicks);
-                GlStateManager.enableTexture2D();
+                    break;
+                default:
+                    newColor = white;
+                    break;
             }
-        } catch (Exception ignored) {
+            newColor = new Color(newColor.getRed(), newColor.getGreen(), newColor.getBlue(), 100);
+
+            BlockPos posAbsolute = new BlockPos(result.getCoordinates()[0], result.getCoordinates()[1] - 1, result.getCoordinates()[2]);
+
+            RenderUtils.highlightBlock(posAbsolute, newColor, true, partialTicks);
+            RenderUtils.renderBeaconBeam(posAbsolute, newColor.getRGB(), 1.0f, partialTicks);
+            GlStateManager.enableTexture2D();
         }
     }
 
@@ -334,7 +331,7 @@ public class Diana {
                         displayName = result.getType();
                 }
                 BlockPos pos = new BlockPos(result.getCoordinates()[0], result.getCoordinates()[1] + 1, result.getCoordinates()[2]);
-                GuessBurrow.renderWaypointText(displayName, pos, partialTicks);
+                RenderUtils.renderWaypointText(displayName, pos, partialTicks);
             }
         } catch (Exception ignored) {
         }
@@ -527,8 +524,8 @@ public class Diana {
         float distance = Float.MAX_VALUE;
         for (GaiaConstruct gaia : listGaiaAlive) {
             int[] coordsGaia = new int[]{gaia.getEntity().getPosition().getX(), gaia.getEntity().getPosition().getY(), gaia.getEntity().getPosition().getZ()};
-            if (processor.getDistance(coords, coordsGaia) < distance) {
-                distance = processor.getDistance(coords, coordsGaia);
+            if (ParticleProcessor.getDistance(coords, coordsGaia) < distance) {
+                distance = ParticleProcessor.getDistance(coords, coordsGaia);
                 returnedGaia = gaia;
             }
         }
@@ -541,15 +538,15 @@ public class Diana {
         for (SiameseLynx siamese : listSiameseAlive) {
             if (siamese.getEntity1() != null) {
                 int[] coordsSiamese1 = new int[]{siamese.getEntity1().getPosition().getX(), siamese.getEntity1().getPosition().getY(), siamese.getEntity1().getPosition().getZ()};
-                if (processor.getDistance(coords, coordsSiamese1) < distance) {
-                    distance = processor.getDistance(coords, coordsSiamese1);
+                if (ParticleProcessor.getDistance(coords, coordsSiamese1) < distance) {
+                    distance = ParticleProcessor.getDistance(coords, coordsSiamese1);
                     returnedSiamese = siamese.getEntity1();
                 }
             }
             if (siamese.getEntity2() != null) {
                 int[] coordsSiamese2 = new int[]{siamese.getEntity2().getPosition().getX(), siamese.getEntity2().getPosition().getY(), siamese.getEntity2().getPosition().getZ()};
-                if (processor.getDistance(coords, coordsSiamese2) < distance) {
-                    distance = processor.getDistance(coords, coordsSiamese2);
+                if (ParticleProcessor.getDistance(coords, coordsSiamese2) < distance) {
+                    distance = ParticleProcessor.getDistance(coords, coordsSiamese2);
                     returnedSiamese = siamese.getEntity2();
                 }
             }
@@ -560,20 +557,12 @@ public class Diana {
 
 
     private void deleteClosestWaypoint(int x, int y, int z) {
-        //int[] playerCoords = new int[] {(int)Minecraft.getMinecraft().thePlayer.posX, (int)Minecraft.getMinecraft().thePlayer.posY, (int)Minecraft.getMinecraft().thePlayer.posZ};
-        int[] coords = new int[]{x, y, z};
+        int[] coords = {x, y, z};
         Waypoint res = processor.getClosestWaypoint(coords);
 
-        if (res == null) return;
-        if (processor.areCoordinatesClose(res.getCoordinates(), coords, 3)) {
-            //if (res.getType().equals("MINOS")) return;
+        if (res != null && processor.areCoordinatesClose(res.getCoordinates(), coords, 3)) {
             res.setHidden(true);
-            ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
-            exec.schedule(new Runnable() {
-                public void run() {
-                    processor.deleteWaypoint(res);
-                }
-            }, 30000, TimeUnit.MILLISECONDS);
+            new ScheduledThreadPoolExecutor(1).schedule(() -> processor.deleteWaypoint(res), 30, TimeUnit.SECONDS);
         }
     }
 

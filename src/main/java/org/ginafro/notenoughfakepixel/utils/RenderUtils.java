@@ -522,8 +522,8 @@ public class RenderUtils {
      * Configures the OpenGL state for line rendering.
      * Disables textures, lighting, and depth as needed, and sets blend modes.
      *
-     * @param depth      If false, disables depth testing and depth writes.
-     * @param lineWidth  The width of the OpenGL line to draw.
+     * @param depth     If false, disables depth testing and depth writes.
+     * @param lineWidth The width of the OpenGL line to draw.
      */
     private static void setupRenderState(boolean depth, int lineWidth) {
         GlStateManager.disableTexture2D();
@@ -739,18 +739,18 @@ public class RenderUtils {
      * sorting the coordinates and drawing the quad with proper vertex ordering and color.
      * </p>
      *
-     * @param wr    The {@link WorldRenderer} instance used for buffering vertex data.
-     * @param tess  The {@link Tessellator} instance used to execute the buffered draw call.
-     * @param x1    The x-coordinate of the first corner.
-     * @param y1    The y-coordinate of the first corner.
-     * @param z1    The z-coordinate of the first corner.
-     * @param x2    The x-coordinate of the opposite corner.
-     * @param y2    The y-coordinate of the opposite corner.
-     * @param z2    The z-coordinate of the opposite corner.
-     * @param r     The red color component (0.0 to 1.0).
-     * @param g     The green color component (0.0 to 1.0).
-     * @param b     The blue color component (0.0 to 1.0).
-     * @param a     The alpha (transparency) component (0.0 to 1.0).
+     * @param wr   The {@link WorldRenderer} instance used for buffering vertex data.
+     * @param tess The {@link Tessellator} instance used to execute the buffered draw call.
+     * @param x1   The x-coordinate of the first corner.
+     * @param y1   The y-coordinate of the first corner.
+     * @param z1   The z-coordinate of the first corner.
+     * @param x2   The x-coordinate of the opposite corner.
+     * @param y2   The y-coordinate of the opposite corner.
+     * @param z2   The z-coordinate of the opposite corner.
+     * @param r    The red color component (0.0 to 1.0).
+     * @param g    The green color component (0.0 to 1.0).
+     * @param b    The blue color component (0.0 to 1.0).
+     * @param a    The alpha (transparency) component (0.0 to 1.0).
      */
     private static void drawFace(WorldRenderer wr, Tessellator tess,
                                  double x1, double y1, double z1,
@@ -879,6 +879,108 @@ public class RenderUtils {
         GlStateManager.disableBlend();
         GlStateManager.enableCull();
         GlStateManager.enableLighting();
+        GlStateManager.popMatrix();
+    }
+
+    public static void renderWaypointText(String str, BlockPos loc, float partialTicks) {
+        GlStateManager.alphaFunc(516, 0.1F);
+        GlStateManager.pushMatrix();
+
+        Entity viewer = Minecraft.getMinecraft().getRenderViewEntity();
+        double viewerX = viewer.lastTickPosX + (viewer.posX - viewer.lastTickPosX) * partialTicks;
+        double viewerY = viewer.lastTickPosY + (viewer.posY - viewer.lastTickPosY) * partialTicks;
+        double viewerZ = viewer.lastTickPosZ + (viewer.posZ - viewer.lastTickPosZ) * partialTicks;
+
+        double x = loc.getX() + 0.5 - viewerX;
+        double y = loc.getY() + 0.5 - viewerY - viewer.getEyeHeight();
+        double z = loc.getZ() + 0.5 - viewerZ;
+
+        double distSq = x * x + y * y + z * z;
+        double dist = Math.sqrt(distSq);
+        if (distSq > 144) {
+            x *= 12 / dist;
+            y *= 12 / dist;
+            z *= 12 / dist;
+        }
+        GlStateManager.translate(x, y, z);
+        GlStateManager.translate(0, viewer.getEyeHeight(), 0);
+
+        float scale = 2.0F;
+        GlStateManager.scale(scale, scale, scale);
+
+        drawNametag(str);
+
+        GlStateManager.rotate(-Minecraft.getMinecraft().getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(Minecraft.getMinecraft().getRenderManager().playerViewX, 1.0F, 0.0F, 0.0F);
+        GlStateManager.translate(0, -0.25f, 0);
+        GlStateManager.rotate(-Minecraft.getMinecraft().getRenderManager().playerViewX, 1.0F, 0.0F, 0.0F);
+        GlStateManager.rotate(Minecraft.getMinecraft().getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
+
+        drawNametag(EnumChatFormatting.YELLOW.toString() + Math.round(dist) + "m");
+
+        GlStateManager.popMatrix();
+        GlStateManager.disableLighting();
+    }
+
+    public static void drawNametag(String str) {
+        FontRenderer fontrenderer = Minecraft.getMinecraft().fontRendererObj;
+        float f = 1.6F;
+        float f1 = 0.016666668F * f;
+        GlStateManager.pushMatrix();
+        GL11.glNormal3f(0.0F, 1.0F, 0.0F);
+        RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
+        GlStateManager.rotate(-renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
+        GlStateManager.scale(-f1, -f1, f1);
+        GlStateManager.disableLighting();
+        GlStateManager.depthMask(false);
+        GlStateManager.disableDepth();
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        int i = 0;
+
+        int j = fontrenderer.getStringWidth(str) / 2;
+        GlStateManager.disableTexture2D();
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+        worldrenderer.pos(-j - 1, -1 + i, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+        worldrenderer.pos(-j - 1, 8 + i, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+        worldrenderer.pos(j + 1, 8 + i, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+        worldrenderer.pos(j + 1, -1 + i, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+        tessellator.draw();
+        GlStateManager.enableTexture2D();
+        fontrenderer.drawString(str, -fontrenderer.getStringWidth(str) / 2, i, 553648127);
+        GlStateManager.depthMask(true);
+        fontrenderer.drawString(str, -fontrenderer.getStringWidth(str) / 2, i, -1);
+        GlStateManager.enableDepth();
+        GlStateManager.enableBlend();
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.popMatrix();
+    }
+
+    public static void drawOutlinedBoundingBox(AxisAlignedBB aabb, Color color, float width, float partialTicks) {
+        Entity render = Minecraft.getMinecraft().getRenderViewEntity();
+        double realX = render.lastTickPosX + (render.posX - render.lastTickPosX) * partialTicks;
+        double realY = render.lastTickPosY + (render.posY - render.lastTickPosY) * partialTicks;
+        double realZ = render.lastTickPosZ + (render.posZ - render.lastTickPosZ) * partialTicks;
+
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(-realX, -realY, -realZ);
+        GlStateManager.disableTexture2D();
+        GlStateManager.enableBlend();
+        GlStateManager.disableLighting();
+        GlStateManager.disableAlpha();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GL11.glLineWidth(width);
+
+        RenderGlobal.drawOutlinedBoundingBox(aabb, color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+
+        GlStateManager.translate(realX, realY, realZ);
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        GlStateManager.enableTexture2D();
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.popMatrix();
     }
 }

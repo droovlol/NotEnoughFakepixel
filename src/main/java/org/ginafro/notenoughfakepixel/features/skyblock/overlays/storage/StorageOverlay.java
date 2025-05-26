@@ -33,7 +33,7 @@ public class StorageOverlay {
 
     public static class StorageOverlayRenderer {
         private final GuiContainer gc;
-        private List<GuiButton> buttonList = new ArrayList<>();
+        private final List<GuiButton> buttonList = new ArrayList<>();
         public GuiTextField searchBar;
         private float scrollOffset = 0.0f;
         private int buttonCount = 0;
@@ -49,8 +49,8 @@ public class StorageOverlay {
         private final int ROW_SPACING = 10;
         private final int COL_SPACING = 10;
         private final int PADDING = 10;
-        private HashMap<Integer, Boolean> chestMap = new HashMap<>();
-        private int scrollBarWidth = 8;
+        private final HashMap<Integer, Boolean> chestMap = new HashMap<>();
+        private final int scrollBarWidth = 8;
         private boolean isScrollBarDragging = false;
         private float scrollDragStartY;
         private float scrollDragStartOffset;
@@ -71,7 +71,7 @@ public class StorageOverlay {
             buttonListHeight = (int) (sr.getScaledHeight() * 0.6);
 
             buttonWidth = (boxWidth - 2 * PADDING - (BUTTONS_PER_ROW - 1) * COL_SPACING) / BUTTONS_PER_ROW;
-            buttonHeight = (buttonListHeight - 2 * PADDING - (ROWS_VISIBLE - 1) * ROW_SPACING) / ROWS_VISIBLE;
+            buttonHeight = (buttonListHeight - 2 * PADDING - ROW_SPACING) / ROWS_VISIBLE;
 
             xPos = (sr.getScaledWidth() - boxWidth) / 2;
             yPos = (sr.getScaledHeight() - buttonListHeight) / 2 - 20;

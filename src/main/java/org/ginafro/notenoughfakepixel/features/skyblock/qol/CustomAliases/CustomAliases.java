@@ -3,7 +3,6 @@ package org.ginafro.notenoughfakepixel.features.skyblock.qol.CustomAliases;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -18,7 +17,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,10 +31,10 @@ public class CustomAliases {
     private static final Minecraft mc = Minecraft.getMinecraft();
 
     @SubscribeEvent
-    public void onInput(InputEvent.KeyInputEvent e){
-        for(Alias alias : aliases){
-            if(alias.key == 0) continue;
-            if(Keyboard.isKeyDown(alias.key) && alias.key != 1){
+    public void onInput(InputEvent.KeyInputEvent e) {
+        for (Alias alias : aliases) {
+            if (alias.key == 0) continue;
+            if (Keyboard.isKeyDown(alias.key) && alias.key != 1) {
                 Minecraft.getMinecraft().thePlayer.sendChatMessage(alias.command);
             }
         }
@@ -48,9 +46,7 @@ public class CustomAliases {
 
     public static void unregisterAlias(Alias alias) {
         if (alias != null) {
-            if (ClientCommandHandler.instance.getCommands().containsKey(alias.alias)) {
-                ClientCommandHandler.instance.getCommands().remove(alias.alias);
-            }
+            ClientCommandHandler.instance.getCommands().remove(alias.alias);
         }
     }
 
@@ -123,7 +119,7 @@ public class CustomAliases {
             key = 0;
         }
 
-        public Alias(String location, String command, String a, boolean toggled,int key) {
+        public Alias(String location, String command, String a, boolean toggled, int key) {
             this.location = location;
             this.command = command;
             this.alias = a;

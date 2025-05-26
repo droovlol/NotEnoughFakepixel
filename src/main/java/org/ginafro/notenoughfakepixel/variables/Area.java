@@ -1,5 +1,7 @@
 package org.ginafro.notenoughfakepixel.variables;
 
+import java.util.Arrays;
+
 public enum Area {
     NONE(""),
     VILLAGE("Village"),
@@ -59,7 +61,7 @@ public enum Area {
     SPIDER("Spider's Den"),
     BIRCH_PARK("Birch Park");
 
-    private String s;
+    private final String s;
 
     Area(String s) {
         this.s = s;
@@ -70,21 +72,15 @@ public enum Area {
     }
 
     public static Area getArea(String s) {
-        for (Area l : Area.values()) {
-            if (l.getArea().toLowerCase().contains(s.toLowerCase())) {
-                return l;
-            }
-        }
-        return NONE;
+        return Arrays.stream(Area.values())
+                .filter(l -> l.getArea().toLowerCase().contains(s.toLowerCase()))
+                .findFirst()
+                .orElse(NONE);
     }
 
     public static boolean locationExists(String s) {
-        for (Area l : Area.values()) {
-            if (s.equals(l.getArea())) {
-                return true;
-            }
-        }
-        return false;
+        return Arrays.stream(Area.values())
+                .anyMatch(l -> s.equals(l.getArea()));
     }
 
 }

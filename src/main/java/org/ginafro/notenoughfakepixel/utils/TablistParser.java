@@ -174,11 +174,6 @@ public class TablistParser {
                         deaths = Integer.parseInt(parts[1].replace(")", "").trim());
                     }
                 }
-                /*
-                // Extract Secrets Found
-                if (cleanLine.startsWith("Secrets Found: ")) {
-                    secretsFound = Integer.parseInt(cleanLine.substring(14).trim());
-                }*/
                 // Extract Crypts count
                 if (cleanLine.startsWith("Crypts: ")) {
                     if (cleanLine.substring(8).trim().contains("/")) {

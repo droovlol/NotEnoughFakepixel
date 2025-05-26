@@ -244,7 +244,7 @@ public class SpiritLeapHandler {
 
                 GL11.glPushMatrix();
                 GL11.glScalef(2.0F, 2.0F, 1.0F);
-                mc.fontRendererObj.drawStringWithShadow(name, (int) (nameX / 2), (int) (nameY / 2), color);
+                mc.fontRendererObj.drawStringWithShadow(name, nameX / 2, nameY / 2, color);
                 GL11.glPopMatrix();
 
                 mc.fontRendererObj.drawStringWithShadow(className, classX, classY, 0xAAAAAA);

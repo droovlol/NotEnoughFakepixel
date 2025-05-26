@@ -3,8 +3,6 @@ package org.ginafro.notenoughfakepixel.features.skyblock.overlays.inventory.invb
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.ginafro.notenoughfakepixel.utils.Utils;
 import org.lwjgl.input.Mouse;
@@ -15,29 +13,30 @@ public class ButtonEditor extends GuiButton {
 
     public boolean clicked = false;
     public int scrollOffset = 0;
+
     public ButtonEditor(int buttonId, int x, int y, int widthIn, int heightIn) {
         super(buttonId, x, y, widthIn, heightIn, "");
     }
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
-        if(enabled && visible){
+        if (enabled && visible) {
             GlStateManager.pushMatrix();
-            GlStateManager.color(1f,1f,1f);
+            GlStateManager.color(1f, 1f, 1f);
             GlStateManager.enableBlend();
             GlStateManager.enableAlpha();
             GlStateManager.disableLighting();
-            Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("notenoughfakepixel","invbuttons/editor.png"));
+            Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("notenoughfakepixel", "invbuttons/editor.png"));
             float scale = Utils.getScale();
-            drawScaledCustomSizeModalRect(xPosition,yPosition,0f,0f,width,height,width,height,width,height);
-            processClicks(mouseX,mouseY);
-            for(int i = 0;i < 5;i++) {
+            drawScaledCustomSizeModalRect(xPosition, yPosition, 0f, 0f, width, height, width, height, width, height);
+            processClicks(mouseX, mouseY);
+            for (int i = 0; i < 5; i++) {
                 float xStart = xPosition + 11 * Utils.getScale();
-                if(InvManager.selected != null){
-                    if(InvManager.selected.style == InvStyle.getStyle(i)){
+                if (InvManager.selected != null) {
+                    if (InvManager.selected.style == InvStyle.getStyle(i)) {
                         int x = (int) (xStart + (i * (33 * scale)));
-                        int y = (int)(yPosition + (50 * scale));
-                        drawRect(x,y,x + (int)(32 * scale),y+ (int)(32 * scale),new Color(0,152,0,152).getRGB());
+                        int y = (int) (yPosition + (50 * scale));
+                        drawRect(x, y, x + (int) (32 * scale), y + (int) (32 * scale), new Color(0, 152, 0, 152).getRGB());
                     }
                 }
             }
@@ -49,9 +48,9 @@ public class ButtonEditor extends GuiButton {
         boolean pressed = Mouse.isButtonDown(0);
         int xOff = mouseX - xPosition;
         int yOff = mouseY - yPosition;
-        if(yOff > (50 * Utils.getScale()) && yOff < (83 * Utils.getScale())){
+        if (yOff > (50 * Utils.getScale()) && yOff < (83 * Utils.getScale())) {
             float xStart = 11 * Utils.getScale();
-            for(int i = 0;i < 5;i++) {
+            for (int i = 0; i < 5; i++) {
                 int x = (int) (xStart + (i * (33 * Utils.getScale())));
                 if (xOff >= x && xOff < x + (32 * Utils.getScale())) {
                     if (InvManager.selected != null) {

@@ -107,7 +107,7 @@ public class Configuration {
         if ("editWarpHelperPosition".equals(runnableId)) {
             editOverlay(activeConfigCategory, 100, 30, Config.feature.diana.warpHelperPos);
         }
-        if("nefButtons".equals(runnableId)){
+        if ("nefButtons".equals(runnableId)) {
             Minecraft.getMinecraft().displayGuiScreen(new InventoryEditor());
         }
         // Debug runnables
@@ -116,6 +116,9 @@ public class Configuration {
         }
         if ("logScoreboard".equals(runnableId)) {
             ScoreboardUtils.getScoreboardLines().forEach(Logger::log);
+        }
+        if ("logIsInSkyblock".equals(runnableId)) {
+            Logger.log("Current Gamemode: " + ScoreboardUtils.currentGamemode + " | Is in Skyblock: " + ScoreboardUtils.currentGamemode.isSkyblock());
         }
     }
 

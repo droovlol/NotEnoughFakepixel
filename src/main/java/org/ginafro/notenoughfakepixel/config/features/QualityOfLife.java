@@ -118,6 +118,52 @@ public class QualityOfLife {
     public int qolWardrobeKey = Keyboard.KEY_R;
 
     @Expose
+    @ConfigOption(name = "Wardrobe Slot 1 Key", desc = "Keybind for wardrobe slot 1.")
+    @ConfigEditorKeybind(defaultKey = Keyboard.KEY_1)
+    @ConfigAccordionId(id = 4)
+    public int qolWardrobeKey1 = Keyboard.KEY_1;
+    @Expose
+    @ConfigOption(name = "Wardrobe Slot 2 Key", desc = "Keybind for wardrobe slot 2.")
+    @ConfigEditorKeybind(defaultKey = Keyboard.KEY_2)
+    @ConfigAccordionId(id = 4)
+    public int qolWardrobeKey2 = Keyboard.KEY_2;
+    @Expose
+    @ConfigOption(name = "Wardrobe Slot 3 Key", desc = "Keybind for wardrobe slot 3.")
+    @ConfigEditorKeybind(defaultKey = Keyboard.KEY_3)
+    @ConfigAccordionId(id = 4)
+    public int qolWardrobeKey3 = Keyboard.KEY_3;
+    @Expose
+    @ConfigOption(name = "Wardrobe Slot 4 Key", desc = "Keybind for wardrobe slot 4.")
+    @ConfigEditorKeybind(defaultKey = Keyboard.KEY_4)
+    @ConfigAccordionId(id = 4)
+    public int qolWardrobeKey4 = Keyboard.KEY_4;
+    @Expose
+    @ConfigOption(name = "Wardrobe Slot 5 Key", desc = "Keybind for wardrobe slot 5.")
+    @ConfigEditorKeybind(defaultKey = Keyboard.KEY_5)
+    @ConfigAccordionId(id = 4)
+    public int qolWardrobeKey5 = Keyboard.KEY_5;
+    @Expose
+    @ConfigOption(name = "Wardrobe Slot 6 Key", desc = "Keybind for wardrobe slot 6.")
+    @ConfigEditorKeybind(defaultKey = Keyboard.KEY_6)
+    @ConfigAccordionId(id = 4)
+    public int qolWardrobeKey6 = Keyboard.KEY_6;
+    @Expose
+    @ConfigOption(name = "Wardrobe Slot 7 Key", desc = "Keybind for wardrobe slot 7.")
+    @ConfigEditorKeybind(defaultKey = Keyboard.KEY_7)
+    @ConfigAccordionId(id = 4)
+    public int qolWardrobeKey7 = Keyboard.KEY_7;
+    @Expose
+    @ConfigOption(name = "Wardrobe Slot 8 Key", desc = "Keybind for wardrobe slot 8.")
+    @ConfigEditorKeybind(defaultKey = Keyboard.KEY_8)
+    @ConfigAccordionId(id = 4)
+    public int qolWardrobeKey8 = Keyboard.KEY_8;
+    @Expose
+    @ConfigOption(name = "Wardrobe Slot 9 Key", desc = "Keybind for wardrobe slot 9.")
+    @ConfigEditorKeybind(defaultKey = Keyboard.KEY_9)
+    @ConfigAccordionId(id = 4)
+    public int qolWardrobeKey9 = Keyboard.KEY_9;
+
+    @Expose
     @ConfigOption(name = "Pets Shortcut", desc = "Enable pets shortcut.")
     @ConfigEditorBoolean
     @ConfigAccordionId(id = 4)
@@ -273,6 +319,25 @@ public class QualityOfLife {
     @ConfigAccordionId(id = 6)
     public String resetItemValuesButton = "";
 
+    // Item Salvaging Subcategory
+
+    @Expose
+    @ConfigOption(name = "Item Salvaging", desc = "Settings for item salvaging.")
+    @ConfigEditorAccordion(id = 8)
+    public boolean itemSalvagingAccordion = false;
+
+    @Expose
+    @ConfigOption(name = "Legendary Prevention", desc = "Prevent salvaging LEGENDARY items.")
+    @ConfigEditorBoolean
+    @ConfigAccordionId(id = 8)
+    public boolean salvageLegendaryPrevention = true;
+
+    @Expose
+    @ConfigOption(name = "Epic Prevention", desc = "Prevent salvaging EPIC items.")
+    @ConfigEditorBoolean
+    @ConfigAccordionId(id = 8)
+    public boolean salvageEpicPrevention = false;
+
     // Player Size Subcategory
 
     @Expose
@@ -301,8 +366,8 @@ public class QualityOfLife {
     public boolean qolDisablePotionEffects = true;
 
     @Expose
-    //@ConfigOption(name = "Middle Click on skyblock GUIs", desc = "Enable middle click on skyblock GUIs.")
-    //@ConfigEditorBoolean
+    @ConfigOption(name = "Middle Click on skyblock GUIs", desc = "Enable middle click on skyblock GUIs.")
+    @ConfigEditorBoolean
     public boolean qolMiddleClickChests = false;
 
     @Expose
@@ -339,6 +404,11 @@ public class QualityOfLife {
     @ConfigOption(name = "Show Unclaimed Contests", desc = "Show unclaimed Jacob rewards.")
     @ConfigEditorBoolean
     public boolean qolShowJacobRewards = true;
+
+    @Expose
+    @ConfigOption(name = "Show Active Wardrobe slot", desc = "Show active wardrobe slot.")
+    @ConfigEditorBoolean
+    public boolean qolShowWardrobeSlot = true;
 
     @Expose
     @ConfigOption(name = "Disable Watchdog & Info Messages", desc = "Disable watchdog and info messages.")
@@ -385,14 +455,14 @@ public class QualityOfLife {
     @ConfigEditorBoolean
     public boolean qolReforgeHelper = true;
 
-    @Expose
-    @ConfigOption(name = "Damage Commas", desc = "Add commas to damage numbers.")
-    @ConfigEditorBoolean
+//    @Expose
+//    @ConfigOption(name = "Damage Commas", desc = "Add commas to damage numbers.")
+//    @ConfigEditorBoolean
     public boolean qolDmgCommas = false;
 
-    @Expose
-    @ConfigOption(name = "Damage Formatter", desc = "Format damage numbers (e.g., 167k instead of 167000).")
-    @ConfigEditorBoolean
+//    @Expose
+//    @ConfigOption(name = "Damage Formatter", desc = "Format damage numbers (e.g., 167k instead of 167000).")
+//    @ConfigEditorBoolean
     public boolean qolDmgFormatter = false;
 
     // Method to handle the reset button functionality

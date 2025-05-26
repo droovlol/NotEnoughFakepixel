@@ -48,7 +48,7 @@ public class MinibossAlert {
 
     @SubscribeEvent
     public void onReceivePacket(PacketReadEvent event) {
-        if (!(ScoreboardUtils.currentGamemode == Gamemode.SKYBLOCK)) return;
+        if (ScoreboardUtils.currentGamemode != Gamemode.SKYBLOCK) return;
         if (event.packet instanceof S29PacketSoundEffect) {
             S29PacketSoundEffect packet = (S29PacketSoundEffect) event.packet;
             if (packet.getSoundName().equals("random.explode") && packet.getVolume() == 0.6f && packet.getPitch() == 9 / 7f) {

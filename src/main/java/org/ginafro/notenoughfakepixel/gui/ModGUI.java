@@ -20,7 +20,7 @@ public abstract class ModGUI extends GuiScreen {
         super.drawScreen(mouseX, mouseY, partialTicks);
         int j;
         for (j = 0; j < this.buttons.size(); ++j) {
-            ((Button) this.buttons.get(j)).drawButton(this.mc, mouseX, mouseY);
+            this.buttons.get(j).drawButton(this.mc, mouseX, mouseY);
         }
     }
 

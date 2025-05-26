@@ -27,19 +27,14 @@ public class WardrobeShortcut {
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
         EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
 
-        // Check if the single key is pressed
         boolean keyPressed = Keyboard.isKeyDown(Config.feature.qol.qolWardrobeKey);
 
-        // If the key is pressed and it's not already active
         if (keyPressed && !activeKeySet.contains(Config.feature.qol.qolWardrobeKey)) {
-            // Execute the action
             player.sendChatMessage("/wardrobe");
 
-            // Mark this key as active
             activeKeySet.add(Config.feature.qol.qolWardrobeKey);
         }
 
-        // Clear key from activeKeySet when released
         if (!Keyboard.isKeyDown(Config.feature.qol.qolWardrobeKey)) {
             activeKeySet.remove(Config.feature.qol.qolWardrobeKey);
         }
@@ -59,21 +54,98 @@ public class WardrobeShortcut {
 
         EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
 
-        // Check if the single key is pressed
         boolean keyPressed = Keyboard.isKeyDown(Config.feature.qol.qolWardrobeKey);
 
-        // If the key is pressed and it's not already active
         if (keyPressed && !activeKeySet.contains(Config.feature.qol.qolWardrobeKey)) {
-            // Execute the action
-            Minecraft.getMinecraft().thePlayer.closeScreen(); // Close the chest
+            Minecraft.getMinecraft().thePlayer.closeScreen();
 
-            // Mark this key as active
             activeKeySet.add(Config.feature.qol.qolWardrobeKey);
         }
 
-        // Clear key from activeKeySet when released
         if (!Keyboard.isKeyDown(Config.feature.qol.qolWardrobeKey)) {
             activeKeySet.remove(Config.feature.qol.qolWardrobeKey);
+        }
+    }
+
+    private static final int[] WARDROBE_SLOTS = {36, 37, 38, 39, 40, 41, 42, 43, 44};
+    private int currentWindowId = -1;
+    private final boolean[] keyStates = new boolean[9];
+    private long lastClickTime = 0;
+
+    @SubscribeEvent
+    public void onGuiOpen(GuiScreenEvent.BackgroundDrawnEvent event) {
+        if (!(event.gui instanceof GuiChest)) {
+            resetState();
+            return;
+        }
+
+        GuiChest chestGui = (GuiChest) event.gui;
+        ContainerChest container = (ContainerChest) chestGui.inventorySlots;
+        String chestName = container.getLowerChestInventory().getDisplayName().getUnformattedText();
+
+        if (chestName.startsWith("Wardrobe")) {
+            currentWindowId = container.windowId;
+            handleWardrobeInput(chestGui);
+        } else {
+            resetState();
+        }
+    }
+
+    private void handleWardrobeInput(GuiChest chestGui) {
+        if (!ScoreboardUtils.currentGamemode.isSkyblock() ||
+                !Config.feature.qol.qolShortcutWardrobe) {
+            return;
+        }
+
+        Minecraft mc = Minecraft.getMinecraft();
+        long now = System.currentTimeMillis();
+
+        for (int slot = 0; slot < 9; slot++) {
+            int keyCode = getKeyCode(slot + 1);
+            boolean keyDown = Keyboard.isKeyDown(keyCode);
+
+            if (keyDown && !keyStates[slot] && (now - lastClickTime) > 100) {
+                clickSlot(chestGui, slot);
+                lastClickTime = now;
+                keyStates[slot] = true;
+            } else if (!keyDown) {
+                keyStates[slot] = false;
+            }
+        }
+    }
+
+    private void clickSlot(GuiChest chestGui, int slotIndex) {
+        Minecraft mc = Minecraft.getMinecraft();
+        if (mc.thePlayer == null || mc.playerController == null) return;
+
+        mc.playerController.windowClick(
+                currentWindowId,
+                WARDROBE_SLOTS[slotIndex],
+                0,
+                0,
+                mc.thePlayer
+        );
+    }
+
+    private int getKeyCode(int slot) {
+        switch (slot) {
+            case 1: return Config.feature.qol.qolWardrobeKey1;
+            case 2: return Config.feature.qol.qolWardrobeKey2;
+            case 3: return Config.feature.qol.qolWardrobeKey3;
+            case 4: return Config.feature.qol.qolWardrobeKey4;
+            case 5: return Config.feature.qol.qolWardrobeKey5;
+            case 6: return Config.feature.qol.qolWardrobeKey6;
+            case 7: return Config.feature.qol.qolWardrobeKey7;
+            case 8: return Config.feature.qol.qolWardrobeKey8;
+            case 9: return Config.feature.qol.qolWardrobeKey9;
+            default: return Keyboard.KEY_NONE;
+        }
+    }
+
+    private void resetState() {
+        currentWindowId = -1;
+        for (int i = 0; i < keyStates.length; i++) {
+            keyStates[i] = false;
         }
     }
 }

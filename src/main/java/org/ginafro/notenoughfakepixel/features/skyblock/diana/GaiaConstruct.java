@@ -4,12 +4,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 
 public class GaiaConstruct {
-    private Entity entity;
+    private final Entity entity;
     private float maxHp;
     private int state; // 0 -> 66-100% hp, 1 -> 33-66% hp, 2 -> 0-33% hp
     private boolean canBeHit;
     private int hits;
-    private int[] hitsNeeded;
+    private final int[] hitsNeeded;
 
     public GaiaConstruct(Entity entity) {
         this.entity = entity;

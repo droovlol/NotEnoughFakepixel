@@ -27,9 +27,9 @@ import java.util.List;
 
 @RegisterEvents
 public class WitherDoors {
-    private Minecraft mc = Minecraft.getMinecraft();
-    private List<BlockPos> allDoors = new ArrayList<>();
-    private Set<BlockPos> activeDoors = new HashSet<>();
+    private final Minecraft mc = Minecraft.getMinecraft();
+    private final List<BlockPos> allDoors = new ArrayList<>();
+    private final Set<BlockPos> activeDoors = new HashSet<>();
     private long lastUpdateTime = 0;
     private static final long UPDATE_INTERVAL = 1000;
 
@@ -160,6 +160,7 @@ public class WitherDoors {
         GL11.glPushMatrix();
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glLineWidth(2.0F);
@@ -177,6 +178,7 @@ public class WitherDoors {
 
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glPopMatrix();
     }

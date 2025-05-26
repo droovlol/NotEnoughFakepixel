@@ -180,7 +180,6 @@ public class WaterSolver {
         }
         BlockPos foundPistonHead = checkForBlock(Blocks.piston_head, 18, 57);
         if (foundPistonHead != null) {
-            //System.out.println("Found piston head");
             inWaterRoom = true;
             woolBlocks = detectWoolBlocks(foundPistonHead);
             for (int i = 0; i < woolBlocks.size(); i++) {

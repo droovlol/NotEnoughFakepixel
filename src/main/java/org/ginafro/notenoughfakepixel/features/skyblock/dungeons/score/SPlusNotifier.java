@@ -67,7 +67,6 @@ public class SPlusNotifier {
                 Minecraft.getMinecraft().thePlayer.sendChatMessage("/pc [NEF] S+ may not be reached by secrets only, do crypts or restart");
             }
             remindedUnreachable = true;
-            return;
         }
     }
 

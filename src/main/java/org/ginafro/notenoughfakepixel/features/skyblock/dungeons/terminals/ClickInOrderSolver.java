@@ -265,7 +265,7 @@ public class ClickInOrderSolver {
                 return;
             }
             int slotIndex = (row + 1) * 9 + (col + 1);
-            Slot slot = ((ContainerChest) container).getSlot(slotIndex);
+            Slot slot = container.getSlot(slotIndex);
             if (slot == null || slot.getStack() == null) {
                 event.setCanceled(true);
                 return;

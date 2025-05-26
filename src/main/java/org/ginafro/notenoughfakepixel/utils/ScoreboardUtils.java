@@ -13,10 +13,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
-import org.ginafro.notenoughfakepixel.variables.Area;
-import org.ginafro.notenoughfakepixel.variables.DungeonFloor;
-import org.ginafro.notenoughfakepixel.variables.Gamemode;
-import org.ginafro.notenoughfakepixel.variables.Location;
+import org.ginafro.notenoughfakepixel.variables.*;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -34,6 +31,9 @@ public class ScoreboardUtils {
     public static DungeonFloor currentFloor = DungeonFloor.NONE;
     public static int clearedPercentage = -1;
 
+    public static Slayer currentSlayer = Slayer.NONE;
+    public static boolean isSlayerActive = false;
+
     @Getter
     @Setter
     private static Pattern floorPattern = Pattern.compile(" §7⏣ §cThe Catacombs §7\\(<?floor>.{2}\\)");
@@ -41,10 +41,13 @@ public class ScoreboardUtils {
     public static void parseScoreboard() {
         Minecraft mc = Minecraft.getMinecraft();
 
-        if (!Config.feature.debug.enableOutOfFakepixel && !mc.getCurrentServerData().serverIP.contains("fakepixel")) return;
+        if (!Config.feature.debug.enableOutOfFakepixel && !mc.getCurrentServerData().serverIP.contains("fakepixel"))
+            return;
 
         if (!mc.isSingleplayer()) {
+            if (mc.theWorld == null) return;
             Scoreboard scoreboard = mc.theWorld.getScoreboard();
+            if (scoreboard == null) return;
             ScoreObjective objective = scoreboard.getObjectiveInDisplaySlot(1);
 
             if (objective != null) {
@@ -54,6 +57,7 @@ public class ScoreboardUtils {
                         .filter(score -> score != null && score.getPlayerName() != null && !score.getPlayerName().startsWith("#"))
                         .forEach(score -> {
                             String playerName = score.getPlayerName();
+                            String cleanName = StringUtils.stripControlCodes(playerName);
 
                             if (playerName.startsWith(" §7⏣ §cThe Catacombs §7")) {
                                 String floor = playerName.replaceAll(" §7⏣ §cThe Catacombs §7\\(", "").replaceAll("\\)", "");
@@ -61,10 +65,28 @@ public class ScoreboardUtils {
                             }
 
                             if (playerName.startsWith("§fDungeon Cleared: ")) {
-                                String percentage = StringUtils.stripControlCodes(playerName)
-                                        .replaceAll("Dungeon Cleared: ", "")
-                                        .replaceAll("%", "");
-                                clearedPercentage = Integer.parseInt(percentage);
+                                try {
+                                    clearedPercentage = Integer.parseInt(
+                                            cleanName.replace("Dungeon Cleared: ", "").replace("%", "")
+                                    );
+                                } catch (NumberFormatException e) {
+                                    clearedPercentage = -1;
+                                    Logger.log("Failed to parse cleared percentage from scoreboard: " + cleanName);
+                                }
+                            }
+
+                            if (cleanName.startsWith("Voidgloom Seraph")) currentSlayer = Slayer.VOIDGLOOM;
+                            else if (cleanName.startsWith("Inferno Demonlord")) currentSlayer = Slayer.INFERNO;
+                            else if (cleanName.startsWith("Sven Packmaster")) currentSlayer = Slayer.SVEN;
+                            else if (cleanName.startsWith("Revenant Horror")) currentSlayer = Slayer.REVENANT;
+                            else if (cleanName.startsWith("Tarantula Broodfather")) currentSlayer = Slayer.TARANTULA;
+
+                            if (cleanName.contains("Slay the boss!")) {
+                                isSlayerActive = true;
+                            }
+
+                            if (cleanName.contains(") Kills") || cleanName.contains("Quest Failed") || cleanName.contains("Boss slain!")) {
+                                isSlayerActive = false;
                             }
                         });
             }

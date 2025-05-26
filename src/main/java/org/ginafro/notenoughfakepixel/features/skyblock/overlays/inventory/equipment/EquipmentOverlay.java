@@ -119,9 +119,9 @@ public class EquipmentOverlay {
 
         for (int i = 0; i < list.size(); ++i) {
             if (i == 0) {
-                list.set(i, stack.getRarity().rarityColor + (String) list.get(i));
+                list.set(i, stack.getRarity().rarityColor + list.get(i));
             } else {
-                list.set(i, EnumChatFormatting.GRAY + (String) list.get(i));
+                list.set(i, EnumChatFormatting.GRAY + list.get(i));
             }
         }
 

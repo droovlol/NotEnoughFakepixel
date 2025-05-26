@@ -1,13 +1,13 @@
 package org.ginafro.notenoughfakepixel.utils;
 
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.nbt.NBTUtil;
+import org.ginafro.notenoughfakepixel.variables.Rarity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -54,7 +54,7 @@ public class ItemUtils {
         return skulls;
     }
 
-    public static ItemStack createSkullWithTexture(String name ,String textureHash) {
+    public static ItemStack createSkullWithTexture(String name, String textureHash) {
         ItemStack skull = new ItemStack(Items.skull, 1, 3); // 3 = player head
 
         NBTTagCompound skullTag = new NBTTagCompound();
@@ -116,21 +116,40 @@ public class ItemUtils {
         return null;
     }
 
-    public static String getLoreLine(ItemStack item, Pattern matcher) {
-        if (!item.hasTagCompound()) return null;
-        if (!item.getTagCompound().hasKey("display")) return null;
-        if (!item.getTagCompound().getCompoundTag("display").hasKey("Lore")) return null;
+    public static Rarity getRarity(ItemStack item) {
+        if (item == null || !item.hasTagCompound()) return Rarity.NONE;
+
+        List<String> loreLines = getLoreLines(item);
+        if (loreLines.isEmpty()) return Rarity.NONE;
+
+        String clean = StringUtils.cleanColor(loreLines.get(loreLines.size() - 1));
+        return Optional.ofNullable(Rarity.fromString(clean)).orElse(Rarity.NONE);
+    }
+
+    public static List<String> getLoreLines(ItemStack item) {
+        if (item == null || !item.hasTagCompound()) return Collections.emptyList();
 
         NBTTagCompound displayTag = item.getTagCompound().getCompoundTag("display");
+        if (displayTag == null || !displayTag.hasKey("Lore")) return Collections.emptyList();
+
         NBTTagList lore = displayTag.getTagList("Lore", 8);
+        List<String> loreLines = new ArrayList<>();
 
         for (int i = 0; i < lore.tagCount(); i++) {
-            String line = lore.getStringTagAt(i);
-            if (matcher.matcher(line).matches()) return line;
-
+            loreLines.add(lore.getStringTagAt(i));
         }
 
-        return null;
+        return loreLines;
+    }
+
+    public static String getLoreLine(ItemStack item, Pattern matcher) {
+        List<String> lore = getLoreLines(item);
+        if (lore.isEmpty()) return null;
+
+        return lore.stream()
+                .filter(line -> matcher.matcher(line).matches())
+                .findFirst()
+                .orElse(null);
     }
 
     public static boolean hasSkinValue(String value, ItemStack item) {
@@ -147,5 +166,17 @@ public class ItemUtils {
             if (texture.hasKey("Value") && texture.getString("Value").equals(value)) return true;
         }
         return false;
+    }
+
+    public static boolean isSkyblockItem(ItemStack item) {
+        if (item == null) return false;
+        if (!item.hasTagCompound()) return false;
+        if (!item.getTagCompound().hasKey("ExtraAttributes")) return false;
+        NBTTagCompound extraAttributes = item.getTagCompound().getCompoundTag("ExtraAttributes");
+        return extraAttributes.hasKey("id");
+    }
+
+    public static boolean isMenuItem(ItemStack item) {
+        return item.getDisplayName().trim().isEmpty() && Item.getItemFromBlock(Blocks.stained_glass_pane) == item.getItem() && item.getItemDamage() == 15;
     }
 }

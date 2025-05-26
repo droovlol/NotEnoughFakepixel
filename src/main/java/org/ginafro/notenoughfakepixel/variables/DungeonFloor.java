@@ -1,5 +1,7 @@
 package org.ginafro.notenoughfakepixel.variables;
 
+import java.util.Arrays;
+
 public enum DungeonFloor {
     NONE(-1, -1),
     E0(20, -120),
@@ -36,12 +38,10 @@ public enum DungeonFloor {
     }
 
     public static DungeonFloor getFloor(String fromValue) {
-        for (DungeonFloor floor : DungeonFloor.values()) {
-            if (floor.name().equals(fromValue)) {
-                return floor;
-            }
-        }
-        return DungeonFloor.NONE;
+        return Arrays.stream(DungeonFloor.values())
+                .filter(floor -> floor.name().equals(fromValue))
+                .findFirst()
+                .orElse(DungeonFloor.NONE);
     }
 
 }

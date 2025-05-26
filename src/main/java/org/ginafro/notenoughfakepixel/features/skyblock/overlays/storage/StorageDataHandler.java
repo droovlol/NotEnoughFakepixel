@@ -2,7 +2,6 @@ package org.ginafro.notenoughfakepixel.features.skyblock.overlays.storage;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.ContainerChest;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
@@ -29,12 +28,6 @@ public class StorageDataHandler {
                 }
             }
         }
-    }
-
-    public static boolean isItemSearched(ItemStack stack) {
-
-
-        return false;
     }
 
     @SubscribeEvent

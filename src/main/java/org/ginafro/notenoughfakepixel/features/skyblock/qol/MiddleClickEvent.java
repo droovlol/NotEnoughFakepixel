@@ -3,10 +3,12 @@ package org.ginafro.notenoughfakepixel.features.skyblock.qol;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.inventory.ContainerChest;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
+import org.ginafro.notenoughfakepixel.utils.ItemUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.input.Mouse;
 
@@ -18,10 +20,16 @@ public class MiddleClickEvent {
 
     private static final Minecraft mc = Minecraft.getMinecraft();
 
-    private static final List<String> excludedNames = Arrays.asList(
-            "Chest", "Large Chest", "Anvil", "Storage", "Drill Anvil", "Enchant Item",
-            "Runic Pedestal", "Rune Removal", "Reforge Anvil", "Reforge Item",
-            "Offer Pets", "Exp Sharing", "Convert to Dungeon Item", "Upgrade Item", "Accessory Bag"
+    private static final List<String> menuWhitelist = Arrays.asList(
+            "Skyblock Menu", "Chronomatron", "Experiment Over", "Ultrasequencer", "Superpairs",
+            "Coop Bank Account", "Booster Cookie", "Pets", "Storage", "Your Museum", "Museum",
+            "Settings", "Autopet", "Quest Log", "Trades", "Profiles"
+
+    );
+
+    private static final List<String> itemWhitelist = Arrays.asList(
+            "Go Back", "Close", "« First Page", "Last Page »", "Next Page →", "← Previous Page", "Enable Favorites",
+            "Chocolate", "Rabbit", "CLICK ME"
     );
 
     @SubscribeEvent
@@ -31,14 +39,35 @@ public class MiddleClickEvent {
         if (Mouse.getEventButton() != 0 || !Mouse.getEventButtonState()) return;
         if (!(mc.currentScreen instanceof GuiChest)) return;
 
+
         GuiChest chestGui = (GuiChest) mc.currentScreen;
         ContainerChest container = (ContainerChest) chestGui.inventorySlots;
         String chestName = container.getLowerChestInventory().getDisplayName().getUnformattedText();
 
+        if (!isValidClick(chestGui)) return;
+
         // Exclusion checks
-        if (excludedNames.contains(chestName)) return;
-        if (chestName.startsWith("Wardrobe") || chestName.startsWith("Ender Chest") || chestName.contains("Backpack"))
+        if (menuWhitelist.stream().anyMatch(name -> name.contains(chestName))) {
+            registerMiddleClickEvent(event, chestGui);
             return;
+        }
+
+        ItemStack item = container.getSlot(chestGui.getSlotUnderMouse().slotNumber).getStack();
+        if (ItemUtils.isMenuItem(item) || itemWhitelist.stream().anyMatch(itemName -> item.getDisplayName().contains(itemName))) {
+            registerMiddleClickEvent(event, chestGui);
+        }
+    }
+
+    private boolean isValidClick(GuiChest chestGui) {
+        ContainerChest container = (ContainerChest) chestGui.inventorySlots;
+        if (chestGui.getSlotUnderMouse() == null || container == null || container.getSlot(chestGui.getSlotUnderMouse().slotNumber).getStack() == null)
+            return false;
+        return container.getSlot(chestGui.getSlotUnderMouse().slotNumber).getStack().getDisplayName() != null;
+    }
+
+
+    private void registerMiddleClickEvent(GuiScreenEvent.MouseInputEvent.Pre event, GuiChest chestGui) {
+        ContainerChest container = (ContainerChest) chestGui.inventorySlots;
 
         event.setCanceled(true);
 

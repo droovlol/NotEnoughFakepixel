@@ -6,7 +6,6 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -24,7 +23,7 @@ import java.util.List;
 public class InventoryEditor extends GuiScreen {
 
     public ButtonEditor editor;
-    public GuiTextField commandField,searchBar;
+    public GuiTextField commandField, searchBar;
     private InventoryButton draggedButton = null;
     private int dragOffsetX = 0;
     private int dragOffsetY = 0;
@@ -32,6 +31,7 @@ public class InventoryEditor extends GuiScreen {
     private boolean clicked = false;
     private int rows = 5;
     private final int GRID_SIZE = 16;
+
     @Override
     public void initGui() {
         mc = Minecraft.getMinecraft();
@@ -44,14 +44,14 @@ public class InventoryEditor extends GuiScreen {
         InvManager.load();
         editor = new ButtonEditor(0, editorX, editorY, editorWidth, editorHeight);
         this.buttonList.add(editor);
-        this.buttonList.add(new GuiButton(2, (int) (this.width - (35 * Utils.getScale())),editorY + editorHeight + (int)(35 * Utils.getScale()),(int)(30*scale),(int)(30*scale),"+"));
-        this.buttonList.add(new GuiButton(4, (int) (this.width - (70 * Utils.getScale())),editorY + editorHeight + (int)(35 * Utils.getScale()),(int)(30*scale),(int)(30*scale),"-"));
-        searchBar = new GuiTextField(3,mc.fontRendererObj,
-                (int)(editorX + (12 * scale)),
-                (int)(editorY + (105 * scale)),
-                (int)(282 * scale),
-                (int)(20 * scale)
-                );
+        this.buttonList.add(new GuiButton(2, (int) (this.width - (35 * Utils.getScale())), editorY + editorHeight + (int) (35 * Utils.getScale()), (int) (30 * scale), (int) (30 * scale), "+"));
+        this.buttonList.add(new GuiButton(4, (int) (this.width - (70 * Utils.getScale())), editorY + editorHeight + (int) (35 * Utils.getScale()), (int) (30 * scale), (int) (30 * scale), "-"));
+        searchBar = new GuiTextField(3, mc.fontRendererObj,
+                (int) (editorX + (12 * scale)),
+                (int) (editorY + (105 * scale)),
+                (int) (282 * scale),
+                (int) (20 * scale)
+        );
         commandField = new GuiTextField(1, mc.fontRendererObj,
                 (int) (editorX + (10 * scale)),
                 (int) (editorY + (10 * scale)),
@@ -60,13 +60,12 @@ public class InventoryEditor extends GuiScreen {
         );
         searchBar.setEnableBackgroundDrawing(false);
         commandField.setEnableBackgroundDrawing(false);
-        commandField.setTextColor(new Color(121,132,185).getRGB());
-        searchBar.setTextColor(new Color(44,53,77).getRGB());
+        commandField.setTextColor(new Color(121, 132, 185).getRGB());
+        searchBar.setTextColor(new Color(44, 53, 77).getRGB());
         InvManager.loadItemStacks();
         System.out.println(InvManager.itemMap.size());
         rows = InvManager.itemMap.size() / 8;
     }
-
 
 
     @Override
@@ -112,7 +111,7 @@ public class InventoryEditor extends GuiScreen {
         InvManager.drawButtons();
         commandField.drawTextBox();
         searchBar.drawTextBox();
-        if(InvManager.selected != null){
+        if (InvManager.selected != null) {
             InvManager.selected.cmd = commandField.getText().isEmpty() ? InvManager.selected.cmd : commandField.getText();
         }
         float scale = Utils.getScale();
@@ -120,13 +119,13 @@ public class InventoryEditor extends GuiScreen {
                 this.height / 2 - 83,
                 this.width / 2 + 88,
                 this.height / 2 + 83,
-                new Color(255,255,255,88).getRGB());
-        mc.fontRendererObj.drawString("Inventory Here",this.width / 2 - mc.fontRendererObj.getStringWidth("Inventory Here"),this.height / 2,-1);
-        if(searchBar.getText().isEmpty()){
-            mc.fontRendererObj.drawString("Search Bar", searchBar.xPosition, searchBar.yPosition, new Color(44,53,77).getRGB(),true);
+                new Color(255, 255, 255, 88).getRGB());
+        mc.fontRendererObj.drawString("Inventory Here", this.width / 2 - mc.fontRendererObj.getStringWidth("Inventory Here"), this.height / 2, -1);
+        if (searchBar.getText().isEmpty()) {
+            mc.fontRendererObj.drawString("Search Bar", searchBar.xPosition, searchBar.yPosition, new Color(44, 53, 77).getRGB(), true);
         }
-        if(commandField.getText().isEmpty()){
-            mc.fontRendererObj.drawString("Command Here", commandField.xPosition,commandField.yPosition,new Color(121,132,185).getRGB(),true);
+        if (commandField.getText().isEmpty()) {
+            mc.fontRendererObj.drawString("Command Here", commandField.xPosition, commandField.yPosition, new Color(121, 132, 185).getRGB(), true);
         }
         List<ItemStack> visibleItems = new ArrayList<>();
         String query = searchBar.getText().toLowerCase();
@@ -195,9 +194,9 @@ public class InventoryEditor extends GuiScreen {
         } else {
             scrollOffset++;
         }
-        if(scrollOffset > (rows-9)){
-            scrollOffset = rows-9;
-        }else if(scrollOffset < 0){
+        if (scrollOffset > (rows - 9)) {
+            scrollOffset = rows - 9;
+        } else if (scrollOffset < 0) {
             scrollOffset = 0;
         }
     }
@@ -205,8 +204,8 @@ public class InventoryEditor extends GuiScreen {
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
-        commandField.mouseClicked(mouseX,mouseY,mouseButton);
-        searchBar.mouseClicked(mouseX,mouseY,mouseButton);
+        commandField.mouseClicked(mouseX, mouseY, mouseButton);
+        searchBar.mouseClicked(mouseX, mouseY, mouseButton);
         if (mouseButton == 0) {
             for (InventoryButton b : InvManager.buttons) {
                 if (b.isHovered(mouseX, mouseY)) {
@@ -242,7 +241,7 @@ public class InventoryEditor extends GuiScreen {
 
             int snappedX = Math.round(unscaledX / (float) GRID_SIZE) * GRID_SIZE;
             int snappedY = Math.round(unscaledY / (float) GRID_SIZE) * GRID_SIZE;
-            if(Config.feature.overlays.snapGrid) {
+            if (Config.feature.overlays.snapGrid) {
                 draggedButton.x = snappedX;
                 draggedButton.y = snappedY;
             }
@@ -254,31 +253,31 @@ public class InventoryEditor extends GuiScreen {
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         super.keyTyped(typedChar, keyCode);
-        if(keyCode == Keyboard.KEY_ESCAPE){
-            if(commandField.isFocused()){
+        if (keyCode == Keyboard.KEY_ESCAPE) {
+            if (commandField.isFocused()) {
                 commandField.setFocused(false);
-            } else if(searchBar.isFocused()){
+            } else if (searchBar.isFocused()) {
                 searchBar.setFocused(false);
-            }else {
+            } else {
                 Minecraft.getMinecraft().displayGuiScreen(null);
             }
         }
-        if(keyCode == Minecraft.getMinecraft().gameSettings.keyBindInventory.getKeyCode()){
-            if(!commandField.isFocused() && !searchBar.isFocused()){
+        if (keyCode == Minecraft.getMinecraft().gameSettings.keyBindInventory.getKeyCode()) {
+            if (!commandField.isFocused() && !searchBar.isFocused()) {
                 Minecraft.getMinecraft().displayGuiScreen(null);
             }
         }
-        searchBar.textboxKeyTyped(typedChar,keyCode);
-        commandField.textboxKeyTyped(typedChar,keyCode);
+        searchBar.textboxKeyTyped(typedChar, keyCode);
+        commandField.textboxKeyTyped(typedChar, keyCode);
     }
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        if(button.id == 2){
-            InvManager.addButton(new InventoryButton(InvManager.buttons.size(),15,15,32,"command",new ItemStack(Items.skull),InvStyle.VANILLA));
+        if (button.id == 2) {
+            InvManager.addButton(new InventoryButton(InvManager.buttons.size(), 15, 15, 32, "command", new ItemStack(Items.skull), InvStyle.VANILLA));
         }
-        if(button.id == 4){
-            if(InvManager.selected != null){
+        if (button.id == 4) {
+            if (InvManager.selected != null) {
                 InvManager.removeButton(InvManager.selected);
                 InvManager.selected = null;
             }

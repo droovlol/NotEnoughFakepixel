@@ -20,9 +20,9 @@ public enum F7ColorsDict {
     RED("red", 14, 1),
     BLACK("black", 15, 0);
 
-    String color;
-    int main;
-    int dye;
+    final String color;
+    final int main;
+    final int dye;
 
     F7ColorsDict(String color, int main, int dye) {
         this.color = color;
@@ -48,6 +48,7 @@ public enum F7ColorsDict {
         return NONE;
     }
 
+    @Override
     public String toString() {
         return this.color;
     }
