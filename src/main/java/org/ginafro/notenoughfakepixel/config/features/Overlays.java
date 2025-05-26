@@ -14,7 +14,7 @@ public class Overlays {
     @ConfigOption(name = "Storage Overlay", desc = "Redesign of Storage GUI")
     @ConfigEditorBoolean
     @ConfigAccordionId(id = 0)
-    public boolean storageOverlay = true;
+    public boolean storageOverlay = false;
 
     @Expose
     @ConfigOption(name = "Storage Search", desc = "Add a search bar to storage gui(Requires Storage Overlay)")

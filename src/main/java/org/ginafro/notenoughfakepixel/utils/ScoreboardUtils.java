@@ -65,10 +65,14 @@ public class ScoreboardUtils {
                             }
 
                             if (playerName.startsWith("§fDungeon Cleared: ")) {
-                                cleanName
-                                        .replaceAll("Dungeon Cleared: ", "")
-                                        .replaceAll("%", "");
-                                clearedPercentage = Integer.parseInt(cleanName);
+                                try {
+                                    clearedPercentage = Integer.parseInt(
+                                            cleanName.replace("Dungeon Cleared: ", "").replace("%", "")
+                                    );
+                                } catch (NumberFormatException e) {
+                                    clearedPercentage = -1;
+                                    Logger.log("Failed to parse cleared percentage from scoreboard: " + cleanName);
+                                }
                             }
 
                             if (cleanName.startsWith("Voidgloom Seraph")) currentSlayer = Slayer.VOIDGLOOM;
