@@ -41,7 +41,7 @@ public class DragonCloseAlert {
     @SubscribeEvent
     public void chat(ClientChatReceivedEvent e){
         if(e.message.getUnformattedText().contains("WITHER KING")){
-            if(e.message.getUnformattedText().contains("I have nothing left to fight for, I finally had peace.") || e.message.getUnformattedText().contains("We will decide it all, here, now.")){
+            if(e.message.getUnformattedText().contains("I have nothing left to fight for, I finally had peace.") || e.message.getUnformattedText().contains("We will decide it all, here, now.") || e.message.getUnformattedText().contains("The Catacombs... are no more")){
                 isFinalPhase = true;
             }
         }

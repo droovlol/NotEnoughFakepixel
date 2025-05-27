@@ -483,6 +483,11 @@ public class Dungeons {
     public String mm7 = "";
 
     @Expose
+    @ConfigOption(name = "M7 Relic waypoints", desc = "Render waypoints for relics")
+    @ConfigAccordionId(id = 6)
+    public boolean m7Relics = true;
+
+    @Expose
     @ConfigOption(name = "Distance Box", desc = "Render an outline which shows how far the dragon can be to be near the status")
     @ConfigAccordionId(id = 6)
     public boolean distBox = true;

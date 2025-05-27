@@ -51,6 +51,7 @@ public class RenderUtils {
             GlStateManager.pushMatrix();
             GlStateManager.translate(0, 0, 300); // Bring the text to the foreground
             GlStateManager.enableBlend();
+            GlStateManager.disableLighting();
             GlStateManager.disableDepth();
 
             // Render the string
@@ -59,6 +60,7 @@ public class RenderUtils {
             // Restore OpenGL states
             GlStateManager.enableDepth();
             GlStateManager.disableBlend();
+            GlStateManager.enableLighting();
             GlStateManager.popMatrix();
         }
     }
@@ -85,7 +87,7 @@ public class RenderUtils {
         RenderUtils.renderBeaconBeam(x, y, z, rgb, 1.0f, partialTicks, distSq > 10 * 10);
     }
 
-    private static void renderBeaconBeam(
+    public static void renderBeaconBeam(
             double x, double y, double z, int rgb, float alphaMult,
             float partialTicks, Boolean disableDepth
     ) {
@@ -103,7 +105,6 @@ public class RenderUtils {
         Minecraft.getMinecraft().getTextureManager().bindTexture(beaconBeam);
         GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
         GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
-        GlStateManager.disableLighting();
         GlStateManager.enableCull();
         GlStateManager.enableTexture2D();
         GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ONE, GL11.GL_ZERO);
@@ -170,7 +171,6 @@ public class RenderUtils {
         worldrenderer.pos(x + 0.2D, y + topOffset, z + 0.2D).tex(0.0D, d13).color(r, g, b, alphaConst * alphaMult).endVertex();
         tessellator.draw();
 
-        GlStateManager.disableLighting();
         GlStateManager.enableTexture2D();
         if (disableDepth) {
             GlStateManager.enableDepth();
@@ -714,6 +714,7 @@ public class RenderUtils {
      */
     private static void setupGlStateForBox() {
         GlStateManager.disableTexture2D();
+        GlStateManager.disableLighting();
         GlStateManager.enableBlend();
         GlStateManager.disableCull(); // So we can see all faces
         GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
@@ -727,6 +728,7 @@ public class RenderUtils {
     private static void restoreGlState() {
         GlStateManager.enableCull();
         GlStateManager.disableBlend();
+        GlStateManager.enableLighting();
         GlStateManager.enableTexture2D();
         GlStateManager.popAttrib();
     }
@@ -885,6 +887,7 @@ public class RenderUtils {
     public static void renderWaypointText(String str, BlockPos loc, float partialTicks) {
         GlStateManager.alphaFunc(516, 0.1F);
         GlStateManager.pushMatrix();
+        GlStateManager.disableLighting();
 
         Entity viewer = Minecraft.getMinecraft().getRenderViewEntity();
         double viewerX = viewer.lastTickPosX + (viewer.posX - viewer.lastTickPosX) * partialTicks;
@@ -918,8 +921,8 @@ public class RenderUtils {
 
         drawNametag(EnumChatFormatting.YELLOW.toString() + Math.round(dist) + "m");
 
+        GlStateManager.enableLighting();
         GlStateManager.popMatrix();
-        GlStateManager.disableLighting();
     }
 
     public static void drawNametag(String str) {
@@ -936,6 +939,7 @@ public class RenderUtils {
         GlStateManager.depthMask(false);
         GlStateManager.disableDepth();
         GlStateManager.enableBlend();
+        GlStateManager.disableLighting();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
@@ -955,6 +959,7 @@ public class RenderUtils {
         fontrenderer.drawString(str, -fontrenderer.getStringWidth(str) / 2, i, -1);
         GlStateManager.enableDepth();
         GlStateManager.enableBlend();
+        GlStateManager.enableLighting();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.popMatrix();
     }
@@ -979,8 +984,76 @@ public class RenderUtils {
         GlStateManager.translate(realX, realY, realZ);
         GlStateManager.disableBlend();
         GlStateManager.enableAlpha();
+        GlStateManager.enableLighting();
         GlStateManager.enableTexture2D();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.popMatrix();
+    }
+    public static void renderBoundingBox(BlockPos pos, int rgb, float partialTicks) {
+        double playerX = Minecraft.getMinecraft().thePlayer.prevPosX + (Minecraft.getMinecraft().thePlayer.posX - Minecraft.getMinecraft().thePlayer.prevPosX) * partialTicks;
+        double playerY = Minecraft.getMinecraft().thePlayer.prevPosY + (Minecraft.getMinecraft().thePlayer.posY - Minecraft.getMinecraft().thePlayer.prevPosY) * partialTicks;
+        double playerZ = Minecraft.getMinecraft().thePlayer.prevPosZ + (Minecraft.getMinecraft().thePlayer.posZ - Minecraft.getMinecraft().thePlayer.prevPosZ) * partialTicks;
+
+        double x = pos.getX() - playerX;
+        double y = pos.getY() - playerY;
+        double z = pos.getZ() - playerZ;
+
+        float r = ((rgb >> 16) & 0xFF) / 255.0f;
+        float g = ((rgb >> 8) & 0xFF) / 255.0f;
+        float b = (rgb & 0xFF) / 255.0f;
+
+        GlStateManager.pushMatrix();
+        GlStateManager.disableTexture2D();
+        GlStateManager.disableDepth();
+        GlStateManager.enableBlend();
+        GlStateManager.disableLighting();
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glLineWidth(2.0f);
+
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldRenderer = tessellator.getWorldRenderer();
+        worldRenderer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+
+        double minX = x, maxX = x + 1;
+        double minY = y, maxY = y + 1;
+        double minZ = z, maxZ = z + 1;
+
+        // Bottom face
+        worldRenderer.pos(minX, minY, minZ).color(r, g, b, 1.0f).endVertex();
+        worldRenderer.pos(maxX, minY, minZ).color(r, g, b, 1.0f).endVertex();
+        worldRenderer.pos(maxX, minY, minZ).color(r, g, b, 1.0f).endVertex();
+        worldRenderer.pos(maxX, minY, maxZ).color(r, g, b, 1.0f).endVertex();
+        worldRenderer.pos(maxX, minY, maxZ).color(r, g, b, 1.0f).endVertex();
+        worldRenderer.pos(minX, minY, maxZ).color(r, g, b, 1.0f).endVertex();
+        worldRenderer.pos(minX, minY, maxZ).color(r, g, b, 1.0f).endVertex();
+        worldRenderer.pos(minX, minY, minZ).color(r, g, b, 1.0f).endVertex();
+
+        // Top face
+        worldRenderer.pos(minX, maxY, minZ).color(r, g, b, 1.0f).endVertex();
+        worldRenderer.pos(maxX, maxY, minZ).color(r, g, b, 1.0f).endVertex();
+        worldRenderer.pos(maxX, maxY, minZ).color(r, g, b, 1.0f).endVertex();
+        worldRenderer.pos(maxX, maxY, maxZ).color(r, g, b, 1.0f).endVertex();
+        worldRenderer.pos(maxX, maxY, maxZ).color(r, g, b, 1.0f).endVertex();
+        worldRenderer.pos(minX, maxY, maxZ).color(r, g, b, 1.0f).endVertex();
+        worldRenderer.pos(minX, maxY, maxZ).color(r, g, b, 1.0f).endVertex();
+        worldRenderer.pos(minX, maxY, minZ).color(r, g, b, 1.0f).endVertex();
+
+        // Vertical edges
+        worldRenderer.pos(minX, minY, minZ).color(r, g, b, 1.0f).endVertex();
+        worldRenderer.pos(minX, maxY, minZ).color(r, g, b, 1.0f).endVertex();
+        worldRenderer.pos(maxX, minY, minZ).color(r, g, b, 1.0f).endVertex();
+        worldRenderer.pos(maxX, maxY, minZ).color(r, g, b, 1.0f).endVertex();
+        worldRenderer.pos(maxX, minY, maxZ).color(r, g, b, 1.0f).endVertex();
+        worldRenderer.pos(maxX, maxY, maxZ).color(r, g, b, 1.0f).endVertex();
+        worldRenderer.pos(minX, minY, maxZ).color(r, g, b, 1.0f).endVertex();
+        worldRenderer.pos(minX, maxY, maxZ).color(r, g, b, 1.0f).endVertex();
+
+        tessellator.draw();
+
+        GlStateManager.enableDepth();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+        GlStateManager.enableLighting();
         GlStateManager.popMatrix();
     }
 }
