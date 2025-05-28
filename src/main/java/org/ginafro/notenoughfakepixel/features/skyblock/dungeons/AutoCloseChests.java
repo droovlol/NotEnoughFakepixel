@@ -7,6 +7,7 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
+import org.ginafro.notenoughfakepixel.events.SecretChestOpenedEvent;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 
 @RegisterEvents
@@ -28,6 +29,7 @@ public class AutoCloseChests {
             String chestName = chestContainer.getLowerChestInventory().getDisplayName().getUnformattedText();
             // Check if the chest name matches the target and cancel the event
             if (TARGET_CHEST_NAME.equals(chestName)) {
+                new SecretChestOpenedEvent(chestGui).post();
                 Minecraft.getMinecraft().thePlayer.closeScreen(); // Close the chest
             }
         }
