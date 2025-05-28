@@ -21,7 +21,6 @@ public class StorageDataHandler {
                     CustomConfigHandler.saveStorageData(data);
                     return;
                 }
-                System.out.println(chest.getLowerChestInventory().getDisplayName().getUnformattedText());
                 if (chest.getLowerChestInventory().getDisplayName().getUnformattedText().contains("Backpack")) {
                     StorageData data = new StorageData(chest);
                     CustomConfigHandler.saveStorageData(data);

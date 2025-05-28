@@ -478,23 +478,72 @@ public class Dungeons {
     public float dungeonsScaleItemDrop = 3.5f;
 
     @Expose
-    @ConfigOption(name = "Master Mode 7",desc = "Featuers related to M7")
+    @ConfigOption(name = "Secrets", desc = "Settings related to secrets")
     @ConfigEditorAccordion(id = 6)
-    public String mm7 = "";
+    public boolean secrets = true;
+
+    @Expose
+    @ConfigOption(name = "Secrets Display", desc = "Whether to display secrets ")
+    @ConfigEditorBoolean
+    @ConfigAccordionId(id = 6)
+    public boolean secretDisplay = false;
+
+    @Expose
+    @ConfigOption(name = "Secret Render Type",desc = "How u want the secrets to be rendered")
+    @ConfigEditorDropdown(values = {"Only Highlight","Waypoint + Highlight","All","Waypoint Only", "Text and Highlight"}, initialIndex = 4)
+    @ConfigAccordionId(id = 6)
+    public int secretRender = 4;
+    @Expose
+    @ConfigOption(name = "Update Delay",desc = "How long the game should wait before updating roomData")
+    @ConfigEditorSlider(minValue = 1,maxValue = 30,minStep = 0.1f)
+    @ConfigAccordionId(id = 6)
+    public float secretUpdate = 5;
+
+    @Expose
+    @ConfigOption(name = "Chest Secret Color", desc = "Color of chest based secrets")
+    @ConfigEditorColour
+    @ConfigAccordionId(id = 6)
+    public String chestColor = "0:129:0:255:0";
+
+
+    @Expose
+    @ConfigOption(name = "Entrance Secret Color", desc = "Color of wall/entrance/mushroom/lever based secrets")
+    @ConfigEditorColour
+    @ConfigAccordionId(id = 6)
+    public String wallColor = "0:90:0:32:255";
+
+
+    @Expose
+    @ConfigOption(name = "Item Secret Color", desc = "Color of item/bat based secrets")
+    @ConfigEditorColour
+    @ConfigAccordionId(id = 6)
+    public String itemColor = "0:70:244:0:255";
+
+
+    @Expose
+    @ConfigOption(name = "Essence Secret Color", desc = "Color of essence based secrets")
+    @ConfigEditorColour
+    @ConfigAccordionId(id = 6)
+    public String essenceColor = "0:68:0:255:189";
+
+    @Expose
+    @ConfigOption(name = "Master Mode 7",desc = "Featuers related to M7")
+    @ConfigEditorAccordion(id = 7)
+    public boolean mm7 = true;
 
     @Expose
     @ConfigOption(name = "Distance Box", desc = "Render an outline which shows how far the dragon can be to be near the status")
-    @ConfigAccordionId(id = 6)
+    @ConfigAccordionId(id = 7)
     public boolean distBox = true;
 
     @Expose
     @ConfigOption(name = "Dragon Outline", desc = "Outlines each dragon with their respective colors for better visiblity")
-    @ConfigAccordionId(id = 6)
+    @ConfigAccordionId(id = 7)
     public boolean dragOutline = true;
 
     @Expose
     @ConfigOption(name = "Close Alert", desc = "Shows an alert when a dragon goes near his statue")
-    @ConfigAccordionId(id = 6)
+    @ConfigAccordionId(id = 7)
     public boolean dragAlert = true;
 
     @Expose
