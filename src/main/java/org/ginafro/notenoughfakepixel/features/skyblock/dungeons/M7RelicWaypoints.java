@@ -1,17 +1,17 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.dungeons;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -27,6 +27,10 @@ public class M7RelicWaypoints {
     private static final Map<RelicColor, BlockPos> relicPositions = new HashMap<>();
     private static final Map<RelicColor, BlockPos> cauldronPositions = new HashMap<>();
     public boolean isFinalPhase = false;
+    private Set<RelicColor> pickedRelics = new HashSet<>();
+    private Set<RelicColor> placedRelics = new HashSet<>();
+    private Set<RelicColor> myPickedRelics = new HashSet<>(); // Your personal pickups
+    private Set<RelicColor> othersPickedRelics = new HashSet<>(); // Track teammates' pickups
 
     static {
         // Initialize relic positions
@@ -44,8 +48,6 @@ public class M7RelicWaypoints {
         cauldronPositions.put(RelicColor.BLUE, new BlockPos(67, 7, 52));
     }
 
-    private Set<RelicColor> pickedRelics = new HashSet<>();
-
     @SubscribeEvent
     public void onRenderWorldLast(RenderWorldLastEvent event) {
         if (!DungeonManager.checkEssentialsF7()) return;
@@ -54,62 +56,78 @@ public class M7RelicWaypoints {
         float partialTicks = event.partialTicks;
 
         for (RelicColor color : RelicColor.values()) {
-            if (!pickedRelics.contains(color)) {
+            // Check if anyone (you OR others) picked the relic
+            boolean anyonePicked = myPickedRelics.contains(color) || othersPickedRelics.contains(color);
+
+            if (!anyonePicked) {
                 BlockPos pos = relicPositions.get(color);
                 int rgb = getColorRGB(color);
-                RenderUtils.renderBeaconBeam(pos, rgb, 1.0f, partialTicks);
+                RenderUtils.highlightBlock(pos, new Color(rgb), true, partialTicks);
+            }
+            else if (myPickedRelics.contains(color) && !placedRelics.contains(color)) {
+                BlockPos cauldronPos = cauldronPositions.get(color);
+                int rgb = getColorRGB(color);
+                RenderUtils.renderBoundingBox(cauldronPos, rgb, partialTicks);
             }
         }
+    }
 
-        ItemStack stack = Minecraft.getMinecraft().thePlayer.inventory.getStackInSlot(8);
-        if (stack != null && stack.getItem() == Items.skull) {
-            String displayName = stack.getDisplayName().toLowerCase();
-            for (RelicColor color : RelicColor.values()) {
-                if (displayName.contains(color.name().toLowerCase())) {
-                    BlockPos cauldronPos = cauldronPositions.get(color);
-                    int rgb = getColorRGB(color);
-                    RenderUtils.renderBoundingBox(cauldronPos, rgb, partialTicks);
-                    break;
-                }
+    @SubscribeEvent
+    public void onRightClickBlock(PlayerInteractEvent event) {
+        if (!isFinalPhase) return;
+
+        BlockPos clickedPos = event.pos;
+        cauldronPositions.forEach((color, pos) -> {
+            if (pos.equals(clickedPos) && pickedRelics.contains(color)) {
+                placedRelics.add(color);
             }
-        }
+        });
     }
 
     @SubscribeEvent
     public void onChatReceived(ClientChatReceivedEvent event) {
         String message = event.message.getUnformattedText().toLowerCase();
         String playerName = Minecraft.getMinecraft().thePlayer.getName().toLowerCase();
+
         if (message.contains(playerName) && message.contains("picked the corrupted")) {
             for (RelicColor color : RelicColor.values()) {
                 String colorStr = color.name().toLowerCase();
                 if (message.contains(colorStr + " relic!")) {
-                    pickedRelics.add(color);
+                    myPickedRelics.add(color);
                     break;
                 }
             }
         }
-        if (event.message.getUnformattedText().contains("WITHER KING")) {
-            if (event.message.getUnformattedText().contains("I have nothing left to fight for, I finally had peace.") ||
-                    event.message.getUnformattedText().contains("We will decide it all, here, now.") ||
-                    event.message.getUnformattedText().contains("The Catacombs... are no more")) {
-                isFinalPhase = true;
+        else if (message.contains("picked the corrupted")) {
+            for (RelicColor color : RelicColor.values()) {
+                String colorStr = color.name().toLowerCase();
+                if (message.contains(colorStr + " relic!")) {
+                    othersPickedRelics.add(color);
+                    break;
+                }
             }
+        }
+
+        if (event.message.getUnformattedText().contains("The Catacombs... are no more")) {
+            isFinalPhase = true;
         }
     }
 
     @SubscribeEvent
     public void onWorldUnload(WorldEvent.Unload event) {
-        pickedRelics.clear();
+        myPickedRelics.clear();
+        othersPickedRelics.clear();
+        placedRelics.clear();
     }
 
     private int getColorRGB(RelicColor color) {
         switch (color) {
-            case PURPLE: return 0x800080; // Purple
-            case GREEN: return 0x008000;  // Green
-            case RED: return 0xFF0000;    // Red
-            case ORANGE: return 0xFFA500; // Orange
-            case BLUE: return 0x0000FF;   // Blue
-            default: return 0xFFFFFF;     // White (fallback)
+            case PURPLE: return 0x800080;
+            case GREEN: return 0x008000;
+            case RED: return 0xFF0000;
+            case ORANGE: return 0xFFA500;
+            case BLUE: return 0x0000FF;
+            default: return 0xFFFFFF;
         }
     }
 }
