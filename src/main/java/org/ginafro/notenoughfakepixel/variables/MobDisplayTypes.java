@@ -25,7 +25,8 @@ public enum MobDisplayTypes {
     WITHERESSENCE(-0.3, 2.5, -0.3, 0.3, 3.0, 0.3),
     WITHERMANCER(-0.5, -1.6, -0.5, 0.5, 0.8, 0.5),
     WITHER(-0.55, 0.6, -0.55, 0.55, 2.6, 0.55),
-    NONE(-0.5, -1.0, -0.5, 0.5, 1.0, 0.5);
+    M7ORBS(-.5, 1.5, -.5, .5, 2, .5),
+    NONE(-0.5, 1.0, -0.5, 0.5, 3.0, 0.5);
 
     final double x1;
     final double y1;

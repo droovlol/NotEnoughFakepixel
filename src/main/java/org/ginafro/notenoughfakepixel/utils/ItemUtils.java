@@ -54,6 +54,25 @@ public class ItemUtils {
         return skulls;
     }
 
+    public static String getSkullTexture(ItemStack itemStack) {
+        if (!itemStack.hasTagCompound()) return "";
+        if (!itemStack.getTagCompound().hasKey("SkullOwner")) return "";
+
+        NBTTagCompound skullOwner = itemStack.getTagCompound().getCompoundTag("SkullOwner");
+        if (!skullOwner.hasKey("Properties")) return "";
+
+        NBTTagCompound properties = skullOwner.getCompoundTag("Properties");
+        if (!properties.hasKey("textures")) return "";
+
+        NBTTagList textures = properties.getTagList("textures", 10);
+        if (textures.tagCount() == 0) return "";
+
+        NBTTagCompound texture = textures.getCompoundTagAt(0);
+        if (!texture.hasKey("Value")) return "";
+
+        return texture.getString("Value");
+    }
+
     public static ItemStack createSkullWithTexture(String name, String textureHash) {
         ItemStack skull = new ItemStack(Items.skull, 1, 3); // 3 = player head
 

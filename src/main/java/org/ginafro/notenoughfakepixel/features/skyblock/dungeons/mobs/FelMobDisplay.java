@@ -39,7 +39,7 @@ public class FelMobDisplay {
                 if (armorStand.getEquipmentInSlot(4).getTagCompound() == null) return;
 
                 ItemStack head = armorStand.getEquipmentInSlot(4);
-                if (ItemUtils.hasSkinValue(Skins.ENDERMAN_HEAD.getSkin(), head)) {
+                if (ItemUtils.hasSkinValue(Skins.ENDERMAN_HEAD.getValue(), head)) {
                     Color color = new Color(
                             ColorUtils.getColor(Config.feature.dungeons.dungeonsFelColor).getRGB()
                     );
