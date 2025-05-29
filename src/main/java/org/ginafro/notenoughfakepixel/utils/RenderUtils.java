@@ -177,6 +177,126 @@ public class RenderUtils {
         }
     }
 
+    /**
+     * Renders a colored, outlined 3D box at specified world coordinates.
+     *
+     * <p>This function accounts for the player's current interpolated position using {@code partialTicks}
+     * to ensure the box is rendered in the correct location relative to the camera.</p>
+     *
+     * <p>It disables depth, lighting, and texture rendering temporarily to ensure
+     * the box remains visible regardless of surrounding objects.</p>
+     *
+     * @param minX         The minimum X coordinate of the box in world space.
+     * @param minY         The minimum Y coordinate of the box in world space.
+     * @param minZ         The minimum Z coordinate of the box in world space.
+     * @param maxX         The maximum X coordinate of the box in world space.
+     * @param maxY         The maximum Y coordinate of the box in world space.
+     * @param maxZ         The maximum Z coordinate of the box in world space.
+     * @param partialTicks The current render tick delta for smooth interpolation.
+     * @param color        The RGBA color of the box lines.
+     */
+    public static void renderBoxAtCoords(
+            double minX, double minY, double minZ,
+            double maxX, double maxY, double maxZ,
+            float partialTicks,
+            Color color, boolean disableDepth
+    ) {
+        Minecraft mc = Minecraft.getMinecraft();
+        Entity player = mc.getRenderViewEntity();
+
+        // Interpolated player position
+        double playerX = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks;
+        double playerY = player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks;
+        double playerZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks;
+
+        // Offset box coords relative to player
+        double x1 = minX - playerX;
+        double y1 = minY - playerY;
+        double z1 = minZ - playerZ;
+        double x2 = maxX - playerX;
+        double y2 = maxY - playerY;
+        double z2 = maxZ - playerZ;
+
+        GlStateManager.pushMatrix();
+        GlStateManager.disableTexture2D();
+        GlStateManager.disableCull();
+        GlStateManager.disableLighting();
+        if (disableDepth) GlStateManager.disableDepth();
+        GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+
+        GL11.glLineWidth(2.0f); // Optional: set line width
+
+        // Set color
+        GlStateManager.color(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
+
+        // Draw bounding box
+        AxisAlignedBB box = new AxisAlignedBB(x1, y1, z1, x2, y2, z2);
+        drawOutlinedBox(box);
+
+        if (disableDepth) GlStateManager.enableDepth();
+        GlStateManager.enableLighting();
+        GlStateManager.enableCull();
+        GlStateManager.enableTexture2D();
+        GlStateManager.popMatrix();
+    }
+
+    /**
+     * Draws an outlined (wireframe) Axis-Aligned Bounding Box (AABB) using OpenGL lines.
+     *
+     * <p>This method assumes that the appropriate OpenGL state (e.g., color, blending, depth)
+     * has already been set. It simply renders the 12 edges of the box using GL_LINES.</p>
+     *
+     * @param box The AxisAlignedBB instance to draw.
+     */
+    public static void drawOutlinedBox(AxisAlignedBB box) {
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer buffer = tessellator.getWorldRenderer();
+
+        buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION);
+
+        // Bottom square
+        buffer.pos(box.minX, box.minY, box.minZ).endVertex();
+        buffer.pos(box.maxX, box.minY, box.minZ).endVertex();
+
+        buffer.pos(box.maxX, box.minY, box.minZ).endVertex();
+        buffer.pos(box.maxX, box.minY, box.maxZ).endVertex();
+
+        buffer.pos(box.maxX, box.minY, box.maxZ).endVertex();
+        buffer.pos(box.minX, box.minY, box.maxZ).endVertex();
+
+        buffer.pos(box.minX, box.minY, box.maxZ).endVertex();
+        buffer.pos(box.minX, box.minY, box.minZ).endVertex();
+
+        // Top square
+        buffer.pos(box.minX, box.maxY, box.minZ).endVertex();
+        buffer.pos(box.maxX, box.maxY, box.minZ).endVertex();
+
+        buffer.pos(box.maxX, box.maxY, box.minZ).endVertex();
+        buffer.pos(box.maxX, box.maxY, box.maxZ).endVertex();
+
+        buffer.pos(box.maxX, box.maxY, box.maxZ).endVertex();
+        buffer.pos(box.minX, box.maxY, box.maxZ).endVertex();
+
+        buffer.pos(box.minX, box.maxY, box.maxZ).endVertex();
+        buffer.pos(box.minX, box.maxY, box.minZ).endVertex();
+
+        // Vertical lines
+        buffer.pos(box.minX, box.minY, box.minZ).endVertex();
+        buffer.pos(box.minX, box.maxY, box.minZ).endVertex();
+
+        buffer.pos(box.maxX, box.minY, box.minZ).endVertex();
+        buffer.pos(box.maxX, box.maxY, box.minZ).endVertex();
+
+        buffer.pos(box.maxX, box.minY, box.maxZ).endVertex();
+        buffer.pos(box.maxX, box.maxY, box.maxZ).endVertex();
+
+        buffer.pos(box.minX, box.minY, box.maxZ).endVertex();
+        buffer.pos(box.minX, box.maxY, box.maxZ).endVertex();
+
+        tessellator.draw();
+    }
+
+
     public static void renderEntityHitbox(Entity entity, float partialTicks, Color color, MobDisplayTypes type) {
         if (type == MobDisplayTypes.ITEMBIG) {
             renderItemBigHitbox(entity, partialTicks, color);
@@ -191,7 +311,9 @@ public class RenderUtils {
         if (type == MobDisplayTypes.BAT ||
                 type == MobDisplayTypes.ENDERMAN_BOSS ||
                 type == MobDisplayTypes.WOLF_BOSS ||
-                type == MobDisplayTypes.SPIDER_BOSS) {
+                type == MobDisplayTypes.SPIDER_BOSS ||
+                type == MobDisplayTypes.M7ORBS
+        ) {
             GlStateManager.disableDepth();
         }
 
@@ -885,6 +1007,10 @@ public class RenderUtils {
     }
 
     public static void renderWaypointText(String str, BlockPos loc, float partialTicks) {
+        renderWaypointText(str, loc, partialTicks, true);
+    }
+
+    public static void renderWaypointText(String str, BlockPos loc, float partialTicks, boolean showDistance) {
         GlStateManager.alphaFunc(516, 0.1F);
         GlStateManager.pushMatrix();
         GlStateManager.disableLighting();
@@ -919,7 +1045,7 @@ public class RenderUtils {
         GlStateManager.rotate(-Minecraft.getMinecraft().getRenderManager().playerViewX, 1.0F, 0.0F, 0.0F);
         GlStateManager.rotate(Minecraft.getMinecraft().getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
 
-        drawNametag(EnumChatFormatting.YELLOW.toString() + Math.round(dist) + "m");
+        if (showDistance) drawNametag(EnumChatFormatting.YELLOW.toString() + Math.round(dist) + "m");
 
         GlStateManager.enableLighting();
         GlStateManager.popMatrix();

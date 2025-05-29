@@ -17,11 +17,6 @@ public class Debug {
     public boolean showSounds = false;
 
     @Expose
-    @ConfigOption(name = "Secret Debug", desc = "Show Secret debug.")
-    @ConfigEditorBoolean
-    public boolean showSecretDebug = false;
-
-    @Expose
     @ConfigOption(name = "Force Pojav", desc = "Force Pojav detection in the mod.")
     @ConfigEditorBoolean
     public boolean forcePojav = false;
