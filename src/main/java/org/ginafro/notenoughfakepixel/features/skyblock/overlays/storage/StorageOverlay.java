@@ -6,7 +6,10 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.util.EnumChatFormatting;
@@ -421,7 +424,9 @@ public class StorageOverlay {
                 if (gc.inventorySlots.getSlot(4).getStack() != null) {
                     if (gc.inventorySlots.getSlot(4).getStack().getDisplayName().contains("Ender")) {
                         if (Config.feature.overlays.storageOverlay) {
-                            overlayRenderer = new StorageOverlayRenderer(gc);
+                            if(gc.inventorySlots.getSlot(4).getStack().getItem() == Item.getItemFromBlock(Blocks.ender_chest)) {
+                                overlayRenderer = new StorageOverlayRenderer(gc);
+                            }
                         }
                     }
                 }
