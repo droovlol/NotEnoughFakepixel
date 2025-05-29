@@ -1,15 +1,19 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.dungeons;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
+import org.ginafro.notenoughfakepixel.variables.Skins;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -28,19 +32,14 @@ public class M7RelicWaypoints {
     private static final Map<RelicColor, BlockPos> cauldronPositions = new HashMap<>();
     public boolean isFinalPhase = false;
     private Set<RelicColor> pickedRelics = new HashSet<>();
-    private Set<RelicColor> placedRelics = new HashSet<>();
-    private Set<RelicColor> myPickedRelics = new HashSet<>(); // Your personal pickups
-    private Set<RelicColor> othersPickedRelics = new HashSet<>(); // Track teammates' pickups
 
     static {
-        // Initialize relic positions
         relicPositions.put(RelicColor.PURPLE, new BlockPos(64, 8, 140));
         relicPositions.put(RelicColor.GREEN, new BlockPos(28, 6, 102));
         relicPositions.put(RelicColor.RED, new BlockPos(28, 6, 67));
         relicPositions.put(RelicColor.ORANGE, new BlockPos(100, 6, 64));
         relicPositions.put(RelicColor.BLUE, new BlockPos(99, 6, 102));
 
-        // Initialize cauldron positions
         cauldronPositions.put(RelicColor.PURPLE, new BlockPos(62, 7, 49));
         cauldronPositions.put(RelicColor.GREEN, new BlockPos(57, 7, 52));
         cauldronPositions.put(RelicColor.RED, new BlockPos(59, 7, 50));
@@ -56,53 +55,33 @@ public class M7RelicWaypoints {
         float partialTicks = event.partialTicks;
 
         for (RelicColor color : RelicColor.values()) {
-            // Check if anyone (you OR others) picked the relic
-            boolean anyonePicked = myPickedRelics.contains(color) || othersPickedRelics.contains(color);
 
-            if (!anyonePicked) {
+            if (!pickedRelics.contains(color)) {
                 BlockPos pos = relicPositions.get(color);
                 int rgb = getColorRGB(color);
                 RenderUtils.highlightBlock(pos, new Color(rgb), true, partialTicks);
+                RenderUtils.renderBeaconBeam(pos, rgb, 1.0f, partialTicks);
             }
-            else if (myPickedRelics.contains(color) && !placedRelics.contains(color)) {
-                BlockPos cauldronPos = cauldronPositions.get(color);
-                int rgb = getColorRGB(color);
-                RenderUtils.renderBoundingBox(cauldronPos, rgb, partialTicks);
+            else {
+                // NEW LOGIC: Only highlight cauldron if player has relic in inventory
+                if (hasRelicInInventory(color)) {
+                    BlockPos cauldronPos = cauldronPositions.get(color);
+                    int rgb = getColorRGB(color);
+                    RenderUtils.renderBoundingBox(cauldronPos, rgb, partialTicks);
+                }
             }
         }
-    }
-
-    @SubscribeEvent
-    public void onRightClickBlock(PlayerInteractEvent event) {
-        if (!isFinalPhase) return;
-
-        BlockPos clickedPos = event.pos;
-        cauldronPositions.forEach((color, pos) -> {
-            if (pos.equals(clickedPos) && pickedRelics.contains(color)) {
-                placedRelics.add(color);
-            }
-        });
     }
 
     @SubscribeEvent
     public void onChatReceived(ClientChatReceivedEvent event) {
         String message = event.message.getUnformattedText().toLowerCase();
-        String playerName = Minecraft.getMinecraft().thePlayer.getName().toLowerCase();
 
-        if (message.contains(playerName) && message.contains("picked the corrupted")) {
+       if (message.contains("picked the corrupted")) {
             for (RelicColor color : RelicColor.values()) {
                 String colorStr = color.name().toLowerCase();
                 if (message.contains(colorStr + " relic!")) {
-                    myPickedRelics.add(color);
-                    break;
-                }
-            }
-        }
-        else if (message.contains("picked the corrupted")) {
-            for (RelicColor color : RelicColor.values()) {
-                String colorStr = color.name().toLowerCase();
-                if (message.contains(colorStr + " relic!")) {
-                    othersPickedRelics.add(color);
+                    pickedRelics.add(color);
                     break;
                 }
             }
@@ -115,9 +94,7 @@ public class M7RelicWaypoints {
 
     @SubscribeEvent
     public void onWorldUnload(WorldEvent.Unload event) {
-        myPickedRelics.clear();
-        othersPickedRelics.clear();
-        placedRelics.clear();
+        pickedRelics.clear();
     }
 
     private int getColorRGB(RelicColor color) {
@@ -128,6 +105,65 @@ public class M7RelicWaypoints {
             case ORANGE: return 0xFFA500;
             case BLUE: return 0x0000FF;
             default: return 0xFFFFFF;
+        }
+    }
+
+    // NEW METHODS ============================================================
+
+    /**
+     * Checks if player has specific relic in their inventory
+     */
+    private boolean hasRelicInInventory(RelicColor color) {
+        Skins skin = getSkinForColor(color);
+        if (skin == null) return false;
+        String targetValue = skin.getValue();
+
+        // Check all 36 main inventory slots
+        for (int i = 0; i < 36; i++) {
+            ItemStack stack = Minecraft.getMinecraft().thePlayer.inventory.getStackInSlot(i);
+            if (isRelicSkull(stack, targetValue)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks if an item stack matches a specific relic skull
+     */
+    private boolean isRelicSkull(ItemStack stack, String targetValue) {
+        if (stack == null ||
+                stack.getItem() != Items.skull ||
+                stack.getMetadata() != 3) {  // 3 = player skull
+            return false;
+        }
+
+        NBTTagCompound tag = stack.getTagCompound();
+        if (tag == null || !tag.hasKey("SkullOwner", 10)) return false;
+
+        NBTTagCompound skullOwner = tag.getCompoundTag("SkullOwner");
+        if (!skullOwner.hasKey("Properties", 10)) return false;
+
+        NBTTagCompound properties = skullOwner.getCompoundTag("Properties");
+        NBTTagList textures = properties.getTagList("textures", 10);  // 10 = compound type
+        if (textures.tagCount() == 0) return false;
+
+        NBTTagCompound texture = textures.getCompoundTagAt(0);
+        String value = texture.getString("Value");
+        return value.equals(targetValue);
+    }
+
+    /**
+     * Maps RelicColor to corresponding Skins enum
+     */
+    private Skins getSkinForColor(RelicColor color) {
+        switch (color) {
+            case PURPLE: return Skins.PURPLE_RELIC;
+            case GREEN: return Skins.GREEN_RELIC;
+            case RED: return Skins.RED_RELIC;
+            case ORANGE: return Skins.ORANGE_RELIC;
+            case BLUE: return Skins.BLUE_RELIC;
+            default: return null;
         }
     }
 }

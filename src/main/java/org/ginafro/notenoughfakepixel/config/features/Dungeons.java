@@ -480,10 +480,11 @@ public class Dungeons {
     @Expose
     @ConfigOption(name = "Master Mode 7",desc = "Featuers related to M7")
     @ConfigEditorAccordion(id = 6)
-    public String mm7 = "";
+    public boolean mm7 = false;
 
     @Expose
     @ConfigOption(name = "M7 Relic waypoints", desc = "Render waypoints for relics")
+    @ConfigEditorBoolean
     @ConfigAccordionId(id = 6)
     public boolean m7Relics = true;
 
