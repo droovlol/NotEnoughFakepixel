@@ -102,8 +102,8 @@ public class EquipmentOverlay {
             if (e.gui instanceof GuiChest) {
                 ContainerChest cc = (ContainerChest) ((GuiContainer) e.gui).inventorySlots;
                 if (cc.getLowerChestInventory().getDisplayName().getUnformattedText().startsWith("Your Equipment")) {
-                    for (int i = 0; i < 4; i ++) {
-                        equipments.put(10 + (i * 9),cc.getSlot(10 + (i * 9)).getStack());
+                    for (int i = 10; i < 38; i += 9) {
+                        equipments.put(i, cc.getSlot(i).getStack());
                     }
                     data = new EquipmentData(equipments);
                     saveData();

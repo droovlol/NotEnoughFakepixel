@@ -13,9 +13,12 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
+import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DragonCloseAlert;
 import org.ginafro.notenoughfakepixel.variables.*;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -88,7 +91,17 @@ public class ScoreboardUtils {
                             if (cleanName.contains(") Kills") || cleanName.contains("Quest Failed") || cleanName.contains("Boss slain!")) {
                                 isSlayerActive = false;
                             }
+
                         });
+
+                DragonCloseAlert.DRAGON_COLORS.forEach((dragonName, color) ->
+                        scoreboard.getSortedScores(objective).stream()
+                                .filter(line -> line.getPlayerName().contains(dragonName))
+                                .findFirst()
+                                .ifPresent(line -> DragonCloseAlert.getINSTANCE().registerDragon(color, line.getPlayerName()))
+                );
+
+
             }
         }
 

@@ -1,211 +1,216 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.dungeons;
 
-import jdk.nashorn.internal.ir.Block;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.item.EntityArmorStand;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.Vec3;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.events.RenderEntityModelEvent;
-import org.ginafro.notenoughfakepixel.utils.OutlineUtils;
+import org.ginafro.notenoughfakepixel.utils.*;
+import org.ginafro.notenoughfakepixel.variables.DungeonFloor;
+import org.ginafro.notenoughfakepixel.variables.Location;
+import org.ginafro.notenoughfakepixel.variables.Skins;
 
 import java.awt.*;
-import java.util.HashMap;
+import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RegisterEvents
 public class DragonCloseAlert {
 
-    public BlockPos power = new BlockPos(43,25,67);
-    public BlockPos apex = new BlockPos(42, 25, 102);
-    public BlockPos ice = new BlockPos(85, 25, 102);
-    public BlockPos flame = new BlockPos(85,25,64);
-    public BlockPos soul = new BlockPos(64,25,125);
-    public HashMap<EntityDragon,BlockPos[]> statueOutline = new HashMap<>();
-    public EntityDragon dApex,dPower,dIce,dFlame,dSoul;
-    public int maxDistance = 20;
-    public boolean isFinalPhase = false;
-    public HashMap<EntityDragon,Boolean> nearby = new HashMap<>();
-    private final HashMap<EntityDragon, Boolean> triggerTitle = new HashMap<>();
+    @Getter
+    public static DragonCloseAlert INSTANCE;
 
-    @SubscribeEvent
+    public DragonCloseAlert() {
+        INSTANCE = this;
+    }
+
+    @AllArgsConstructor
+    @Data
+    private static class Orb {
+        private final BlockPos pos;
+        private final Skins skin;
+        private final Color color;
+    }
+
+    private static final List<Orb> ORBS = Arrays.asList(
+            new Orb(new BlockPos(43,6,64), Skins.RED_RELIC, Color.RED),
+            new Orb(new BlockPos(43,6,102), Skins.GREEN_RELIC, Color.GREEN),
+            new Orb(new BlockPos(85, 6, 102), Skins.BLUE_RELIC, Color.CYAN),
+            new Orb(new BlockPos(85, 6, 64), Skins.ORANGE_RELIC, Color.ORANGE),
+            new Orb(new BlockPos(64, 6, 125), Skins.PURPLE_RELIC, Color.PINK)
+    );
+
+    private static final Map<EntityDragon, Color> DRAGON_COLOR_MAP = new HashMap<>();
+
+    private static Map<Color, String> DRAGON_HEALTH_MAP = new HashMap<>();
+
+    public static final Map<String, Color> DRAGON_COLORS = MapUtils.mapOf(
+           new MapUtils.Pair<>("Apex Dragon", Color.GREEN),
+           new MapUtils.Pair<>("Flame Dragon", Color.ORANGE),
+           new MapUtils.Pair<>("Power Dragon", Color.RED),
+           new MapUtils.Pair<>("Soul Dragon", Color.PINK),
+           new MapUtils.Pair<>("Ice Dragon", Color.CYAN)
+    );
+
+
+    public boolean isFinalPhase = false;
+    private final Minecraft mc = Minecraft.getMinecraft();
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void chat(ClientChatReceivedEvent e){
-        if(e.message.getUnformattedText().contains("WITHER KING")){
-            if(e.message.getUnformattedText().contains("I have nothing left to fight for, I finally had peace.") || e.message.getUnformattedText().contains("We will decide it all, here, now.")){
+
+        if(e.message.getUnformattedText().contains("WITHER KING") && (e.message.getUnformattedText().contains("I have nothing left to fight for, I finally had peace.") || e.message.getUnformattedText().contains("We will decide it all, here, now."))){
                 isFinalPhase = true;
             }
-        }
+
     }
 
     @SubscribeEvent
     public void onUnLoad(WorldEvent.Unload e){
         isFinalPhase = false;
+        DRAGON_COLOR_MAP.clear();
+        DRAGON_HEALTH_MAP = new HashMap<>();
+        DRAGON_COLORS.keySet().forEach(color -> DRAGON_HEALTH_MAP.put(DRAGON_COLORS.get(color), ""));
+    }
+
+    public void registerDragon(Color color, String health) {
+        DRAGON_HEALTH_MAP.put(color, health);
     }
 
     @SubscribeEvent
     public void onRender(RenderWorldLastEvent e) {
-        if (!isFinalPhase || !Config.feature.dungeons.distBox) return;
+        if (ScoreboardUtils.currentLocation != Location.DUNGEON || ScoreboardUtils.currentFloor != DungeonFloor.M7)  return;
+        renderBoxes(e);
+        renderDragonDistance(e);
+    }
 
-        if (statueOutline.isEmpty()) {
-            putOutlines(dApex,apex);
-            putOutlines(dPower,power);
-            putOutlines(dFlame,flame);
-            putOutlines(dSoul,soul);
-            putOutlines(dIce,ice);
-        }
+    private void renderDragonDistance(RenderWorldLastEvent e) {
+        ORBS.forEach(orb -> {
+            BlockPos pos = orb.getPos().add(0, 20, 0);
 
-        statueOutline.forEach((en, p) -> {
-            OutlineUtils.renderBlockOutline(p[0], p[1], e.partialTicks, getAssociatedColor(en), 10f);
+            DRAGON_COLOR_MAP.keySet().forEach(dragon -> {
+                if (isDying(dragon)) return;
+
+                Color color = DRAGON_COLOR_MAP.get(dragon);
+                if (color == null) return;
+
+                if (color.equals(orb.getColor())) {
+                    RenderUtils.renderWaypointText(getTextFromColor(orb.getColor()),
+                            dragon.getPosition(), e.partialTicks, false);
+
+//                    double distance = new Vec3(pos.getX(), pos.getY(), pos.getZ())
+//                            .distanceTo(new Vec3(dragon.posX, dragon.posY, dragon.posZ));
+//
+//                    if (distance < 20) {
+//                        Minecraft.getMinecraft().ingameGUI.displayTitle(EnumChatFormatting.GOLD + MapUtils.getKeyFromValue(DRAGON_COLORS, color), "", 2, 70, 2);
+//                    }
+
+                }
+            });
+
         });
     }
 
-    private void putOutlines(EntityDragon dragon,BlockPos p) {
-            BlockPos pos = new BlockPos(p.getX() - 20,p.getY() - 10,p.getZ() - 20);
-            BlockPos pos1 = new BlockPos(p.getX() + 20,p.getY() + 10,p.getZ() + 20);
-            statueOutline.put(dragon,new BlockPos[]{pos,pos1});
+    private String getTextFromColor(Color color) {
+        String health = DRAGON_HEALTH_MAP.get(color);
+        if (health != null && !health.isEmpty()) {
+            return "";
+        }
+        return health;
+    }
+
+    private void renderBoxes(RenderWorldLastEvent e) {
+        drawDragonBox(e);
+
+        ORBS
+        .forEach(orb -> {
+            Color color = orb.getColor();
+            BlockPos position = orb.getPos().add(0, 20, 0);
+            RenderUtils.renderBoxAtCoords(position.getX() - 21, position.getY() -11, position.getZ() -11,
+                    position.getX() + 11, position.getY() + 11, position.getZ() + 13, e.partialTicks, color, false);
+        });
+
+    }
+
+    private void drawDragonBox(RenderWorldLastEvent e) {
+        mc.theWorld.getLoadedEntityList().forEach(entity -> {
+            if (entity instanceof EntityArmorStand) {
+                EntityArmorStand stand = (EntityArmorStand) entity;
+                // armor stand have to have a player head with a specific texture
+                ItemStack skull = stand.getCurrentArmor(3);
+                if (skull == null || skull.getItem() == null || !skull.getItem().getUnlocalizedName().contains("skull")) return;
+
+                String texture = ItemUtils.getSkullTexture(skull);
+                if (texture == null || texture.isEmpty()) return;
+
+                List<Skins> skins = ORBS.stream().map(Orb::getSkin).collect(Collectors.toList());
+
+                Skins skin = Skins.getSkinByValue(texture);
+                if (skin == null || !skins.contains(skin)) return;
+
+                Color color = ORBS.stream()
+                        .filter(orb -> orb.getSkin().equals(skin))
+                        .map(Orb::getColor)
+                        .findFirst()
+                        .orElse(Color.WHITE);
+                EntityLivingBase entityLiving = stand.worldObj.getEntitiesWithinAABB(EntityLivingBase.class,
+                                stand.getEntityBoundingBox().expand(1.5, 3.0, 1.5),
+                                e1 -> e1 instanceof EntityDragon && !e1.isDead && e1 != mc.thePlayer)
+                        .stream().findFirst().orElse(null);
+
+                if (entityLiving instanceof EntityDragon) {
+                    EntityDragon dragon = (EntityDragon) entityLiving;
+                    if (isDying(dragon)) return;
+                    if (!DRAGON_COLOR_MAP.containsKey(dragon)) {
+                        DRAGON_COLOR_MAP.put(dragon, color);
+                    }
+                }
+            }
+        });
     }
 
     @SubscribeEvent
     public void render(RenderEntityModelEvent e) {
+        EntityLivingBase entity = e.getEntity();
         if (Minecraft.getMinecraft().thePlayer == null) return;
         if (Minecraft.getMinecraft().theWorld == null) return;
-        final EntityLivingBase entity = e.getEntity();
-        if (isDying(entity)) return;
+        if (!(entity instanceof EntityDragon)) return;
         if (entity.isInvisible()) return;
-        boolean canSee = Minecraft.getMinecraft().thePlayer.canEntityBeSeen(entity);
+        if (isDying(entity)) return;
+        EntityDragon dragon = (EntityDragon) entity;
 
-        if (!canSee) {
-            return;
-        }
-        if (entity instanceof EntityDragon) {
-            if(Config.feature.dungeons.dragOutline) {
-                OutlineUtils.outlineEntity(e, 15.0f, Color.green, true);
+        if (dragon.isDead || dragon.getHealth() <= 0.1f) return;
+
+        DRAGON_COLOR_MAP.keySet().forEach(drag -> {
+            if (dragon.equals(drag)) {
+                Color c = DRAGON_COLOR_MAP.get(drag);
+                if (c != null) {
+                    OutlineUtils.outlineEntity(e, 4f, c, true);
+                }
+
             }
-            boolean currentlyNearby = entity.getDistanceSq(power) <= (maxDistance * maxDistance);
-            boolean wasNearby = nearby.getOrDefault(entity, false);
-
-            if (!wasNearby && currentlyNearby) {
-                triggerTitle.put((EntityDragon) entity, true);
-            }
-            nearby.put((EntityDragon) entity, currentlyNearby);
-        }
-
-    }
-
-    private void checkDragonProximity(EntityDragon dragon, BlockPos pos, String name) {
-        if (dragon == null || dragon.isDead) return;
-
-        boolean currentlyNearby = dragon.getDistanceSq(pos) <= (maxDistance * maxDistance);
-        boolean wasNearby = nearby.getOrDefault(dragon, false);
-
-        if (!wasNearby && currentlyNearby) {
-            triggerTitle.put(dragon, true);
-        }
-
-        if (triggerTitle.getOrDefault(dragon, false)) {
-            if (Config.feature.dungeons.dragAlert) {
-                Minecraft.getMinecraft().ingameGUI.displayTitle(
-                        getAssociatedEnum(dragon) + "Dragon Near Statue",
-                        getAssociatedEnum(dragon) + name,
-                        2, 70, 2
-                );
-                triggerTitle.put(dragon, false);
-            }
-        }
-
-        nearby.put(dragon, currentlyNearby);
-    }
-
-
-
-    @SubscribeEvent
-    public void onTick(TickEvent.ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.END || !isFinalPhase) return;
-        if (Minecraft.getMinecraft().thePlayer == null || Minecraft.getMinecraft().theWorld == null) return;
-
-        WorldClient world = Minecraft.getMinecraft().theWorld;
-
-        for (EntityArmorStand stand : world.getEntities(EntityArmorStand.class, s -> s.getName().contains("Dragon"))) {
-            Entity entity = findAssociatedMob(stand);
-            if (entity instanceof EntityDragon) {
-                EntityDragon dragon = (EntityDragon) entity;
-                if (dragon.getName().contains("Apex")) dApex = dragon;
-                if (dragon.getName().contains("Power")) dPower = dragon;
-                if (dragon.getName().contains("Ice")) dIce = dragon;
-                if (dragon.getName().contains("Flame")) dFlame = dragon;
-                if (dragon.getName().contains("Soul")) dSoul = dragon;
-            }
-        }
-
-        checkDragonProximity(dPower, power, "Power Dragon");
-        checkDragonProximity(dApex, apex, "Apex Dragon");
-        checkDragonProximity(dIce, ice, "Ice Dragon");
-        checkDragonProximity(dFlame, flame, "Flame Dragon");
-        checkDragonProximity(dSoul, soul, "Soul Dragon");
-    }
-
-    private EntityLivingBase findAssociatedMob(EntityArmorStand armorStand) {
-        return armorStand.worldObj.getEntitiesWithinAABB(EntityLivingBase.class,
-                        armorStand.getEntityBoundingBox().expand(1.5, 3.0, 1.5),
-                        e -> e != null &&
-                                !(e instanceof EntityArmorStand) &&
-                                e != Minecraft.getMinecraft().thePlayer
-                ).stream()
-                .findFirst()
-                .orElse(null);
+        });
     }
 
     private boolean isDying(EntityLivingBase entity) {
         if (entity == null || entity.isDead) return true;
         return entity.getHealth() <= 0.1f;
     }
-
-    private EnumChatFormatting getAssociatedEnum(EntityDragon dragon){
-        if(dragon == dApex){
-            return EnumChatFormatting.GREEN;
-        }
-        if(dragon == dSoul){
-            return EnumChatFormatting.LIGHT_PURPLE;
-        }
-        if(dragon == dPower){
-            return EnumChatFormatting.RED;
-        }
-        if(dragon == dIce){
-            return EnumChatFormatting.AQUA;
-        }
-        if(dragon == dFlame){
-            return EnumChatFormatting.GOLD;
-        }
-        return EnumChatFormatting.WHITE;
-    }
-
-    private Color getAssociatedColor(EntityDragon dragon){
-        if(dragon == dApex){
-            return Color.GREEN;
-        }
-        if(dragon == dSoul){
-            return Color.PINK;
-        }
-        if(dragon == dPower){
-            return Color.RED;
-        }
-        if(dragon == dIce){
-            return Color.CYAN;
-        }
-        if(dragon == dFlame){
-            return Color.ORANGE;
-        }
-        return Color.WHITE;
-    }
-
 }
