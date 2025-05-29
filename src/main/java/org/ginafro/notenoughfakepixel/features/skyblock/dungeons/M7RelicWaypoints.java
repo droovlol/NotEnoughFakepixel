@@ -63,7 +63,6 @@ public class M7RelicWaypoints {
                 RenderUtils.renderBeaconBeam(pos, rgb, 1.0f, partialTicks);
             }
             else {
-                // NEW LOGIC: Only highlight cauldron if player has relic in inventory
                 if (hasRelicInInventory(color)) {
                     BlockPos cauldronPos = cauldronPositions.get(color);
                     int rgb = getColorRGB(color);
@@ -108,17 +107,11 @@ public class M7RelicWaypoints {
         }
     }
 
-    // NEW METHODS ============================================================
-
-    /**
-     * Checks if player has specific relic in their inventory
-     */
     private boolean hasRelicInInventory(RelicColor color) {
         Skins skin = getSkinForColor(color);
         if (skin == null) return false;
         String targetValue = skin.getValue();
 
-        // Check all 36 main inventory slots
         for (int i = 0; i < 36; i++) {
             ItemStack stack = Minecraft.getMinecraft().thePlayer.inventory.getStackInSlot(i);
             if (isRelicSkull(stack, targetValue)) {
@@ -128,9 +121,6 @@ public class M7RelicWaypoints {
         return false;
     }
 
-    /**
-     * Checks if an item stack matches a specific relic skull
-     */
     private boolean isRelicSkull(ItemStack stack, String targetValue) {
         if (stack == null ||
                 stack.getItem() != Items.skull ||
@@ -153,9 +143,6 @@ public class M7RelicWaypoints {
         return value.equals(targetValue);
     }
 
-    /**
-     * Maps RelicColor to corresponding Skins enum
-     */
     private Skins getSkinForColor(RelicColor color) {
         switch (color) {
             case PURPLE: return Skins.PURPLE_RELIC;
