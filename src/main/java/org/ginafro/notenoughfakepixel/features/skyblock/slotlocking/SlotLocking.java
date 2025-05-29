@@ -98,7 +98,7 @@ public class SlotLocking {
     private Slot realSlot = null;
 
     public void loadConfig() {
-        config = CustomConfigHandler.loadConfig(SlotLockingConfig.class, new File(CustomConfigFiles.SLOT_LOCKING.path));
+        config = CustomConfigHandler.loadConfig();
         if (config == null) {
             config = new SlotLockingConfig();
         }
@@ -141,7 +141,7 @@ public class SlotLocking {
     private final long[] slotChanges = new long[9];
 
     public void saveConfig() {
-        CustomConfigHandler.saveConfig(config, new File(CustomConfigFiles.SLOT_LOCKING.path));
+        CustomConfigHandler.saveConfig(config);
         loadConfig();
     }
 
