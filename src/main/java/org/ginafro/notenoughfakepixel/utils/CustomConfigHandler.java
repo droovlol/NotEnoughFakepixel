@@ -2,57 +2,40 @@ package org.ginafro.notenoughfakepixel.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSyntaxException;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.features.skyblock.overlays.storage.StorageData;
-import org.jetbrains.annotations.Nullable;
+import org.ginafro.notenoughfakepixel.features.skyblock.slotlocking.SlotLocking;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static org.ginafro.notenoughfakepixel.utils.CustomConfigFiles.STORAGE_FOLDER;
 
 public class CustomConfigHandler {
 
     public static Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    public Map<String, List<String>> fairySoulsTemplate = new HashMap<>();
-
-    public static <T> @Nullable T loadConfig(Class<T> config, File file) {
+    public static File slotLock = new File(Config.configDirectory,"slotlocking.json");
+    public static SlotLocking.SlotLockingConfig loadConfig() {
+        SlotLocking.SlotLockingConfig locking = new SlotLocking.SlotLockingConfig();
         try {
-            if (!Config.configDirectory.exists() && !Config.configDirectory.mkdirs()) {
-                throw new IOException("Failed to create config directory: " + Config.configDirectory);
+            if(!Config.configDirectory.exists()){
+                Config.configDirectory.mkdirs();
             }
-            if (!file.exists() || file.length() == 0) {
-                if (!file.createNewFile()) {
-                    throw new IOException("Failed to create new config file: " + file);
-                }
-                return null;
+            if(!slotLock.exists()){
+                slotLock.createNewFile();
             }
-
-            return readJson(config, file);
+            FileReader reader = new FileReader(slotLock);
+            SlotLocking.SlotLockingConfig temp = gson.fromJson(reader, SlotLocking.SlotLockingConfig.class);
+            if(temp != null){
+                locking = temp;
+            }
+            reader.close();
         } catch (IOException e) {
-            throw new RuntimeException("Could not read config file '" + file + "'", e);
+            throw new RuntimeException("Could not read config file ", e);
         }
+        return locking;
     }
 
-    private static <T> @Nullable T readJson(Class<T> config, File file) throws IOException {
-        try (InputStreamReader inputStreamReader = new InputStreamReader(Files.newInputStream(file.toPath()), StandardCharsets.UTF_8);
-             BufferedReader reader = new BufferedReader(inputStreamReader)) {
-
-            return gson.fromJson(reader, config);
-
-        } catch (JsonSyntaxException | IllegalStateException e) {
-            Logger.logErrorConsole("Invalid JSON in config: " + file.getName());
-            e.printStackTrace();
-            makeBackup(file, ".corrupted");
-            return null;
-        }
-    }
 
 
     public static StorageData loadStorageData(String chestName) {
@@ -82,31 +65,16 @@ public class CustomConfigHandler {
         }
     }
 
-    public static void saveConfig(Object config, File file) {
-        File tempFile = new File(file.getParent(), file.getName() + ".temp");
+    public static void saveConfig(SlotLocking.SlotLockingConfig config) {
         try {
-            tempFile.createNewFile();
-            try (
-                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(tempFile.toPath()), StandardCharsets.UTF_8))
-            ) {
-                writer.write(gson.toJson(config));
+            if(!slotLock.exists()){
+                slotLock.createNewFile();
             }
-
-            if (loadConfig(config.getClass(), tempFile) == null) {
-                System.out.println("Config verification failed for " + tempFile + ", could not save config properly.");
-                makeBackup(tempFile, ".backup");
-                return;
-            }
-
-            try {
-                Files.move(tempFile.toPath(), file.toPath(), StandardCopyOption.ATOMIC_MOVE);
-            } catch (IOException e) {
-                // If atomic move fails it could be because it isn't supported or because the implementation of it
-                // doesn't overwrite the old file, in this case we will try a normal move.
-                Files.move(tempFile.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            }
+           FileWriter writer = new FileWriter(slotLock);
+            writer.write(gson.toJson(config));
+            writer.flush();
+            writer.close();
         } catch (Exception e) {
-            makeBackup(tempFile, ".backup");
             e.printStackTrace();
         }
     }
