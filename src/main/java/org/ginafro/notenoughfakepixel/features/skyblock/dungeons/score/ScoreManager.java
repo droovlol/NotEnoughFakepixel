@@ -24,6 +24,8 @@ public class ScoreManager {
     private static int reducedPenalty = 0;
     private static boolean hasNotified270 = false;
 
+    private static boolean isBloodOpen = false;
+
     private final Minecraft mc = Minecraft.getMinecraft();
 
     private static String displayText = "";
@@ -39,6 +41,8 @@ public class ScoreManager {
             Minecraft.getMinecraft().thePlayer.sendChatMessage("/pc [NEF] I died with Spirit Pet, so my kill doesn't count");
         } else if (event.message.getUnformattedText().contains("[NEF] I died with Spirit Pet, so my kill doesn't count")) {
             reducedPenalty = 1;
+        } else if (event.message.getUnformattedText().endsWith("The BLOOD DOOR has been opened!")) {
+            isBloodOpen = true;
         }
     }
 
@@ -96,6 +100,7 @@ public class ScoreManager {
         currentSeconds = -1;
         reducedPenalty = 0;
         hasNotified270 = false;
+        isBloodOpen = false;
     }
 
     public static int getTotalScore() {
@@ -109,7 +114,11 @@ public class ScoreManager {
 
     public static int getExplorationClearScore() {
         int clearedPercentage = ScoreboardUtils.clearedPercentage;
-        return (int) Math.max(Math.min(Math.floor(60f * clearedPercentage / 100f), 60), 0);
+        if (isBloodOpen) {
+            clearedPercentage = Math.min(clearedPercentage + 9, 100);
+        }
+        int baseScore = (int) Math.max(Math.min(Math.floor(60f * clearedPercentage / 100f), 60), 0);
+        return baseScore;
     }
 
     public static int getExplorationSecretScore() {

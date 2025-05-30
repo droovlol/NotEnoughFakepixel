@@ -104,12 +104,10 @@ public class ScoreOverlay {
         if (example) {
             if (Config.feature.dungeons.dungeonsScoreSimple) {
                 lines.add("\u00a77Total score: \u00a7a300\u00a76 (S+)");
-                lines.add("\u00a77Virtual score: \u00a7a310\u00a76 (S+)");
                 lines.add("");
                 lines.add("\u00a77Secrets: \u00a7a100% \u00a7a/ 80% \u00a7a/ 100%");
             } else {
                 lines.add("\u00a77Total score: \u00a7a300\u00a76 (S+)");
-                lines.add("\u00a77Virtual score: \u00a7a310\u00a76 (S+)");
                 lines.add("");
                 lines.add("\u00a77Skill: \u00a7a100");
                 lines.add("\u00a77Exploration: \u00a7a100");
@@ -121,12 +119,10 @@ public class ScoreOverlay {
         } else {
             if (Config.feature.dungeons.dungeonsScoreSimple) {
                 lines.add(getRankingDisplay());
-                lines.add(getVirtualRankingDisplay());
                 lines.add("");
                 lines.add(getSecretDisplay());
             } else {
                 lines.add(getRankingDisplay());
-                lines.add(getVirtualRankingDisplay());
                 lines.add("");
                 lines.add(getSkillDisplay());
                 lines.add(getExplorationDisplay());
@@ -154,25 +150,6 @@ public class ScoreOverlay {
         else if (totalScore < 300)
             returnString = returnString + EnumChatFormatting.YELLOW + totalScore + EnumChatFormatting.GOLD + " (S)";
         else returnString = returnString + EnumChatFormatting.GREEN + totalScore + EnumChatFormatting.GOLD + " (S+)";
-        return returnString;
-    }
-
-    private String getVirtualRankingDisplay() {
-        int virtualScore = ScoreManager.getSkillScore() + 60 + ScoreManager.getExplorationSecretScore() + ScoreManager.getSpeedScore() + ScoreManager.getBonusScore();
-        if (DungeonManager.isFinalStage() && ScoreManager.getExplorationClearScore() != 60) return "";
-        if (ScoreManager.getExplorationClearScore() == 60) return "";
-        String returnString = "\u00a77Virtual score: ";
-        if (virtualScore < 100)
-            returnString = returnString + EnumChatFormatting.RED + virtualScore + EnumChatFormatting.RED + " (D)";
-        else if (virtualScore < 160)
-            returnString = returnString + EnumChatFormatting.RED + virtualScore + EnumChatFormatting.BLUE + " (C)";
-        else if (virtualScore < 230)
-            returnString = returnString + EnumChatFormatting.RED + virtualScore + EnumChatFormatting.GREEN + " (B)";
-        else if (virtualScore < 269.5f)
-            returnString = returnString + EnumChatFormatting.YELLOW + virtualScore + EnumChatFormatting.LIGHT_PURPLE + " (A)";
-        else if (virtualScore < 300)
-            returnString = returnString + EnumChatFormatting.YELLOW + virtualScore + EnumChatFormatting.GOLD + " (S)";
-        else returnString = returnString + EnumChatFormatting.GREEN + virtualScore + EnumChatFormatting.GOLD + " (S+)";
         return returnString;
     }
 
@@ -251,7 +228,6 @@ public class ScoreOverlay {
 
             ChatUtils.notifyChat(EnumChatFormatting.WHITE + "----- Dungeon Report -----");
             ChatUtils.notifyChat(getRankingDisplay());
-            ChatUtils.notifyChat(getVirtualRankingDisplay());
             ChatUtils.notifyChat("");
             ChatUtils.notifyChat(getSkillDisplay());
             ChatUtils.notifyChat(getExplorationDisplay());

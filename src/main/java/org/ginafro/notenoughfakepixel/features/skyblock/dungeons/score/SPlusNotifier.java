@@ -41,7 +41,7 @@ public class SPlusNotifier {
         if (remindedSPlus) return;
         if (!Config.feature.dungeons.dungeonsSPlusNotifier && !Config.feature.dungeons.dungeonsSPlusMessage) return;
 
-        if (ScoreManager.getSecretPercentage() >= ScoreManager.getRequiredSecretNeeded() && ScoreManager.getRequiredSecretNeeded() != -1) {
+        if (ScoreManager.getTotalScore() >= 300) {
             if (Config.feature.dungeons.dungeonsSPlusNotifier) {
                 SoundUtils.playSound(mc.thePlayer.getPosition(), "note.pling", 2.0F, 2.0F);
                 showCustomOverlay(EnumChatFormatting.RED + "300 Score!", 2000);
@@ -51,7 +51,7 @@ public class SPlusNotifier {
                 if (!customMessage.isEmpty()) {
                     Minecraft.getMinecraft().thePlayer.sendChatMessage("/pc " + customMessage);
                 } else {
-                    Minecraft.getMinecraft().thePlayer.sendChatMessage("/pc [NEF] S+ virtually reached, get 100% completion and enter portal!");
+                    Minecraft.getMinecraft().thePlayer.sendChatMessage("/pc 300 Score!");
                 }
             }
             remindedSPlus = true;
