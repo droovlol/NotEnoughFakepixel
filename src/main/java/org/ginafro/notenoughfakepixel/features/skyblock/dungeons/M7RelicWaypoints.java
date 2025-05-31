@@ -13,6 +13,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
+import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
+import org.ginafro.notenoughfakepixel.variables.DungeonFloor;
 import org.ginafro.notenoughfakepixel.variables.Skins;
 
 import java.awt.*;
@@ -49,7 +51,7 @@ public class M7RelicWaypoints {
 
     @SubscribeEvent
     public void onRenderWorldLast(RenderWorldLastEvent event) {
-        if (!DungeonManager.checkEssentialsF7()) return;
+        if (ScoreboardUtils.currentFloor != DungeonFloor.M7) return;
         if (!isFinalPhase) return;
         if (!Config.feature.dungeons.m7Relics) return;
         float partialTicks = event.partialTicks;
