@@ -38,8 +38,13 @@ public class ClickInOrderSolver {
     private static final int REGION_ROWS = 2;
 
     public ClickInOrderSolver() {
-        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleAtFixedRate(this::processQueue, 0, 25, TimeUnit.MILLISECONDS);
+        // three scheduled executors for parallel queue processing
+        ScheduledExecutorService executor1 = Executors.newSingleThreadScheduledExecutor();
+        ScheduledExecutorService executor2 = Executors.newSingleThreadScheduledExecutor();
+        ScheduledExecutorService executor3 = Executors.newSingleThreadScheduledExecutor();
+        executor1.scheduleAtFixedRate(this::processQueue, 0, 50, TimeUnit.MILLISECONDS);
+        executor2.scheduleAtFixedRate(this::processQueue, 0, 50, TimeUnit.MILLISECONDS);
+        executor3.scheduleAtFixedRate(this::processQueue, 0, 50, TimeUnit.MILLISECONDS);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

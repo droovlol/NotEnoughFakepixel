@@ -484,16 +484,19 @@ public class Dungeons {
 
     @Expose
     @ConfigOption(name = "Distance Box", desc = "Render an outline which shows how far the dragon can be to be near the status")
+    @ConfigEditorBoolean
     @ConfigAccordionId(id = 6)
     public boolean distBox = true;
 
     @Expose
     @ConfigOption(name = "Dragon Outline", desc = "Outlines each dragon with their respective colors for better visiblity")
+    @ConfigEditorBoolean
     @ConfigAccordionId(id = 6)
     public boolean dragOutline = true;
 
     @Expose
     @ConfigOption(name = "Close Alert", desc = "Shows an alert when a dragon goes near his statue")
+    @ConfigEditorBoolean
     @ConfigAccordionId(id = 6)
     public boolean dragAlert = true;
 

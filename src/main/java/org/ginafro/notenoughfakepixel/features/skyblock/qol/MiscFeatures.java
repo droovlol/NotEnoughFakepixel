@@ -17,6 +17,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
+import net.minecraft.network.play.server.S0EPacketSpawnObject;
 import net.minecraft.network.play.server.S29PacketSoundEffect;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
@@ -175,6 +176,13 @@ public class MiscFeatures {
 
     @SubscribeEvent
     public void onPacketRead(PacketReadEvent event) {
+        if (event.packet instanceof S0EPacketSpawnObject) {
+            S0EPacketSpawnObject spawnPacket = (S0EPacketSpawnObject) event.packet;
+
+            if (spawnPacket.getType() == 70 && Config.feature.qol.qolHideFallingBlocks) {
+                event.setCanceled(true);
+            }
+        }
         if (event.packet instanceof S29PacketSoundEffect) {
             S29PacketSoundEffect soundPacket = (S29PacketSoundEffect) event.packet;
 

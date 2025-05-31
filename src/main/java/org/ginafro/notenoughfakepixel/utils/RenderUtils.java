@@ -52,6 +52,7 @@ public class RenderUtils {
             GlStateManager.translate(0, 0, 300); // Bring the text to the foreground
             GlStateManager.enableBlend();
             GlStateManager.disableLighting();
+            GL11.glDisable(GL11.GL_LIGHTING);
             GlStateManager.disableDepth();
 
             // Render the string
@@ -60,6 +61,7 @@ public class RenderUtils {
             // Restore OpenGL states
             GlStateManager.enableDepth();
             GlStateManager.disableBlend();
+            GL11.glEnable(GL11.GL_LIGHTING);
             GlStateManager.enableLighting();
             GlStateManager.popMatrix();
         }
@@ -105,6 +107,7 @@ public class RenderUtils {
         Minecraft.getMinecraft().getTextureManager().bindTexture(beaconBeam);
         GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
         GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
+        GL11.glDisable(GL11.GL_LIGHTING);
         GlStateManager.enableCull();
         GlStateManager.enableTexture2D();
         GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ONE, GL11.GL_ZERO);
@@ -175,6 +178,7 @@ public class RenderUtils {
         if (disableDepth) {
             GlStateManager.enableDepth();
         }
+        GL11.glEnable(GL11.GL_LIGHTING);
     }
 
     /**
@@ -220,6 +224,7 @@ public class RenderUtils {
         GlStateManager.pushMatrix();
         GlStateManager.disableTexture2D();
         GlStateManager.disableCull();
+        GL11.glDisable(GL11.GL_LIGHTING);
         GlStateManager.disableLighting();
         if (disableDepth) GlStateManager.disableDepth();
         GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
@@ -235,6 +240,7 @@ public class RenderUtils {
 
         if (disableDepth) GlStateManager.enableDepth();
         GlStateManager.enableLighting();
+        GL11.glEnable(GL11.GL_LIGHTING);
         GlStateManager.enableCull();
         GlStateManager.enableTexture2D();
         GlStateManager.popMatrix();
@@ -320,6 +326,7 @@ public class RenderUtils {
         GlStateManager.pushMatrix();
         GlStateManager.disableTexture2D();
         GlStateManager.disableCull();
+        GL11.glDisable(GL11.GL_LIGHTING);
         GlStateManager.disableLighting();
         GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 
@@ -348,6 +355,7 @@ public class RenderUtils {
 
         GlStateManager.enableDepth();
         GlStateManager.enableLighting();
+        GL11.glEnable(GL11.GL_LIGHTING);
         GlStateManager.enableCull();
         GlStateManager.enableTexture2D();
         GlStateManager.popMatrix();
@@ -392,6 +400,7 @@ public class RenderUtils {
         GlStateManager.pushMatrix();
         GlStateManager.disableTexture2D();
         GlStateManager.disableCull();
+        GL11.glDisable(GL11.GL_LIGHTING);
         GlStateManager.disableLighting();
         GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 
@@ -399,6 +408,7 @@ public class RenderUtils {
 
         GlStateManager.enableDepth();
         GlStateManager.enableLighting();
+        GL11.glEnable(GL11.GL_LIGHTING);
         GlStateManager.enableCull();
         GlStateManager.enableTexture2D();
         GlStateManager.popMatrix();
@@ -502,6 +512,7 @@ public class RenderUtils {
      */
     private static void setupRenderStateForText() {
         GlStateManager.disableLighting();
+        GL11.glDisable(GL11.GL_LIGHTING);
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
         GlStateManager.depthMask(false);
@@ -515,6 +526,7 @@ public class RenderUtils {
     private static void restoreRenderState() {
         GlStateManager.enableDepth();
         GlStateManager.depthMask(true);
+        GL11.glEnable(GL11.GL_LIGHTING);
         GlStateManager.enableLighting();
         GlStateManager.disableBlend();
         GlStateManager.resetColor();
@@ -650,6 +662,7 @@ public class RenderUtils {
     private static void setupRenderState(boolean depth, int lineWidth) {
         GlStateManager.disableTexture2D();
         GlStateManager.enableBlend();
+        GL11.glDisable(GL11.GL_LIGHTING);
         GlStateManager.disableLighting();
         GlStateManager.disableAlpha();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
@@ -674,6 +687,7 @@ public class RenderUtils {
         }
 
         GlStateManager.disableBlend();
+        GL11.glEnable(GL11.GL_LIGHTING);
         GlStateManager.enableLighting();
         GlStateManager.enableAlpha();
         GlStateManager.enableTexture2D();
@@ -714,6 +728,7 @@ public class RenderUtils {
         if (disableDepth) GlStateManager.disableDepth();
         GlStateManager.disableCull();
         GlStateManager.disableLighting();
+        GL11.glDisable(GL11.GL_LIGHTING);
         double initialToAddX = 0;
         if (!disableDepth) {
             initialToAddX = .05;
@@ -728,7 +743,7 @@ public class RenderUtils {
             RenderUtils.drawFilledBoundingBox(new AxisAlignedBB(x, y + 0.5 - 0.13, z + 0.5 - 0.191, x - .13, y + 0.5 + 0.13, z + 0.5 + 0.191), 1f, color);
         }
 
-
+        GL11.glEnable(GL11.GL_LIGHTING);
         GlStateManager.enableLighting();
         if (disableDepth) GlStateManager.enableDepth();
         GlStateManager.enableCull();
@@ -769,11 +784,13 @@ public class RenderUtils {
         // Disable culling and lighting for proper rendering
         GlStateManager.disableCull();
         GlStateManager.disableLighting();
+        GL11.glDisable(GL11.GL_LIGHTING);
 
         // Render bounding box
         RenderUtils.drawFilledBoundingBox(boundingBox, 1f, color);
 
         // Restore rendering settings
+        GL11.glEnable(GL11.GL_LIGHTING);
         GlStateManager.enableLighting();
         GlStateManager.enableCull();
     }
@@ -836,6 +853,7 @@ public class RenderUtils {
      */
     private static void setupGlStateForBox() {
         GlStateManager.disableTexture2D();
+        GL11.glDisable(GL11.GL_LIGHTING);
         GlStateManager.disableLighting();
         GlStateManager.enableBlend();
         GlStateManager.disableCull(); // So we can see all faces
@@ -850,6 +868,7 @@ public class RenderUtils {
     private static void restoreGlState() {
         GlStateManager.enableCull();
         GlStateManager.disableBlend();
+        GL11.glEnable(GL11.GL_LIGHTING);
         GlStateManager.enableLighting();
         GlStateManager.enableTexture2D();
         GlStateManager.popAttrib();
@@ -944,6 +963,7 @@ public class RenderUtils {
 
         GlStateManager.disableTexture2D();
         GlStateManager.enableBlend();
+        GL11.glDisable(GL11.GL_LIGHTING);
         GlStateManager.disableLighting();
         GlStateManager.disableAlpha();
         GlStateManager.disableCull();
@@ -1002,6 +1022,7 @@ public class RenderUtils {
         GlStateManager.enableAlpha();
         GlStateManager.disableBlend();
         GlStateManager.enableCull();
+        GL11.glEnable(GL11.GL_LIGHTING);
         GlStateManager.enableLighting();
         GlStateManager.popMatrix();
     }
@@ -1014,6 +1035,7 @@ public class RenderUtils {
         GlStateManager.alphaFunc(516, 0.1F);
         GlStateManager.pushMatrix();
         GlStateManager.disableLighting();
+        GL11.glDisable(GL11.GL_LIGHTING);
 
         Entity viewer = Minecraft.getMinecraft().getRenderViewEntity();
         double viewerX = viewer.lastTickPosX + (viewer.posX - viewer.lastTickPosX) * partialTicks;
@@ -1047,6 +1069,7 @@ public class RenderUtils {
 
         if (showDistance) drawNametag(EnumChatFormatting.YELLOW.toString() + Math.round(dist) + "m");
 
+        GL11.glEnable(GL11.GL_LIGHTING);
         GlStateManager.enableLighting();
         GlStateManager.popMatrix();
     }
@@ -1062,6 +1085,7 @@ public class RenderUtils {
         GlStateManager.rotate(renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
         GlStateManager.scale(-f1, -f1, f1);
         GlStateManager.disableLighting();
+        GL11.glDisable(GL11.GL_LIGHTING);
         GlStateManager.depthMask(false);
         GlStateManager.disableDepth();
         GlStateManager.enableBlend();
@@ -1085,6 +1109,7 @@ public class RenderUtils {
         fontrenderer.drawString(str, -fontrenderer.getStringWidth(str) / 2, i, -1);
         GlStateManager.enableDepth();
         GlStateManager.enableBlend();
+        GL11.glEnable(GL11.GL_LIGHTING);
         GlStateManager.enableLighting();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.popMatrix();
@@ -1100,6 +1125,7 @@ public class RenderUtils {
         GlStateManager.translate(-realX, -realY, -realZ);
         GlStateManager.disableTexture2D();
         GlStateManager.enableBlend();
+        GL11.glDisable(GL11.GL_LIGHTING);
         GlStateManager.disableLighting();
         GlStateManager.disableAlpha();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
@@ -1110,6 +1136,7 @@ public class RenderUtils {
         GlStateManager.translate(realX, realY, realZ);
         GlStateManager.disableBlend();
         GlStateManager.enableAlpha();
+        GL11.glEnable(GL11.GL_LIGHTING);
         GlStateManager.enableLighting();
         GlStateManager.enableTexture2D();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -1132,6 +1159,7 @@ public class RenderUtils {
         GlStateManager.disableTexture2D();
         GlStateManager.disableDepth();
         GlStateManager.enableBlend();
+        GL11.glDisable(GL11.GL_LIGHTING);
         GlStateManager.disableLighting();
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glLineWidth(2.0f);
@@ -1179,6 +1207,7 @@ public class RenderUtils {
         GlStateManager.enableDepth();
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
+        GL11.glEnable(GL11.GL_LIGHTING);
         GlStateManager.enableLighting();
         GlStateManager.popMatrix();
     }

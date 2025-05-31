@@ -52,6 +52,18 @@ public class QualityOfLife {
     public float qolItemRarityOpacity = 0.6f;
 
     @Expose
+    @ConfigOption(name = "Golden enchants", desc = "Changes the color of the maxed enchants.")
+    @ConfigEditorBoolean
+    @ConfigAccordionId(id = 1)
+    public boolean qolGoldenEnchants = true;
+
+    @Expose
+    @ConfigOption(name = "Hide falling blocks", desc = "Hide falling blocks.")
+    @ConfigEditorBoolean
+    @ConfigAccordionId(id = 1)
+    public boolean qolHideFallingBlocks = false;
+
+    @Expose
     @ConfigOption(name = "Hide Player Armor", desc = "Hide player armor.")
     @ConfigEditorBoolean
     @ConfigAccordionId(id = 1)

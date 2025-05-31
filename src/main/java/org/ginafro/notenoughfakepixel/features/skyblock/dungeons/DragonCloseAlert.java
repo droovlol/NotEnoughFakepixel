@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.item.EntityArmorStand;
@@ -29,7 +31,6 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
-
 
 @RegisterEvents
 public class DragonCloseAlert {
@@ -57,46 +58,58 @@ public class DragonCloseAlert {
             new Orb(new BlockPos(64, 6, 125), Skins.PURPLE_RELIC, Color.PINK)
     );
 
-    private static final Map<EntityDragon, Color> DRAGON_COLOR_MAP = new HashMap<>();
+    private static String displayText = "";
+    private static long endTime = 0;
 
-    private static Map<Color, String> DRAGON_HEALTH_MAP = new HashMap<>();
+    private static final Map<EntityDragon, Color> DRAGON_COLOR_MAP = new HashMap<>();
+    private static final Map<EntityDragon, String> DRAGON_HEALTH_MAP = new HashMap<>();
 
     public static final Map<String, Color> DRAGON_COLORS = MapUtils.mapOf(
-           new MapUtils.Pair<>("Apex Dragon", Color.GREEN),
-           new MapUtils.Pair<>("Flame Dragon", Color.ORANGE),
-           new MapUtils.Pair<>("Power Dragon", Color.RED),
-           new MapUtils.Pair<>("Soul Dragon", Color.PINK),
-           new MapUtils.Pair<>("Ice Dragon", Color.CYAN)
+            new MapUtils.Pair<>("Apex Dragon", Color.GREEN),
+            new MapUtils.Pair<>("Flame Dragon", Color.ORANGE),
+            new MapUtils.Pair<>("Power Dragon", Color.RED),
+            new MapUtils.Pair<>("Soul Dragon", Color.PINK),
+            new MapUtils.Pair<>("Ice Dragon", Color.CYAN)
     );
-
 
     public boolean isFinalPhase = false;
     private final Minecraft mc = Minecraft.getMinecraft();
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void chat(ClientChatReceivedEvent e){
-
-        if(e.message.getUnformattedText().contains("WITHER KING") && (e.message.getUnformattedText().contains("I have nothing left to fight for, I finally had peace.") || e.message.getUnformattedText().contains("We will decide it all, here, now."))){
-                isFinalPhase = true;
-            }
-
+    public void chat(ClientChatReceivedEvent e) {
+        if(e.message.getUnformattedText().contains("WITHER KING") &&
+                (e.message.getUnformattedText().contains("I have nothing left to fight for, I finally had peace.") ||
+                        e.message.getUnformattedText().contains("We will decide it all, here, now."))) {
+            isFinalPhase = true;
+        }
     }
 
     @SubscribeEvent
-    public void onUnLoad(WorldEvent.Unload e){
+    public void onUnLoad(WorldEvent.Unload e) {
         isFinalPhase = false;
         DRAGON_COLOR_MAP.clear();
-        DRAGON_HEALTH_MAP = new HashMap<>();
-        DRAGON_COLORS.keySet().forEach(color -> DRAGON_HEALTH_MAP.put(DRAGON_COLORS.get(color), ""));
+        DRAGON_HEALTH_MAP.clear();
     }
 
-    public void registerDragon(Color color, String health) {
-        DRAGON_HEALTH_MAP.put(color, health);
+    public List<EntityDragon> getDragonsByColor(Color color) {
+        return DRAGON_COLOR_MAP.entrySet().stream()
+                .filter(entry -> entry.getValue().equals(color))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+    }
+
+    public void registerDragon(EntityDragon dragon, String health) {
+        DRAGON_HEALTH_MAP.put(dragon, health);
     }
 
     @SubscribeEvent
     public void onRender(RenderWorldLastEvent e) {
-        if (ScoreboardUtils.currentLocation != Location.DUNGEON || ScoreboardUtils.currentFloor != DungeonFloor.M7)  return;
+        if (ScoreboardUtils.currentLocation != Location.DUNGEON ||
+                ScoreboardUtils.currentFloor != DungeonFloor.M7) return;
+
+        DRAGON_COLOR_MAP.keySet().removeIf(this::isDying);
+        DRAGON_HEALTH_MAP.keySet().removeIf(this::isDying);
+
         renderBoxes(e);
         renderDragonDistance(e);
     }
@@ -105,63 +118,86 @@ public class DragonCloseAlert {
         ORBS.forEach(orb -> {
             BlockPos pos = orb.getPos().add(0, 20, 0);
 
-            DRAGON_COLOR_MAP.keySet().forEach(dragon -> {
-                if (isDying(dragon)) return;
+            for (EntityDragon dragon : DRAGON_COLOR_MAP.keySet()) {
+                if (isDying(dragon)) continue;
 
                 Color color = DRAGON_COLOR_MAP.get(dragon);
-                if (color == null) return;
+                if (color == null || !color.equals(orb.getColor())) continue;
 
-                if (color.equals(orb.getColor())) {
-                    RenderUtils.renderWaypointText(getTextFromColor(orb.getColor()),
-                            dragon.getPosition(), e.partialTicks, false);
-
-//                    double distance = new Vec3(pos.getX(), pos.getY(), pos.getZ())
-//                            .distanceTo(new Vec3(dragon.posX, dragon.posY, dragon.posZ));
-//
-//                    if (distance < 20) {
-//                        Minecraft.getMinecraft().ingameGUI.displayTitle(EnumChatFormatting.GOLD + MapUtils.getKeyFromValue(DRAGON_COLORS, color), "", 2, 70, 2);
-//                    }
-
+                // Render health on dragon
+                String health = DRAGON_HEALTH_MAP.get(dragon);
+                if (health != null && !health.isEmpty()) {
+                    RenderUtils.renderWaypointText(health, dragon.getPosition(), e.partialTicks, false);
                 }
-            });
 
+                // Proximity warning logic
+                double distance = new Vec3(pos.getX(), pos.getY(), pos.getZ())
+                        .distanceTo(new Vec3(dragon.posX, dragon.posY, dragon.posZ));
+
+                if (distance < 20) {
+                    String dragonName = DRAGON_COLORS.entrySet().stream()
+                            .filter(entry -> entry.getValue().equals(color))
+                            .map(Map.Entry::getKey)
+                            .findFirst()
+                            .orElse("Dragon");
+
+                    //showCustomOverlay(dragonName, 2000);
+                    //SoundUtils.playSound(mc.thePlayer.getPosition(), "note.pling", 2.0F, 1.0F);
+                }
+            }
         });
     }
 
-    private String getTextFromColor(Color color) {
-        String health = DRAGON_HEALTH_MAP.get(color);
-        if (health != null && !health.isEmpty()) {
-            return "";
-        }
-        return health;
+    private void showCustomOverlay(String text, int durationMillis) {
+        displayText = text;
+        endTime = System.currentTimeMillis() + durationMillis;
+    }
+
+    @SubscribeEvent
+    public void onRenderOverlay(RenderGameOverlayEvent.Post event) {
+        if (event.type != RenderGameOverlayEvent.ElementType.TEXT) return;
+        if (System.currentTimeMillis() > endTime) return;
+
+        FontRenderer fr = mc.fontRendererObj;
+
+        int screenWidth = event.resolution.getScaledWidth();
+        int screenHeight = event.resolution.getScaledHeight();
+
+        GlStateManager.pushMatrix();
+        GlStateManager.scale(4.0F, 4.0F, 4.0F);
+        int textWidth = fr.getStringWidth(displayText);
+        int x = (screenWidth / 8) - (textWidth / 2);
+        int y = (screenHeight / 8) - 10;
+        fr.drawStringWithShadow(displayText, x, y, 0xFF5555);
+        GlStateManager.popMatrix();
     }
 
     private void renderBoxes(RenderWorldLastEvent e) {
         drawDragonBox(e);
 
-        ORBS
-        .forEach(orb -> {
+        ORBS.forEach(orb -> {
             Color color = orb.getColor();
             BlockPos position = orb.getPos().add(0, 20, 0);
-            RenderUtils.renderBoxAtCoords(position.getX() - 21, position.getY() -11, position.getZ() -11,
-                    position.getX() + 11, position.getY() + 11, position.getZ() + 13, e.partialTicks, color, false);
+            RenderUtils.renderBoxAtCoords(
+                    position.getX() - 21, position.getY() -11, position.getZ() -11,
+                    position.getX() + 11, position.getY() + 11, position.getZ() + 13,
+                    e.partialTicks, color, false
+            );
         });
-
     }
 
     private void drawDragonBox(RenderWorldLastEvent e) {
         mc.theWorld.getLoadedEntityList().forEach(entity -> {
             if (entity instanceof EntityArmorStand) {
                 EntityArmorStand stand = (EntityArmorStand) entity;
-                // armor stand have to have a player head with a specific texture
                 ItemStack skull = stand.getCurrentArmor(3);
-                if (skull == null || skull.getItem() == null || !skull.getItem().getUnlocalizedName().contains("skull")) return;
+                if (skull == null || skull.getItem() == null || !skull.getItem().getUnlocalizedName().contains("skull"))
+                    return;
 
                 String texture = ItemUtils.getSkullTexture(skull);
                 if (texture == null || texture.isEmpty()) return;
 
                 List<Skins> skins = ORBS.stream().map(Orb::getSkin).collect(Collectors.toList());
-
                 Skins skin = Skins.getSkinByValue(texture);
                 if (skin == null || !skins.contains(skin)) return;
 
@@ -170,17 +206,18 @@ public class DragonCloseAlert {
                         .map(Orb::getColor)
                         .findFirst()
                         .orElse(Color.WHITE);
+
                 EntityLivingBase entityLiving = stand.worldObj.getEntitiesWithinAABB(EntityLivingBase.class,
                                 stand.getEntityBoundingBox().expand(1.5, 3.0, 1.5),
                                 e1 -> e1 instanceof EntityDragon && !e1.isDead && e1 != mc.thePlayer)
-                        .stream().findFirst().orElse(null);
+                        .stream()
+                        .findFirst()
+                        .orElse(null);
 
                 if (entityLiving instanceof EntityDragon) {
                     EntityDragon dragon = (EntityDragon) entityLiving;
                     if (isDying(dragon)) return;
-                    if (!DRAGON_COLOR_MAP.containsKey(dragon)) {
-                        DRAGON_COLOR_MAP.put(dragon, color);
-                    }
+                    DRAGON_COLOR_MAP.put(dragon, color);
                 }
             }
         });
@@ -189,28 +226,20 @@ public class DragonCloseAlert {
     @SubscribeEvent
     public void render(RenderEntityModelEvent e) {
         EntityLivingBase entity = e.getEntity();
-        if (Minecraft.getMinecraft().thePlayer == null) return;
-        if (Minecraft.getMinecraft().theWorld == null) return;
-        if (!(entity instanceof EntityDragon)) return;
-        if (entity.isInvisible()) return;
-        if (isDying(entity)) return;
-        EntityDragon dragon = (EntityDragon) entity;
+        if (mc.thePlayer == null || mc.theWorld == null) return;
+        if (!(entity instanceof EntityDragon) || entity.isInvisible() || isDying(entity))
+            return;
 
+        EntityDragon dragon = (EntityDragon) entity;
         if (dragon.isDead || dragon.getHealth() <= 0.1f) return;
 
-        DRAGON_COLOR_MAP.keySet().forEach(drag -> {
-            if (dragon.equals(drag)) {
-                Color c = DRAGON_COLOR_MAP.get(drag);
-                if (c != null) {
-                    OutlineUtils.outlineEntity(e, 4f, c, true);
-                }
-
-            }
-        });
+        Color c = DRAGON_COLOR_MAP.get(dragon);
+        if (c != null) {
+            OutlineUtils.outlineEntity(e, 4f, c, true);
+        }
     }
 
     private boolean isDying(EntityLivingBase entity) {
-        if (entity == null || entity.isDead) return true;
-        return entity.getHealth() <= 0.1f;
+        return entity == null || entity.isDead || entity.getHealth() <= 0.1f;
     }
 }

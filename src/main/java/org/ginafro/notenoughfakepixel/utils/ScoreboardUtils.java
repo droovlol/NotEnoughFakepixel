@@ -94,14 +94,16 @@ public class ScoreboardUtils {
 
                         });
 
-                DragonCloseAlert.DRAGON_COLORS.forEach((dragonName, color) ->
-                        scoreboard.getSortedScores(objective).stream()
-                                .filter(line -> line.getPlayerName().contains(dragonName))
-                                .findFirst()
-                                .ifPresent(line -> DragonCloseAlert.getINSTANCE().registerDragon(color, line.getPlayerName()))
-                );
-
-
+                DragonCloseAlert.DRAGON_COLORS.forEach((dragonName, color) -> {
+                    scoreboard.getSortedScores(objective).stream()
+                            .filter(line -> line.getPlayerName().contains(dragonName))
+                            .findFirst()
+                            .ifPresent(line -> {
+                                DragonCloseAlert.INSTANCE.getDragonsByColor(color).forEach(dragon -> {
+                                    DragonCloseAlert.INSTANCE.registerDragon(dragon, line.getPlayerName());
+                                });
+                            });
+                });
             }
         }
 
