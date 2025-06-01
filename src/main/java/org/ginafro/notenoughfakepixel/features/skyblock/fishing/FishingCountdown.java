@@ -49,6 +49,7 @@ public class FishingCountdown {
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END || mc.theWorld == null || mc.thePlayer == null) return;
+        if (!Config.feature.fishing.fishingCountdown) return;
 
         updatePlayerBobber();
         checkFishBiteStatus();
@@ -99,8 +100,9 @@ public class FishingCountdown {
     }
 
     private void processFishingParticle(Vec3 particlePos) {
-        Vec3 bobberPos = new Vec3(playerBobber.posX, playerBobber.posY, playerBobber.posZ);
-        double distance = particlePos.distanceTo(bobberPos);
+        Vec3 bobberPos = new Vec3(playerBobber.posX, 0, playerBobber.posZ);
+        Vec3 adjustedParticlePos = new Vec3(particlePos.xCoord, 0, particlePos.zCoord);
+        double distance = adjustedParticlePos.distanceTo(bobberPos);
 
         if (distance > MAX_DISTANCE) return;
 
@@ -112,8 +114,8 @@ public class FishingCountdown {
                 ParticleData firstParticle = particleHistory.get(0);
                 ParticleData lastParticle = particleHistory.get(particleHistory.size() - 1);
 
-                double firstDistance = firstParticle.position.distanceTo(bobberPos);
-                double lastDistance = lastParticle.position.distanceTo(bobberPos);
+                double firstDistance = new Vec3(firstParticle.position.xCoord, 0, firstParticle.position.zCoord).distanceTo(bobberPos);
+                double lastDistance = new Vec3(lastParticle.position.xCoord, 0, lastParticle.position.zCoord).distanceTo(bobberPos);
                 long totalTimeDiff = lastParticle.timestamp - firstParticle.timestamp;
 
                 if (totalTimeDiff > 0 && firstDistance > lastDistance) {
@@ -125,7 +127,7 @@ public class FishingCountdown {
                         double timeToReach = currentDistance / speed; // ms
                         fishBiteTime = currentTime + (long) timeToReach;
 
-                        if (timeToReach > 500) {
+                        if (timeToReach > 100) {
                             double countdownVal = MathHelper.clamp_double(timeToReach / 1000.0, 0.1, 5.0);
                             countdownText = "§e§l" + formatCountdownNumber(countdownVal);
                             countdownEndTime = currentTime + 1000;
