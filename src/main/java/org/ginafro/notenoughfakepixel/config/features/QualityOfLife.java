@@ -188,6 +188,18 @@ public class QualityOfLife {
     public int qolPetsKey = Keyboard.KEY_P;
 
     @Expose
+    @ConfigOption(name = "Equipment Shortcut", desc = "Enable Equipment shortcut.")
+    @ConfigEditorBoolean
+    @ConfigAccordionId(id = 4)
+    public boolean qolShortcutEq = false;
+
+    @Expose
+    @ConfigOption(name = "Equipment Shortcut Key", desc = "Keybind for Equipment shortcut.")
+    @ConfigEditorKeybind(defaultKey = Keyboard.KEY_P)
+    @ConfigAccordionId(id = 4)
+    public int qolEqKey = Keyboard.KEY_U;
+
+    @Expose
     @ConfigOption(name = "Warps Shortcuts", desc = "Enable warps shortcuts.")
     @ConfigEditorBoolean
     @ConfigAccordionId(id = 4)
