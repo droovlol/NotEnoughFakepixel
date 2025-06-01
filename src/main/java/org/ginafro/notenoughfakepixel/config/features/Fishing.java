@@ -7,6 +7,11 @@ import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.ConfigO
 public class Fishing {
 
     @Expose
+    @ConfigOption(name = "Fishing Countdown", desc = "Notify when a fish is ready to be caught.")
+    @ConfigEditorBoolean
+    public boolean fishingCountdown = true;
+
+    @Expose
     @ConfigOption(name = "Notify Legendary Creatures", desc = "Notify when a legendary creature is caught.")
     @ConfigEditorBoolean
     public boolean fishingLegendaryCreatures = true;
