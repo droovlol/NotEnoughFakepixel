@@ -448,6 +448,12 @@ public class Dungeons {
     public String dungeonsSPlusCustom = "";
 
     @Expose
+    @ConfigOption(name = "Dungeon Cleared Notifier", desc = "Notify when dungeon is 100% completed.")
+    @ConfigEditorBoolean
+    @ConfigAccordionId(id = 5)
+    public boolean dungeonsClearedNotifier = true;
+
+    @Expose
     @ConfigOption(name = "Show Item Secrets and Wither Essences", desc = "Show item secrets and wither essences through walls.")
     @ConfigEditorBoolean
     @ConfigAccordionId(id = 5)
@@ -483,8 +489,8 @@ public class Dungeons {
     public boolean m7Relics = true;
 
     @Expose
-    @ConfigOption(name = "Distance Box", desc = "Render an outline which shows how far the dragon can be to be near the status")
     @ConfigEditorBoolean
+    @ConfigOption(name = "Distance Box", desc = "Render box around dragons statues.")
     @ConfigAccordionId(id = 6)
     public boolean distBox = true;
 
@@ -494,11 +500,10 @@ public class Dungeons {
     @ConfigAccordionId(id = 6)
     public boolean dragOutline = true;
 
-    @Expose
-    @ConfigOption(name = "Close Alert", desc = "Shows an alert when a dragon goes near his statue")
-    @ConfigEditorBoolean
-    @ConfigAccordionId(id = 6)
-    public boolean dragAlert = true;
+    //@Expose
+    //@ConfigOption(name = "Close Alert", desc = "Shows an alert when a dragon goes near his statue")
+    //@ConfigAccordionId(id = 6)
+    //public boolean dragAlert = true;
 
     @Expose
     @ConfigOption(name = "Highlight WitherDoors", desc = "Box wither doors.")

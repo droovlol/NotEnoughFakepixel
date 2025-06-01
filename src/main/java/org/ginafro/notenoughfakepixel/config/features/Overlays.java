@@ -40,27 +40,27 @@ public class Overlays {
     @ConfigAccordionId(id = 0)
     public String searchColor = "0:255:0:255:0";
 
-    @Expose
-    @ConfigOption(name = "Inventory Buttons", desc = "Settings related to inv buttons")
-    @ConfigEditorAccordion(id = 1)
-    public boolean invbutton = true;
+//    @Expose
+//    @ConfigOption(name = "Inventory Buttons", desc = "Settings related to inv buttons")
+//    @ConfigEditorAccordion(id = 1)
+    public boolean invbutton = false;
 
-    @Expose
-    @ConfigOption(name = "Inventory Buttons", desc = "Enable/Disable ")
-    @ConfigEditorBoolean
-    @ConfigAccordionId(id = 1)
-    public boolean invButtons = true;
+//    @Expose
+//    @ConfigOption(name = "Inventory Buttons", desc = "Enable/Disable ")
+//    @ConfigEditorBoolean
+//    @ConfigAccordionId(id = 1)
+    public boolean invButtons = false;
 
-    @Expose
-    @ConfigOption(name = "Snap to Grid", desc = "Whether or not inv buttons will be snapped to a grid")
-    @ConfigEditorBoolean
-    @ConfigAccordionId(id = 1)
-    public boolean snapGrid = true;
+//    @Expose
+//    @ConfigOption(name = "Snap to Grid", desc = "Whether or not inv buttons will be snapped to a grid")
+//    @ConfigEditorBoolean
+//    @ConfigAccordionId(id = 1)
+    public boolean snapGrid = false;
 
-    @Expose
-    @ConfigOption(name = "Button Editor", desc = "Change Position or edit/add any inventory button")
-    @ConfigEditorButton(buttonText = "EDIT", runnableId = "nefButtons")
-    @ConfigAccordionId(id = 1)
+//    @Expose
+//    @ConfigOption(name = "Button Editor", desc = "Change Position or edit/add any inventory button")
+//    @ConfigEditorButton(buttonText = "EDIT", runnableId = "nefButtons")
+//    @ConfigAccordionId(id = 1)
     public String editor = "";
 
     @Expose

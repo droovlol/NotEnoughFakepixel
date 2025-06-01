@@ -5,21 +5,18 @@ import lombok.Data;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.events.RenderEntityModelEvent;
 import org.ginafro.notenoughfakepixel.utils.*;
@@ -72,21 +69,10 @@ public class DragonCloseAlert {
             new MapUtils.Pair<>("Ice Dragon", Color.CYAN)
     );
 
-    public boolean isFinalPhase = false;
     private final Minecraft mc = Minecraft.getMinecraft();
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void chat(ClientChatReceivedEvent e) {
-        if(e.message.getUnformattedText().contains("WITHER KING") &&
-                (e.message.getUnformattedText().contains("I have nothing left to fight for, I finally had peace.") ||
-                        e.message.getUnformattedText().contains("We will decide it all, here, now."))) {
-            isFinalPhase = true;
-        }
-    }
-
     @SubscribeEvent
-    public void onUnLoad(WorldEvent.Unload e) {
-        isFinalPhase = false;
+    public void onUnLoad(WorldEvent.Unload e){
         DRAGON_COLOR_MAP.clear();
         DRAGON_HEALTH_MAP.clear();
     }
@@ -105,7 +91,7 @@ public class DragonCloseAlert {
     @SubscribeEvent
     public void onRender(RenderWorldLastEvent e) {
         if (ScoreboardUtils.currentLocation != Location.DUNGEON ||
-                ScoreboardUtils.currentFloor != DungeonFloor.M7) return;
+                ScoreboardUtils.currentFloor != DungeonFloor.M7 || !M7RelicWaypoints.isFinalPhase) return;
 
         DRAGON_COLOR_MAP.keySet().removeIf(this::isDying);
         DRAGON_HEALTH_MAP.keySet().removeIf(this::isDying);
@@ -148,6 +134,7 @@ public class DragonCloseAlert {
         });
     }
 
+    // TODO: Make this a custom overlay
     private void showCustomOverlay(String text, int durationMillis) {
         displayText = text;
         endTime = System.currentTimeMillis() + durationMillis;
@@ -173,8 +160,10 @@ public class DragonCloseAlert {
     }
 
     private void renderBoxes(RenderWorldLastEvent e) {
+        if (!M7RelicWaypoints.isFinalPhase) return;
         drawDragonBox(e);
 
+        if (!Config.feature.dungeons.m7Relics) return;
         ORBS.forEach(orb -> {
             Color color = orb.getColor();
             BlockPos position = orb.getPos().add(0, 20, 0);
@@ -187,6 +176,7 @@ public class DragonCloseAlert {
     }
 
     private void drawDragonBox(RenderWorldLastEvent e) {
+        if (!Config.feature.dungeons.dragOutline) return;
         mc.theWorld.getLoadedEntityList().forEach(entity -> {
             if (entity instanceof EntityArmorStand) {
                 EntityArmorStand stand = (EntityArmorStand) entity;
@@ -225,6 +215,7 @@ public class DragonCloseAlert {
 
     @SubscribeEvent
     public void render(RenderEntityModelEvent e) {
+        if (!Config.feature.dungeons.dragOutline) return;
         EntityLivingBase entity = e.getEntity();
         if (mc.thePlayer == null || mc.theWorld == null) return;
         if (!(entity instanceof EntityDragon) || entity.isInvisible() || isDying(entity))

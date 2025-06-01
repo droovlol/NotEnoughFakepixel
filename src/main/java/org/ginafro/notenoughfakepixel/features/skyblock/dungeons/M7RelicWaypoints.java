@@ -32,7 +32,8 @@ public class M7RelicWaypoints {
 
     private static final Map<RelicColor, BlockPos> relicPositions = new HashMap<>();
     private static final Map<RelicColor, BlockPos> cauldronPositions = new HashMap<>();
-    public boolean isFinalPhase = false;
+
+    public static boolean isFinalPhase = false;
     private Set<RelicColor> pickedRelics = new HashSet<>();
 
     static {
@@ -95,6 +96,7 @@ public class M7RelicWaypoints {
 
     @SubscribeEvent
     public void onWorldUnload(WorldEvent.Unload event) {
+        isFinalPhase = false;
         pickedRelics.clear();
     }
 

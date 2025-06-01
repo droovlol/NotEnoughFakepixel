@@ -17,7 +17,6 @@ import org.ginafro.notenoughfakepixel.features.cosmetics.CosmeticsManager;
 import org.ginafro.notenoughfakepixel.features.cosmetics.impl.Bandana;
 import org.ginafro.notenoughfakepixel.features.cosmetics.loader.OBJLoader;
 import org.ginafro.notenoughfakepixel.features.skyblock.overlays.inventory.equipment.EquipmentOverlay;
-import org.ginafro.notenoughfakepixel.features.skyblock.overlays.inventory.invbuttons.InvManager;
 import org.ginafro.notenoughfakepixel.features.skyblock.qol.Aliases;
 import org.ginafro.notenoughfakepixel.features.skyblock.qol.CustomAliases.CustomAliases;
 import org.ginafro.notenoughfakepixel.features.skyblock.slotlocking.SlotLocking;
@@ -72,8 +71,8 @@ public class NotEnoughFakepixel {
         ModEventRegistrar.registerModEvents();
         ModEventRegistrar.registerKeybinds();
         ModEventRegistrar.registerCommands();
-        InvManager.save();
-        InvManager.load();
+        //InvManager.save();
+        //InvManager.load();
 
         SlotLocking.getInstance().saveConfig();
     }
