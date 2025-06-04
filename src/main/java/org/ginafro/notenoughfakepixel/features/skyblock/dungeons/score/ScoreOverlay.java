@@ -79,6 +79,7 @@ public class ScoreOverlay {
             mc.fontRendererObj.drawString(lines.get(i), 2, i * 11, -1); // 2px left padding
         }
 
+        GlStateManager.color(1.0f,1.0f,1.0f,1.0f);
         GlStateManager.popMatrix();
     }
 
