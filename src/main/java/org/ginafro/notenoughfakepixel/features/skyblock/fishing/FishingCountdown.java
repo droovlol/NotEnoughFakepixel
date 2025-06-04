@@ -53,7 +53,9 @@ public class FishingCountdown {
 
         updatePlayerBobber();
         checkFishBiteStatus();
-        cleanupParticleHistory();
+        mc.addScheduledTask(() -> {
+            cleanupParticleHistory();
+        });
     }
 
     private void updatePlayerBobber() {
