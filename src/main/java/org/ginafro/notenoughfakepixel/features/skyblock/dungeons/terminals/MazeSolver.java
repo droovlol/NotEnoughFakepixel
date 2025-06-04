@@ -25,6 +25,7 @@ import org.lwjgl.input.Mouse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +42,10 @@ public class MazeSolver {
     private final Map<Integer, SlotPosition> slotPositions = new HashMap<>();
     private final long lastScanTime = 0;
     private final ContainerChest lastContainer = null;
+
+    // Added for queue clicks functionality
+    private final LinkedList<Integer> clickQueue = new LinkedList<>();
+    private long lastClickTime = 0;
 
     private static class SlotPosition {
         final int x;
@@ -74,6 +79,7 @@ public class MazeSolver {
             targetSlots.clear();
             alternativeSlots.clear();
             slotPositions.clear();
+            clickQueue.clear(); // Clear queue when opening a new maze
         }
     }
 
@@ -154,6 +160,23 @@ public class MazeSolver {
             renderCustomGui(containerChest);
         } else {
             renderVanillaOverlay(containerChest);
+        }
+
+        long currentTime = System.currentTimeMillis();
+        if (!clickQueue.isEmpty() && currentTime - lastClickTime > 20) {
+            int slotNumber = clickQueue.poll();
+            Slot slot = containerChest.getSlot(slotNumber);
+            if (slot != null) {
+                Minecraft.getMinecraft().playerController.windowClick(
+                            containerChest.windowId,
+                            slotNumber,
+                            2,
+                            0,
+                            Minecraft.getMinecraft().thePlayer
+                );
+                lastClickTime = currentTime;
+                playCompletionSound();
+            }
         }
     }
 
@@ -283,22 +306,23 @@ public class MazeSolver {
 
         if (mouseX >= guiLeft && mouseX < guiLeft + guiWidth &&
                 mouseY >= guiTop && mouseY < guiTop + guiHeight) {
-
             int slotId = calculateClickedSlot(mouseX, mouseY, guiLeft, guiTop, scale);
             if (slotId >= 0 && slotId < container.inventorySlots.size()) {
+                clickQueue.add(slotId);
                 mc.playerController.windowClick(
-                        container.windowId,
-                        slotId,
-                        2,
-                        0,
-                        mc.thePlayer
-                );
+                            container.windowId,
+                            slotId,
+                            2,
+                            0,
+                            mc.thePlayer
+                    );
                 playCompletionSound();
                 updateSlots(container);
-                event.setCanceled(true);
             }
+            event.setCanceled(true);
         }
     }
+
 
     private void handleVanillaGuiClick(ContainerChest container) {
         Minecraft mc = Minecraft.getMinecraft();
@@ -306,17 +330,19 @@ public class MazeSolver {
         Slot hoveredSlot = guiChest.getSlotUnderMouse();
 
         if (hoveredSlot != null) {
+            clickQueue.add(hoveredSlot.slotNumber);
             mc.playerController.windowClick(
-                    container.windowId,
-                    hoveredSlot.slotNumber,
-                    2,
-                    0,
-                    mc.thePlayer
+                        container.windowId,
+                        hoveredSlot.slotNumber,
+                        2,
+                        0,
+                        mc.thePlayer
             );
             playCompletionSound();
             updateSlots(container);
         }
     }
+
 
     private int calculateClickedSlot(int mouseX, int mouseY, int guiLeft, int guiTop, float scale) {
         float relX = (mouseX - guiLeft) / scale;
