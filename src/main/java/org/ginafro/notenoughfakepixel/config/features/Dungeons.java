@@ -280,6 +280,12 @@ public class Dungeons {
     public boolean dungeonsCustomGuiClickIn = true;
 
     @Expose
+    @ConfigOption(name = "Queue clicks in Click in Order Terminal", desc = "Queue clicks in Click in Order terminal.")
+    @ConfigEditorBoolean
+    @ConfigAccordionId(id = 4)
+    public boolean dungeonsCustomGuiClickInQueue = false;
+
+    @Expose
     @ConfigOption(name = "Custom Colors Terminal GUI", desc = "Use custom GUI for Colors terminal.")
     @ConfigEditorBoolean
     @ConfigAccordionId(id = 4)

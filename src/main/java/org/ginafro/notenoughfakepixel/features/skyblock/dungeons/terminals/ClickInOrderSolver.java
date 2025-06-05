@@ -24,28 +24,16 @@ import org.lwjgl.input.Mouse;
 
 import java.awt.*;
 import java.util.LinkedList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 @RegisterEvents
 public class ClickInOrderSolver {
 
-    private final LinkedList<Integer> clickQueue = new LinkedList<>();
-    private int processedRounds = 0;
+    private int currentRound = 0;
+    private int clientNextToClick = 1;
     private static final int SLOT_SIZE = 16;
     private static final int REGION_COLS = 7;
     private static final int REGION_ROWS = 2;
-
-    public ClickInOrderSolver() {
-        // three scheduled executors for parallel queue processing
-        ScheduledExecutorService executor1 = Executors.newSingleThreadScheduledExecutor();
-        ScheduledExecutorService executor2 = Executors.newSingleThreadScheduledExecutor();
-        ScheduledExecutorService executor3 = Executors.newSingleThreadScheduledExecutor();
-        executor1.scheduleAtFixedRate(this::processQueue, 0, 50, TimeUnit.MILLISECONDS);
-        executor2.scheduleAtFixedRate(this::processQueue, 0, 50, TimeUnit.MILLISECONDS);
-        executor3.scheduleAtFixedRate(this::processQueue, 0, 50, TimeUnit.MILLISECONDS);
-    }
+    private final LinkedList<Integer> clickQueue = new LinkedList<>();
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onDrawScreenPre(GuiScreenEvent.DrawScreenEvent.Pre event) {
@@ -70,9 +58,11 @@ public class ClickInOrderSolver {
             if (container instanceof ContainerChest) {
                 String title = ((ContainerChest) container).getLowerChestInventory()
                         .getDisplayName().getUnformattedText();
-                if (!title.startsWith("Click in")) return;
-                processedRounds = 0;
-                clickQueue.clear();
+                if (title.startsWith("Click in")) {
+                    currentRound = 0;
+                    clientNextToClick = 1;
+                    clickQueue.clear();
+                }
             }
         }
     }
@@ -90,7 +80,12 @@ public class ClickInOrderSolver {
         if (!title.startsWith("Click in")) return;
         ContainerChest containerChest = (ContainerChest) container;
 
-        int effectiveRound = processedRounds + clickQueue.size();
+        updateCurrentRound(containerChest);
+        if (Config.feature.dungeons.dungeonsCustomGuiClickInQueue) {
+            processQueue(containerChest);
+        }
+
+        int nextToClick = Config.feature.dungeons.dungeonsCustomGuiClickInQueue ? clientNextToClick : currentRound + 1;
 
         if (Config.feature.dungeons.dungeonsCustomGuiClickIn) {
             ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
@@ -105,7 +100,6 @@ public class ClickInOrderSolver {
             GlStateManager.pushMatrix();
             GlStateManager.translate(guiLeft, guiTop, 0);
             GlStateManager.scale(scale, scale, 1.0f);
-
             Gui.drawRect(-2, -12, (REGION_COLS * SLOT_SIZE) + 2, (REGION_ROWS * SLOT_SIZE) + 2, 0x80000000);
             Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(
                     "§8[§bNEF§8] §aClick in Order!",
@@ -120,33 +114,22 @@ public class ClickInOrderSolver {
                         continue;
 
                     int overlayColor = 0;
-                    if (slot.getStack() != null && slot.getStack().stackSize == effectiveRound + 1) {
-                        overlayColor = ColorUtils.getColor(Config.feature.dungeons.dungeonsCorrectColor).getRGB();
-                    } else if (slot.getStack().stackSize == effectiveRound + 2) {
-                        overlayColor = ColorUtils.getColor(Config.feature.dungeons.dungeonsAlternativeColor).getRGB();
-                    } else if (slot.getStack().stackSize == effectiveRound + 3) {
-                        Color baseColor = ColorUtils.getColor(Config.feature.dungeons.dungeonsAlternativeColor);
-                        Color altColor = new Color(
-                                baseColor.getRed(),
-                                baseColor.getGreen(),
-                                baseColor.getBlue(),
-                                150
-                        );
-                        overlayColor = altColor.getRGB();
-                    }
-
-                    if (Config.feature.dungeons.dungeonsTerminalHideIncorrect &&
-                            slot.getStack().stackSize > effectiveRound + 2 &&
-                            slot.getStack().getItemDamage() == 14) {
-                        slot.getStack().getItem().setDamage(slot.getStack(), 15);
-                        overlayColor = new Color(113, 113, 113).getRGB();
+                    if (slot.getStack().getItemDamage() != 5) {
+                        if (slot.getStack().stackSize == nextToClick) {
+                            overlayColor = ColorUtils.getColor(Config.feature.dungeons.dungeonsCorrectColor).getRGB();
+                        } else if (slot.getStack().stackSize == nextToClick + 1) {
+                            overlayColor = ColorUtils.getColor(Config.feature.dungeons.dungeonsAlternativeColor).getRGB();
+                        } else if (slot.getStack().stackSize == nextToClick + 2) {
+                            Color baseColor = ColorUtils.getColor(Config.feature.dungeons.dungeonsAlternativeColor);
+                            overlayColor = new Color(baseColor.getRed(), baseColor.getGreen(), baseColor.getBlue(), 150).getRGB();
+                        }
                     }
 
                     int x = (col - 1) * SLOT_SIZE;
                     int y = (row - 1) * SLOT_SIZE;
                     drawRect(x, y, x + SLOT_SIZE, y + SLOT_SIZE, overlayColor);
 
-                    if (slot.getStack() != null && slot.getStack().stackSize > effectiveRound) {
+                    if (slot.getStack().getItemDamage() != 5) {
                         String stackSizeText = String.valueOf(slot.getStack().stackSize);
                         int textWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(stackSizeText);
                         int textX = x + (SLOT_SIZE / 2) - (textWidth / 2);
@@ -167,10 +150,12 @@ public class ClickInOrderSolver {
                         continue;
 
                     int overlayColor = 0;
-                    if (slot.getStack().stackSize == effectiveRound + 1) {
-                        overlayColor = ColorUtils.getColor(Config.feature.dungeons.dungeonsCorrectColor).getRGB();
-                    } else if (slot.getStack().stackSize == effectiveRound + 2) {
-                        overlayColor = ColorUtils.getColor(Config.feature.dungeons.dungeonsAlternativeColor).getRGB();
+                    if (slot.getStack().getItemDamage() != 5) {
+                        if (slot.getStack().stackSize == nextToClick) {
+                            overlayColor = ColorUtils.getColor(Config.feature.dungeons.dungeonsCorrectColor).getRGB();
+                        } else if (slot.getStack().stackSize == nextToClick + 1) {
+                            overlayColor = ColorUtils.getColor(Config.feature.dungeons.dungeonsAlternativeColor).getRGB();
+                        }
                     }
 
                     RenderUtils.drawOnSlot(container.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, overlayColor);
@@ -179,47 +164,16 @@ public class ClickInOrderSolver {
         }
     }
 
-    @SubscribeEvent
-    public void onGuiRender(GuiScreenEvent.BackgroundDrawnEvent event) {
-        if (!Config.feature.dungeons.dungeonsTerminalClickInOrderSolver) return;
-        if (!DungeonManager.checkEssentialsF7()) return;
-        if (event.gui instanceof GuiChest) {
-            GuiChest chest = (GuiChest) event.gui;
-            Container container = chest.inventorySlots;
-            if (container instanceof ContainerChest) {
-                String title = ((ContainerChest) container).getLowerChestInventory().getDisplayName().getUnformattedText();
-                if (!title.startsWith("Click in")) return;
-                ContainerChest containerChest = (ContainerChest) container;
-                int effectiveRound = processedRounds + clickQueue.size();
-
-                for (int i = 1; i < 3; i++) {
-                    for (int j = 1; j < 8; j++) {
-                        Slot slot = containerChest.getSlot(i * 9 + j);
-                        if (slot == null || slot.inventory == Minecraft.getMinecraft().thePlayer.inventory) continue;
-                        if (slot.getStack() == null || !(Block.getBlockFromItem(slot.getStack().getItem()) instanceof BlockStainedGlassPane))
-                            continue;
-
-                        if (slot.getStack().stackSize == effectiveRound + 1) {
-                            if (slot.getStack().getItemDamage() == 14 || slot.getStack().getItemDamage() == 15) {
-                                slot.getStack().getItem().setDamage(slot.getStack(), 0);
-                            }
-                            RenderUtils.drawOnSlot(container.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, ColorUtils.getColor(Config.feature.dungeons.dungeonsCorrectColor).getRGB());
-                        } else if (slot.getStack().stackSize == effectiveRound + 2) {
-                            if (slot.getStack().getItemDamage() == 14 || slot.getStack().getItemDamage() == 15) {
-                                slot.getStack().getItem().setDamage(slot.getStack(), 0);
-                            }
-                            RenderUtils.drawOnSlot(container.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, ColorUtils.getColor(Config.feature.dungeons.dungeonsAlternativeColor).getRGB());
-                        } else if (slot.getStack().stackSize == effectiveRound + 3) {
-                            if (slot.getStack().getItemDamage() == 14 || slot.getStack().getItemDamage() == 15) {
-                                slot.getStack().getItem().setDamage(slot.getStack(), 0);
-                            }
-                            Color base = ColorUtils.getColor(Config.feature.dungeons.dungeonsAlternativeColor);
-                            RenderUtils.drawOnSlot(container.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, new Color(base.getRed(), base.getGreen(), base.getBlue(), 150).getRGB());
-                        }
-
-                        if (Config.feature.dungeons.dungeonsTerminalHideIncorrect && slot.getStack().stackSize > effectiveRound + 1 && slot.getStack().getItemDamage() == 14) {
-                            slot.getStack().getItem().setDamage(slot.getStack(), 15);
-                            RenderUtils.drawOnSlot(container.inventorySlots.size(), slot.xDisplayPosition, slot.yDisplayPosition, new Color(113, 113, 113).getRGB());
+    private void updateCurrentRound(ContainerChest containerChest) {
+        for (int row = 1; row <= REGION_ROWS; row++) {
+            for (int col = 1; col <= REGION_COLS; col++) {
+                int slotIndex = row * 9 + col;
+                Slot slot = containerChest.getSlot(slotIndex);
+                if (slot == null || slot.getStack() == null) continue;
+                if (Block.getBlockFromItem(slot.getStack().getItem()) instanceof BlockStainedGlassPane) {
+                    if (slot.getStack().getItemDamage() == 5) {
+                        if (slot.getStack().stackSize == currentRound + 1) {
+                            currentRound++;
                         }
                     }
                 }
@@ -227,11 +181,24 @@ public class ClickInOrderSolver {
         }
     }
 
+    private void processQueue(ContainerChest containerChest) {
+        if (clickQueue.isEmpty()) return;
+        int slotNumber = clickQueue.getFirst();
+        Slot slot = containerChest.getSlot(slotNumber);
+        if (slot == null || slot.getStack() == null) return;
+        if (slot.getStack().getItemDamage() == 5) {
+            clickQueue.removeFirst();
+            SoundUtils.playSound(Minecraft.getMinecraft().thePlayer.getPosition(), "gui.button.press", 1.0f, 1.0f);
+        } else {
+            Minecraft mc = Minecraft.getMinecraft();
+            mc.playerController.windowClick(containerChest.windowId, slotNumber, 2, 0, mc.thePlayer);
+        }
+    }
+
     @SubscribeEvent
     public void onMouseClick(GuiScreenEvent.MouseInputEvent.Pre event) {
         if (!Config.feature.dungeons.dungeonsTerminalClickInOrderSolver) return;
         if (!DungeonManager.checkEssentialsF7()) return;
-        if (!Config.feature.dungeons.dungeonsTerminalHideIncorrect) return;
         if (!Mouse.getEventButtonState() || Mouse.getEventButton() != 0) return;
         Minecraft mc = Minecraft.getMinecraft();
         if (!(mc.currentScreen instanceof GuiChest)) return;
@@ -241,6 +208,7 @@ public class ClickInOrderSolver {
         String title = ((ContainerChest) container).getLowerChestInventory()
                 .getDisplayName().getUnformattedText();
         if (!title.startsWith("Click in")) return;
+        ContainerChest containerChest = (ContainerChest) container;
 
         if (Config.feature.dungeons.dungeonsCustomGuiClickIn) {
             ScaledResolution sr = new ScaledResolution(mc);
@@ -270,54 +238,42 @@ public class ClickInOrderSolver {
                 return;
             }
             int slotIndex = (row + 1) * 9 + (col + 1);
-            Slot slot = container.getSlot(slotIndex);
+            Slot slot = containerChest.getSlot(slotIndex);
             if (slot == null || slot.getStack() == null) {
                 event.setCanceled(true);
                 return;
             }
-            int expectedRound = processedRounds + clickQueue.size() + 1;
-            if (slot.getStack().stackSize == expectedRound) {
-                mc.playerController.windowClick(container.windowId, slot.slotNumber, 2, 0, mc.thePlayer);
-                clickQueue.add(slot.slotNumber);
-                event.setCanceled(true);
+
+            if (Config.feature.dungeons.dungeonsCustomGuiClickInQueue) {
+                if (slot.getStack().stackSize == clientNextToClick && slot.getStack().getItemDamage() != 5) {
+                    clickQueue.add(slot.slotNumber);
+                    clientNextToClick++;
+                    event.setCanceled(true);
+                }
             } else {
-                event.setCanceled(true);
+                if (slot.getStack().stackSize == currentRound + 1 && slot.getStack().getItemDamage() != 5) {
+                    mc.playerController.windowClick(container.windowId, slot.slotNumber, 2, 0, mc.thePlayer);
+                    SoundUtils.playSound(mc.thePlayer.getPosition(), "gui.button.press", 1.0f, 1.0f);
+                    event.setCanceled(true);
+                }
             }
         } else {
             Slot hoveredSlot = guiChest.getSlotUnderMouse();
             if (hoveredSlot != null && hoveredSlot.getStack() != null) {
-                int expectedRound = processedRounds + clickQueue.size() + 1;
-                if (hoveredSlot.getStack().stackSize == expectedRound) {
-                    clickQueue.add(hoveredSlot.slotNumber);
+                if (Config.feature.dungeons.dungeonsCustomGuiClickInQueue) {
+                    if (hoveredSlot.getStack().stackSize == clientNextToClick && hoveredSlot.getStack().getItemDamage() != 5) {
+                        clickQueue.add(hoveredSlot.slotNumber);
+                        clientNextToClick++;
+                        event.setCanceled(true);
+                    }
                 } else {
-                    event.setCanceled(true);
+                    if (hoveredSlot.getStack().stackSize == currentRound + 1 && hoveredSlot.getStack().getItemDamage() != 5) {
+                        mc.playerController.windowClick(container.windowId, hoveredSlot.slotNumber, 2, 0, mc.thePlayer);
+                        SoundUtils.playSound(mc.thePlayer.getPosition(), "gui.button.press", 1.0f, 1.0f);
+                        event.setCanceled(true);
+                    }
                 }
             }
-        }
-    }
-
-    private void processQueue() {
-        if (clickQueue.isEmpty()) return;
-        if (!DungeonManager.checkEssentialsF7()) return;
-        Minecraft mc = Minecraft.getMinecraft();
-        if (!(mc.currentScreen instanceof GuiChest)) return;
-        GuiChest guiChest = (GuiChest) mc.currentScreen;
-        Container container = guiChest.inventorySlots;
-        if (!(container instanceof ContainerChest)) return;
-        String title = ((ContainerChest) container).getLowerChestInventory()
-                .getDisplayName().getUnformattedText();
-        ContainerChest cc = (ContainerChest) container;
-        int slotNumber = clickQueue.getFirst();
-        Slot slot = cc.getSlot(slotNumber);
-        if (slot == null || slot.getStack() == null) return;
-        if (!title.startsWith("Click in")) return;
-
-        if (slot.getStack().getItemDamage() == 5) {
-            clickQueue.removeFirst();
-            SoundUtils.playSound(mc.thePlayer.getPosition(), "gui.button.press", 1.0f, 1.0f);
-            processedRounds++;
-        } else {
-            mc.playerController.windowClick(cc.windowId, slotNumber, 2, 0, mc.thePlayer);
         }
     }
 
