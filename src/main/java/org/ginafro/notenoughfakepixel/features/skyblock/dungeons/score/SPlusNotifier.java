@@ -10,7 +10,9 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
+import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.utils.SoundUtils;
+import org.ginafro.notenoughfakepixel.variables.DungeonFloor;
 
 @RegisterEvents
 public class SPlusNotifier {
@@ -41,7 +43,12 @@ public class SPlusNotifier {
         if (remindedSPlus) return;
         if (!Config.feature.dungeons.dungeonsSPlusNotifier && !Config.feature.dungeons.dungeonsSPlusMessage) return;
 
-        if (ScoreManager.getTotalScore() >= 300) {
+        int currentScore = ScoreManager.getSkillScore() + ScoreManager.getExplorationClearScore() + ScoreManager.getSpeedScore() + ScoreManager.getBonusScore();
+        int virtualSecretScore = Math.min(40, ScoreManager.getSecretPercentage() * 40 /
+                DungeonFloor.getFloor(ScoreboardUtils.currentFloor.name()).getSecretPercentage());
+        int virtualTotalScore = currentScore + virtualSecretScore;
+
+        if (virtualTotalScore >= 300) {
             if (Config.feature.dungeons.dungeonsSPlusNotifier) {
                 SoundUtils.playSound(mc.thePlayer.getPosition(), "note.pling", 2.0F, 2.0F);
                 showCustomOverlay(EnumChatFormatting.RED + "300 Score!", 2000);
