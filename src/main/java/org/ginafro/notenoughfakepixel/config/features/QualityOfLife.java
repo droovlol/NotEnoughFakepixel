@@ -410,6 +410,11 @@ public class QualityOfLife {
     public boolean qolFullBlockLever = true;
 
     @Expose
+    @ConfigOption(name = "Full Block Button", desc = "Make Buttons full blocks.")
+    @ConfigEditorBoolean
+    public boolean qolFullBlockButton = true;
+
+    @Expose
     @ConfigOption(name = "Block Placing Items", desc = "Prevent items from being placed as blocks.")
     @ConfigEditorBoolean
     public boolean qolBlockPlacingItems = true;

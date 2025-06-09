@@ -852,11 +852,12 @@ public class RenderUtils {
      * Call this before drawing faces.
      */
     private static void setupGlStateForBox() {
+        GlStateManager.pushAttrib();
         GlStateManager.disableTexture2D();
         GL11.glDisable(GL11.GL_LIGHTING);
         GlStateManager.disableLighting();
         GlStateManager.enableBlend();
-        GlStateManager.disableCull(); // So we can see all faces
+        GlStateManager.disableCull();
         GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
     }
 
