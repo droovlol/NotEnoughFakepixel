@@ -9,6 +9,7 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
+import org.ginafro.notenoughfakepixel.config.gui.core.config.KeybindHelper;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.input.Keyboard;
@@ -102,7 +103,7 @@ public class WardrobeShortcut {
 
         for (int slot = 0; slot < 9; slot++) {
             int keyCode = getKeyCode(slot + 1);
-            boolean keyDown = Keyboard.isKeyDown(keyCode);
+            boolean keyDown = KeybindHelper.isKeyDown(keyCode);
 
             if (keyDown && !keyStates[slot] && (now - lastClickTime) > 100) {
                 clickSlot(chestGui, slot);

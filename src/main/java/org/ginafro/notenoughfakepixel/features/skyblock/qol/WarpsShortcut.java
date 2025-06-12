@@ -5,6 +5,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
+import org.ginafro.notenoughfakepixel.config.gui.core.config.KeybindHelper;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.input.Keyboard;
@@ -29,13 +30,9 @@ public class WarpsShortcut {
     }
 
     private void checkWarp(EntityPlayerSP player, int keyBind, String command) {
-        // Validate keybind
-        if (keyBind < 0 || keyBind >= Keyboard.KEYBOARD_SIZE) {
-            return;
-        }
 
         // Check if the key is currently pressed
-        boolean keyPressed = Keyboard.isKeyDown(keyBind);
+        boolean keyPressed = KeybindHelper.isKeyDown(keyBind);
 
         // If the key is pressed and not already active
         if (keyPressed && !activeKeySet.contains(keyBind)) {
@@ -47,7 +44,7 @@ public class WarpsShortcut {
         }
 
         // Clear key from activeKeySet when released
-        if (!Keyboard.isKeyDown(keyBind)) {
+        if (!KeybindHelper.isKeyDown(keyBind)) {
             activeKeySet.remove(keyBind);
         }
     }

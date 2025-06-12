@@ -8,6 +8,7 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
+import org.ginafro.notenoughfakepixel.config.gui.core.config.KeybindHelper;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.input.Keyboard;
@@ -25,7 +26,7 @@ public class EquipmentShortcut {
 
         int keyBind = Config.feature.qol.qolEqKey;
 
-        if (Keyboard.isKeyDown(keyBind)) {
+        if (KeybindHelper.isKeyDown(keyBind)) {
             if (activeKeySet.add(keyBind)) {
                 Minecraft.getMinecraft().thePlayer.sendChatMessage("/equipment");
             }
@@ -35,7 +36,7 @@ public class EquipmentShortcut {
     }
 
     @SubscribeEvent
-    public void onKeyPressOnGui(GuiScreenEvent.KeyboardInputEvent event) {
+    public void onKeyPressOnGui(GuiScreenEvent event) {
         if (!Config.feature.qol.qolShortcutEq || !ScoreboardUtils.currentGamemode.isSkyblock()) return;
         if (!(event.gui instanceof GuiChest)) return;
 
@@ -47,9 +48,9 @@ public class EquipmentShortcut {
 
         int keyBind = Config.feature.qol.qolEqKey;
 
-        if (Keyboard.isKeyDown(keyBind) && activeKeySet.add(keyBind)) {
+        if (KeybindHelper.isKeyDown(keyBind) && activeKeySet.add(keyBind)) {
             Minecraft.getMinecraft().thePlayer.closeScreen();
-        } else if (!Keyboard.isKeyDown(keyBind)) {
+        } else if (!KeybindHelper.isKeyDown(keyBind)) {
             activeKeySet.remove(keyBind);
         }
     }

@@ -16,6 +16,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
+import org.ginafro.notenoughfakepixel.config.gui.core.config.KeybindHelper;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.events.PacketReadEvent;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
@@ -233,7 +234,7 @@ public class GuessBurrow {
             }
 
             if (bestWarp != null && minWarpDist < playerDist) {
-                String keyName = Keyboard.getKeyName(Config.feature.diana.warpKeybind);
+                String keyName = KeybindHelper.getKeyName(Config.feature.diana.warpKeybind);
                 displayText = "Warp to " + bestWarp.name + " (" + (keyName != null ? keyName : "None") + ")";
                 warpCommand = bestWarp.command;
             } else {
@@ -250,7 +251,7 @@ public class GuessBurrow {
         }
 
         if (Config.feature.diana.dianaWarpHelper && warpCommand != null) {
-            boolean keyPressed = Keyboard.isKeyDown(Config.feature.diana.warpKeybind);
+            boolean keyPressed = KeybindHelper.isKeyDown(Config.feature.diana.warpKeybind);
             if (keyPressed && !wasKeyPressed && System.currentTimeMillis() > cooldownEndTime) {
                 mc.thePlayer.sendChatMessage(warpCommand);
                 cooldownEndTime = System.currentTimeMillis() + 5000;
