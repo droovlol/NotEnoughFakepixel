@@ -28,7 +28,7 @@ public class WardrobeShortcut {
         if (!ScoreboardUtils.currentGamemode.isSkyblock()) return;
         EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
 
-        boolean keyPressed = Keyboard.isKeyDown(Config.feature.qol.qolWardrobeKey);
+        boolean keyPressed = KeybindHelper.isKeyDown(Config.feature.qol.qolWardrobeKey);
 
         if (keyPressed && !activeKeySet.contains(Config.feature.qol.qolWardrobeKey)) {
             player.sendChatMessage("/wardrobe");
@@ -36,7 +36,7 @@ public class WardrobeShortcut {
             activeKeySet.add(Config.feature.qol.qolWardrobeKey);
         }
 
-        if (!Keyboard.isKeyDown(Config.feature.qol.qolWardrobeKey)) {
+        if (!KeybindHelper.isKeyDown(Config.feature.qol.qolWardrobeKey)) {
             activeKeySet.remove(Config.feature.qol.qolWardrobeKey);
         }
     }
@@ -55,7 +55,7 @@ public class WardrobeShortcut {
 
         EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
 
-        boolean keyPressed = Keyboard.isKeyDown(Config.feature.qol.qolWardrobeKey);
+        boolean keyPressed = KeybindHelper.isKeyDown(Config.feature.qol.qolWardrobeKey);
 
         if (keyPressed && !activeKeySet.contains(Config.feature.qol.qolWardrobeKey)) {
             Minecraft.getMinecraft().thePlayer.closeScreen();
@@ -63,7 +63,7 @@ public class WardrobeShortcut {
             activeKeySet.add(Config.feature.qol.qolWardrobeKey);
         }
 
-        if (!Keyboard.isKeyDown(Config.feature.qol.qolWardrobeKey)) {
+        if (!KeybindHelper.isKeyDown(Config.feature.qol.qolWardrobeKey)) {
             activeKeySet.remove(Config.feature.qol.qolWardrobeKey);
         }
     }
