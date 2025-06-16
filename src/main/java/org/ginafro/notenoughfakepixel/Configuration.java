@@ -17,6 +17,7 @@ import org.ginafro.notenoughfakepixel.features.duels.Duels;
 import org.ginafro.notenoughfakepixel.features.duels.KDCounter;
 import org.ginafro.notenoughfakepixel.features.mlf.Info;
 import org.ginafro.notenoughfakepixel.features.mlf.Map;
+import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.terminals.TerminalSimulator;
 import org.ginafro.notenoughfakepixel.features.skyblock.overlays.inventory.invbuttons.InventoryEditor;
 import org.ginafro.notenoughfakepixel.features.skyblock.qol.CustomAliases.AliasManagementGui;
 import org.ginafro.notenoughfakepixel.utils.Logger;
@@ -94,6 +95,9 @@ public class Configuration {
         }
         if ("nefAlias".equals(runnableId)) {
             Minecraft.getMinecraft().displayGuiScreen(new AliasManagementGui());
+        }
+        if ("termSim".equals(runnableId)) {
+            Minecraft.getMinecraft().displayGuiScreen(new TerminalSimulator());
         }
         if ("slotReset".equals(runnableId)) {
             NotEnoughFakepixel.resetLockedSlots();

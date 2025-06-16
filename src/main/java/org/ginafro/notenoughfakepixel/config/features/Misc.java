@@ -1,7 +1,9 @@
 package org.ginafro.notenoughfakepixel.config.features;
 
 import com.google.gson.annotations.Expose;
+import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.ConfigAccordionId;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.ConfigEditorBoolean;
+import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.ConfigEditorButton;
 import org.ginafro.notenoughfakepixel.config.gui.core.config.annotations.ConfigOption;
 
 public class Misc {
@@ -25,5 +27,10 @@ public class Misc {
     @ConfigOption(name = "Sounds", desc = "Enable or disable sounds.")
     @ConfigEditorBoolean
     public boolean enableSounds = true;
+
+    @Expose
+    @ConfigOption(name = "Termsim", desc = "Termsim")
+    @ConfigEditorButton(runnableId = "termSim", buttonText = "Open")
+    public String termSim = "";
 
 }
