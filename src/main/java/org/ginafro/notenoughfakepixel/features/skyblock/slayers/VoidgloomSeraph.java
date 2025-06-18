@@ -45,28 +45,30 @@ public class VoidgloomSeraph {
         }
 
         if (ScoreboardUtils.isSlayerActive) {
-            waypoints.entrySet().removeIf(entry -> {
-                long elapsedTime = System.currentTimeMillis() - entry.getValue();
-                if (elapsedTime > 20000) return true;
+            mc.addScheduledTask(() -> {
+                waypoints.entrySet().removeIf(entry -> {
+                    long elapsedTime = System.currentTimeMillis() - entry.getValue();
+                    if (elapsedTime > 20000) return true;
 
-                BlockPos waypoint = entry.getKey().getBlockPos();
-                if (Config.feature.slayer.showTracerToBeacon) {
-                    RenderUtils.draw3DLine(
+                    BlockPos waypoint = entry.getKey().getBlockPos();
+                    if (Config.feature.slayer.showTracerToBeacon) {
+                        RenderUtils.draw3DLine(
                             new Vec3(waypoint.getX() + .5, waypoint.getY() + .5, waypoint.getZ() + .5),
                             mc.thePlayer.getPositionEyes(event.partialTicks),
                             ColorUtils.getColor(Config.feature.slayer.slayerBeaconColor),
                             8,
                             true,
                             event.partialTicks
-                    );
-                }
-                RenderUtils.renderBeaconBeam(
+                        );
+                    }
+                    RenderUtils.renderBeaconBeam(
                         waypoint,
                         ColorUtils.getColor(Config.feature.slayer.slayerBeaconColor).getRGB(),
                         1.0f,
                         event.partialTicks
-                );
-                return false;
+                    );
+                    return false;
+                });
             });
         }
     }

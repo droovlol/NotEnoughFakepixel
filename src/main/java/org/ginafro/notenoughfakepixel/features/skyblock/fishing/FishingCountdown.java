@@ -52,7 +52,9 @@ public class FishingCountdown {
         if (!Config.feature.fishing.fishingCountdown) return;
 
         updatePlayerBobber();
-        checkFishBiteStatus();
+        mc.addScheduledTask(() -> {
+            checkFishBiteStatus();
+        });
         mc.addScheduledTask(() -> {
             cleanupParticleHistory();
         });
