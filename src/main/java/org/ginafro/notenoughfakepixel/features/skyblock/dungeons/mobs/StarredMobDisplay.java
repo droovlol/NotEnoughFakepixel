@@ -17,6 +17,7 @@ import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.events.RenderEntityModelEvent;
 import org.ginafro.notenoughfakepixel.utils.ColorUtils;
+import org.ginafro.notenoughfakepixel.utils.EntityHighlightUtils;
 import org.ginafro.notenoughfakepixel.utils.OutlineUtils;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.variables.MobDisplayTypes;
@@ -40,9 +41,8 @@ public class StarredMobDisplay {
     public void onRenderEntityModel(RenderEntityModelEvent event) {
         if (Minecraft.getMinecraft().thePlayer == null) return;
         if (Minecraft.getMinecraft().theWorld == null) return;
-        if (Config.feature.dungeons.dungeonsStarredMobs == 2) return; // Disabled
-        // Check to only render the outline if the player is not in Pojav
-        if (Config.feature.dungeons.dungeonsStarredMobs == 1 && !Configuration.isPojav()) {
+        if (Config.feature.dungeons.dungeonsStarredMobs == 2) return;
+        if (Config.feature.dungeons.dungeonsStarredMobs == 1) {
 
             final EntityLivingBase entity = event.getEntity();
             if (!currentEntities.contains(entity)) return;
@@ -58,9 +58,11 @@ public class StarredMobDisplay {
             if (!Config.feature.dungeons.dungeonsStarredMobsEsp && !canSee) {
                 return;
             }
-
-            // Render the outline
-            OutlineUtils.outlineEntity(event, 5.0f, color, true);
+            if (Configuration.isPojav()) {
+                EntityHighlightUtils.renderEntityOutline(event, color);
+            } else {
+                OutlineUtils.outlineEntity(event, 5.0f, color, true);
+            }
         }
     }
 
@@ -117,11 +119,8 @@ public class StarredMobDisplay {
         if (Minecraft.getMinecraft().thePlayer == null) return;
         if (Minecraft.getMinecraft().theWorld == null) return;
 
-        // Rendering Hitbox when Outline option is enabled (1) and player is in Pojav
-        boolean pojavRendering = Config.feature.dungeons.dungeonsStarredMobs == 1 && Configuration.isPojav();
-
-        if (Config.feature.dungeons.dungeonsStarredMobs == 2) return; // Disabled
-        if (Config.feature.dungeons.dungeonsStarredMobs == 0 || pojavRendering) {
+        if (Config.feature.dungeons.dungeonsStarredMobs == 2) return;
+        if (Config.feature.dungeons.dungeonsStarredMobs == 0) {
 
 
             WorldClient world = Minecraft.getMinecraft().theWorld;

@@ -187,7 +187,11 @@ public class Diana {
                 ColorUtils.getColor(Config.feature.dungeons.dungeonsStarredBoxColor).getRGB()
         );
 
-        OutlineUtils.outlineEntity(event, 5.0f, color, true);
+        if (Configuration.isPojav()) {
+            EntityHighlightUtils.renderEntityOutline(event, color);
+        } else {
+            OutlineUtils.outlineEntity(event, 5.0f, color, true);
+        }
     }
 
     public Set<EntityLivingBase> getCurrentEntities() {

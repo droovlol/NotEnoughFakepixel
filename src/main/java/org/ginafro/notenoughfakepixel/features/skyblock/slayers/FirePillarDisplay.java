@@ -13,6 +13,7 @@ import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.utils.SoundUtils;
+import org.ginafro.notenoughfakepixel.utils.TitleUtils;
 
 @RegisterEvents
 public class FirePillarDisplay {
@@ -65,7 +66,7 @@ public class FirePillarDisplay {
         int seconds = Integer.parseInt(cleanName.split(" ")[0].replace("s", ""));
 
 
-        showCustomOverlay(
+        TitleUtils.showTitle(
                 trackedPillar.getDisplayName().getFormattedText(),
                 1000
         );
@@ -78,37 +79,6 @@ public class FirePillarDisplay {
                     1.0F
             );
             lastSoundTime = System.currentTimeMillis();
-        }
-    }
-
-    private void showCustomOverlay(String text, int durationMillis) {
-        displayText = text;
-        endTime = System.currentTimeMillis() + durationMillis;
-    }
-
-    @SubscribeEvent
-    public void onRenderOverlay(RenderGameOverlayEvent.Post event) {
-        if (event.type != RenderGameOverlayEvent.ElementType.TEXT) return;
-        if (System.currentTimeMillis() > endTime) return;
-
-        FontRenderer fr = mc.fontRendererObj;
-
-        int screenWidth = event.resolution.getScaledWidth();
-        int screenHeight = event.resolution.getScaledHeight();
-
-        GlStateManager.pushMatrix();
-        GlStateManager.scale(4.0F, 4.0F, 4.0F);
-        int textWidth = fr.getStringWidth(displayText);
-        int x = (screenWidth / 8) - (textWidth / 2);
-        int y = (screenHeight / 8) - 30;
-        fr.drawStringWithShadow(displayText, x, y, 0xFF5555);
-        GlStateManager.popMatrix();
-    }
-
-    @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent event) {
-        if (mc.theWorld == null) {
-            displayText = "";
         }
     }
 }

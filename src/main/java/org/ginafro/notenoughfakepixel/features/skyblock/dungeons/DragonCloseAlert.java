@@ -16,6 +16,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.events.RenderEntityModelEvent;
@@ -127,36 +128,11 @@ public class DragonCloseAlert {
                             .findFirst()
                             .orElse("Dragon");
 
-                    //showCustomOverlay(dragonName, 2000);
+                    //TitleUtils.showTitle(dragonName, 2000);
                     //SoundUtils.playSound(mc.thePlayer.getPosition(), "note.pling", 2.0F, 1.0F);
                 }
             }
         });
-    }
-
-    // TODO: Make this a custom overlay
-    private void showCustomOverlay(String text, int durationMillis) {
-        displayText = text;
-        endTime = System.currentTimeMillis() + durationMillis;
-    }
-
-    @SubscribeEvent
-    public void onRenderOverlay(RenderGameOverlayEvent.Post event) {
-        if (event.type != RenderGameOverlayEvent.ElementType.TEXT) return;
-        if (System.currentTimeMillis() > endTime) return;
-
-        FontRenderer fr = mc.fontRendererObj;
-
-        int screenWidth = event.resolution.getScaledWidth();
-        int screenHeight = event.resolution.getScaledHeight();
-
-        GlStateManager.pushMatrix();
-        GlStateManager.scale(4.0F, 4.0F, 4.0F);
-        int textWidth = fr.getStringWidth(displayText);
-        int x = (screenWidth / 8) - (textWidth / 2);
-        int y = (screenHeight / 8) - 10;
-        fr.drawStringWithShadow(displayText, x, y, 0xFF5555);
-        GlStateManager.popMatrix();
     }
 
     private void renderBoxes(RenderWorldLastEvent e) {
@@ -226,7 +202,11 @@ public class DragonCloseAlert {
 
         Color c = DRAGON_COLOR_MAP.get(dragon);
         if (c != null) {
-            OutlineUtils.outlineEntity(e, 4f, c, true);
+            if (Configuration.isPojav()) {
+                EntityHighlightUtils.renderEntityOutline(e, c);
+            } else {
+                OutlineUtils.outlineEntity(e, 4.0f, c, true);
+            }
         }
     }
 

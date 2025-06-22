@@ -43,7 +43,6 @@ public class MazeSolver {
     private final long lastScanTime = 0;
     private final ContainerChest lastContainer = null;
 
-    // Added for queue clicks functionality
     private final LinkedList<Integer> clickQueue = new LinkedList<>();
     private long lastClickTime = 0;
 
@@ -79,7 +78,7 @@ public class MazeSolver {
             targetSlots.clear();
             alternativeSlots.clear();
             slotPositions.clear();
-            clickQueue.clear(); // Clear queue when opening a new maze
+            clickQueue.clear();
         }
     }
 

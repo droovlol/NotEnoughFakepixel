@@ -15,6 +15,7 @@ import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DungeonManager;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.utils.SoundUtils;
 import org.ginafro.notenoughfakepixel.utils.TablistParser;
+import org.ginafro.notenoughfakepixel.utils.TitleUtils;
 import org.ginafro.notenoughfakepixel.variables.DungeonFloor;
 
 @RegisterEvents
@@ -27,9 +28,6 @@ public class ScoreManager {
     private static boolean isBloodOpen = false;
 
     private final Minecraft mc = Minecraft.getMinecraft();
-
-    private static String displayText = "";
-    private static long endTime = 0;
 
     @SubscribeEvent
     public void onChatReceived(ClientChatReceivedEvent event) {
@@ -66,33 +64,9 @@ public class ScoreManager {
         if (virtualTotalScore >= 270 && !hasNotified270 & Config.feature.dungeons.dungeonsSNotifier) {
             Minecraft.getMinecraft().thePlayer.sendChatMessage("/pc 270 Score!");
             SoundUtils.playSound(mc.thePlayer.getPosition(), "note.pling", 2.0F, 2.0F);
-            showCustomOverlay(EnumChatFormatting.RED + "270 Score!", 2000);
+            TitleUtils.showTitle(EnumChatFormatting.RED + "270 Score!", 2000);
             hasNotified270 = true;
         }
-    }
-
-    private void showCustomOverlay(String text, int durationMillis) {
-        displayText = text;
-        endTime = System.currentTimeMillis() + durationMillis;
-    }
-
-    @SubscribeEvent
-    public void onRenderOverlay(RenderGameOverlayEvent.Post event) {
-        if (event.type != RenderGameOverlayEvent.ElementType.TEXT) return;
-        if (System.currentTimeMillis() > endTime) return;
-
-        FontRenderer fr = mc.fontRendererObj;
-
-        int screenWidth = event.resolution.getScaledWidth();
-        int screenHeight = event.resolution.getScaledHeight();
-
-        GlStateManager.pushMatrix();
-        GlStateManager.scale(4.0F, 4.0F, 4.0F);
-        int textWidth = fr.getStringWidth(displayText);
-        int x = (screenWidth / 8) - (textWidth / 2);
-        int y = (screenHeight / 8) - 10;
-        fr.drawStringWithShadow(displayText, x, y, 0xFF5555);
-        GlStateManager.popMatrix();
     }
 
     private void reset() {
