@@ -34,6 +34,8 @@ public class StarredMobDisplay {
     private static final Pattern PATTERN2 = Pattern.compile("^.+ (?:§.)+0§c❤$");
     private static final Pattern PATTERN_RUNIC = Pattern.compile("^§.\\[§.Runic§.\\] §.+ (?:§.)+0§f/.+§c❤$");
 
+    private long lastUpdateTime = 0;
+
     @Getter
     private final Set<EntityLivingBase> currentEntities = new HashSet<>();
 
@@ -69,7 +71,11 @@ public class StarredMobDisplay {
 
     @SubscribeEvent
     public void onRenderLiving(RenderLivingEvent.Pre<EntityLivingBase> event) {
-        clearCache();
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastUpdateTime > 20) {
+            clearCache();
+            lastUpdateTime = currentTime;
+        }
         WorldClient world = Minecraft.getMinecraft().theWorld;
         for (Entity entity : world.loadedEntityList) {
             if (entity instanceof EntityArmorStand) {
@@ -86,7 +92,7 @@ public class StarredMobDisplay {
 
     private EntityLivingBase findAssociatedMob(EntityArmorStand armorStand) {
         return armorStand.worldObj.getEntitiesWithinAABB(EntityLivingBase.class,
-                        armorStand.getEntityBoundingBox().expand(1.5, 3.0, 1.5),
+                        armorStand.getEntityBoundingBox().expand(0.5, 3.0, 0.5),
                         e -> e != null &&
                                 !(e instanceof EntityArmorStand) &&
                                 e != Minecraft.getMinecraft().thePlayer
