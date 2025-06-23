@@ -2,18 +2,23 @@ package org.ginafro.notenoughfakepixel.features.skyblock.slayers;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
-import org.ginafro.notenoughfakepixel.utils.ColorUtils;
-import org.ginafro.notenoughfakepixel.utils.RenderUtils;
-import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
+import org.ginafro.notenoughfakepixel.events.RenderEntityModelEvent;
+import org.ginafro.notenoughfakepixel.utils.*;
 import org.ginafro.notenoughfakepixel.variables.Constants;
 import org.ginafro.notenoughfakepixel.variables.MobDisplayTypes;
 
 import java.awt.*;
+import java.util.List;
 
 @RegisterEvents
 public class SlayerMobsDisplay {
@@ -98,5 +103,60 @@ public class SlayerMobsDisplay {
                 }
             }
         });
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public void onRenderEntityModel(RenderEntityModelEvent event) {
+        if (!Config.feature.slayer.slayerBossesOutline) return;
+
+        Minecraft mc = Minecraft.getMinecraft();
+        Entity entity = event.getEntity();
+        if (mc.theWorld == null || entity == null) return;
+
+        if (entity.isInvisible()) return;
+
+        List<Entity> armorStands = mc.theWorld.getEntitiesWithinAABB(
+                EntityArmorStand.class,
+                entity.getEntityBoundingBox().offset(0, 2.0, 0).expand(1.0, 1.0, 1.0)
+        );
+
+        Color bossColor = ColorUtils.getColor(Config.feature.slayer.slayerBossColor);
+        Color minibossColor = ColorUtils.getColor(Config.feature.slayer.slayerColor);
+
+        for (Entity armorStand : armorStands) {
+            if (!(armorStand instanceof EntityArmorStand) || armorStand.getName() == null) continue;
+
+            // Check for bosses
+            for (String name : Constants.SLAYER_BOSSES) {
+                if (armorStand.getName().contains(name) && Config.feature.slayer.slayerBosses) {
+                    if (Configuration.isPojav()) {
+                        EntityHighlightUtils.renderEntityOutline(event, bossColor);
+                    } else {
+                        OutlineUtils.outlineEntity(event, 6.0f, bossColor, true);
+                    }
+                    return;
+                }
+            }
+
+            // Check for all minibosses
+            for (String[] minibosses : new String[][]{
+                    Constants.SVEN_SLAYER_MINIBOSSES,
+                    Constants.REVENANT_SLAYER_MINIBOSSES,
+                    Constants.TARANTULA_SLAYER_MINIBOSSES,
+                    Constants.VOIDGLOOM_SLAYER_MINIBOSSES,
+                    Constants.BLAZE_SLAYER_MINIBOSSES
+            }) {
+                for (String name : minibosses) {
+                    if (armorStand.getName().contains(name) && Config.feature.slayer.slayerMinibosses) {
+                        if (Configuration.isPojav()) {
+                            EntityHighlightUtils.renderEntityOutline(event, minibossColor);
+                        } else {
+                            OutlineUtils.outlineEntity(event, 6.0f, minibossColor, true);
+                        }
+                        return;
+                    }
+                }
+            }
+        }
     }
 }

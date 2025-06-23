@@ -38,6 +38,8 @@ public class BlazeAttunements {
                 EntityArmorStand.class,
                 entity.getEntityBoundingBox().offset(0, 2.0, 0).expand(1.0, 1.0, 1.0)
         );
+        
+        if (entity.isInvisible()) return;
 
         for (Entity armorStand : armorStands) {
             if (armorStand instanceof EntityArmorStand) {

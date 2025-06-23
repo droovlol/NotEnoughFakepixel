@@ -55,7 +55,7 @@ public class Constants {
             "Sven Packmaster",
             "Tarantula Broodfather",
             "Voidgloom Seraph",
-            "Inferno Demonlord",
+            // removed blaze boss from the list since the BlazeAttunements displays an outline depending on the current attunement
     };
 
 }

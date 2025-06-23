@@ -49,6 +49,12 @@ public class Slayer {
     public boolean slayerBosses = true;
 
     @Expose
+    @ConfigOption(name = "Slayer Bosses Outline", desc = "Draw an outline around slayer bosses.")
+    @ConfigEditorBoolean
+    @ConfigAccordionId(id = 1)
+    public boolean slayerBossesOutline = true;
+
+    @Expose
     @ConfigOption(name = "Slayer Boss Health Display", desc = "Displays the slayer health on screen.")
     @ConfigEditorBoolean
     @ConfigAccordionId(id = 1)

@@ -125,6 +125,7 @@ public class LividDisplay {
         if (Config.feature.dungeons.dungeonsLividFinderRender == 0) return;
         if (entity instanceof EntityArmorStand) {
             EntityArmorStand armorStand = (EntityArmorStand) entity;
+            if (entity.isInvisible()) return;
             if (entity.isEntityEqual(livid)) {
                 EntityLivingBase mob = findAssociatedMob(armorStand);
                 if (mob != null) {
