@@ -1,6 +1,7 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.dungeons.mobs;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.entity.Entity;
@@ -15,18 +16,22 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
+import org.ginafro.notenoughfakepixel.events.RenderEntityModelEvent;
+import org.ginafro.notenoughfakepixel.utils.EntityHighlightUtils;
+import org.ginafro.notenoughfakepixel.utils.OutlineUtils;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 @RegisterEvents
 public class LividDisplay {
@@ -35,6 +40,10 @@ public class LividDisplay {
     static Entity livid = null;
     public static int LIVID_COLOUR;
     private static final Map<String, EnumChatFormatting> lividColors = new HashMap<>();
+
+    private long lastUpdateTime = 0;
+
+    private final Set<EntityLivingBase> lividEntity = new HashSet<>();
 
     static {
         initializeColors();
@@ -101,7 +110,11 @@ public class LividDisplay {
     @SubscribeEvent
     public void onRenderEntity(RenderLivingEvent.Pre<EntityLivingBase> event) {
         if (!Config.feature.dungeons.dungeonsLividFinder || livid == null) return;
-
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastUpdateTime > 20) {
+            lividEntity.clear();
+            lastUpdateTime = currentTime;
+        }
         Entity entity = event.entity;
         if (entity instanceof EntityArmorStand && entity.hasCustomName()) {
             String name = entity.getCustomNameTag();
@@ -109,13 +122,51 @@ public class LividDisplay {
                 event.setCanceled(true);
             }
         }
+        if (Config.feature.dungeons.dungeonsLividFinderRender == 0) return;
+        if (entity instanceof EntityArmorStand) {
+            EntityArmorStand armorStand = (EntityArmorStand) entity;
+            if (entity.isEntityEqual(livid)) {
+                EntityLivingBase mob = findAssociatedMob(armorStand);
+                if (mob != null) {
+                    lividEntity.add(mob);
+                }
+            }
+        }
+
+    }
+
+    private EntityLivingBase findAssociatedMob(EntityArmorStand armorStand) {
+        return armorStand.worldObj.getEntitiesWithinAABB(EntityLivingBase.class,
+                        armorStand.getEntityBoundingBox().expand(0.5, 3.0, 0.5),
+                        e -> e != null &&
+                                !(e instanceof EntityArmorStand) &&
+                                e != Minecraft.getMinecraft().thePlayer
+                ).stream()
+                .findFirst()
+                .orElse(null);
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public void onRenderEntityModel(RenderEntityModelEvent event) {
+        if (Config.feature.dungeons.dungeonsLividFinder && livid != null) {
+            if (Config.feature.dungeons.dungeonsLividFinderRender == 0) return;
+            final EntityLivingBase entity = event.getEntity();
+            if (!lividEntity.contains(entity)) return;
+            if (Configuration.isPojav()) {
+                EntityHighlightUtils.renderEntityOutline(event, new Color(LIVID_COLOUR));
+            } else {
+                OutlineUtils.outlineEntity(event, 5.0f, new Color(LIVID_COLOUR), true);
+            }
+        }
     }
 
     @SubscribeEvent
     public void onWorldRender(RenderWorldLastEvent event) {
         if (Config.feature.dungeons.dungeonsLividFinder && livid != null) {
-            AxisAlignedBB aabb = new AxisAlignedBB(livid.posX - 0.5, livid.posY - 2, livid.posZ - 0.5, livid.posX + 0.5, livid.posY, livid.posZ + 0.5);
-            draw3DBox(aabb, LIVID_COLOUR, event.partialTicks);
+            if (Config.feature.dungeons.dungeonsLividFinderRender == 0) {
+                AxisAlignedBB aabb = new AxisAlignedBB(livid.posX - 0.5, livid.posY - 2, livid.posZ - 0.5, livid.posX + 0.5, livid.posY, livid.posZ + 0.5);
+                draw3DBox(aabb, LIVID_COLOUR, event.partialTicks);
+            }
             RenderUtils.draw3DLine(new Vec3(livid.posX, livid.posY, livid.posZ),
                     Minecraft.getMinecraft().thePlayer.getPositionEyes(event.partialTicks),
                     new Color(LIVID_COLOUR),

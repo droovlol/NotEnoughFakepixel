@@ -61,6 +61,12 @@ public class Dungeons {
     public boolean dungeonsLividFinder = true;
 
     @Expose
+    @ConfigOption(name = "Livid Display", desc = "Display style for Livid.")
+    @ConfigEditorDropdown(values = {"Box", "Outline"})
+    @ConfigAccordionId(id = 0)
+    public int dungeonsLividFinderRender = 0;
+
+    @Expose
     @ConfigOption(name = "Show Opened Chests in Croesus", desc = "Show opened chests in Croesus.")
     @ConfigEditorBoolean
     @ConfigAccordionId(id = 0)
