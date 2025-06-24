@@ -34,8 +34,10 @@ public class TitleUtils {
     }
 
     private static void showTitleInternal(String text, Color color, int durationMillis) {
-        long endTime = System.currentTimeMillis() + durationMillis;
-        titles.add(new Title(text, color, endTime));
+        Minecraft.getMinecraft().addScheduledTask(() -> {
+            long endTime = System.currentTimeMillis() + durationMillis;
+            titles.add(new Title(text, color, endTime));
+        });
     }
 
     @SubscribeEvent
