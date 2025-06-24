@@ -68,7 +68,7 @@ public class FirePillarDisplay {
 
         TitleUtils.showTitle(
                 trackedPillar.getDisplayName().getFormattedText(),
-                1000
+                500
         );
 
         if (System.currentTimeMillis() - lastSoundTime > seconds * 150L) {

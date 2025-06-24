@@ -27,7 +27,7 @@ public class SlayerMobsDisplay {
     public void onRenderLast(RenderWorldLastEvent event) {
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.thePlayer == null || mc.theWorld == null) return;
-
+        if (Config.feature.slayer.slayerBossesOutline) return;
         if (Config.feature.slayer.slayerBosses) onRender(event, true);
         if (Config.feature.slayer.slayerMinibosses) onRender(event, false);
     }

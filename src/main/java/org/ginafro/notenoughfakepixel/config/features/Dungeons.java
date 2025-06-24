@@ -454,12 +454,6 @@ public class Dungeons {
     public String dungeonsSPlusCustom = "";
 
     @Expose
-    @ConfigOption(name = "Dungeon Cleared Notifier", desc = "Notify when dungeon is 100% completed.")
-    @ConfigEditorBoolean
-    @ConfigAccordionId(id = 5)
-    public boolean dungeonsClearedNotifier = true;
-
-    @Expose
     @ConfigOption(name = "Show Item Secrets and Wither Essences", desc = "Show item secrets and wither essences through walls.")
     @ConfigEditorBoolean
     @ConfigAccordionId(id = 5)
