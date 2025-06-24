@@ -79,7 +79,8 @@ public class VoidgloomSeraph {
                 && mc.theWorld != null
                 && mc.ingameGUI != null
                 && mc.ingameGUI.getChatGUI() != null) {
-            mc.ingameGUI.displayTitle(EnumChatFormatting.RED + "Beacon", "", 2, 20, 2);
+            TitleUtils.showTitle(EnumChatFormatting.RED + "Beacon", 1000);
+            SoundUtils.playSound(mc.thePlayer.getPosition(), "note.pling", 1.0f, 1.0f);
         }
     }
 

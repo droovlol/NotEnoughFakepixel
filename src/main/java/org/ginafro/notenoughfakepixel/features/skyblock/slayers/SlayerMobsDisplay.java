@@ -1,10 +1,12 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.slayers;
 
+import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -18,10 +20,18 @@ import org.ginafro.notenoughfakepixel.variables.Constants;
 import org.ginafro.notenoughfakepixel.variables.MobDisplayTypes;
 
 import java.awt.*;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RegisterEvents
 public class SlayerMobsDisplay {
+
+    @Getter
+    public final Set<EntityLivingBase> slayerEntity = new HashSet<>();
+    @Getter
+    public final Set<EntityLivingBase> slayerMiniEntity = new HashSet<>();
+    private long lastUpdateTime = 0;
 
     @SubscribeEvent
     public void onRenderLast(RenderWorldLastEvent event) {
@@ -105,23 +115,25 @@ public class SlayerMobsDisplay {
         });
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public void onRenderEntityModel(RenderEntityModelEvent event) {
+    @SubscribeEvent
+    public void onRenderEntity(RenderLivingEvent.Pre<EntityLivingBase> event) {
         if (!Config.feature.slayer.slayerBossesOutline) return;
 
-        Minecraft mc = Minecraft.getMinecraft();
-        Entity entity = event.getEntity();
-        if (mc.theWorld == null || entity == null) return;
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastUpdateTime > 20) {
+            slayerEntity.clear();
+            lastUpdateTime = currentTime;
+        }
 
-        if (entity.isInvisible()) return;
+        Minecraft mc = Minecraft.getMinecraft();
+        EntityLivingBase entity = event.entity;
+
+        if (mc.theWorld == null || entity == null || entity.isInvisible() || entity instanceof EntityPlayer) return;
 
         List<Entity> armorStands = mc.theWorld.getEntitiesWithinAABB(
                 EntityArmorStand.class,
                 entity.getEntityBoundingBox().offset(0, 2.0, 0).expand(1.0, 1.0, 1.0)
         );
-
-        Color bossColor = ColorUtils.getColor(Config.feature.slayer.slayerBossColor);
-        Color minibossColor = ColorUtils.getColor(Config.feature.slayer.slayerColor);
 
         for (Entity armorStand : armorStands) {
             if (!(armorStand instanceof EntityArmorStand) || armorStand.getName() == null) continue;
@@ -129,11 +141,7 @@ public class SlayerMobsDisplay {
             // Check for bosses
             for (String name : Constants.SLAYER_BOSSES) {
                 if (armorStand.getName().contains(name) && Config.feature.slayer.slayerBosses) {
-                    if (Configuration.isPojav()) {
-                        EntityHighlightUtils.renderEntityOutline(event, bossColor);
-                    } else {
-                        OutlineUtils.outlineEntity(event, 6.0f, bossColor, true);
-                    }
+                    slayerEntity.add(entity);
                     return;
                 }
             }
@@ -148,15 +156,43 @@ public class SlayerMobsDisplay {
             }) {
                 for (String name : minibosses) {
                     if (armorStand.getName().contains(name) && Config.feature.slayer.slayerMinibosses) {
-                        if (Configuration.isPojav()) {
-                            EntityHighlightUtils.renderEntityOutline(event, minibossColor);
-                        } else {
-                            OutlineUtils.outlineEntity(event, 6.0f, minibossColor, true);
-                        }
+                        slayerMiniEntity.add(entity);
                         return;
                     }
                 }
             }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public void onRenderEntityModel(RenderEntityModelEvent event) {
+        if (!Config.feature.slayer.slayerBossesOutline) return;
+
+        EntityLivingBase entity = event.getEntity();
+        if (entity == null || !slayerEntity.contains(entity)) return;
+
+        Color bossColor = ColorUtils.getColor(Config.feature.slayer.slayerBossColor);
+        Color minibossColor = ColorUtils.getColor(Config.feature.slayer.slayerColor);
+        Color color = minibossColor;
+
+        List<Entity> armorStands = Minecraft.getMinecraft().theWorld.getEntitiesWithinAABB(
+                EntityArmorStand.class,
+                entity.getEntityBoundingBox().offset(0, 2.0, 0).expand(1.0, 1.0, 1.0)
+        );
+        for (Entity armorStand : armorStands) {
+            if (!(armorStand instanceof EntityArmorStand) || armorStand.getName() == null) continue;
+            for (String name : Constants.SLAYER_BOSSES) {
+                if (armorStand.getName().contains(name) && Config.feature.slayer.slayerBosses) {
+                    color = bossColor;
+                    break;
+                }
+            }
+        }
+
+        if (Configuration.isPojav()) {
+            EntityHighlightUtils.renderEntityOutline(event, color);
+        } else {
+            OutlineUtils.outlineEntity(event, 6.0f, color, true);
         }
     }
 }

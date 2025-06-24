@@ -5,15 +5,20 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
+import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.events.RenderEntityModelEvent;
 import org.ginafro.notenoughfakepixel.features.skyblock.diana.Diana;
+import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.mobs.LividDisplay;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.mobs.StarredMobDisplay;
 import org.ginafro.notenoughfakepixel.features.skyblock.qol.DamageCommas;
+import org.ginafro.notenoughfakepixel.features.skyblock.slayers.BlazeAttunements;
+import org.ginafro.notenoughfakepixel.features.skyblock.slayers.SlayerMobsDisplay;
 import org.ginafro.notenoughfakepixel.utils.ColorUtils;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,9 +29,11 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.awt.*;
+import java.awt.Color;
 import java.nio.FloatBuffer;
+import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
 
 import static org.lwjgl.opengl.GL11.glTexEnv;
 import static org.lwjgl.opengl.GL11.glTexEnvi;
@@ -44,11 +51,18 @@ public abstract class MixinRendererLivingEntity<T extends EntityLivingBase> {
     @Shadow
     private static DynamicTexture textureBrightness;
 
-    StarredMobDisplay notEnoughFakepixel$starredMobDisplay = new StarredMobDisplay();
-    Diana notEnoughFakepixel$diana = new Diana();
-    Set<EntityLivingBase> notEnoughFakepixel$entities = notEnoughFakepixel$starredMobDisplay.getCurrentEntities();
+    private final StarredMobDisplay notEnoughFakepixel$starredMobDisplay = new StarredMobDisplay();
+    private final Diana notEnoughFakepixel$diana = new Diana();
+    private final LividDisplay notEnoughFakepixel$lividDisplay = new LividDisplay();
+    private final SlayerMobsDisplay notEnoughFakepixel$slayerMobsDisplay = new SlayerMobsDisplay();
+    private final BlazeAttunements notEnoughFakepixel$blaze = new BlazeAttunements();
 
-    Set<EntityLivingBase> notEnoughFakepixel$inq = notEnoughFakepixel$diana.getCurrentEntities();
+    private final Set<EntityLivingBase> notEnoughFakepixel$starredEntities = notEnoughFakepixel$starredMobDisplay.getCurrentEntities();
+    private final Set<EntityLivingBase> notEnoughFakepixel$inqEntities = notEnoughFakepixel$diana.getCurrentEntities();
+    private final Set<EntityLivingBase> notEnoughFakepixel$lividEntities = notEnoughFakepixel$lividDisplay.getLividEntity();
+    private final Set<EntityLivingBase> notEnoughFakepixel$slayerEntities = notEnoughFakepixel$slayerMobsDisplay.getSlayerEntity();
+    private final Set<EntityLivingBase> notEnoughFakepixel$slayerMiniEntities = notEnoughFakepixel$slayerMobsDisplay.getSlayerMiniEntity();
+    private final Set<EntityLivingBase> notEnoughFakepixel$blazeEntities = notEnoughFakepixel$blaze.getBlazeEntity();
 
     @Redirect(method = "renderName*", at = @At(value = "INVOKE", target =
             "Lnet/minecraft/entity/EntityLivingBase;getDisplayName()Lnet/minecraft/util/IChatComponent;"))
@@ -61,8 +75,8 @@ public abstract class MixinRendererLivingEntity<T extends EntityLivingBase> {
     }
 
     @Inject(method = "setBrightness", at = @At(value = "HEAD"), cancellable = true)
-    private <T extends EntityLivingBase> void setBrightness(T entity, float partialTicks, boolean combineTextures, CallbackInfoReturnable<Boolean> cir) {
-        if (notEnoughFakepixel$entities.contains(entity) || notEnoughFakepixel$inq.contains(entity)) {
+    private void setBrightness(T entity, float partialTicks, boolean combineTextures, CallbackInfoReturnable<Boolean> cir) {
+        if (shouldApplyBrightnessBoost(entity)) {
             GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
             GlStateManager.enableTexture2D();
             glTexEnvi(8960, 8704, OpenGlHelper.GL_COMBINE);
@@ -88,9 +102,10 @@ public abstract class MixinRendererLivingEntity<T extends EntityLivingBase> {
             glTexEnvi(8960, OpenGlHelper.GL_SOURCE0_ALPHA, OpenGlHelper.GL_PREVIOUS);
             glTexEnvi(8960, OpenGlHelper.GL_OPERAND0_ALPHA, 770);
             this.brightnessBuffer.position(0);
-            Color color = new Color(
-                    ColorUtils.getColor(Config.feature.dungeons.dungeonsStarredBoxColor).getRed()
-            );
+            Color color = getBrightnessColor(entity);
+            if (color == null) {
+                color = Color.WHITE;
+            }
             brightnessBuffer.put(color.getRed() / 255f);
             brightnessBuffer.put(color.getGreen() / 255f);
             brightnessBuffer.put(color.getBlue() / 255f);
@@ -113,6 +128,98 @@ public abstract class MixinRendererLivingEntity<T extends EntityLivingBase> {
 
             cir.setReturnValue(true);
         }
+    }
+
+    private boolean shouldApplyBrightnessBoost(T entity) {
+        // Starred Mobs
+        if (notEnoughFakepixel$starredEntities.contains(entity)) {
+            return true;
+        }
+
+        // Minos Inquisitor
+        if (notEnoughFakepixel$inqEntities.contains(entity)) {
+            return true;
+        }
+
+        // Livid
+        if (notEnoughFakepixel$lividEntities.contains(entity)) {
+            return true;
+        }
+
+        // Slayer Bosses and Minibosses
+        if (notEnoughFakepixel$slayerEntities.contains(entity)) {
+            return true;
+        }
+        if (notEnoughFakepixel$slayerMiniEntities.contains(entity)) {
+            return true;
+        }
+
+        // Blaze Attunements
+        if (notEnoughFakepixel$blazeEntities.contains(entity)) {
+            return true;
+        }
+
+        // Dungeon Withers
+        if (Config.feature.dungeons.dungeonsWithersBox && entity instanceof EntityWither) {
+            String name = net.minecraft.util.EnumChatFormatting.getTextWithoutFormattingCodes(entity.getName());
+            if (name != null && (name.equals("Maxor") || name.equals("Storm") || name.equals("Goldor") || name.equals("Necron"))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private Color getBrightnessColor(T entity) {
+        if (notEnoughFakepixel$starredEntities.contains(entity)) {
+            return ColorUtils.getColor(Config.feature.dungeons.dungeonsStarredBoxColor);
+        }
+
+        if (notEnoughFakepixel$inqEntities.contains(entity)) {
+            return ColorUtils.getColor(Config.feature.diana.dianaInqOutlineColor);
+        }
+
+        if (notEnoughFakepixel$lividEntities.contains(entity)) {
+            return new Color(LividDisplay.LIVID_COLOUR);
+        }
+
+        if (notEnoughFakepixel$slayerEntities.contains(entity)) {
+            return ColorUtils.getColor(Config.feature.slayer.slayerBossColor);
+        }
+
+        if (notEnoughFakepixel$slayerMiniEntities.contains(entity)) {
+            return ColorUtils.getColor(Config.feature.slayer.slayerColor);
+
+        }
+
+        if (notEnoughFakepixel$blazeEntities.contains(entity)) {
+            List<Entity> armorStands = entity.worldObj.getEntitiesWithinAABB(
+                    EntityArmorStand.class,
+                    entity.getEntityBoundingBox().offset(0, 2.0, 0).expand(1.0, 1.0, 1.0)
+            );
+            for (Entity armorStand : armorStands) {
+                if (armorStand instanceof EntityArmorStand) {
+                    String displayName = ((EntityArmorStand) armorStand).getDisplayName().getUnformattedText();
+                    Matcher matcher = BlazeAttunements.COLOR_PATTERN.matcher(displayName);
+                    if (matcher.find()) {
+                        String attunement = matcher.group().toUpperCase();
+                        int colorInt = BlazeAttunements.getColorForAttunement(attunement);
+                        if (colorInt != -1) {
+                            return new Color(colorInt);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (Config.feature.dungeons.dungeonsWithersBox && entity instanceof EntityWither) {
+            String name = net.minecraft.util.EnumChatFormatting.getTextWithoutFormattingCodes(entity.getName());
+            if (name != null && (name.equals("Maxor") || name.equals("Storm") || name.equals("Goldor") || name.equals("Necron"))) {
+                return ColorUtils.getColor(Config.feature.dungeons.dungeonsWithersBoxColor);
+            }
+        }
+
+        return null;
     }
 
     @Inject(

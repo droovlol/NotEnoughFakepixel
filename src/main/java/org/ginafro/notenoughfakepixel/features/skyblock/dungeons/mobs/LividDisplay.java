@@ -1,5 +1,6 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.dungeons.mobs;
 
+import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GlStateManager;
@@ -43,7 +44,8 @@ public class LividDisplay {
 
     private long lastUpdateTime = 0;
 
-    private final Set<EntityLivingBase> lividEntity = new HashSet<>();
+    @Getter
+    public final Set<EntityLivingBase> lividEntity = new HashSet<>();
 
     static {
         initializeColors();

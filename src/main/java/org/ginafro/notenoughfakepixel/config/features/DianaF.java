@@ -148,7 +148,12 @@ public class DianaF {
     @Expose
     @ConfigOption(name = "Minos Inquisitor Outline", desc = "Outline Minos Inquisitors (the outline color is linked to starred mobs color).")
     @ConfigEditorBoolean
-    public boolean dianaMinosInquisitorOutline = false;
+    public boolean dianaMinosInquisitorOutline = true;
+
+    @Expose
+    @ConfigOption(name = "Inq outline Color", desc = "Color of the inquisitor outline.")
+    @ConfigEditorColour
+    public String dianaInqOutlineColor = "0:100:0:255:255";
 
     @Expose
     @ConfigOption(name = "Waypoint Sounds", desc = "Enable sounds for waypoint creation.")

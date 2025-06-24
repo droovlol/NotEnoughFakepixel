@@ -1,5 +1,6 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.slayers;
 
+import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -8,6 +9,7 @@ import net.minecraft.entity.monster.EntityBlaze;
 import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -18,28 +20,38 @@ import org.ginafro.notenoughfakepixel.events.RenderEntityModelEvent;
 import org.ginafro.notenoughfakepixel.utils.*;
 
 import java.awt.*;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @RegisterEvents
 public class BlazeAttunements {
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public void onRenderEntityModel(RenderEntityModelEvent event) {
+    @Getter
+    public final Set<EntityLivingBase> blazeEntity = new HashSet<>();
+    private long lastUpdateTime = 0;
+
+    @SubscribeEvent
+    public void onRenderEntity(RenderLivingEvent.Pre<EntityLivingBase> event) {
         if (!Config.feature.slayer.slayerBlazeAttunements) return;
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastUpdateTime > 20) {
+            blazeEntity.clear();
+            lastUpdateTime = currentTime;
+        }
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.theWorld == null || mc.thePlayer == null) return;
         if (!ScoreboardUtils.currentGamemode.isSkyblock() || !ScoreboardUtils.currentLocation.isCrimson()) return;
 
-        Entity entity = event.getEntity();
-        // Find the armor stand above the entity
+        EntityLivingBase entity = event.entity;
+        if (entity.isInvisible() || entity == mc.thePlayer) return;
+
         List<Entity> armorStands = mc.theWorld.getEntitiesWithinAABB(
                 EntityArmorStand.class,
                 entity.getEntityBoundingBox().offset(0, 2.0, 0).expand(1.0, 1.0, 1.0)
         );
-        
-        if (entity.isInvisible()) return;
 
         for (Entity armorStand : armorStands) {
             if (armorStand instanceof EntityArmorStand) {
@@ -54,21 +66,17 @@ public class BlazeAttunements {
 
                     if (isValidEntity) {
                         boolean allowed = false;
-                        if (entity instanceof EntitySkeleton && ((EntitySkeleton) entity).getSkeletonType() == 1) { // Wither Skeleton
+                        if (entity instanceof EntitySkeleton && ((EntitySkeleton) entity).getSkeletonType() == 1) {
                             allowed = attunement.equals("SPIRIT") || attunement.equals("CRYSTAL");
-                        } else if (entity instanceof EntityPigZombie) { // Pigman
+                        } else if (entity instanceof EntityPigZombie) {
                             allowed = attunement.equals("ASHEN") || attunement.equals("AURIC");
                         } else if (entity instanceof EntityBlaze) {
                             allowed = true;
                         }
 
-                        if (allowed && entity.equals(event.getEntity())) {
-                            Color color = new Color(getColorForAttunement(attunement));
-                            if (Configuration.isPojav()) {
-                                EntityHighlightUtils.renderEntityOutline(event, color);
-                            } else {
-                                OutlineUtils.outlineEntity(event, 6.0f, color, true);
-                            }
+                        if (allowed) {
+                            blazeEntity.add(entity);
+                            return;
                         }
                     }
                 }
@@ -76,7 +84,38 @@ public class BlazeAttunements {
         }
     }
 
-    private static final Pattern COLOR_PATTERN = Pattern.compile("ASHEN|SPIRIT|CRYSTAL|AURIC");
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public void onRenderEntityModel(RenderEntityModelEvent event) {
+        if (!Config.feature.slayer.slayerBlazeAttunements) return;
+        if (!ScoreboardUtils.currentGamemode.isSkyblock() || !ScoreboardUtils.currentLocation.isCrimson()) return;
+
+        EntityLivingBase entity = event.getEntity();
+        if (entity == null || !blazeEntity.contains(entity)) return;
+
+        List<Entity> armorStands = Minecraft.getMinecraft().theWorld.getEntitiesWithinAABB(
+                EntityArmorStand.class,
+                entity.getEntityBoundingBox().offset(0, 2.0, 0).expand(1.0, 1.0, 1.0)
+        );
+
+        for (Entity armorStand : armorStands) {
+            if (armorStand instanceof EntityArmorStand) {
+                String displayName = ((EntityArmorStand) armorStand).getDisplayName().getUnformattedText();
+                Matcher matcher = COLOR_PATTERN.matcher(displayName);
+                if (matcher.find()) {
+                    String attunement = matcher.group().toUpperCase();
+                    Color color = new Color(getColorForAttunement(attunement));
+                    if (Configuration.isPojav()) {
+                        EntityHighlightUtils.renderEntityOutline(event, color);
+                    } else {
+                        OutlineUtils.outlineEntity(event, 6.0f, color, true);
+                    }
+                    return;
+                }
+            }
+        }
+    }
+
+    public static final Pattern COLOR_PATTERN = Pattern.compile("ASHEN|SPIRIT|CRYSTAL|AURIC");
 
     private static final Map<String, Integer> ATTUNEMENT_COLORS = MapUtils.mapOf(
             MapUtils.Pair.of("ASHEN", Color.DARK_GRAY.getRGB()),
@@ -86,7 +125,7 @@ public class BlazeAttunements {
 
     );
 
-    private static int getColorForAttunement(String attunement) {
+    public static int getColorForAttunement(String attunement) {
         return ATTUNEMENT_COLORS.getOrDefault(attunement, -1);
     }
 }
