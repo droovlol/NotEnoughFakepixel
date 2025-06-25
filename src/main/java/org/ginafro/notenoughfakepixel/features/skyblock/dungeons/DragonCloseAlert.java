@@ -143,11 +143,30 @@ public class DragonCloseAlert {
         ORBS.forEach(orb -> {
             Color color = orb.getColor();
             BlockPos position = orb.getPos().add(0, 20, 0);
-            RenderUtils.renderBoxAtCoords(
-                    position.getX() - 21, position.getY() -11, position.getZ() -11,
-                    position.getX() + 11, position.getY() + 11, position.getZ() + 13,
-                    e.partialTicks, color, false
-            );
+            if (orb.getSkin().equals(Skins.BLUE_RELIC) || orb.getSkin().equals(Skins.ORANGE_RELIC)) {
+                RenderUtils.renderBoxAtCoords(
+                        position.getX() - 21, position.getY() - 11, position.getZ() -11,
+                        position.getX() + 11, position.getY() + 11, position.getZ() + 13,
+                        e.partialTicks, color, false
+                );
+            }
+
+            if (orb.getSkin().equals(Skins.GREEN_RELIC) || orb.getSkin().equals(Skins.RED_RELIC)) {
+                RenderUtils.renderBoxAtCoords(
+                        position.getX() - 11, position.getY() - 11, position.getZ() - 11,
+                        position.getX() + 21, position.getY() + 11, position.getZ() + 13,
+                        e.partialTicks, color, false
+                );
+            }
+
+            if (orb.getSkin().equals(Skins.PURPLE_RELIC)) {
+                RenderUtils.renderBoxAtCoords(
+                        position.getX() - 11, position.getY() - 11, position.getZ() - 21,
+                        position.getX() + 13, position.getY() + 11, position.getZ() + 11,
+                        e.partialTicks, color, false
+                );
+            }
+
         });
     }
 
