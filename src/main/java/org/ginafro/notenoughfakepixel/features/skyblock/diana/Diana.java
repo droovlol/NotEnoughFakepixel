@@ -237,12 +237,17 @@ public class Diana {
     }
 
     private void drawWaypoints(float partialTicks) {
-        List<Waypoint> safeResults;
-        synchronized (processor.getWaypoints()) {
-            safeResults = new ArrayList<>(processor.getWaypoints());
-        }
-
+        List<Waypoint> safeResults = processor.getWaypoints();
         if (safeResults.isEmpty()) return;
+
+        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+        if (player == null) return;
+
+        int[] playerPos = new int[]{
+                (int) Math.floor(player.posX),
+                (int) Math.floor(player.posY),
+                (int) Math.floor(player.posZ)
+        };
 
         for (Waypoint result : safeResults) {
             if (result.isHidden()) continue;
@@ -269,75 +274,83 @@ public class Diana {
 
             BlockPos posAbsolute = new BlockPos(result.getCoordinates()[0], result.getCoordinates()[1] - 1, result.getCoordinates()[2]);
 
+            int[] waypointPos = result.getCoordinates();
+            boolean isClose = Math.abs(playerPos[0] - waypointPos[0]) <= 5 && Math.abs(playerPos[2] - waypointPos[2]) <= 5;
+
             RenderUtils.highlightBlock(posAbsolute, newColor, true, partialTicks);
-            RenderUtils.renderBeaconBeam(posAbsolute, newColor.getRGB(), 1.0f, partialTicks);
+            if (!isClose) {
+                RenderUtils.renderBeaconBeam(posAbsolute, newColor.getRGB(), 1.0f, partialTicks);
+            }
             GlStateManager.enableTexture2D();
         }
     }
 
     private void drawTracers(float partialTicks) {
-        List<Waypoint> safeResults = new ArrayList<>();
-        synchronized (processor.getWaypoints()) {
-            try {
-                safeResults = new ArrayList<>(processor.getWaypoints());
-            } catch (Exception ignored) {
-            }
-        }
-        try {
-            for (Waypoint result : safeResults) {
-                if (result.isHidden()) continue;
-                Color newColor = white;
-                if (result.getType().equals("EMPTY"))
+        List<Waypoint> safeResults = processor.getWaypoints();
+        if (safeResults.isEmpty()) return;
+
+        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+        if (player == null) return;
+
+        for (Waypoint result : safeResults) {
+            if (result.isHidden()) continue;
+
+            Color newColor;
+            switch (result.getType()) {
+                case "EMPTY":
                     newColor = ColorUtils.getColor(Config.feature.diana.dianaEmptyBurrowColor);
-                if (result.getType().equals("MOB"))
+                    break;
+                case "MOB":
                     newColor = ColorUtils.getColor(Config.feature.diana.dianaMobBurrowColor);
-                if (result.getType().equals("TREASURE"))
+                    break;
+                case "TREASURE":
                     newColor = ColorUtils.getColor(Config.feature.diana.dianaTreasureBurrowColor);
-                if (result.getType().equals("MINOS")) newColor = new Color(243, 225, 107);
-                EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-                RenderUtils.draw3DLine(new Vec3(result.getCoordinates()[0] + 0.5, result.getCoordinates()[1], result.getCoordinates()[2] + 0.5),
-                        player.getPositionEyes(partialTicks),
-                        newColor,
-                        4,
-                        true,
-                        partialTicks);
+                    break;
+                case "MINOS":
+                    newColor = new Color(243, 225, 107);
+                    break;
+                default:
+                    newColor = white;
+                    break;
             }
-        } catch (Exception ignored) {
+
+            RenderUtils.draw3DLine(
+                    new Vec3(result.getCoordinates()[0] + 0.5, result.getCoordinates()[1], result.getCoordinates()[2] + 0.5),
+                    player.getPositionEyes(partialTicks),
+                    newColor,
+                    4,
+                    true,
+                    partialTicks
+            );
         }
     }
 
     private void drawLabels(float partialTicks) {
-        List<Waypoint> safeResults = new ArrayList<>();
-        synchronized (processor.getWaypoints()) {
-            try {
-                safeResults = new ArrayList<>(processor.getWaypoints());
-            } catch (Exception ignored) {
+        List<Waypoint> safeResults = processor.getWaypoints();
+        if (safeResults.isEmpty()) return;
+
+        for (Waypoint result : safeResults) {
+            if (result.isHidden()) continue;
+
+            String displayName;
+            switch (result.getType()) {
+                case "MINOS":
+                    displayName = "Inquisitor";
+                    break;
+                case "EMPTY":
+                    displayName = "EMPTY";
+                    break;
+                case "MOB":
+                    displayName = "MOB";
+                    break;
+                case "TREASURE":
+                    displayName = "TREASURE";
+                    break;
+                default:
+                    displayName = result.getType();
             }
-        }
-        try {
-            for (Waypoint result : safeResults) {
-                if (result.isHidden()) continue;
-                String displayName;
-                switch (result.getType()) {
-                    case "MINOS":
-                        displayName = "Inquisitor";
-                        break;
-                    case "EMPTY":
-                        displayName = "EMPTY";
-                        break;
-                    case "MOB":
-                        displayName = "MOB";
-                        break;
-                    case "TREASURE":
-                        displayName = "TREASURE";
-                        break;
-                    default:
-                        displayName = result.getType();
-                }
-                BlockPos pos = new BlockPos(result.getCoordinates()[0], result.getCoordinates()[1] + 1, result.getCoordinates()[2]);
-                RenderUtils.renderWaypointText(displayName, pos, partialTicks);
-            }
-        } catch (Exception ignored) {
+            BlockPos pos = new BlockPos(result.getCoordinates()[0], result.getCoordinates()[1] + 1, result.getCoordinates()[2]);
+            RenderUtils.renderWaypointText(displayName, pos, partialTicks);
         }
     }
 

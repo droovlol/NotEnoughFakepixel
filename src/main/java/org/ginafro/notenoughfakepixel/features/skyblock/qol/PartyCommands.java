@@ -1,9 +1,7 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.qol;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.network.play.server.S03PacketTimeUpdate;
-import net.minecraft.util.IChatComponent;
 import net.minecraft.util.StringUtils;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -11,6 +9,9 @@ import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.events.PacketReadEvent;
 
 import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,6 +30,7 @@ public class PartyCommands {
 
     private final Minecraft mc = Minecraft.getMinecraft();
     private final Random random = new Random();
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     private long prevTime = 0L;
     public double averageTps = 20.0;
@@ -44,6 +46,7 @@ public class PartyCommands {
             prevTime = currentTime;
         }
     }
+
     @SubscribeEvent
     public void onClientChat(ClientChatReceivedEvent event) {
         String message = StringUtils.stripControlCodes(event.message.getFormattedText());
@@ -68,7 +71,12 @@ public class PartyCommands {
         }
 
         if (response != null && mc.thePlayer != null) {
-            mc.thePlayer.sendChatMessage("/pc " + response);
+            final String finalResponse = response;
+            scheduler.schedule(() -> {
+                if (mc.thePlayer != null) {
+                    mc.thePlayer.sendChatMessage("/pc " + finalResponse);
+                }
+            }, 1500, TimeUnit.MILLISECONDS);
         }
     }
 }

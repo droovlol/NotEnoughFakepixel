@@ -56,9 +56,6 @@ public class DragonCloseAlert {
             new Orb(new BlockPos(64, 6, 125), Skins.PURPLE_RELIC, Color.PINK)
     );
 
-    private static String displayText = "";
-    private static long endTime = 0;
-
     private static final Map<EntityDragon, Color> DRAGON_COLOR_MAP = new HashMap<>();
     private static final Map<EntityDragon, String> DRAGON_HEALTH_MAP = new HashMap<>();
 

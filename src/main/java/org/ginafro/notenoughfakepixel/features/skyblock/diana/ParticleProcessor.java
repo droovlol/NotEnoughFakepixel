@@ -13,6 +13,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ParticleProcessor {
     private final String waypointSound = "random.pop";
@@ -28,7 +29,7 @@ public class ParticleProcessor {
     private final Queue<S2APacketParticles> particleDripLavaQueue = new ConcurrentLinkedQueue<>();
 
     @Getter
-    private final List<Waypoint> waypoints = new ArrayList<>();
+    private final List<Waypoint> waypoints = new CopyOnWriteArrayList<>();
     private final Executor particleExecutor = Executors.newSingleThreadExecutor();
 
     public void addParticle(S2APacketParticles particle) {
