@@ -14,7 +14,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.config.gui.Config;
 import org.ginafro.notenoughfakepixel.envcheck.registers.RegisterEvents;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.DragonCloseAlert;
+import org.ginafro.notenoughfakepixel.features.skyblock.overlays.HealthManaOverlay;
 import org.ginafro.notenoughfakepixel.variables.*;
+import org.lwjgl.Sys;
 
 import java.awt.*;
 import java.util.*;
@@ -115,6 +117,12 @@ public class ScoreboardUtils {
                     .filter(Objects::nonNull)
                     .map(displayName -> StringUtils.stripControlCodes(displayName.getUnformattedText()))
                     .forEach(name -> {
+                        if(name.contains("Speed: ")){
+                            if(name.contains("✦")){
+                            String speed = name.substring(name.indexOf("✦")).replace("✦","");
+                                HealthManaOverlay.setSpeed(Integer.parseInt(speed));
+                            }
+                        }
                         if (name.contains("Server: ")) {
                             currentLocation = Location.getLocation(
                                     name.replace("Server: ", "").replaceFirst("-\\d+", "-").trim()
