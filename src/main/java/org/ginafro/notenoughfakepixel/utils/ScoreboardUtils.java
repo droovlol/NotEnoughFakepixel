@@ -120,6 +120,9 @@ public class ScoreboardUtils {
                         if(name.contains("Speed: ")){
                             if(name.contains("✦")){
                             String speed = name.substring(name.indexOf("✦")).replace("✦","");
+                            if(speed.contains(".")){
+                                speed = speed.substring(0,speed.indexOf("."));
+                            }
                                 HealthManaOverlay.setSpeed(Integer.parseInt(speed));
                             }
                         }
